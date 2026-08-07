@@ -4,14 +4,13 @@
 
 ## 必读材料
 
-按顺序完整阅读：
+完整阅读：
 
 1. `_other/RETRIEVAL_REFACTOR_RESEARCH_PLAN_V2.md`
-2. `_other/RETRIEVAL_REFACTOR_RESEARCH_PLAN_V1.md`
-3. `_other/handoff.md`
-4. `../RETRIEVAL_REFACTOR_HANDOFF.md`（如存在）
 
-然后只在必要范围内阅读这些实现与测试：
+V2 是唯一的设计和事实基线。不要默认阅读第一版调研、旧交接文件或父目录交接文件；只有当 V2 明确引用某段历史细节、且下列当前源码也无法确认时，才按需查阅它们。
+
+然后只在必要范围内阅读这些当前实现与测试：
 
 - `rag_modules/graph_data_preparation.py`
 - `rag_modules/milvus_index_construction.py`
