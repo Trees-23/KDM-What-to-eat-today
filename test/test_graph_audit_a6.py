@@ -25,6 +25,7 @@ class TestGraphRetrieval(GraphRAGRetrieval):
         self.entity_cache = {}
         self.relation_cache = {}
         self.subgraph_cache = {}
+        self.last_subgraph_query = None
 
     def understand_graph_query(self, query):
         return GraphQuery(
@@ -54,7 +55,8 @@ class TestGraphRetrieval(GraphRAGRetrieval):
             )
         ]
 
-    def extract_knowledge_subgraph(self, graph_query):
+    def extract_knowledge_subgraph(self, graph_query, query=""):
+        self.last_subgraph_query = query
         return KnowledgeSubgraph(
             central_nodes=[{"name": "川菜", "labels": ["Category"]}],
             connected_nodes=[
@@ -106,6 +108,7 @@ class GraphAuditA6Test(unittest.TestCase):
 
             self.assertEqual(len(docs), 1)
             self.assertEqual(docs[0].metadata["search_type"], "knowledge_subgraph")
+            self.assertEqual(module.last_subgraph_query, "川菜有什么特色")
 
             process_text = (audit.run_dir / "rag_process.md").read_text(encoding="utf-8")
             recall_text = (audit.run_dir / "recall_content.md").read_text(encoding="utf-8")
