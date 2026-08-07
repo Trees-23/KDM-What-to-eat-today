@@ -34,6 +34,16 @@
 - 不在没有可信营养字段、治理标签或可复算链路时承诺“低脂”。
 - 不在本方案实施期间执行 Neo4j/Milvus 重建、清空或同名集合覆盖；数据操作只在相应阶段的审批、备份和白名单通过后执行。
 
+### 持续执行授权与终止条件
+
+本方案授权执行代理从阶段 0 持续推进至阶段 6，而不是在提交计划、单个模块、单次测试或单个 PR 更新后等待用户确认。下列常规工作均已授权：阅读当前阶段所需代码、创建本阶段模块/测试/脚本/文档、修复当前阶段的回归、建立隔离测试夹具、运行测试和只读诊断、构建非破坏性 staging 产物、提交、推送、创建或更新同一 PR、执行实施方案规定的 staging 验收与回退演练。
+
+代理应在当前阶段 DoD 通过后立即开始下一阶段，不询问命名、模块拆分、测试组织、feature flag 默认值、提交时机或 PR 更新等常规实现选择；应采用本方案和现有代码中最保守且可回退的做法。最终成功条件是阶段 6 DoD 通过，十个固定场景、三类失败降级、离线评测、staging 用户场景验收、回退演练和 PR 证据全部完成。
+
+自主执行不放宽任何阶段门槛，也不授权伪造实例事实、跳过测试、覆盖用户改动、合并 main、删除旧数据或绕开受保护审批。遇到测试失败、依赖缺失或当前阶段实现缺陷时，代理必须自行诊断、最小修复、补充测试并重跑，而不能将它们作为向用户询问或提前停止的理由。只有下列不可由本地代码解决的外部条件才构成阻塞：没有已授权的真实服务/数据目标、运行实例事实与冻结契约实质冲突、受保护切换审批记录缺失、或数据治理决策尚未存在。此时代理仍须完成所有安全的本地与 staging 工作、提交诊断和证据，并在可用的监控/重试机制中继续检查外部状态；不得以模拟数据或未批准的破坏性操作假装推进。
+
+每个阶段的“审核通过”采用可自主执行的独立审查签收：执行代理在推送该阶段提交后，启动一个不继承实现上下文、不会修改工作区的独立审查代理，向其提供该阶段 diff、测试/服务证据、实施方案章节和 PR 链接。审查代理必须在 docs/retrieval/reviews/phase-<n>-<commit>.md 记录审查身份、输入 commit、通过/不通过结论、发现项与时间；不通过即由执行代理修复并重审。该签收满足阶段间的 PR 审核门槛，但不替代 main 合并审批，也不替代受保护环境切换审批。
+
 ## 已确认事实与待核验门槛
 
 ### 事实状态
@@ -186,7 +196,7 @@ python -m pytest -q test/test_hybrid_retrieval_fusion.py test/test_router_audit_
 
 - 开关：无运行开关；若 B 的修正上线，使用 compose 变更的独立提交回退，不触碰卷或数据库。
 - 回退：撤销未部署的基础设施配置提交；已经记录的基线文件不删除，仅标记被替代。
-- DoD：A1、A2、B、C 全部留档并通过；测试命令退出码为 0；不含任何运行检索改动或数据写操作。
+- DoD：A1、A2、B、C 全部留档并通过；测试命令退出码为 0；独立审查签收通过；不含任何运行检索改动或数据写操作。
 - 提交/PR：提交“文档（检索基线）：记录运行 schema 与回归门槛”；推送后创建或更新草稿 PR，正文写明 A1/A2/B/C 结果。任一项失败时只提交如实的诊断文档，PR 保持草稿，禁止开始阶段 1。
 
 ## 阶段 1：ParentDocumentStore
@@ -197,7 +207,7 @@ python -m pytest -q test/test_hybrid_retrieval_fusion.py test/test_router_audit_
 
 ### 进入条件
 
-- 阶段 0 DoD 已被 PR 记录并审核通过。
+- 阶段 0 DoD 已被 PR 记录，且存在本方案定义的独立审查通过记录。
 - C 中 Recipe、CookingStep、TechniqueDoc、TechniqueChunk 的 ID、顺序字段和别名来源已冻结。
 - 若从现有 Neo4j 物化，已验证只读连接；若计划重建源数据，C 的 Recipe 生产器门槛也必须先通过。
 
@@ -424,8 +434,8 @@ python scripts/build_milvus_v2.py --database <milvus-db> --allowed-database <mil
 ### 进入条件
 
 - 阶段 4 DoD 完成；受限向量和 PDS hydration 已可审计。
-- 产品/数据治理确认严格低脂的来源、阈值、单位、每份定义、适用人群、来源版本、审核人和更新规则。
-- 至少一种可信数据已落地：Recipe 级每份脂肪/热量数值、治理的饮食标签、或可重复执行的“食材用量 + 营养库”计算。
+- 产品/数据治理以可审计记录选择且只选择一种出口：严格营养出口，确认严格低脂的来源、阈值、单位、每份定义、适用人群、来源版本、审核人和更新规则；或软偏好出口，明确当前无可用可信营养来源、严格模式必须保持关闭、可用文案与医疗/阈值请求的证据不足响应。
+- 选择严格营养出口时，至少一种可信数据已落地：Recipe 级每份脂肪/热量数值、治理的饮食标签、或可重复执行的“食材用量 + 营养库”计算。选择软偏好出口时，不得伪造数据以满足本条件。
 
 ### 文件范围、属性契约与数据动作
 
@@ -450,17 +460,20 @@ Neo4j 不可用时，严格模式一律返回“营养/菜系硬证据不可用�
 
 ~~~bash
 python -m pytest -q test/test_nutrition_policy.py test/test_low_fat_recommendation.py
-python scripts/validate_nutrition_dataset.py --source <governed-source> --policy <policy-version> --strict
 python -m pytest -q test/test_restricted_vector_retrieval.py test/test_parent_aggregation.py
 ~~~
 
-测试必须注入 Neo4j unavailable，并断言严格路径不调用全库 Milvus、非严格路径不输出“川菜”或“低脂”约束已满足。真实服务检查需要抽样核对 Neo4j 硬过滤 ID 与 PDS 正文中对应菜谱，审计输出必须包含 evidence_level、字段/标签版本、阈值和缺失原因。用户验收包括：有证据时“推荐低脂川菜”只出现硬匹配；无证据时明确不能验证严格低脂；图不可用时明确硬证据不可用；“夏天吃什么清淡的？”仍是偏好题，不自动升级为营养承诺。
+测试必须注入 Neo4j unavailable，并断言严格路径不调用全库 Milvus、非严格路径不输出“川菜”或“低脂”约束已满足。严格营养出口额外执行下列数据集校验和真实 Neo4j 硬过滤抽样；软偏好出口不得伪造 governed source，而必须测试 RETRIEVAL_STRICT_NUTRITION_ENABLED 无法开启、低脂/医疗/阈值请求返回证据不足、以及川菜 scope 内的少油/清爽文案。两种出口的审计均须包含 evidence_level、选择的 policy 版本与缺失原因。用户验收包括：有证据时“推荐低脂川菜”只出现硬匹配；无证据时明确不能验证严格低脂；图不可用时明确硬证据不可用；“夏天吃什么清淡的？”仍是偏好题，不自动升级为营养承诺。
+
+~~~bash
+python scripts/validate_nutrition_dataset.py --source <governed-source> --policy <policy-version> --strict
+~~~
 
 ### 回退、完成定义与提交检查点
 
 - 开关：RETRIEVAL_STRICT_NUTRITION_ENABLED 默认关闭，且与数据集 policy_version 绑定。
 - 回退：关闭严格模式，保留已治理数据；回复降为少油/清爽偏好或证据不足，绝不保留旧的严格话术。
-- DoD：数据治理决策和验证报告已关联；硬/软两条路径、医疗/阈值拒绝、缺失/过期/冲突数据均有测试；回答审计可追溯至具体字段或标签。
+- DoD：严格营养出口必须关联数据治理决策、验证报告和硬/软两条路径、医疗/阈值拒绝、缺失/过期/冲突数据测试；软偏好出口必须关联“不具备严格营养证据”的治理决定、严格开关强制关闭、少油/清爽 scope 测试、医疗/阈值证据不足测试。两种出口均要求回答审计可追溯至具体字段/标签或明确的缺失决定，并完成独立审查签收。
 - 提交/PR：提交“功能（营养推荐）：区分严格筛选与清爽偏好”；数据 schema、生成器和应用逻辑拆分为独立可验证提交。PR 必须写明阈值定义、数据覆盖率、已知缺口和用户可见限制。
 
 ## 阶段 6：数据生产、评测与旧路径迁移
@@ -471,16 +484,17 @@ python -m pytest -q test/test_restricted_vector_retrieval.py test/test_parent_ag
 
 ### 进入条件
 
-- 阶段 5 DoD 完成，或若严格营养尚无批准数据，已明确保留软偏好模式及其限制。
+- 阶段 5 DoD 已通过：严格营养出口或软偏好出口二者之一已按阶段 5 的完整 DoD 关闭，不存在“未完成阶段 5 直接进入阶段 6”的例外。
 - Recipe 输入来源、授权、规范、ID 生成、变更检测、CSV 输出和导入预检设计已评审。
 - 阶段 0 的 B 已通过；任何目标环境导入另有备份、白名单和人工批准。
 - eval/retrieval_release_thresholds.yaml 已提交并冻结：至少 50 条评测（10 个必测场景各至少 1 条、其余为固定释义或故障注入）；10 个必测场景的必需事实与证据等级通过率为 100%；禁止断言、关系伪证和严格营养误报为 0；Recall@5、MRR@5 均不得低于旧路径超过 0.02；PDS/Milvus evidence linkage 为 100%；P95 延迟不高于旧路径基线的 1.20 倍；连续 7 个自然日且至少 100 次新路径请求满足同样的零禁止断言与错误率不高于旧路径加 1 个百分点。任何调整必须以新的阈值文件提交和产品/检索负责人批准完成，不能在评测后口头修改。 |
+- 持久化 rollout 监控已配置：受保护 CI/CD 身份每 15 分钟从已授权指标源采集时间戳、流量、错误率、P95、禁止断言计数、营养误报计数和 variant，保存为不可变 job artifact；启动监控、可读取指标源和首个成功采样均已验证。没有指标源、调度器或运行身份时，阶段 6 只能保持 blocked，不能把离线评测替代连续 7 天观察。 |
 
 ### 文件范围、生产闭环与评测
 
 | 类别 | 文件 |
 | --- | --- |
-| 新增 | scripts/build_recipe_graph_csv.py、data/manifests/recipe-build.schema.json、scripts/validate_recipe_graph_csv.py、scripts/neo4j_snapshot.py、scripts/neo4j_graph_import.py、eval/retrieval_refactor_cases.yaml、eval/retrieval_release_thresholds.yaml、scripts/run_retrieval_eval.py、test/test_recipe_graph_producer.py、test/test_retrieval_refactor_eval.py、test/test_neo4j_import_guard.py。 |
+| 新增 | scripts/build_recipe_graph_csv.py、data/manifests/recipe-build.schema.json、scripts/validate_recipe_graph_csv.py、scripts/neo4j_snapshot.py、scripts/neo4j_graph_import.py、scripts/monitor_retrieval_rollout.py、.github/workflows/retrieval-rollout-monitor.yml、eval/retrieval_refactor_cases.yaml、eval/retrieval_release_thresholds.yaml、scripts/run_retrieval_eval.py、test/test_recipe_graph_producer.py、test/test_retrieval_refactor_eval.py、test/test_neo4j_import_guard.py、test/test_retrieval_rollout_monitor.py。 |
 | 修改 | data/cypher/neo4j_import.cypher 仅在生产器 schema 已验证后调整；docker-compose.yml 仅维持阶段 0 验证的 import 路径；main.py/config.py 以分流比例或 allowlist 控制新路径默认启用。 |
 | 不修改 | 已验证的旧 Hybrid/Graph RAG 实现不删除；旧 Milvus collection 继续保留到批准的保留期结束。 |
 
@@ -489,6 +503,8 @@ python -m pytest -q test/test_restricted_vector_retrieval.py test/test_parent_ag
 任何图导入先在独立 staging Neo4j 实例或新建、隔离的 staging database 运行，脚本必须要求精确 database 名、CSV 目录、受控备份根目录和白名单；不允许默认 database、通配符、相对路径、既有生产数据库或生产/开发混用。neo4j_snapshot.py 依据阶段 0 已记录的运行方式执行原生 dump 或可恢复导出，写入带 schema、节点/边计数、样本 nodeId 哈希的 manifest。neo4j_graph_import.py 的 apply 模式必须接收 --backup-manifest、--expected-backup-sha256 和 --backup-root，验证其对应同一个 database、CSV manifest、备份根目录和已通过的 verify 记录后才能继续；还必须在前后运行 schema、唯一性、关系计数、样本 ID、CSV manifest 哈希核对。批次大小固定且可记录，失败时停止后续批次，不自动继续。
 
 CSV 生成和 dry-run 是非破坏性的；任何 apply 会写入图数据库，属于受控迁移动作而非普通构建。只有 staging 完整导入、快照恢复、阶段 6 评测和用户验收均通过后，才可用同一 immutable CSV manifest 对经过明确批准的新建隔离目标 database 重复“快照 -> verify -> dry-run -> batch apply -> postcheck”流程，再通过配置切换读流量。回退优先将流量/配置留在旧 PDS 与旧 collection；数据恢复只还原到新的 restore database 供比较。对原目标 database 的覆盖、清空、删除或同库就地迁移不在本计划授权范围内，须另行批准。
+
+monitor_retrieval_rollout.py 必须有 --once 和 --evaluate 两种模式：--once 只能读已授权指标源，生成带 UTC 时间、variant 和配置 hash 的不可变 artifact；--evaluate 合并连续 artifact，计算 7 个自然日、至少 100 次请求和所有冻结阈值，输出 rollout-window.json。CI 工作流以受保护身份每 15 分钟执行 --once，并在窗口满足时执行 --evaluate；执行身份、指标源别名、artifact 保留期和下一次计划运行时间写入 PR。连续监控到第 8 个自然日仍未收集够 100 次、指标源持续不可用或任一禁止断言非零时，自动创建 blocked 报告并保持旧流量/开关，不扩大流量；只要调度器仍可用就继续采样，不把超时报告当作通过。
 
 评测集每条样本记录 intent、gold entity ID、gold relation/path（若有）、可接受 parent_id、必需证据等级、禁止断言和故障注入期望。至少覆盖以下问题：
 
@@ -518,15 +534,18 @@ python scripts/neo4j_graph_import.py --database <staging-db> --csv-dir <staging-
 python scripts/neo4j_snapshot.py restore --manifest <immutable-backup-dir>/manifest.json --target-database <staging-restore-db> --allowed-database <staging-restore-db>
 python scripts/neo4j_snapshot.py verify --database <staging-restore-db> --manifest <immutable-backup-dir>/manifest.json --allowed-database <staging-restore-db>
 python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml --variant <old-or-new> --report <report-path>
+python -m pytest -q test/test_retrieval_rollout_monitor.py
+python scripts/monitor_retrieval_rollout.py --once --metrics-source <approved-alias> --variant <variant> --artifact-dir <artifact-dir>
+python scripts/monitor_retrieval_rollout.py --evaluate --artifact-dir <artifact-dir> --thresholds eval/retrieval_release_thresholds.yaml --window-days 7 --min-requests 100
 ~~~
 
 导入守卫单测必须验证错误 database、既有非隔离目标、旧 collection/实例、缺失批准、缺失/未验证/不匹配的 backup manifest 或 SHA256、相对路径及无白名单都会拒绝；恢复演练在全新的 staging-restore-db 完成后才算备份可用。对旧、新变体分别报告 Recall@K、MRR、关系路径正确率、证据完整率、答案忠实率、严格营养错误率、P95 延迟和故障降级正确率，并逐项与已冻结的 release thresholds 比较。未达到进入时冻结的阈值或任一禁止断言出现时，不扩大流量。
 
-用户验收由非实施者在 staging UI/API 逐条提交 10 个必测问题与三类故障注入，按评测文件中的“必需事实、可见限制、禁止断言”签收。签收记录必须保存实际 QueryPlan、GraphFact 状态、TextEvidence build_id/parent_id、最终可见回复和结果；实体不存在、关系不存在、图服务失败三项分别确认没有静默臆测、没有关系伪证、没有将文本伪装为图事实。
+干净测试进程只能提供自动化辅助证据，不能签收最终用户场景验收。最终验收必须由可识别的独立审查代理或非实施者在 staging UI/API 逐条提交 10 个必测问题与三类故障注入，按评测文件中的“必需事实、可见限制、禁止断言”签收。签收记录必须保存审查身份、输入 commit、实际 QueryPlan、GraphFact 状态、TextEvidence build_id/parent_id、最终可见回复和结果；实体不存在、关系不存在、图服务失败三项分别确认没有静默臆测、没有关系伪证、没有将文本伪装为图事实。
 
-发布以 allowlist -> 小比例 -> 明确默认新路径三步进行，每一步至少观察一个固定评测周期和错误审计周期。旧路径保留在 RETRIEVAL_LEGACY_FALLBACK_ENABLED 下，直至评测、线上错误率和用户反馈达标并获得单独删除批准。回退是把 allowlist/比例归零或关闭新开关，不删除任何 collection、PDS build 或模块。
+发布以 allowlist -> 小比例 -> 明确默认新路径三步进行，每一步必须由 rollout-window.json 证明满足已冻结观察窗口和错误审计阈值。执行代理在前一步窗口达标后立即推进下一步，而不是等待常规确认；受保护环境切换仍以已存在且可验证的审批记录为前提。旧路径保留在 RETRIEVAL_LEGACY_FALLBACK_ENABLED 下，直至评测、线上错误率和用户反馈达标并获得单独删除批准。回退是把 allowlist/比例归零或关闭新开关，不删除任何 collection、PDS build 或模块。
 
-- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；新路径分阶段发布与回退演练成功；旧模块仍可通过兼容开关运行。
+- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；监控器单测、首个采样、连续 7 天/100 请求 rollout-window 和阈值计算通过；独立审查代理或非实施者完成最终 staging 签收；新路径分阶段发布与回退演练成功；旧模块仍可通过兼容开关运行。
 - 提交/PR：依次提交“构建（菜谱数据）：增加可复现 CSV 生产器”、“测试（检索评测）：覆盖证据与降级场景”、“维护（检索迁移）：增加渐进切换”。每次推送更新同一 PR 的指标表、流量阶段、风险和回退状态；没有用户明确确认不得合并 main。
 
 ## 测试矩阵
@@ -540,7 +559,7 @@ python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml 
 | QueryPlan/图 | 3 | 枚举校验、模板方向、白名单、not_found/unavailable | test_query_plan_validator.py、test_targeted_graph_retrieval.py、EXPLAIN/PROFILE |
 | Milvus V2 | 4 | V2 schema、目标已存在拒绝、过滤、空 scope 拒绝、parent 聚合、PDS/联合 manifest build 一致性、备份恢复检索演练 | test_milvus_v2_schema.py、test_restricted_vector_retrieval.py、test_retrieval_artifact_manifest.py、新测试 collection |
 | 营养 | 5 | 硬证据、软偏好、严格医疗/阈值拒绝、过期数据 | test_nutrition_policy.py、test_low_fat_recommendation.py、治理数据验证报告 |
-| 端到端评测/导入 | 6 | CSV 生产、导入白名单/快照恢复、十个固定场景、关系和营养禁止断言、P95、用户签收 | test_neo4j_import_guard.py、run_retrieval_eval.py 的 old/new 报告与 staging 签收记录 |
+| 端到端评测/导入 | 6 | CSV 生产、导入白名单/快照恢复、十个固定场景、关系和营养禁止断言、P95、7 天 rollout 监控、独立签收 | test_neo4j_import_guard.py、test_retrieval_rollout_monitor.py、run_retrieval_eval.py 的 old/new 报告、rollout-window 与 staging 签收记录 |
 
 每个阶段必须先执行其新增单测，再执行既有回归；涉及 Neo4j/Milvus 的阶段还必须完成真实服务检查。实现、测试、验收任一项未通过时，禁止开始下一阶段；不得以“后续补测试”“先重构再调试”或全量切换规避。
 
@@ -555,7 +574,7 @@ python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml 
 | 2：实体直达 | PDS 真实物化、anchor 样本核对、PDS 健康检查 | RETRIEVAL_ENTITY_DIRECT_ENABLED | 关闭实体直达，回旧 Router/Hybrid。 |
 | 3：QueryPlan/目标化图 | 实例 labels/关系/分类 predicate 已确认；阶段 2 EvidenceBundle 通过 | RETRIEVAL_QUERY_PLAN_ENABLED、RETRIEVAL_TARGETED_GRAPH_ENABLED | 关闭新计划路径；关系题返回 unavailable/not_found，不伪造图事实。 |
 | 4：Milvus V2 | PDS CanonicalChunk -> V2 linkage、备份恢复检索 verify、database/collection/路径白名单、受保护人工切换确认 | RETRIEVAL_MILVUS_V2_ENABLED、RETRIEVAL_MILVUS_COLLECTION、联合 artifact manifest | 配置切回 cooking_knowledge；必要时切换已验证 restore collection；旧集合保留。 |
-| 5：严格营养 | 阶段 4 DoD；数据治理、阈值、来源与审核决策落地 | RETRIEVAL_STRICT_NUTRITION_ENABLED | 关闭严格模式，仅软偏好或证据不足；不保留严格话术。 |
+| 5：营养/偏好 | 阶段 4 DoD；治理记录已选择严格营养出口或软偏好出口，并完成相应 DoD | RETRIEVAL_STRICT_NUTRITION_ENABLED | 关闭严格模式，仅软偏好或证据不足；不保留严格话术。 |
 | 6：生产/迁移 | Recipe 生产器、CSV 校验、staging 快照恢复、已冻结指标、离线评测和用户签收达标 | 新路径 allowlist/流量比例、RETRIEVAL_LEGACY_FALLBACK_ENABLED | allowlist/比例归零，保留旧模块、旧 collection 与 PDS builds；图恢复只写入新 restore database。 |
 
 ### 发布纪律
@@ -565,6 +584,8 @@ python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml 
 3. 任何迁移先备份并验证恢复，不以“已存在原始 CSV”作为备份；旧 Milvus collection 与 PDS build 在观察期保留。
 4. 功能默认关闭，通过显式配置、allowlist 和可审计的人工确认开启；不以代码合并本身视为切换授权。
 5. 遇到图服务失败时，正文回补和向量命中可以作为烹饪参考，但不得变成关系证明；遇到营养证据缺失时，偏好文本不得变成严格低脂承诺。
+6. 阶段通过后，执行代理立即推进下一阶段和对应 PR 更新；不为普通实现取舍、单测修复、依赖安装、staging 验收或回退演练向用户请求许可。
+7. “用户场景验收”可由独立的干净测试进程、独立审查代理或非实施者在 staging UI/API 复现并签收；执行代理必须主动触发和记录该验收。只有 main 合并和受保护环境数据切换仍以既有的明确审批记录为准。
 
 ## 实施顺序与提交检查点
 
