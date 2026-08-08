@@ -461,12 +461,30 @@ class AdvancedGraphRAGSystem:
         config = getattr(self, "config", None)
         if not getattr(config, "retrieval_query_plan_enabled", False):
             return None
-        if self.query_plan_validator is None or self.entity_resolver is None:
+        validator = getattr(self, "query_plan_validator", None)
+        resolver = getattr(self, "entity_resolver", None)
+        if validator is None or resolver is None:
             return None
         intent, expected_type = self._targeted_intent(query)
         if intent is None:
             return None
-        candidates = self.entity_resolver.resolve(query, expected_types=(expected_type,))
+        try:
+            candidates = resolver.resolve(query, expected_types=(expected_type,))
+        except Exception as error:
+            logger.warning("目标图实体解析不可用: %s", error)
+            fact = TargetedGraphRetriever.unavailable_for_intent(
+                intent,
+                audit_run=audit_run,
+                error_type=type(error).__name__,
+            )
+            base = EvidenceBundle(
+                query_plan=None,
+                entity_candidates=(),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("GRAPH_UNAVAILABLE", "图实体解析当前不可用；不能验证请求的关系是否成立。"),
+            )
+            return EvidenceBuilder.merge_graph_facts(base, (fact,))
         if not candidates:
             return EvidenceBundle(
                 query_plan=None,
@@ -486,10 +504,11 @@ class AdvancedGraphRAGSystem:
         plan = self._targeted_plan(query, intent, candidates[0].node_id)
         if plan is None:
             return None
-        if self.targeted_graph_retriever is None:
+        targeted_retriever = getattr(self, "targeted_graph_retriever", None)
+        if targeted_retriever is None:
             fact = TargetedGraphRetriever.unavailable_fact(plan, audit_run=audit_run)
         else:
-            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+            fact = targeted_retriever.retrieve(plan, audit_run=audit_run)
         limitations: tuple[str, ...] = ()
         if fact.status == "not_found":
             limitations = ("GRAPH_RELATION_NOT_FOUND", "当前图谱未找到该关系；正文不能证明该关系。")

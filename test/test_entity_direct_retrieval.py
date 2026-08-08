@@ -171,6 +171,11 @@ class _SingleResolver:
         return [self.candidate]
 
 
+class _FailingResolver:
+    def resolve(self, query, expected_types):
+        raise OSError("neo4j resolver down")
+
+
 class _Router:
     def __init__(self):
         self.calls = []
@@ -349,6 +354,25 @@ def test_query_plan_returns_unavailable_when_targeted_graph_flag_is_disabled():
 
     assert analysis is None
     assert bundle.graph_facts[0].status == "unavailable"
+    assert "GRAPH_UNAVAILABLE" in bundle.limitations
+    assert system.query_router.calls == []
+
+
+def test_query_plan_converts_entity_resolver_failure_to_unavailable_fact():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config(retrieval_query_plan_enabled=True, retrieval_targeted_graph_enabled=True)
+    system.entity_resolver = _FailingResolver()
+    system.entity_direct_retriever = None
+    system.query_plan_validator = QueryPlanValidator()
+    system.targeted_graph_retriever = None
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("鸡肉能做什么？", 3)
+
+    assert analysis is None
+    assert bundle.graph_facts[0].status == "unavailable"
+    assert bundle.graph_facts[0].properties["error_type"] == "OSError"
     assert "GRAPH_UNAVAILABLE" in bundle.limitations
     assert system.query_router.calls == []
 

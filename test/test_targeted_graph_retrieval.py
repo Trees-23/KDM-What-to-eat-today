@@ -79,6 +79,14 @@ def test_disabled_targeted_graph_keeps_the_validated_plan_as_unavailable():
     assert fact.properties["error_type"] == "FeatureFlagDisabled"
 
 
+def test_unavailable_intent_without_entity_id_does_not_invent_node_ids():
+    fact = TargetedGraphRetriever.unavailable_for_intent("INGREDIENT_RECIPES")
+
+    assert fact.status == "unavailable"
+    assert fact.node_ids == ()
+    assert fact.properties["error_type"] == "EntityResolverUnavailable"
+
+
 def test_retriever_rejects_free_cypher_before_opening_driver_session():
     session = FakeSession()
     retriever = TargetedGraphRetriever(FakeDriver(session))

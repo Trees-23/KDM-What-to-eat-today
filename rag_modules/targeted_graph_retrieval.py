@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Mapping
 
-from .query_plan import QueryPlan
+from .query_plan import TEMPLATE_BY_INTENT, QueryPlan
 from .query_plan_validator import QueryPlanValidator
 from .retrieval_contracts import GraphFact
 
@@ -138,6 +138,46 @@ class TargetedGraphRetriever:
             error_type=error_type,
         )
         cls._audit(audit_run, "unavailable", validated, timestamp, error_type=error_type)
+        return fact
+
+    @classmethod
+    def unavailable_for_intent(
+        cls,
+        intent: str,
+        *,
+        audit_run: Any = None,
+        error_type: str = "EntityResolverUnavailable",
+    ) -> GraphFact:
+        """实体解析服务失败且没有稳定 ID 时，返回不含猜测 ID 的不可用事实。"""
+        template_id = TEMPLATE_BY_INTENT.get(intent)
+        if template_id is None:
+            raise ValueError(f"不支持的目标图 intent: {intent}")
+        spec = TEMPLATE_SPECS[template_id]
+        timestamp = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+        fact = GraphFact(
+            fact_id=f"{template_id}:{timestamp}",
+            template_id=template_id,
+            node_ids=(),
+            edges=(),
+            properties={
+                "direction": spec["direction"],
+                "relationship_type": spec["relationship_type"],
+                "database_timestamp": timestamp,
+                "rows": (),
+                "max_candidates": 0,
+                "error_type": error_type,
+            },
+            status="unavailable",
+        )
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "targeted_graph",
+                status="unavailable",
+                template_id=template_id,
+                intent=intent,
+                database_timestamp=timestamp,
+                error_type=error_type,
+            )
         return fact
 
     @staticmethod

@@ -55,10 +55,9 @@ class QueryPlanValidator:
         source = raw.get("source", "rule")
         if source not in {"rule", "llm_candidate"}:
             raise QueryPlanValidationError("source 不在白名单中")
-        try:
-            max_candidates = int(raw.get("max_candidates", 20))
-        except (TypeError, ValueError) as error:
-            raise QueryPlanValidationError("max_candidates 必须是整数") from error
+        max_candidates = raw.get("max_candidates", 20)
+        if isinstance(max_candidates, bool) or not isinstance(max_candidates, int):
+            raise QueryPlanValidationError("max_candidates 必须是整数")
         if not 1 <= max_candidates <= self.MAX_CANDIDATES:
             raise QueryPlanValidationError("max_candidates 超出范围")
         parameters = raw.get("parameters")
@@ -148,13 +147,13 @@ class QueryPlanValidator:
         else:
             parameters["limit"] = max_candidates
         if template_id == "recipe_step_anchor_v1":
-            self._required_id(parameters, "recipe_id")
+            parameters["recipe_id"] = self._required_id(parameters, "recipe_id")
             has_step_id = "step_id" in parameters and parameters["step_id"] is not None
             has_step_number = "step_number" in parameters and parameters["step_number"] is not None
             if has_step_id == has_step_number:
                 raise QueryPlanValidationError("Recipe 步骤必须且只能提供 step_id 或 step_number")
             if has_step_id:
-                self._required_id(parameters, "step_id")
+                parameters["step_id"] = self._required_id(parameters, "step_id")
             if has_step_number and (
                 not isinstance(parameters["step_number"], int)
                 or isinstance(parameters["step_number"], bool)
@@ -162,9 +161,9 @@ class QueryPlanValidator:
             ):
                 raise QueryPlanValidationError("step_number 超出范围")
         elif template_id == "ingredient_recipes_v1":
-            self._required_id(parameters, "ingredient_id")
+            parameters["ingredient_id"] = self._required_id(parameters, "ingredient_id")
         elif template_id == "ingredient_vegetable_pairs_v1":
-            self._required_id(parameters, "ingredient_id")
+            parameters["ingredient_id"] = self._required_id(parameters, "ingredient_id")
             if parameters.get("vegetable_category") != "蔬菜":
                 raise QueryPlanValidationError("vegetable_category 只能是已核验的蔬菜分类")
         elif template_id == "technique_chunks_v1":
@@ -176,4 +175,5 @@ class QueryPlanValidator:
             for recipe_id in recipe_ids:
                 if not isinstance(recipe_id, str) or not recipe_id.strip() or len(recipe_id) > 150:
                     raise QueryPlanValidationError("recipe_ids 含非法 ID")
-            self._required_id(parameters, "cuisine_type")
+            parameters["recipe_ids"] = [recipe_id.strip() for recipe_id in recipe_ids]
+            parameters["cuisine_type"] = self._required_id(parameters, "cuisine_type")

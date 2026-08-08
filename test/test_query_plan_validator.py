@@ -62,3 +62,19 @@ def test_invalid_llm_json_falls_back_only_to_rule_plan_with_stable_entity_id():
     assert fallback.intent == "INGREDIENT_VEGETABLE_PAIRS"
     assert fallback.parameters["ingredient_id"] == "ingredient-chicken"
     assert validator.validate_or_conservative("not json", query_text="鸡肉搭配什么蔬菜？") is None
+
+
+@pytest.mark.parametrize("value", [True, "5", 5.0])
+def test_validator_rejects_non_integer_candidate_limit(value):
+    candidate = _plan("INGREDIENT_RECIPES", "Ingredient", {"ingredient_id": "i1", "limit": 1}, max_candidates=value)
+
+    with pytest.raises(QueryPlanValidationError):
+        QueryPlanValidator().validate(candidate)
+
+
+def test_validator_normalizes_whitespace_around_stable_ids():
+    candidate = _plan("INGREDIENT_RECIPES", "Ingredient", {"ingredient_id": "  i1  ", "limit": 1})
+
+    validated = QueryPlanValidator().validate(candidate)
+
+    assert validated.parameters["ingredient_id"] == "i1"
