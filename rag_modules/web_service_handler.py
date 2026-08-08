@@ -220,11 +220,18 @@ class WebServiceHandler:
                 )
             
             # 缓存未命中，执行完整的RAG流程
-            documents, analysis = self.rag_system.query_router.route_query(
-                query=enhanced_query,
-                top_k=self.rag_system.config.top_k,
-                audit_run=audit_run,
-            )
+            if hasattr(self.rag_system, "retrieve_for_generation"):
+                documents, analysis = self.rag_system.retrieve_for_generation(
+                    enhanced_query,
+                    self.rag_system.config.top_k,
+                    audit_run=audit_run,
+                )
+            else:
+                documents, analysis = self.rag_system.query_router.route_query(
+                    query=enhanced_query,
+                    top_k=self.rag_system.config.top_k,
+                    audit_run=audit_run,
+                )
             # 使用生成模块生成最终答案
             response = self.rag_system.generation_module.generate_adaptive_answer(
                 enhanced_query,
@@ -355,11 +362,18 @@ class WebServiceHandler:
                         )
                     
                     # 缓存未命中，执行完整的RAG流程
-                    documents, analysis = self.rag_system.query_router.route_query(
-                        query=enhanced_query,
-                        top_k=self.rag_system.config.top_k,
-                        audit_run=audit_run,
-                    )
+                    if hasattr(self.rag_system, "retrieve_for_generation"):
+                        documents, analysis = self.rag_system.retrieve_for_generation(
+                            enhanced_query,
+                            self.rag_system.config.top_k,
+                            audit_run=audit_run,
+                        )
+                    else:
+                        documents, analysis = self.rag_system.query_router.route_query(
+                            query=enhanced_query,
+                            top_k=self.rag_system.config.top_k,
+                            audit_run=audit_run,
+                        )
                     
                     # 流式生成答案
                     full_response = ""

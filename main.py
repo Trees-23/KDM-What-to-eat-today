@@ -35,6 +35,9 @@ from rag_modules.session_cache_manager import SessionCacheManager
 from rag_modules.web_service_handler import WebServiceHandler
 from rag_modules.recipe_recommendation import RecipeRecommendationManager
 from rag_modules.parent_document_store import ParentDocumentStore
+from rag_modules.entity_resolver import EntityResolver
+from rag_modules.entity_direct_retrieval import EntityDirectRetriever
+from rag_modules.retrieval_contracts import EvidenceBundle
 
 
 class AdvancedGraphRAGSystem:
@@ -69,6 +72,9 @@ class AdvancedGraphRAGSystem:
         self.cache_manager = None
         # 阶段 1 PDS：只做可选健康检查，不接入旧 Router
         self.parent_document_store = None
+        # 阶段 2：默认关闭的实体直达组件；开启失败时保留旧 Router。
+        self.entity_resolver = None
+        self.entity_direct_retriever = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -137,17 +143,39 @@ class AdvancedGraphRAGSystem:
             print("初始化菜谱推荐管理器...")
             self.recipe_manager = RecipeRecommendationManager()
 
+            if self.config.retrieval_parent_store_enabled:
+                print("检查 ParentDocumentStore...")
+                try:
+                    self.parent_document_store = ParentDocumentStore.open(
+                        self.config.parent_store_path,
+                        active_pointer=self.config.parent_store_active_pointer,
+                    )
+                    logger.info("ParentDocumentStore 健康检查: %s", self.parent_document_store.health_check())
+                except Exception:
+                    if not self.config.retrieval_entity_direct_enabled:
+                        raise
+                    logger.exception("ParentDocumentStore 不可用，实体直达将保持关闭并回退旧 Router")
+
+            if self.config.retrieval_entity_direct_enabled:
+                if not self.config.retrieval_parent_store_enabled or self.parent_document_store is None:
+                    logger.warning(
+                        "RETRIEVAL_ENTITY_DIRECT_ENABLED 依赖 RETRIEVAL_PARENT_STORE_ENABLED 与健康 PDS；本次不启用实体直达"
+                    )
+                else:
+                    self.entity_resolver = EntityResolver(
+                        self.data_module.driver,
+                        database=self.config.neo4j_database,
+                    )
+                    self.entity_direct_retriever = EntityDirectRetriever(
+                        self.parent_document_store,
+                        self.data_module.driver,
+                        database=self.config.neo4j_database,
+                    )
+                    logger.info("阶段 2 实体直达已启用；旧 Router 仍作为 PDS 故障回退")
+
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
             self.web_handler = WebServiceHandler(self)
-
-            if self.config.retrieval_parent_store_enabled:
-                print("检查 ParentDocumentStore...")
-                self.parent_document_store = ParentDocumentStore.open(
-                    self.config.parent_store_path,
-                    active_pointer=self.config.parent_store_active_pointer,
-                )
-                logger.info("ParentDocumentStore 健康检查: %s", self.parent_document_store.health_check())
 
             print("✅ 高级图RAG系统初始化完成！")
             
@@ -284,7 +312,7 @@ class AdvancedGraphRAGSystem:
         try:
             # 1. 智能路由检索
             print("执行智能查询路由...")
-            relevant_docs, analysis = self.query_router.route_query(question, self.config.top_k)
+            relevant_docs, analysis = self.retrieve_for_generation(question, self.config.top_k)
             
             # 2. 显示路由信息
             strategy_icons = {
@@ -292,12 +320,20 @@ class AdvancedGraphRAGSystem:
                 "graph_rag": "🕸️", 
                 "combined": "🔄"
             }
-            strategy_icon = strategy_icons.get(analysis.recommended_strategy.value, "❓")
-            print(f"{strategy_icon} 使用策略: {analysis.recommended_strategy.value}")
-            print(f"📊 复杂度: {analysis.query_complexity:.2f}, 关系密集度: {analysis.relationship_intensity:.2f}")
+            if analysis is not None:
+                strategy_icon = strategy_icons.get(analysis.recommended_strategy.value, "❓")
+                print(f"{strategy_icon} 使用策略: {analysis.recommended_strategy.value}")
+                print(f"📊 复杂度: {analysis.query_complexity:.2f}, 关系密集度: {analysis.relationship_intensity:.2f}")
+            else:
+                print("🎯 使用阶段 2 实体直达证据链")
             
             # 3. 显示检索结果信息
-            if relevant_docs:
+            if isinstance(relevant_docs, EvidenceBundle):
+                print(
+                    f"📋 实体直达：图事实 {len(relevant_docs.graph_facts)} 条，"
+                    f"正文证据 {len(relevant_docs.text_evidence)} 条"
+                )
+            elif relevant_docs:
                 doc_info = []
                 for doc in relevant_docs:
                     recipe_name = doc.metadata.get('recipe_name', '未知内容')
@@ -337,6 +373,88 @@ class AdvancedGraphRAGSystem:
         except Exception as e:
             logger.error(f"问答处理失败: {e}")
             return f"抱歉，处理问题时出现错误：{str(e)}", None
+
+    def retrieve_for_generation(self, query: str, top_k: int, audit_run=None):
+        """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
+        bundle = self._try_entity_direct(query, audit_run=audit_run)
+        if bundle is not None:
+            if bundle.requires_legacy_fallback:
+                self._audit_entity_direct(audit_run, "fallback", bundle)
+            else:
+                self._audit_entity_direct(audit_run, "selected", bundle)
+                return bundle, None
+        return self.query_router.route_query(query, top_k, audit_run=audit_run)
+
+    def _try_entity_direct(self, query: str, audit_run=None) -> EvidenceBundle | None:
+        if self.entity_resolver is None or self.entity_direct_retriever is None:
+            return None
+        try:
+            candidates = self.entity_resolver.resolve(query, expected_types=("Recipe", "TechniqueDoc"))
+        except Exception as error:
+            logger.warning("实体直达解析不可用，回退旧 Router: %s", error)
+            self._audit_entity_direct_error(audit_run, "resolver-unavailable", error)
+            return None
+        if not candidates:
+            if self._looks_like_explicit_entity_question(query):
+                bundle = EvidenceBundle(
+                    query_plan=None,
+                    entity_candidates=(),
+                    graph_facts=(),
+                    text_evidence=(),
+                    limitations=("ENTITY_NOT_FOUND", "未定位到同名实体；未调用全库向量检索。"),
+                )
+                self._audit_entity_direct(audit_run, "entity_not_found", bundle)
+                return bundle
+            return None
+        if candidates[0].ambiguity:
+            bundle = EvidenceBundle(
+                query_plan=None,
+                entity_candidates=tuple(candidates),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ENTITY_AMBIGUOUS", "实体候选并列，未自动选择且未调用全库向量检索。"),
+            )
+            self._audit_entity_direct(audit_run, "ambiguous", bundle)
+            return bundle
+        try:
+            return self.entity_direct_retriever.retrieve(candidates[0], self._direct_scope(query, candidates[0]), audit_run=audit_run)
+        except Exception as error:
+            logger.warning("实体直达执行失败，回退旧 Router: %s", error)
+            self._audit_entity_direct_error(audit_run, "retriever-unavailable", error)
+            return None
+
+    @staticmethod
+    def _looks_like_explicit_entity_question(query: str) -> bool:
+        return any(marker in (query or "") for marker in ("怎么做", "怎么制作", "做法", "第一步", "第1步", "关键要点", "适用场景"))
+
+    @staticmethod
+    def _direct_scope(query: str, entity) -> dict:
+        if entity.node_type == "Recipe":
+            import re
+            matched = re.search(r"第\s*(\d+)\s*步|第一步", query or "")
+            if matched:
+                number = int(matched.group(1)) if matched.group(1) else 1
+                return {"scope": "RECIPE_STEP", "step_number": number, "before": 1, "after": 1}
+            return {"scope": "RECIPE_FULL"}
+        return {"scope": "TECHNIQUE_FULL"}
+
+    @staticmethod
+    def _audit_entity_direct(audit_run, status: str, bundle: EvidenceBundle) -> None:
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "entity_direct",
+                status=status,
+                candidate_count=len(bundle.entity_candidates),
+                graph_fact_statuses=[fact.status for fact in bundle.graph_facts],
+                text_evidence_count=len(bundle.text_evidence),
+                limitations=list(bundle.limitations),
+                vector_search_calls=0,
+            )
+
+    @staticmethod
+    def _audit_entity_direct_error(audit_run, status: str, error: Exception) -> None:
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("entity_direct", status=status, error_type=type(error).__name__, vector_search_calls=0)
 
     def _get_query_embedding(self, query: str):
         """获取查询的向量表示（用于语义缓存）"""

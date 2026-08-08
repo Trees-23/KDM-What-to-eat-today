@@ -7,7 +7,7 @@ import os
 import json
 import time
 from types import SimpleNamespace
-from typing import List
+from typing import List, Sequence
 
 import requests
 try:
@@ -19,6 +19,8 @@ except ImportError:
             self.metadata = metadata or {}
 
 from rag_modules.rag_audit import query_hash, safe_base_url_host
+from rag_modules.evidence_builder import EvidenceBuilder
+from rag_modules.retrieval_contracts import EvidenceBundle
 
 logger = logging.getLogger(__name__)
 
@@ -159,29 +161,56 @@ class GenerationIntegrationModule:
         回答：
         """
 
-    def generate_adaptive_answer(self, question: str, documents: List[Document], audit_run=None) -> str:
+    def _build_evidence_prompt(self, question: str, context: str) -> str:
+        """构建阶段 2 的分层证据提示词。
+
+        GraphFact、正文和限制以独立标题传入，避免把正文相似性表达为图关系事实。
+        """
+        return f"""
+        作为一位专业的烹饪助手，请严格基于下列分层证据回答问题。
+
+        {context}
+
+        用户问题：{question}
+
+        回答规则：
+        - 只有“已验证图事实”中的内容可以用来断言图关系或结构化事实。
+        - “正文证据”只能作为烹饪说明，不得证明未在图事实中验证的关系。
+        - 必须明确说明“限制与不可证明项”中的缺失或不可用状态，不得补造事实。
+        - 没有正文证据时，不要编造食材、步骤或营养结论。
+
+        回答：
+        """
+
+    def _prepare_generation_input(self, question: str, evidence_or_documents):
+        """兼容旧 Document 输入，并为 EvidenceBundle 选择独立提示模板。"""
+        if isinstance(evidence_or_documents, EvidenceBundle):
+            context = EvidenceBuilder.context(evidence_or_documents)
+            return context, self._build_evidence_prompt(question, context), [], evidence_or_documents
+
+        documents = list(evidence_or_documents or [])
+        context_parts = []
+        for doc in documents:
+            content = doc.page_content.strip()
+            if not content:
+                continue
+            level = doc.metadata.get('retrieval_level', '')
+            context_parts.append(f"[{level.upper()}] {content}" if level else content)
+        context = "\n\n".join(context_parts)
+        return context, self._build_prompt(question, context), documents, None
+
+    def generate_adaptive_answer(self, question: str, documents: Sequence[Document] | EvidenceBundle, audit_run=None) -> str:
         """
         智能统一答案生成
         自动适应不同类型的查询，无需预先分类
         """
-        # 构建上下文
-        context_parts = []
-        
-        for doc in documents:
-            content = doc.page_content.strip()
-            if content:
-                # 添加检索层级信息（如果有的话）
-                level = doc.metadata.get('retrieval_level', '')
-                if level:
-                    context_parts.append(f"[{level.upper()}] {content}")
-                else:
-                    context_parts.append(content)
-        
-        context = "\n\n".join(context_parts)
-
-        # 使用统一的提示词构建方法
-        prompt = self._build_prompt(question, context)
-        self._record_generation_context(audit_run, documents, context, stream=False)
+        context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
+        self._record_generation_context(
+            audit_run, audit_documents, context, stream=False, evidence_bundle=evidence_bundle
+        )
+        terminal_response = self._terminal_evidence_response(evidence_bundle)
+        if terminal_response:
+            return terminal_response
         generation_started_at = time.time()
         
         try:
@@ -241,27 +270,23 @@ class GenerationIntegrationModule:
                 )
             return f"抱歉，生成回答时出现错误：{str(e)}"
     
-    def generate_adaptive_answer_stream(self, question: str, documents: List[Document], max_retries: int = 3, audit_run=None):
+    def generate_adaptive_answer_stream(self, question: str, documents: Sequence[Document] | EvidenceBundle, max_retries: int = 3, audit_run=None):
         """
         LightRAG风格的流式答案生成（带重试机制）
         """
-        # 构建上下文
-        context_parts = []
-        
-        for doc in documents:
-            content = doc.page_content.strip()
-            if content:
-                level = doc.metadata.get('retrieval_level', '')
-                if level:
-                    context_parts.append(f"[{level.upper()}] {content}")
-                else:
-                    context_parts.append(content)
-        
-        context = "\n\n".join(context_parts)
-
-        # 使用统一的提示词构建方法
-        prompt = self._build_prompt(question, context)
-        self._record_generation_context(audit_run, documents, context, stream=True, max_retries=max_retries)
+        context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
+        self._record_generation_context(
+            audit_run,
+            audit_documents,
+            context,
+            stream=True,
+            max_retries=max_retries,
+            evidence_bundle=evidence_bundle,
+        )
+        terminal_response = self._terminal_evidence_response(evidence_bundle)
+        if terminal_response:
+            yield terminal_response
+            return
         generation_started_at = time.time()
         first_token_latency_ms = None
         chunk_count = 0
@@ -389,25 +414,63 @@ class GenerationIntegrationModule:
                         yield error_msg
                         return 
 
-    def _record_generation_context(self, audit_run, documents: List[Document], context: str, stream: bool, max_retries: int = 0):
+    def _record_generation_context(
+        self,
+        audit_run,
+        documents: List[Document],
+        context: str,
+        stream: bool,
+        max_retries: int = 0,
+        evidence_bundle: EvidenceBundle | None = None,
+    ):
         if not audit_run:
             return
-        audit_run.write_documents(
-            "Final Prompt Context",
-            documents,
-            "generation_context",
-        )
+        if evidence_bundle is None:
+            audit_run.write_documents(
+                "Final Prompt Context",
+                documents,
+                "generation_context",
+            )
+        else:
+            sections = EvidenceBuilder.sections(evidence_bundle)
+            audit_run.append_recall("Evidence / 已验证图事实", sections.verified_graph_facts)
+            audit_run.append_recall("Evidence / 正文证据", sections.text_evidence)
+            audit_run.append_recall("Evidence / 限制与不可证明项", sections.limitations)
         audit_run.append_process(
             "Prompt Assembly",
             {
-                "prompt_template_name": "cooking_assistant_default",
-                "prompt_template_version": "v1",
-                "prompt_template_hash": query_hash("cooking_assistant_default_v1"),
+                "prompt_template_name": "cooking_assistant_evidence" if evidence_bundle else "cooking_assistant_default",
+                "prompt_template_version": "evidence_v1" if evidence_bundle else "v1",
+                "prompt_template_hash": query_hash("cooking_assistant_evidence_v1" if evidence_bundle else "cooking_assistant_default_v1"),
                 "context_doc_count": len(documents),
                 "context_chars": len(context),
                 "retrieval_levels": sorted({str((doc.metadata or {}).get("retrieval_level", "")) for doc in documents if getattr(doc, "metadata", None)}),
                 "search_types": sorted({str((doc.metadata or {}).get("search_type", "")) for doc in documents if getattr(doc, "metadata", None)}),
                 "stream": stream,
                 "max_retries": max_retries,
+                "evidence_bundle": evidence_bundle is not None,
+                "verified_graph_fact_count": len(evidence_bundle.verified_graph_facts) if evidence_bundle else 0,
+                "text_evidence_count": len(evidence_bundle.text_evidence) if evidence_bundle else 0,
+                "limitation_count": len(evidence_bundle.limitations) if evidence_bundle else 0,
             },
         )
+
+    @staticmethod
+    def _terminal_evidence_response(evidence_bundle: EvidenceBundle | None) -> str | None:
+        """对不能安全交给 LLM 的实体状态返回确定性提示。"""
+        if evidence_bundle is None:
+            return None
+        limitations = set(evidence_bundle.limitations)
+        if "ENTITY_NOT_FOUND" in limitations:
+            return "未定位到同名实体。若你接受泛化烹饪建议，请明确说明可以接受泛化建议。"
+        if "ENTITY_AMBIGUOUS" in limitations:
+            names = "、".join(candidate.display_name for candidate in evidence_bundle.entity_candidates[:3])
+            suffix = f"候选包括：{names}。" if names else ""
+            return f"找到多个并列实体候选，未自动选择。{suffix}请提供更具体的名称或补充描述。"
+        if "PARENT_DOCUMENT_NOT_FOUND" in limitations or "PDS_ANCHOR_NOT_FOUND" in limitations:
+            return "已定位实体，但当前父文档库没有可验证的正文证据，无法安全补全做法。"
+        if "STEP_NOT_FOUND" in limitations or "TECHNIQUE_CHUNK_NOT_FOUND" in limitations:
+            return "图谱未找到请求的目标步骤或技巧章节，无法用正文补造该定位结果。"
+        if "graph-unavailable" in limitations and not evidence_bundle.text_evidence:
+            return "图证据当前不可用，无法验证请求的步骤或章节定位。"
+        return None

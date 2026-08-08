@@ -69,6 +69,8 @@ class GraphRAGConfig:
         "RETRIEVAL_PARENT_STORE_ACTIVE_POINTER",
         os.path.join(os.path.dirname(__file__), "run", "retrieval", "parent_store.active"),
     )
+    # 阶段 2：实体直达必须同时依赖已启用且健康的 PDS，默认保持关闭。
+    retrieval_entity_direct_enabled: bool = _env_bool("RETRIEVAL_ENTITY_DIRECT_ENABLED", False)
 
     def __post_init__(self):
         """初始化后的处理"""
@@ -110,6 +112,7 @@ class GraphRAGConfig:
             'retrieval_parent_store_enabled': self.retrieval_parent_store_enabled,
             'parent_store_path': self.parent_store_path,
             'parent_store_active_pointer': self.parent_store_active_pointer,
+            'retrieval_entity_direct_enabled': self.retrieval_entity_direct_enabled,
         }
 
     def config_hash(self) -> str:
@@ -128,6 +131,7 @@ class GraphRAGConfig:
             "retrieval_parent_store_enabled": self.retrieval_parent_store_enabled,
             "parent_store_path": self.parent_store_path,
             "parent_store_active_pointer": self.parent_store_active_pointer,
+            "retrieval_entity_direct_enabled": self.retrieval_entity_direct_enabled,
         }
         payload = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
