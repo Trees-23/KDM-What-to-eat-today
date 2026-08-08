@@ -129,6 +129,14 @@ class LinkageReport:
         return not self.missing_rows and not self.mismatched_rows
 
 
+class ParentDocumentBuildError(RuntimeError):
+    """PDS 写入后校验失败；保留 staging SQLite 以便诊断。"""
+
+    def __init__(self, message: str, staging_path: Path) -> None:
+        super().__init__(message)
+        self.staging_path = staging_path
+
+
 SCHEMA_SQL = """
 PRAGMA foreign_keys = ON;
 CREATE TABLE builds (
@@ -294,6 +302,7 @@ class ParentDocumentStore:
         )
 
         temp_path: Optional[Path] = None
+        connection: Optional[sqlite3.Connection] = None
         try:
             with NamedTemporaryFile(
                 prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent, delete=False
@@ -377,6 +386,7 @@ class ParentDocumentStore:
             connection.commit()
             cls._verify_connection(connection, expected_manifest.build_id)
             connection.close()
+            connection = None
 
             os.replace(temp_path, destination)
             temp_path = None
@@ -384,9 +394,13 @@ class ParentDocumentStore:
             if publish and active_pointer:
                 cls._write_active_pointer(Path(active_pointer), expected_manifest.build_id, destination)
             return destination
-        except Exception:
+        except Exception as error:
+            if connection is not None:
+                connection.close()
             if temp_path and temp_path.exists():
-                temp_path.unlink()
+                raise ParentDocumentBuildError(
+                    f"PDS 构建失败，已保留 staging 文件: {temp_path}", temp_path
+                ) from error
             raise
 
     @classmethod

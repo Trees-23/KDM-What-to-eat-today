@@ -9,6 +9,7 @@ from rag_modules.parent_document_store import (
     AnchorRecord,
     BuildManifest,
     CanonicalChunk,
+    ParentDocumentBuildError,
     ParentDocumentStore,
     ParentRecord,
     make_build_manifest,
@@ -182,6 +183,24 @@ def test_publish_requires_pointer_and_pointer_failure_leaves_ready_build(tmp_pat
     assert pointer.read_text(encoding="utf-8").strip() == "old-build"
     with ParentDocumentStore.open(db_path, active_build_id=manifest.build_id) as store:
         assert store.get_build_manifest(manifest.build_id).status == "ready"
+
+
+def test_post_write_failure_preserves_staging_file_and_pointer(tmp_path: Path, monkeypatch):
+    parents, manifest, chunks, anchors = _fixture_rows()
+    db_path = tmp_path / "parent_store.sqlite"
+    pointer = tmp_path / "active-build"
+    pointer.write_text("old-build\n", encoding="utf-8")
+
+    def fail_verification(*_args):
+        raise ValueError("forced integrity failure")
+
+    monkeypatch.setattr(ParentDocumentStore, "_verify_connection", staticmethod(fail_verification))
+    with pytest.raises(ParentDocumentBuildError, match="已保留 staging 文件") as error:
+        ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors, publish=True, active_pointer=pointer)
+    assert error.value.staging_path.exists()
+    assert not db_path.exists()
+    assert pointer.read_text(encoding="utf-8").strip() == "old-build"
+    error.value.staging_path.unlink()
 
 
 def test_active_pointer_can_roll_back_to_verified_build(tmp_path: Path):

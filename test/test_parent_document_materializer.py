@@ -39,4 +39,3 @@ def test_materializer_rejects_invalid_overlap():
         assert "chunk_overlap" in str(exc)
     else:
         raise AssertionError("应拒绝 overlap >= size")
-
