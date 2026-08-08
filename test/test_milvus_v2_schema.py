@@ -69,6 +69,9 @@ class _FakeMilvusClient:
     def load_collection(self, **_kwargs):
         return None
 
+    def search(self, **_kwargs):
+        return [[{"id": self.inserted[0]["id"]}]]
+
     def describe_collection(self, _collection):
         type_map = {"VARCHAR": types.SimpleNamespace(name="VARCHAR"), "FLOAT_VECTOR": types.SimpleNamespace(name="FLOAT_VECTOR"), "INT64": types.SimpleNamespace(name="INT64")}
         return {
@@ -106,6 +109,7 @@ def test_builder_uses_schema_add_field_and_never_reuses_collection(tmp_path, mon
     )
     report = builder.build([[0.1] * 512], confirm_create=True)
     assert report["row_count"] == 1
+    assert report["sample_search"] == "verified"
     assert len(client.schema.fields) == len(MilvusV2Schema().to_dict()["fields"])
     assert client.indexes[0]["index_type"] == "HNSW"
     store.close()

@@ -20,6 +20,15 @@ class FakeMilvus:
         return [self.hits]
 
 
+class FakeEmbedder:
+    def __init__(self):
+        self.queries = []
+
+    def embed_query(self, query):
+        self.queries.append(query)
+        return [0.1] * 512
+
+
 def _store(tmp_path):
     result = ParentDocumentMaterializer(chunk_size=50, chunk_overlap=5).materialize_documents(
         [
@@ -62,6 +71,37 @@ def test_empty_scope_is_never_a_full_collection_fallback(tmp_path):
     with pytest.raises(ValueError, match="为空"):
         retriever.retrieve("测试", parent_ids=[], query_vector=[0.1] * 512)
     assert client.calls == []
+    store.close()
+
+
+def test_retriever_uses_explicit_embedder_for_query_text(tmp_path):
+    store, result = _store(tmp_path)
+    chunk = next(store.iter_chunks(result.manifest.build_id))
+    embedder = FakeEmbedder()
+    client = FakeMilvus(
+        [{
+            "id": chunk.chunk_id,
+            "distance": 0.9,
+            "entity": {
+                "parent_id": chunk.parent_id,
+                "chunk_index": 0,
+                "build_id": result.manifest.build_id,
+                "text_hash": chunk.text_hash,
+            },
+        }]
+    )
+    retriever = RestrictedVectorRetriever(
+        client,
+        parent_store=store,
+        collection=f"cooking_knowledge_v2_{result.manifest.build_id[:12]}",
+        build_id=result.manifest.build_id,
+        embedder=embedder,
+    )
+
+    retriever.retrieve("清淡", top_k=1)
+
+    assert embedder.queries == ["清淡"]
+    assert client.calls[0]["data"] == [[0.1] * 512]
     store.close()
 
 

@@ -193,6 +193,11 @@ class _Router:
         return ["legacy"], "legacy-analysis"
 
 
+class _MismatchedVectorRetriever:
+    def retrieve(self, *_args, **_kwargs):
+        raise ArtifactMismatchError("test artifact mismatch")
+
+
 class _AuditRun:
     def __init__(self):
         self.events = []
@@ -331,6 +336,25 @@ def test_unresolved_entity_can_use_legacy_router_only_after_explicit_generalized
     assert system.query_router.calls[0][2] is audit
     assert ("entity_direct", "entity_not_found_generalized") == audit.events[0][:2]
     assert audit.events[0][2]["vector_search_calls"] == 0
+
+
+def test_v2_artifact_mismatch_returns_to_legacy_router():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = _MismatchedVectorRetriever()
+    system.query_router = _Router()
+    audit = _AuditRun()
+
+    documents, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, audit_run=audit)
+
+    assert documents == ["legacy"]
+    assert analysis == "legacy-analysis"
+    assert len(system.query_router.calls) == 1
+    assert any(event[:2] == ("restricted_vector", "artifact-mismatch") for event in audit.events)
 
 
 def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(tmp_path):

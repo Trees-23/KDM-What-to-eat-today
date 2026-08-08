@@ -92,6 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.verify_existing:
             if not args.uri:
                 raise SystemExit("--verify-existing 需要显式提供 --uri")
+            vectors = _read_vectors(args.vectors_json, dimension=args.dimension) if args.vectors_json else None
             client = _new_client(args.uri, args.database)
             builder = MilvusV2IndexBuilder(
                 client,
@@ -101,7 +102,13 @@ def main(argv: list[str] | None = None) -> int:
                 build_id=args.parent_store_build,
                 dimension=args.dimension,
             )
-            print(json.dumps(builder.verify_existing(), ensure_ascii=False, sort_keys=True))
+            print(
+                json.dumps(
+                    builder.verify_existing(sample_vector=vectors[0] if vectors else None),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
+            )
             return 0
         if not args.confirm_create or not args.vectors_json or not args.uri:
             raise SystemExit("实际创建需要 --confirm-create 和 --vectors-json")

@@ -197,8 +197,16 @@ def test_cutover_requires_protected_approval_and_atomically_publishes(tmp_path, 
     backup_root.mkdir()
     active_root.mkdir()
     artifact_path = manifest.write_atomic(artifact_root / "candidate.json")
-    backup_path = backup_root / "manifest.json"
-    backup_path.write_text("immutable backup", encoding="utf-8")
+    backup_dir = backup_root / "source"
+    backup_manifest = milvus_snapshot.create_snapshot(
+        _SnapshotClient([
+            {"id": "chunk-1", "vector": [0.1, 0.2], "text": "正文一"},
+        ]),
+        database="default",
+        collection="cooking_knowledge",
+        output=backup_dir,
+    )
+    backup_path = backup_dir / "manifest.json"
     backup_sha = hashlib.sha256(backup_path.read_bytes()).hexdigest()
     approval = {
         "approved_by": "operator-a",
@@ -210,6 +218,9 @@ def test_cutover_requires_protected_approval_and_atomically_publishes(tmp_path, 
         "pds_build_id": build_id,
         "backup_sha256": backup_sha,
         "environment": "staging",
+        "rollback_database": "default",
+        "rollback_collection": "cooking_knowledge",
+        "rollback_pds_build": "pds_old",
         "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
     }
     approval_path = approval_root / "approval.json"
@@ -227,8 +238,30 @@ def test_cutover_requires_protected_approval_and_atomically_publishes(tmp_path, 
         "--allowed-approval-root", str(approval_root), "--allowed-active-root", str(active_root),
         "--environment", "staging", "--protected-environment", "staging", "--confirm-cutover",
     ]
+    approval_without_rollback = dict(approval)
+    approval_without_rollback.pop("rollback_pds_build")
+    approval_path.write_text(json.dumps(approval_without_rollback), encoding="utf-8")
+    with pytest.raises(retrieval_cutover.CutoverGuardError, match="审批记录与切换参数不一致"):
+        retrieval_cutover.main(argv)
+    approval_path.write_text(json.dumps(approval), encoding="utf-8")
     assert retrieval_cutover.main(argv) == 0
     assert RetrievalArtifactManifest.read(active_root / "active.json") == manifest
+
+    foreign_dir = backup_root / "foreign"
+    milvus_snapshot.create_snapshot(
+        _SnapshotClient([{"id": "chunk-1", "vector": [0.1, 0.2], "text": "正文一"}]),
+        database="default",
+        collection="other_collection",
+        output=foreign_dir,
+    )
+    foreign_path = foreign_dir / "manifest.json"
+    foreign_approval = dict(approval, backup_sha256=hashlib.sha256(foreign_path.read_bytes()).hexdigest())
+    approval_path.write_text(json.dumps(foreign_approval), encoding="utf-8")
+    foreign_argv = list(argv)
+    foreign_argv[foreign_argv.index("--backup-manifest") + 1] = str(foreign_path)
+    foreign_argv[foreign_argv.index("--expected-backup-sha256") + 1] = foreign_approval["backup_sha256"]
+    with pytest.raises(retrieval_cutover.CutoverGuardError, match="database/from collection"):
+        retrieval_cutover.main(foreign_argv)
 
 
 def test_cutover_rejects_missing_protected_arguments():

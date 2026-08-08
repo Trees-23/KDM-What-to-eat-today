@@ -500,6 +500,7 @@ class AdvancedGraphRAGSystem:
                 build_id=manifest.milvus_build_id,
                 database=self.config.retrieval_milvus_database,
                 dimension=self.config.milvus_dimension,
+                embedder=getattr(self.index_module, "embeddings", None),
             )
         except Exception as error:
             logger.warning("阶段 4 V2 artifact 不可用: %s", error)
@@ -524,8 +525,15 @@ class AdvancedGraphRAGSystem:
             aggregates = retriever.retrieve(query, top_k=top_k)
         except ArtifactMismatchError as error:
             logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
-            limitations = ("ARTIFACT_MISMATCH", "V2 联合 artifact 与 PDS/Milvus 不一致，拒绝正文回补。")
-            aggregates = ()
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event(
+                    "restricted_vector",
+                    status="artifact-mismatch",
+                    parent_count=0,
+                    vector_scope="rejected",
+                )
+            # 联合工件不一致时不得构造正文证据；交回既有 Router 路径。
+            return None
         except Exception as error:
             logger.warning("阶段 4 V2 检索不可用: %s", error)
             limitations = ("VECTOR_UNAVAILABLE", "V2 受限向量检索当前不可用。")

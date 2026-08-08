@@ -16,6 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from rag_modules.milvus_v2_index import RetrievalArtifactManifest, validate_v2_collection_name
+from scripts.milvus_snapshot import load_manifest
 
 
 class CutoverGuardError(ValueError):
@@ -112,6 +113,11 @@ def _validate(args: argparse.Namespace) -> RetrievalArtifactManifest:
         raise CutoverGuardError("expected-backup-sha256 必须是 64 位十六进制摘要")
     if not backup_path.is_file() or _sha256(backup_path) != args.expected_backup_sha256:
         raise CutoverGuardError("backup manifest SHA-256 与预期不一致")
+    backup_manifest, backup_rows, _ = load_manifest(backup_path)
+    if backup_manifest.get("database") != args.database or backup_manifest.get("collection") != args.from_collection:
+        raise CutoverGuardError("backup manifest 未绑定当前 database/from collection")
+    if not backup_rows:
+        raise CutoverGuardError("backup manifest 没有可恢复的行")
     manifest = RetrievalArtifactManifest.read(artifact_path)
     manifest.validate_runtime(
         pds_build_id=args.parent_store_build,
@@ -119,6 +125,8 @@ def _validate(args: argparse.Namespace) -> RetrievalArtifactManifest:
         milvus_collection=args.to_collection,
         schema_hash=manifest.milvus_schema_hash,
     )
+    if manifest.rollback_database != args.database or manifest.rollback_collection != args.from_collection:
+        raise CutoverGuardError("artifact rollback 目标未绑定当前 database/from collection")
     approval = json.loads(approval_path.read_text(encoding="utf-8"))
     if not isinstance(approval, dict):
         raise CutoverGuardError("审批记录必须是 JSON 对象")
@@ -129,6 +137,9 @@ def _validate(args: argparse.Namespace) -> RetrievalArtifactManifest:
         "pds_build_id": args.parent_store_build,
         "backup_sha256": args.expected_backup_sha256,
         "environment": args.protected_environment,
+        "rollback_database": manifest.rollback_database,
+        "rollback_collection": manifest.rollback_collection,
+        "rollback_pds_build": manifest.rollback_pds_build,
     }
     for key, expected in required.items():
         if approval.get(key) != expected:

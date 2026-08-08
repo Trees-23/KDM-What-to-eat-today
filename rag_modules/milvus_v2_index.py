@@ -352,9 +352,17 @@ class MilvusV2IndexBuilder:
             index_params=index_params,
         )
         self.client.load_collection(collection_name=self.collection)
-        return self.verify_existing(expected_row_count=len(entities))
+        return self.verify_existing(
+            expected_row_count=len(entities),
+            sample_vector=vectors[0],
+        )
 
-    def verify_existing(self, *, expected_row_count: int | None = None) -> dict[str, Any]:
+    def verify_existing(
+        self,
+        *,
+        expected_row_count: int | None = None,
+        sample_vector: Sequence[float] | None = None,
+    ) -> dict[str, Any]:
         """只读校验新建 V2 collection；用于创建后和失败恢复后审计。"""
 
         source = self.verify_source()
@@ -378,4 +386,29 @@ class MilvusV2IndexBuilder:
             or str(index.get("efConstruction")) != str(self.schema.ef_construction)
         ):
             raise ArtifactMismatchError("V2 collection 索引与冻结 HNSW/COSINE 参数不一致")
-        return {**source, "collection": self.collection, "row_count": required_row_count}
+        report = {**source, "collection": self.collection, "row_count": required_row_count}
+        if sample_vector is not None:
+            if len(sample_vector) != self.schema.dimension:
+                raise ValueError("样本向量维度与 V2 schema 不一致")
+            expected_chunk = next(self.parent_store.iter_chunks(self.build_id))
+            raw_hits = self.client.search(
+                collection_name=self.collection,
+                data=[list(sample_vector)],
+                anns_field="vector",
+                limit=1,
+                output_fields=["id"],
+                search_params={"metric_type": self.schema.metric_type, "params": {"ef": self.schema.ef_search}},
+            )
+            hits = raw_hits[0] if isinstance(raw_hits, Sequence) and raw_hits else ()
+            if not hits:
+                raise ArtifactMismatchError("V2 collection 样本向量检索没有返回命中")
+            first = hits[0]
+            entity = first.get("entity", first) if isinstance(first, Mapping) else getattr(first, "entity", first)
+            if isinstance(entity, Mapping):
+                actual_chunk_id = str(entity.get("id", first.get("id", "") if isinstance(first, Mapping) else ""))
+            else:
+                actual_chunk_id = str(getattr(entity, "id", getattr(first, "id", "")))
+            if actual_chunk_id != expected_chunk.chunk_id:
+                raise ArtifactMismatchError("V2 collection 样本向量检索未返回对应 CanonicalChunk")
+            report["sample_search"] = "verified"
+        return report
