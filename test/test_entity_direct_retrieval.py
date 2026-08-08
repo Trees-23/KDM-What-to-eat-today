@@ -1,13 +1,19 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+from dataclasses import dataclass
+import importlib.util
+from pathlib import Path
+import sys
+import types
+from unittest.mock import patch
 
 import pytest
 
-from rag_modules.entity_direct_retrieval import EntityDirectRetriever, looks_like_explicit_entity_question
+from rag_modules.entity_direct_retrieval import EntityDirectRetriever
 from rag_modules.parent_document_materializer import AnchorSpec, ParentDocumentMaterializer, SourceParent
 from rag_modules.parent_document_store import ParentDocumentStore
-from rag_modules.retrieval_contracts import EntityCandidate
+from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
 
 
 class FakeSession:
@@ -141,7 +147,162 @@ def test_parent_store_failure_does_not_fabricate_text_and_marks_legacy_fallback(
     assert bundle.requires_legacy_fallback
 
 
-def test_entity_not_found_policy_catches_explicit_unknown_entity_but_preserves_generic_preference():
-    assert looks_like_explicit_entity_question("不存在的菜谱") is True
-    assert looks_like_explicit_entity_question("阶段二不存在的实体怎么做？") is True
-    assert looks_like_explicit_entity_question("夏天吃什么清淡的？") is False
+class _EmptyResolver:
+    def __init__(self):
+        self.calls = []
+
+    def resolve(self, query, expected_types):
+        self.calls.append((query, expected_types))
+        return []
+
+
+class _Router:
+    def __init__(self):
+        self.calls = []
+
+    def route_query(self, query, top_k, audit_run=None):
+        self.calls.append((query, top_k, audit_run))
+        return ["legacy"], "legacy-analysis"
+
+
+class _AuditRun:
+    def __init__(self):
+        self.events = []
+        self.finished = []
+        self.errors = []
+
+    def mark_request_start(self):
+        return None
+
+    def record_event(self, stage, status="completed", **fields):
+        self.events.append((stage, status, fields))
+
+    def finish_request(self, **fields):
+        self.finished.append(fields)
+
+    def record_error(self, stage, error):
+        self.errors.append((stage, error))
+
+
+class _Generation:
+    def __init__(self):
+        self.calls = []
+
+    def generate_adaptive_answer(self, query, documents, audit_run=None):
+        self.calls.append((query, documents, audit_run))
+        return "generated"
+
+
+@dataclass
+class _Config:
+    top_k: int = 3
+    enable_rag_audit: bool = True
+    rag_audit_root_dir: str = ""
+    rag_audit_max_content_chars: int = 4000
+
+
+def _system_with_empty_resolver():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.entity_resolver = _EmptyResolver()
+    system.entity_direct_retriever = object()
+    system.query_router = _Router()
+    return system
+
+
+def _load_main_system_type():
+    """在不加载可选运行时客户端的前提下测试实际入口分派。"""
+    package = types.ModuleType("rag_modules")
+    package.GraphDataPreparationModule = object
+    package.MilvusIndexConstructionModule = object
+    package.GenerationIntegrationModule = object
+
+    def module_with(**attributes):
+        module = types.ModuleType("unused")
+        for name, value in attributes.items():
+            setattr(module, name, value)
+        return module
+
+    class _UnusedAuditManager:
+        @classmethod
+        def from_config(cls, _config):
+            raise AssertionError("测试应显式传入 audit_run")
+
+    modules = {
+        "rag_modules": package,
+        "rag_modules.hybrid_retrieval": module_with(HybridRetrievalModule=object),
+        "rag_modules.graph_rag_retrieval": module_with(GraphRAGRetrieval=object),
+        "rag_modules.intelligent_query_router": module_with(IntelligentQueryRouter=object, QueryAnalysis=object),
+        "rag_modules.session_cache_manager": module_with(SessionCacheManager=object),
+        "rag_modules.web_service_handler": module_with(WebServiceHandler=object),
+        "rag_modules.recipe_recommendation": module_with(RecipeRecommendationManager=object),
+        "rag_modules.parent_document_store": module_with(ParentDocumentStore=object),
+        "rag_modules.entity_resolver": module_with(EntityResolver=object),
+        "rag_modules.entity_direct_retrieval": module_with(EntityDirectRetriever=object),
+        "rag_modules.rag_audit": module_with(RAGAuditManager=_UnusedAuditManager),
+        "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
+    }
+    main_path = Path(__file__).resolve().parents[1] / "main.py"
+    spec = importlib.util.spec_from_file_location("_phase2_main_under_test", main_path)
+    module = importlib.util.module_from_spec(spec)
+    with patch.dict(sys.modules, modules):
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+    return module.AdvancedGraphRAGSystem
+
+
+def test_unresolved_entity_is_explicit_and_never_calls_legacy_router_without_authorization():
+    system = _system_with_empty_resolver()
+    audit = _AuditRun()
+
+    bundle, analysis = system.retrieve_for_generation(
+        "有蓝莓红烧肉这道菜吗？",
+        3,
+        audit_run=audit,
+    )
+
+    assert isinstance(bundle, EvidenceBundle)
+    assert analysis is None
+    assert "ENTITY_NOT_FOUND" in bundle.limitations
+    assert system.query_router.calls == []
+    assert ("entity_direct", "entity_not_found") == audit.events[0][:2]
+    assert audit.events[0][2]["vector_search_calls"] == 0
+
+
+def test_unresolved_entity_can_use_legacy_router_only_after_explicit_generalized_authorization():
+    system = _system_with_empty_resolver()
+    audit = _AuditRun()
+
+    documents, analysis = system.retrieve_for_generation(
+        "有蓝莓红烧肉这道菜吗？",
+        3,
+        audit_run=audit,
+        allow_generalized_advice=True,
+    )
+
+    assert documents == ["legacy"]
+    assert analysis == "legacy-analysis"
+    assert len(system.query_router.calls) == 1
+    assert system.query_router.calls[0][2] is audit
+    assert ("entity_direct", "entity_not_found_generalized") == audit.events[0][:2]
+    assert audit.events[0][2]["vector_search_calls"] == 0
+
+
+def test_cli_path_passes_audit_run_to_entity_not_found_and_generation(tmp_path):
+    system = _system_with_empty_resolver()
+    system.system_ready = True
+    system.config = _Config(rag_audit_root_dir=str(Path(tmp_path)))
+    system.generation_module = _Generation()
+    audit = _AuditRun()
+
+    result, analysis = system.ask_question_with_routing(
+        "有蓝莓红烧肉这道菜吗？",
+        audit_run=audit,
+    )
+
+    assert result == "generated"
+    assert analysis is None
+    assert system.query_router.calls == []
+    assert system.generation_module.calls[0][2] is audit
+    assert ("entity_direct", "entity_not_found") == audit.events[0][:2]
+    assert audit.finished == [{"success": True, "final_source": "entity_direct"}]

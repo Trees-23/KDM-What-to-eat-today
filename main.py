@@ -36,7 +36,8 @@ from rag_modules.web_service_handler import WebServiceHandler
 from rag_modules.recipe_recommendation import RecipeRecommendationManager
 from rag_modules.parent_document_store import ParentDocumentStore
 from rag_modules.entity_resolver import EntityResolver
-from rag_modules.entity_direct_retrieval import EntityDirectRetriever, looks_like_explicit_entity_question
+from rag_modules.entity_direct_retrieval import EntityDirectRetriever
+from rag_modules.rag_audit import RAGAuditManager
 from rag_modules.retrieval_contracts import EvidenceBundle
 
 
@@ -299,6 +300,7 @@ class AdvancedGraphRAGSystem:
         stream: bool = False,
         explain_routing: bool = False,
         allow_generalized_advice: bool = False,
+        audit_run=None,
     ):
         """
         智能问答：自动选择最佳检索策略
@@ -314,6 +316,9 @@ class AdvancedGraphRAGSystem:
             print(explanation)
         
         start_time = time.time()
+        if audit_run is None:
+            audit_run = RAGAuditManager.from_config(self.config).create_run()
+        audit_run.mark_request_start()
         
         try:
             # 1. 智能路由检索
@@ -321,6 +326,7 @@ class AdvancedGraphRAGSystem:
             relevant_docs, analysis = self.retrieve_for_generation(
                 question,
                 self.config.top_k,
+                audit_run=audit_run,
                 allow_generalized_advice=allow_generalized_advice,
             )
             
@@ -362,7 +368,11 @@ class AdvancedGraphRAGSystem:
             
             if stream:
                 try:
-                    for chunk_text in self.generation_module.generate_adaptive_answer_stream(question, relevant_docs):
+                    for chunk_text in self.generation_module.generate_adaptive_answer_stream(
+                        question,
+                        relevant_docs,
+                        audit_run=audit_run,
+                    ):
                         print(chunk_text, end="", flush=True)
                     print("\n")
                     result = "流式输出完成"
@@ -370,18 +380,32 @@ class AdvancedGraphRAGSystem:
                     logger.error(f"流式输出过程中出现错误: {stream_error}")
                     print(f"\n⚠️ 流式输出中断，切换到标准模式...")
                     # 使用非流式作为后备
-                    result = self.generation_module.generate_adaptive_answer(question, relevant_docs)
+                    result = self.generation_module.generate_adaptive_answer(
+                        question,
+                        relevant_docs,
+                        audit_run=audit_run,
+                    )
             else:
-                result = self.generation_module.generate_adaptive_answer(question, relevant_docs)
+                result = self.generation_module.generate_adaptive_answer(
+                    question,
+                    relevant_docs,
+                    audit_run=audit_run,
+                )
             
             # 5. 性能统计
             end_time = time.time()
             print(f"\n⏱️ 问答完成，耗时: {end_time - start_time:.2f}秒")
+            audit_run.finish_request(
+                success=True,
+                final_source="entity_direct" if isinstance(relevant_docs, EvidenceBundle) else "generation",
+            )
             
             return result, analysis
             
         except Exception as e:
             logger.error(f"问答处理失败: {e}")
+            audit_run.record_error("cli_request", e)
+            audit_run.finish_request(success=False, final_source="error")
             return f"抱歉，处理问题时出现错误：{str(e)}", None
 
     def retrieve_for_generation(
@@ -422,30 +446,22 @@ class AdvancedGraphRAGSystem:
             self._audit_entity_direct_error(audit_run, "resolver-unavailable", error)
             return None
         if not candidates:
+            bundle = EvidenceBundle(
+                query_plan=None,
+                entity_candidates=(),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ENTITY_NOT_FOUND", "未定位到同名实体；未调用全库向量检索。"),
+            )
             if allow_generalized_advice:
                 self._audit_entity_direct(
                     audit_run,
                     "entity_not_found_generalized",
-                    EvidenceBundle(
-                        query_plan=None,
-                        entity_candidates=(),
-                        graph_facts=(),
-                        text_evidence=(),
-                        limitations=("ENTITY_NOT_FOUND", "allow_generalized_advice"),
-                    ),
+                    bundle,
                 )
                 return None
-            if self._looks_like_explicit_entity_question(query):
-                bundle = EvidenceBundle(
-                    query_plan=None,
-                    entity_candidates=(),
-                    graph_facts=(),
-                    text_evidence=(),
-                    limitations=("ENTITY_NOT_FOUND", "未定位到同名实体；未调用全库向量检索。"),
-                )
-                self._audit_entity_direct(audit_run, "entity_not_found", bundle)
-                return bundle
-            return None
+            self._audit_entity_direct(audit_run, "entity_not_found", bundle)
+            return bundle
         if candidates[0].ambiguity:
             bundle = EvidenceBundle(
                 query_plan=None,
@@ -462,10 +478,6 @@ class AdvancedGraphRAGSystem:
             logger.warning("实体直达执行失败，回退旧 Router: %s", error)
             self._audit_entity_direct_error(audit_run, "retriever-unavailable", error)
             return None
-
-    @staticmethod
-    def _looks_like_explicit_entity_question(query: str) -> bool:
-        return looks_like_explicit_entity_question(query)
 
     @staticmethod
     def _direct_scope(query: str, entity) -> dict:

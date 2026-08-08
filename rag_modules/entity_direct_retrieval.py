@@ -12,18 +12,6 @@ from typing import Any, Mapping
 from .parent_document_store import ParentDocumentStore, TextEvidenceSource
 from .retrieval_contracts import EntityCandidate, EvidenceBundle, GraphFact, TextEvidence
 
-
-def looks_like_explicit_entity_question(query: str) -> bool:
-    """识别高置信度实体问题；泛化偏好问题不应被误判为实体不存在。"""
-    query = query or ""
-    direct_markers = ("怎么做", "怎么制作", "做法", "第一步", "第1步", "关键要点", "适用场景")
-    if any(marker in query for marker in direct_markers):
-        return True
-    missing_markers = ("不存在", "无此", "找不到", "未找到", "没有这道", "没有这个", "未知")
-    entity_markers = ("菜谱", "菜名", "这道菜", "这个菜", "技巧", "技巧文档", "实体")
-    return any(marker in query for marker in missing_markers) and any(marker in query for marker in entity_markers)
-
-
 class EntityDirectRetriever:
     """将已经定位的 Recipe/Technique 实体回补为 PDS 正文证据。"""
 
