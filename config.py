@@ -74,6 +74,14 @@ class GraphRAGConfig:
     # 阶段 3：固定 QueryPlan 与目标化图查询，默认保持关闭。
     retrieval_query_plan_enabled: bool = _env_bool("RETRIEVAL_QUERY_PLAN_ENABLED", False)
     retrieval_targeted_graph_enabled: bool = _env_bool("RETRIEVAL_TARGETED_GRAPH_ENABLED", False)
+    # 阶段 4：仅允许联合 artifact manifest 指向全新 V2 collection，默认关闭。
+    retrieval_milvus_v2_enabled: bool = _env_bool("RETRIEVAL_MILVUS_V2_ENABLED", False)
+    retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
+    retrieval_milvus_collection: str = os.getenv("RETRIEVAL_MILVUS_COLLECTION", "")
+    retrieval_artifact_manifest_path: str = os.getenv(
+        "RETRIEVAL_ARTIFACT_MANIFEST_PATH",
+        os.path.join(os.path.dirname(__file__), "run", "retrieval", "retrieval_artifact_manifest.json"),
+    )
 
     def __post_init__(self):
         """初始化后的处理"""
@@ -118,6 +126,10 @@ class GraphRAGConfig:
             'retrieval_entity_direct_enabled': self.retrieval_entity_direct_enabled,
             'retrieval_query_plan_enabled': self.retrieval_query_plan_enabled,
             'retrieval_targeted_graph_enabled': self.retrieval_targeted_graph_enabled,
+            'retrieval_milvus_v2_enabled': self.retrieval_milvus_v2_enabled,
+            'retrieval_milvus_database': self.retrieval_milvus_database,
+            'retrieval_milvus_collection': self.retrieval_milvus_collection,
+            'retrieval_artifact_manifest_path': self.retrieval_artifact_manifest_path,
         }
 
     def config_hash(self) -> str:
@@ -139,6 +151,10 @@ class GraphRAGConfig:
             "retrieval_entity_direct_enabled": self.retrieval_entity_direct_enabled,
             "retrieval_query_plan_enabled": self.retrieval_query_plan_enabled,
             "retrieval_targeted_graph_enabled": self.retrieval_targeted_graph_enabled,
+            "retrieval_milvus_v2_enabled": self.retrieval_milvus_v2_enabled,
+            "retrieval_milvus_database": self.retrieval_milvus_database,
+            "retrieval_milvus_collection": self.retrieval_milvus_collection,
+            "retrieval_artifact_manifest_path": self.retrieval_artifact_manifest_path,
         }
         payload = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]

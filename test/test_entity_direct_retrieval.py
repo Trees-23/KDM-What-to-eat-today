@@ -19,6 +19,14 @@ from rag_modules.query_plan_validator import QueryPlanValidator
 from rag_modules.rag_audit import NULL_AUDIT_RUN
 from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
 from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
+from rag_modules.milvus_v2_index import (
+    ArtifactMismatchError,
+    MilvusV2Schema,
+    RetrievalArtifactManifest,
+    create_milvus_client,
+    pds_manifest_sha256,
+)
+from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
 
 
 class FakeSession:
@@ -268,6 +276,14 @@ def _load_main_system_type(audit_manager=None):
         "rag_modules.query_plan": module_with(QueryPlan=QueryPlan),
         "rag_modules.query_plan_validator": module_with(QueryPlanValidator=QueryPlanValidator),
         "rag_modules.targeted_graph_retrieval": module_with(TargetedGraphRetriever=TargetedGraphRetriever),
+        "rag_modules.milvus_v2_index": module_with(
+            ArtifactMismatchError=ArtifactMismatchError,
+            MilvusV2Schema=MilvusV2Schema,
+            RetrievalArtifactManifest=RetrievalArtifactManifest,
+            create_milvus_client=create_milvus_client,
+            pds_manifest_sha256=pds_manifest_sha256,
+        ),
+        "rag_modules.restricted_vector_retrieval": module_with(RestrictedVectorRetriever=RestrictedVectorRetriever),
         "rag_modules.rag_audit": module_with(RAGAuditManager=audit_manager),
         "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
     }

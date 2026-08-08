@@ -43,6 +43,14 @@ from rag_modules.evidence_builder import EvidenceBuilder
 from rag_modules.query_plan import QueryPlan
 from rag_modules.query_plan_validator import QueryPlanValidator
 from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
+from rag_modules.milvus_v2_index import (
+    ArtifactMismatchError,
+    MilvusV2Schema,
+    RetrievalArtifactManifest,
+    create_milvus_client,
+    pds_manifest_sha256,
+)
+from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
 
 
 class AdvancedGraphRAGSystem:
@@ -83,6 +91,8 @@ class AdvancedGraphRAGSystem:
         # 阶段 3：默认关闭的 QueryPlan 与固定图查询组件。
         self.query_plan_validator = None
         self.targeted_graph_retriever = None
+        # 阶段 4：V2 只读受限 child chunk 检索，必须绑定联合 artifact。
+        self.restricted_vector_retriever = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -195,6 +205,9 @@ class AdvancedGraphRAGSystem:
                             validator=self.query_plan_validator,
                         )
                         logger.info("阶段 3 QueryPlan 与目标化图查询已启用")
+
+            if self.config.retrieval_milvus_v2_enabled:
+                self._initialize_restricted_vector_retriever()
 
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
@@ -443,6 +456,10 @@ class AdvancedGraphRAGSystem:
         if targeted_bundle is not None:
             self._audit_targeted_graph(audit_run, targeted_bundle)
             return targeted_bundle, None
+        if self._is_preference_query(query) and getattr(self.config, "retrieval_milvus_v2_enabled", False):
+            preference_bundle = self._try_restricted_vector(query, top_k, audit_run=audit_run)
+            if preference_bundle is not None:
+                return preference_bundle, None
         bundle = self._try_entity_direct(
             query,
             audit_run=audit_run,
@@ -455,6 +472,81 @@ class AdvancedGraphRAGSystem:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
         return self.query_router.route_query(query, top_k, audit_run=audit_run)
+
+    def _initialize_restricted_vector_retriever(self) -> None:
+        """仅从已验证联合 manifest 初始化 V2，任何不一致都保持不可用。"""
+        try:
+            manifest = RetrievalArtifactManifest.read(self.config.retrieval_artifact_manifest_path)
+            schema = MilvusV2Schema(
+                dimension=self.config.milvus_dimension,
+                embedding_model=self.config.embedding_model,
+            )
+            manifest.validate_runtime(
+                pds_build_id=self.parent_document_store.active_build_id,
+                pds_manifest_sha256=pds_manifest_sha256(
+                    self.parent_document_store, self.parent_document_store.active_build_id
+                ),
+                milvus_database=self.config.retrieval_milvus_database,
+                milvus_collection=self.config.retrieval_milvus_collection,
+                schema_hash=schema.schema_hash,
+            )
+            host = getattr(self.index_module, "host", None) or self.config.milvus_host
+            port = getattr(self.index_module, "port", None) or self.config.milvus_port
+            client = create_milvus_client(f"http://{host}:{port}", self.config.retrieval_milvus_database)
+            self.restricted_vector_retriever = RestrictedVectorRetriever(
+                client,
+                parent_store=self.parent_document_store,
+                collection=self.config.retrieval_milvus_collection,
+                build_id=manifest.milvus_build_id,
+                database=self.config.retrieval_milvus_database,
+                dimension=self.config.milvus_dimension,
+            )
+        except Exception as error:
+            logger.warning("阶段 4 V2 artifact 不可用: %s", error)
+            self.restricted_vector_retriever = None
+
+    @staticmethod
+    def _is_preference_query(query: str) -> bool:
+        text = query or ""
+        return any(marker in text for marker in ("夏天吃", "清淡", "清爽偏好"))
+
+    def _try_restricted_vector(self, query: str, top_k: int, audit_run=None) -> EvidenceBundle | None:
+        retriever = getattr(self, "restricted_vector_retriever", None)
+        if retriever is None:
+            return EvidenceBundle(
+                query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "restricted_child_chunk_v2"},
+                entity_candidates=(),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ARTIFACT_UNAVAILABLE", "V2 联合 artifact 当前不可用，未执行无约束向量检索。"),
+            )
+        try:
+            aggregates = retriever.retrieve(query, top_k=top_k)
+        except ArtifactMismatchError as error:
+            logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
+            limitations = ("ARTIFACT_MISMATCH", "V2 联合 artifact 与 PDS/Milvus 不一致，拒绝正文回补。")
+            aggregates = ()
+        except Exception as error:
+            logger.warning("阶段 4 V2 检索不可用: %s", error)
+            limitations = ("VECTOR_UNAVAILABLE", "V2 受限向量检索当前不可用。")
+            aggregates = ()
+        else:
+            limitations = () if aggregates else ("NO_PREFERENCE_RESULTS", "当前 V2 build 没有匹配的 child chunk。")
+        bundle = EvidenceBundle(
+            query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "restricted_child_chunk_v2", "top_k": top_k},
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=tuple(item.text_evidence for item in aggregates),
+            limitations=limitations,
+        )
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "restricted_vector",
+                status="selected" if aggregates else "unavailable",
+                parent_count=len(aggregates),
+                vector_scope="full" if retriever else "none",
+            )
+        return bundle
 
     def _try_targeted_graph(self, query: str, audit_run=None) -> EvidenceBundle | None:
         # 保持测试/兼容调用中仅构造部分系统对象时的旧路由语义。
