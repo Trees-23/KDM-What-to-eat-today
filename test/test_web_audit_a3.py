@@ -210,6 +210,17 @@ class WebAuditA3Test(unittest.TestCase):
 
             self.assertFalse(stream_system.retrieval_calls[0][3])
 
+    def test_web_request_works_when_audit_is_disabled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            install_fake_flask({"message": "推荐低脂菜", "session_id": "s1"})
+            rag_system = FakeRAGSystem(Path(tmp))
+            rag_system.config.enable_rag_audit = False
+
+            response = WebServiceHandler(rag_system)._handle_chat_request()
+
+            self.assertEqual(response["response"], "generated answer")
+            self.assertEqual(rag_system.query_router.calls, [("推荐低脂菜", 2)])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,6 +13,7 @@ import pytest
 from rag_modules.entity_direct_retrieval import EntityDirectRetriever
 from rag_modules.parent_document_materializer import AnchorSpec, ParentDocumentMaterializer, SourceParent
 from rag_modules.parent_document_store import ParentDocumentStore
+from rag_modules.rag_audit import NULL_AUDIT_RUN
 from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
 
 
@@ -201,8 +202,8 @@ class _Config:
     rag_audit_max_content_chars: int = 4000
 
 
-def _system_with_empty_resolver():
-    system_type = _load_main_system_type()
+def _system_with_empty_resolver(audit_manager=None):
+    system_type = _load_main_system_type(audit_manager=audit_manager)
     system = system_type.__new__(system_type)
     system.entity_resolver = _EmptyResolver()
     system.entity_direct_retriever = object()
@@ -210,7 +211,7 @@ def _system_with_empty_resolver():
     return system
 
 
-def _load_main_system_type():
+def _load_main_system_type(audit_manager=None):
     """在不加载可选运行时客户端的前提下测试实际入口分派。"""
     package = types.ModuleType("rag_modules")
     package.GraphDataPreparationModule = object
@@ -223,10 +224,13 @@ def _load_main_system_type():
             setattr(module, name, value)
         return module
 
-    class _UnusedAuditManager:
-        @classmethod
-        def from_config(cls, _config):
-            raise AssertionError("测试应显式传入 audit_run")
+    if audit_manager is None:
+        class _UnusedAuditManager:
+            @classmethod
+            def from_config(cls, _config):
+                raise AssertionError("测试应显式传入 audit_run")
+
+        audit_manager = _UnusedAuditManager
 
     modules = {
         "rag_modules": package,
@@ -239,7 +243,7 @@ def _load_main_system_type():
         "rag_modules.parent_document_store": module_with(ParentDocumentStore=object),
         "rag_modules.entity_resolver": module_with(EntityResolver=object),
         "rag_modules.entity_direct_retrieval": module_with(EntityDirectRetriever=object),
-        "rag_modules.rag_audit": module_with(RAGAuditManager=_UnusedAuditManager),
+        "rag_modules.rag_audit": module_with(RAGAuditManager=audit_manager),
         "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
     }
     main_path = Path(__file__).resolve().parents[1] / "main.py"
@@ -306,3 +310,25 @@ def test_cli_path_passes_audit_run_to_entity_not_found_and_generation(tmp_path):
     assert system.generation_module.calls[0][2] is audit
     assert ("entity_direct", "entity_not_found") == audit.events[0][:2]
     assert audit.finished == [{"success": True, "final_source": "entity_direct"}]
+
+
+def test_cli_path_works_when_audit_is_disabled():
+    class _DisabledAuditManager:
+        @classmethod
+        def from_config(cls, _config):
+            return cls()
+
+        def create_run(self):
+            return NULL_AUDIT_RUN
+
+    system = _system_with_empty_resolver(audit_manager=_DisabledAuditManager)
+    system.system_ready = True
+    system.config = _Config(enable_rag_audit=False)
+    system.generation_module = _Generation()
+
+    result, analysis = system.ask_question_with_routing("有蓝莓红烧肉这道菜吗？")
+
+    assert result == "generated"
+    assert analysis is None
+    assert system.query_router.calls == []
+    assert system.generation_module.calls[0][2] is NULL_AUDIT_RUN
