@@ -59,6 +59,17 @@ class GraphRAGConfig:
     chunk_overlap: int = 50
     max_graph_depth: int = 2  # 图遍历最大深度
 
+    # ParentDocumentStore（阶段 1，默认关闭，仅健康检查）
+    retrieval_parent_store_enabled: bool = _env_bool("RETRIEVAL_PARENT_STORE_ENABLED", False)
+    parent_store_path: str = os.getenv(
+        "RETRIEVAL_PARENT_STORE_PATH",
+        os.path.join(os.path.dirname(__file__), "run", "retrieval"),
+    )
+    parent_store_active_pointer: str = os.getenv(
+        "RETRIEVAL_PARENT_STORE_ACTIVE_POINTER",
+        os.path.join(os.path.dirname(__file__), "run", "retrieval", "parent_store.active"),
+    )
+
     def __post_init__(self):
         """初始化后的处理"""
         pass
@@ -95,7 +106,10 @@ class GraphRAGConfig:
             'max_tokens': self.max_tokens,
             'chunk_size': self.chunk_size,
             'chunk_overlap': self.chunk_overlap,
-            'max_graph_depth': self.max_graph_depth
+            'max_graph_depth': self.max_graph_depth,
+            'retrieval_parent_store_enabled': self.retrieval_parent_store_enabled,
+            'parent_store_path': self.parent_store_path,
+            'parent_store_active_pointer': self.parent_store_active_pointer,
         }
 
     def config_hash(self) -> str:
@@ -111,6 +125,9 @@ class GraphRAGConfig:
             "chunk_size": self.chunk_size,
             "chunk_overlap": self.chunk_overlap,
             "max_graph_depth": self.max_graph_depth,
+            "retrieval_parent_store_enabled": self.retrieval_parent_store_enabled,
+            "parent_store_path": self.parent_store_path,
+            "parent_store_active_pointer": self.parent_store_active_pointer,
         }
         payload = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]

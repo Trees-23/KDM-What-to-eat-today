@@ -34,6 +34,7 @@ from rag_modules.intelligent_query_router import IntelligentQueryRouter, QueryAn
 from rag_modules.session_cache_manager import SessionCacheManager
 from rag_modules.web_service_handler import WebServiceHandler
 from rag_modules.recipe_recommendation import RecipeRecommendationManager
+from rag_modules.parent_document_store import ParentDocumentStore
 
 
 class AdvancedGraphRAGSystem:
@@ -66,6 +67,8 @@ class AdvancedGraphRAGSystem:
 
         # 会话缓存管理器
         self.cache_manager = None
+        # 阶段 1 PDS：只做可选健康检查，不接入旧 Router
+        self.parent_document_store = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -137,6 +140,14 @@ class AdvancedGraphRAGSystem:
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
             self.web_handler = WebServiceHandler(self)
+
+            if self.config.retrieval_parent_store_enabled:
+                print("检查 ParentDocumentStore...")
+                self.parent_document_store = ParentDocumentStore.open(
+                    self.config.parent_store_path,
+                    active_pointer=self.config.parent_store_active_pointer,
+                )
+                logger.info("ParentDocumentStore 健康检查: %s", self.parent_document_store.health_check())
 
             print("✅ 高级图RAG系统初始化完成！")
             
