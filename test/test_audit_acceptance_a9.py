@@ -77,8 +77,11 @@ class AuditAcceptanceA9Test(unittest.TestCase):
 
             self.assertGreaterEqual(len(docs), 1)
             process_text = (audit.run_dir / "rag_process.md").read_text(encoding="utf-8")
-            self.assertIn("- stage: combined_graph_branch", process_text)
-            self.assertIn("- partial_result: True", process_text)
+            # `combined` 已被路由器兼容归一为 graph_rag；图分支失败后走传统混合检索，
+            # 不应再期待已删除的 combined 子分支审计事件。
+            self.assertIn("- stage: route_query", process_text)
+            self.assertIn("- fallback_strategy: hybrid_traditional", process_text)
+            self.assertNotIn("- stage: combined_graph_branch", process_text)
 
 
 if __name__ == "__main__":
