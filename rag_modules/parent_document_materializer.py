@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Iterable, Mapping, Optional, Sequence
 
 from .parent_document_store import (
@@ -125,18 +125,26 @@ class ParentDocumentMaterializer:
             for item in source_rows
         )
         chunk_config = {"chunk_size": self.chunk_size, "chunk_overlap": self.chunk_overlap, "splitter": "heading_v1"}
+        provisional_chunks: list[CanonicalChunk] = []
+        provisional_anchors: list[AnchorRecord] = []
+        for source in source_rows:
+            source_chunks, source_anchors = self._chunk_source(source, build_id="")
+            provisional_chunks.extend(source_chunks)
+            provisional_anchors.extend(source_anchors)
         manifest = make_build_manifest(
             parents,
+            chunks=provisional_chunks,
+            anchors=provisional_anchors,
             chunk_config=chunk_config,
             builder_version=self.BUILDER_VERSION,
         )
-        chunks: list[CanonicalChunk] = []
-        anchors: list[AnchorRecord] = []
-        for source in source_rows:
-            source_chunks, source_anchors = self._chunk_source(source, manifest.build_id)
-            chunks.extend(source_chunks)
-            anchors.extend(source_anchors)
-        return MaterializationResult(manifest, parents, tuple(chunks), tuple(anchors))
+        chunks = tuple(
+            replace(chunk, build_id=manifest.build_id).with_hash() for chunk in provisional_chunks
+        )
+        anchors = tuple(
+            replace(anchor, build_id=manifest.build_id) for anchor in provisional_anchors
+        )
+        return MaterializationResult(manifest, parents, chunks, anchors)
 
     def materialize_from_neo4j(self) -> MaterializationResult:
         """从已核验 database 读取 Recipe 和 TechniqueDoc 的稳定事实。"""

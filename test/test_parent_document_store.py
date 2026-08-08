@@ -100,6 +100,68 @@ def test_existing_destination_is_never_overwritten(tmp_path: Path):
         ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors)
 
 
+def test_build_identity_covers_metadata_and_anchors():
+    parents, _manifest, chunks, anchors = _fixture_rows()
+    first = make_build_manifest(
+        parents,
+        chunks=chunks,
+        anchors=anchors,
+        chunk_config={"chunk_size": 80, "chunk_overlap": 10, "splitter": "heading_v1"},
+        builder_version="test",
+    )
+    changed_metadata = [
+        ParentRecord(
+            parents[0].parent_id,
+            parents[0].node_type,
+            parents[0].title,
+            parents[0].full_content,
+            {"category": "川菜"},
+        ),
+        parents[1],
+    ]
+    metadata_changed = make_build_manifest(
+        changed_metadata,
+        chunks=chunks,
+        anchors=anchors,
+        chunk_config=first.chunk_config,
+        builder_version="test",
+    )
+    changed_anchor = [
+        AnchorRecord("CookingStep", "step-1", "recipe-1", "", "recipe-1:chunk:0", 1, "CONTAINS_STEP"),
+        anchors[1],
+    ]
+    anchor_changed = make_build_manifest(
+        parents,
+        chunks=chunks,
+        anchors=changed_anchor,
+        chunk_config=first.chunk_config,
+        builder_version="test",
+    )
+    assert first.build_id != metadata_changed.build_id
+    assert first.build_id != anchor_changed.build_id
+
+
+def test_publish_requires_pointer_and_pointer_failure_leaves_ready_build(tmp_path: Path, monkeypatch):
+    parents, manifest, chunks, anchors = _fixture_rows()
+    db_path = tmp_path / "parent_store.sqlite"
+    with pytest.raises(ValueError, match="active_pointer"):
+        ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors, publish=True)
+    assert not db_path.exists()
+
+    pointer = tmp_path / "active-build"
+    pointer.write_text("old-build\n", encoding="utf-8")
+
+    def fail_pointer(*_args):
+        raise OSError("pointer disk failure")
+
+    monkeypatch.setattr(ParentDocumentStore, "_write_active_pointer", staticmethod(fail_pointer))
+    with pytest.raises(OSError, match="pointer disk failure"):
+        ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors, publish=True, active_pointer=pointer)
+    assert pointer.read_text(encoding="utf-8").strip() == "old-build"
+    with ParentDocumentStore.open(db_path, active_build_id=manifest.build_id) as store:
+        assert store.get_build_manifest(manifest.build_id).status == "ready"
+
+
 def test_active_pointer_can_roll_back_to_verified_build(tmp_path: Path):
     parents, first_manifest, chunks, anchors = _fixture_rows()
     pointer = tmp_path / "active-build"

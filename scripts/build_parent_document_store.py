@@ -97,7 +97,7 @@ def main() -> int:
                     "anchors": len(result.anchors),
                     "output": str(output_path),
                     "dry_run": args.dry_run,
-                    "published": bool(args.publish and not args.dry_run),
+                    "active_pointer_updated": bool(args.publish and not args.dry_run),
                 },
                 ensure_ascii=False,
                 sort_keys=True,

@@ -262,6 +262,8 @@ class ParentDocumentStore:
         """在临时 SQLite 中完成全部校验后原子发布一个新 build。"""
 
         destination = Path(path).expanduser().resolve()
+        if publish and not active_pointer:
+            raise ValueError("发布 PDS build 必须提供 active_pointer")
         destination.parent.mkdir(parents=True, exist_ok=True)
         if destination.exists():
             raise FileExistsError(f"目标 PDS 已存在，拒绝覆盖: {destination}")
@@ -362,11 +364,6 @@ class ParentDocumentStore:
             connection.execute("UPDATE builds SET status = 'ready' WHERE build_id = ?", (expected_manifest.build_id,))
             connection.commit()
             cls._verify_connection(connection, expected_manifest.build_id)
-            if publish:
-                connection.execute(
-                    "UPDATE builds SET status = 'published' WHERE build_id = ?", (expected_manifest.build_id,)
-                )
-                connection.commit()
             connection.close()
 
             os.replace(temp_path, destination)
@@ -399,8 +396,8 @@ class ParentDocumentStore:
             status = connection.execute(
                 "SELECT status FROM builds WHERE build_id = ?", (build_id,)
             ).fetchone()["status"]
-            if status != "published":
-                raise ValueError(f"只能切回已发布 build: {build_id}")
+            if status not in {"ready", "published"}:
+                raise ValueError(f"只能切回已验证 build: {build_id}")
         finally:
             connection.close()
         cls._write_active_pointer(Path(active_pointer), build_id, db_path)
@@ -663,26 +660,69 @@ def make_build_manifest(
     *,
     chunk_config: Mapping[str, Any],
     builder_version: str,
+    chunks: Sequence[CanonicalChunk] = (),
+    anchors: Sequence[AnchorRecord] = (),
     build_id: Optional[str] = None,
     created_at: Optional[str] = None,
 ) -> BuildManifest:
-    """依据排序后的父文档哈希生成可复现 build_id 和 source_fingerprint。"""
+    """依据全部持久化内容生成可复现 build_id 和 source_fingerprint。"""
 
-    normalized = [
+    normalized_parents = [
         {
             "parent_id": parent.parent_id,
+            "node_type": parent.node_type,
+            "title": parent.title,
             "content_hash": parent.with_hash().content_hash,
+            "metadata": dict(parent.metadata),
         }
         for parent in sorted(parents, key=lambda item: (item.parent_id, item.node_type))
     ]
-    source_payload = json.dumps(normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    source_fingerprint = hashlib.sha256(source_payload.encode("utf-8")).hexdigest()
-    config_payload = json.dumps(dict(chunk_config), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-    build_payload = json.dumps(
-        {"builder_version": builder_version, "chunk_config": config_payload, "parents": normalized},
+    normalized_chunks = [
+        {
+            "chunk_id": chunk.chunk_id,
+            "parent_id": chunk.parent_id,
+            "chunk_index": chunk.chunk_index,
+            "total_chunks": chunk.total_chunks,
+            "section_title": chunk.section_title,
+            "text_hash": chunk.with_hash().text_hash,
+        }
+        for chunk in sorted(chunks, key=lambda item: (item.parent_id, item.chunk_index, item.chunk_id))
+    ]
+    normalized_anchors = [
+        {
+            "anchor_type": anchor.anchor_type,
+            "anchor_id": anchor.anchor_id,
+            "parent_id": anchor.parent_id,
+            "chunk_id": anchor.chunk_id,
+            "ordinal": anchor.ordinal,
+            "source_relation": anchor.source_relation,
+        }
+        for anchor in sorted(
+            anchors,
+            key=lambda item: (item.parent_id, item.anchor_type, item.ordinal, item.anchor_id),
+        )
+    ]
+    source_snapshot = {
+        "schema_version": SCHEMA_VERSION,
+        "parents": normalized_parents,
+        "chunks": normalized_chunks,
+        "anchors": normalized_anchors,
+    }
+    source_payload = json.dumps(
+        source_snapshot,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
+        default=str,
+    )
+    source_fingerprint = hashlib.sha256(source_payload.encode("utf-8")).hexdigest()
+    config_payload = json.dumps(dict(chunk_config), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    build_payload = json.dumps(
+        {"builder_version": builder_version, "chunk_config": config_payload, "artifact": source_snapshot},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
     )
     computed_build_id = "pds_" + hashlib.sha256(build_payload.encode("utf-8")).hexdigest()[:24]
     if build_id and build_id != computed_build_id:
