@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 import pytest
 
-from rag_modules.entity_direct_retrieval import EntityDirectRetriever
+from rag_modules.entity_direct_retrieval import EntityDirectRetriever, looks_like_explicit_entity_question
 from rag_modules.parent_document_materializer import AnchorSpec, ParentDocumentMaterializer, SourceParent
 from rag_modules.parent_document_store import ParentDocumentStore
 from rag_modules.retrieval_contracts import EntityCandidate
@@ -139,3 +139,9 @@ def test_parent_store_failure_does_not_fabricate_text_and_marks_legacy_fallback(
     assert bundle.text_evidence == ()
     assert "parent-store-unavailable" in bundle.limitations
     assert bundle.requires_legacy_fallback
+
+
+def test_entity_not_found_policy_catches_explicit_unknown_entity_but_preserves_generic_preference():
+    assert looks_like_explicit_entity_question("不存在的菜谱") is True
+    assert looks_like_explicit_entity_question("阶段二不存在的实体怎么做？") is True
+    assert looks_like_explicit_entity_question("夏天吃什么清淡的？") is False

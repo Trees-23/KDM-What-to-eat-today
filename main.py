@@ -36,7 +36,7 @@ from rag_modules.web_service_handler import WebServiceHandler
 from rag_modules.recipe_recommendation import RecipeRecommendationManager
 from rag_modules.parent_document_store import ParentDocumentStore
 from rag_modules.entity_resolver import EntityResolver
-from rag_modules.entity_direct_retrieval import EntityDirectRetriever
+from rag_modules.entity_direct_retrieval import EntityDirectRetriever, looks_like_explicit_entity_question
 from rag_modules.retrieval_contracts import EvidenceBundle
 
 
@@ -293,7 +293,13 @@ class AdvancedGraphRAGSystem:
             categories = list(stats['categories'].keys())[:10]
             print(f"   🏷️ 主要分类: {', '.join(categories)}")
     
-    def ask_question_with_routing(self, question: str, stream: bool = False, explain_routing: bool = False):
+    def ask_question_with_routing(
+        self,
+        question: str,
+        stream: bool = False,
+        explain_routing: bool = False,
+        allow_generalized_advice: bool = False,
+    ):
         """
         智能问答：自动选择最佳检索策略
         """
@@ -312,7 +318,11 @@ class AdvancedGraphRAGSystem:
         try:
             # 1. 智能路由检索
             print("执行智能查询路由...")
-            relevant_docs, analysis = self.retrieve_for_generation(question, self.config.top_k)
+            relevant_docs, analysis = self.retrieve_for_generation(
+                question,
+                self.config.top_k,
+                allow_generalized_advice=allow_generalized_advice,
+            )
             
             # 2. 显示路由信息
             strategy_icons = {
@@ -374,9 +384,20 @@ class AdvancedGraphRAGSystem:
             logger.error(f"问答处理失败: {e}")
             return f"抱歉，处理问题时出现错误：{str(e)}", None
 
-    def retrieve_for_generation(self, query: str, top_k: int, audit_run=None):
+    def retrieve_for_generation(
+        self,
+        query: str,
+        top_k: int,
+        audit_run=None,
+        *,
+        allow_generalized_advice: bool = False,
+    ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
-        bundle = self._try_entity_direct(query, audit_run=audit_run)
+        bundle = self._try_entity_direct(
+            query,
+            audit_run=audit_run,
+            allow_generalized_advice=allow_generalized_advice,
+        )
         if bundle is not None:
             if bundle.requires_legacy_fallback:
                 self._audit_entity_direct(audit_run, "fallback", bundle)
@@ -385,7 +406,13 @@ class AdvancedGraphRAGSystem:
                 return bundle, None
         return self.query_router.route_query(query, top_k, audit_run=audit_run)
 
-    def _try_entity_direct(self, query: str, audit_run=None) -> EvidenceBundle | None:
+    def _try_entity_direct(
+        self,
+        query: str,
+        audit_run=None,
+        *,
+        allow_generalized_advice: bool = False,
+    ) -> EvidenceBundle | None:
         if self.entity_resolver is None or self.entity_direct_retriever is None:
             return None
         try:
@@ -395,6 +422,19 @@ class AdvancedGraphRAGSystem:
             self._audit_entity_direct_error(audit_run, "resolver-unavailable", error)
             return None
         if not candidates:
+            if allow_generalized_advice:
+                self._audit_entity_direct(
+                    audit_run,
+                    "entity_not_found_generalized",
+                    EvidenceBundle(
+                        query_plan=None,
+                        entity_candidates=(),
+                        graph_facts=(),
+                        text_evidence=(),
+                        limitations=("ENTITY_NOT_FOUND", "allow_generalized_advice"),
+                    ),
+                )
+                return None
             if self._looks_like_explicit_entity_question(query):
                 bundle = EvidenceBundle(
                     query_plan=None,
@@ -425,7 +465,7 @@ class AdvancedGraphRAGSystem:
 
     @staticmethod
     def _looks_like_explicit_entity_question(query: str) -> bool:
-        return any(marker in (query or "") for marker in ("怎么做", "怎么制作", "做法", "第一步", "第1步", "关键要点", "适用场景"))
+        return looks_like_explicit_entity_question(query)
 
     @staticmethod
     def _direct_scope(query: str, entity) -> dict:

@@ -126,6 +126,7 @@ class WebServiceHandler:
             data = request.get_json()
             query = data.get('message', '')
             session_id = data.get('session_id', '')
+            allow_generalized_advice = data.get('allow_generalized_advice') is True
             
             if not query:
                 return jsonify({"error": "消息不能为空"}), 400
@@ -225,6 +226,7 @@ class WebServiceHandler:
                     enhanced_query,
                     self.rag_system.config.top_k,
                     audit_run=audit_run,
+                    allow_generalized_advice=allow_generalized_advice,
                 )
             else:
                 documents, analysis = self.rag_system.query_router.route_query(
@@ -265,6 +267,7 @@ class WebServiceHandler:
             data = request.get_json()
             query = data.get('message', '')
             session_id = data.get('session_id', '')
+            allow_generalized_advice = data.get('allow_generalized_advice') is True
             
             if not query:
                 return jsonify({"error": "消息不能为空"}), 400
@@ -367,6 +370,7 @@ class WebServiceHandler:
                             enhanced_query,
                             self.rag_system.config.top_k,
                             audit_run=audit_run,
+                            allow_generalized_advice=allow_generalized_advice,
                         )
                     else:
                         documents, analysis = self.rag_system.query_router.route_query(
