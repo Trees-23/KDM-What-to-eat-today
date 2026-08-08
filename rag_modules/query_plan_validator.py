@@ -167,7 +167,7 @@ class QueryPlanValidator:
             if parameters.get("vegetable_category") != "蔬菜":
                 raise QueryPlanValidationError("vegetable_category 只能是已核验的蔬菜分类")
         elif template_id == "technique_chunks_v1":
-            self._required_id(parameters, "technique_doc_id")
+            parameters["technique_doc_id"] = self._required_id(parameters, "technique_doc_id")
         elif template_id == "recipe_cuisine_filter_v1":
             recipe_ids = parameters.get("recipe_ids")
             if not isinstance(recipe_ids, (list, tuple)) or not recipe_ids or len(recipe_ids) > self.MAX_CANDIDATES:

@@ -78,3 +78,11 @@ def test_validator_normalizes_whitespace_around_stable_ids():
     validated = QueryPlanValidator().validate(candidate)
 
     assert validated.parameters["ingredient_id"] == "i1"
+
+
+def test_validator_normalizes_technique_document_id():
+    candidate = _plan("TECHNIQUE_CHUNKS", "TechniqueDoc", {"technique_doc_id": "  t1  ", "limit": 1})
+
+    validated = QueryPlanValidator().validate(candidate)
+
+    assert validated.parameters["technique_doc_id"] == "t1"
