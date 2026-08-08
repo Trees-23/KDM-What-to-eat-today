@@ -89,3 +89,28 @@ def test_generation_returns_deterministic_message_for_missing_entity_without_cal
 
     assert "未定位到同名实体" in answer
     assert module.client.calls == []
+
+
+def test_generation_does_not_fill_in_step_text_when_only_graph_location_is_available():
+    bundle = EvidenceBundle(
+        query_plan={"intent": "RECIPE_STEP", "template_id": "recipe_step_anchor_v1"},
+        entity_candidates=(),
+        graph_facts=(
+            GraphFact(
+                fact_id="step-1",
+                template_id="recipe_step_anchor_v1",
+                node_ids=("recipe-1", "step-1"),
+                edges=({"from": "recipe-1", "relationship": "CONTAINS_STEP", "to": "step-1"},),
+                properties={"step_order": 1},
+                status="verified",
+            ),
+        ),
+        text_evidence=(),
+        limitations=("PDS_TEXT_UNAVAILABLE",),
+    )
+    module = GenerationModuleForTest()
+
+    answer = module.generate_adaptive_answer("第一步怎么腌？", bundle)
+
+    assert "父文档正文当前不可用" in answer
+    assert module.client.calls == []

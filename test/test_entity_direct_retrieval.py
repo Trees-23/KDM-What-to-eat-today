@@ -11,10 +11,14 @@ from unittest.mock import patch
 import pytest
 
 from rag_modules.entity_direct_retrieval import EntityDirectRetriever
+from rag_modules.evidence_builder import EvidenceBuilder
 from rag_modules.parent_document_materializer import AnchorSpec, ParentDocumentMaterializer, SourceParent
 from rag_modules.parent_document_store import ParentDocumentStore
+from rag_modules.query_plan import QueryPlan
+from rag_modules.query_plan_validator import QueryPlanValidator
 from rag_modules.rag_audit import NULL_AUDIT_RUN
 from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
+from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
 
 
 class FakeSession:
@@ -157,6 +161,16 @@ class _EmptyResolver:
         return []
 
 
+class _SingleResolver:
+    def __init__(self, candidate):
+        self.candidate = candidate
+        self.calls = []
+
+    def resolve(self, query, expected_types):
+        self.calls.append((query, expected_types))
+        return [self.candidate]
+
+
 class _Router:
     def __init__(self):
         self.calls = []
@@ -200,6 +214,8 @@ class _Config:
     enable_rag_audit: bool = True
     rag_audit_root_dir: str = ""
     rag_audit_max_content_chars: int = 4000
+    retrieval_query_plan_enabled: bool = False
+    retrieval_targeted_graph_enabled: bool = False
 
 
 def _system_with_empty_resolver(audit_manager=None):
@@ -243,6 +259,10 @@ def _load_main_system_type(audit_manager=None):
         "rag_modules.parent_document_store": module_with(ParentDocumentStore=object),
         "rag_modules.entity_resolver": module_with(EntityResolver=object),
         "rag_modules.entity_direct_retrieval": module_with(EntityDirectRetriever=object),
+        "rag_modules.evidence_builder": module_with(EvidenceBuilder=EvidenceBuilder),
+        "rag_modules.query_plan": module_with(QueryPlan=QueryPlan),
+        "rag_modules.query_plan_validator": module_with(QueryPlanValidator=QueryPlanValidator),
+        "rag_modules.targeted_graph_retrieval": module_with(TargetedGraphRetriever=TargetedGraphRetriever),
         "rag_modules.rag_audit": module_with(RAGAuditManager=audit_manager),
         "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
     }
@@ -290,6 +310,47 @@ def test_unresolved_entity_can_use_legacy_router_only_after_explicit_generalized
     assert system.query_router.calls[0][2] is audit
     assert ("entity_direct", "entity_not_found_generalized") == audit.events[0][:2]
     assert audit.events[0][2]["vector_search_calls"] == 0
+
+
+def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(tmp_path):
+    system_type = _load_main_system_type()
+    session = FakeSession({"recipe_id": "recipe-1", "step_id": "step-1", "step_order": 1, "step_number": 1})
+    system = system_type.__new__(system_type)
+    system.config = _Config(retrieval_query_plan_enabled=True, retrieval_targeted_graph_enabled=True)
+    system.entity_resolver = _SingleResolver(_recipe_candidate())
+    system.entity_direct_retriever = EntityDirectRetriever(_build_store(tmp_path), FakeDriver(session), database="neo4j")
+    system.query_plan_validator = QueryPlanValidator()
+    system.targeted_graph_retriever = TargetedGraphRetriever(FakeDriver(session), database="neo4j")
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("测试菜谱第一步怎么做？", 3)
+
+    assert analysis is None
+    assert bundle.query_plan["template_id"] == "recipe_step_anchor_v1"
+    assert len(bundle.graph_facts) == 1
+    assert bundle.graph_facts[0].status == "verified"
+    assert "先腌制鸡肉" in bundle.text_evidence[0].text
+    assert system.query_router.calls == []
+
+
+def test_query_plan_returns_unavailable_when_targeted_graph_flag_is_disabled():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config(retrieval_query_plan_enabled=True, retrieval_targeted_graph_enabled=False)
+    system.entity_resolver = _SingleResolver(
+        EntityCandidate("ingredient-1", "Ingredient", "鸡肉", "exact_name", 1.0, False)
+    )
+    system.entity_direct_retriever = None
+    system.query_plan_validator = QueryPlanValidator()
+    system.targeted_graph_retriever = None
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("鸡肉能做什么？", 3)
+
+    assert analysis is None
+    assert bundle.graph_facts[0].status == "unavailable"
+    assert "GRAPH_UNAVAILABLE" in bundle.limitations
+    assert system.query_router.calls == []
 
 
 def test_cli_path_passes_audit_run_to_entity_not_found_and_generation(tmp_path):

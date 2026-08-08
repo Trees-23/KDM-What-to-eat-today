@@ -471,6 +471,17 @@ class GenerationIntegrationModule:
             return "已定位实体，但当前父文档库没有可验证的正文证据，无法安全补全做法。"
         if "STEP_NOT_FOUND" in limitations or "TECHNIQUE_CHUNK_NOT_FOUND" in limitations:
             return "图谱未找到请求的目标步骤或技巧章节，无法用正文补造该定位结果。"
+        if "GRAPH_RELATION_NOT_FOUND" in limitations:
+            return "当前图谱未找到该关系；不能用文本证据把该关系表述为已成立。"
+        if "GRAPH_UNAVAILABLE" in limitations:
+            return "图证据当前不可用，无法验证请求的关系是否成立。"
+        if "PDS_TEXT_UNAVAILABLE" in limitations or (
+            "parent-store-unavailable" in limitations
+            and evidence_bundle.query_plan
+            and evidence_bundle.query_plan.get("intent") in {"RECIPE_STEP", "TECHNIQUE_CHUNKS"}
+            and not evidence_bundle.text_evidence
+        ):
+            return "图谱已定位目标，但父文档正文当前不可用，不能据此补写步骤或技巧内容。"
         if "graph-unavailable" in limitations and not evidence_bundle.text_evidence:
             return "图证据当前不可用，无法验证请求的步骤或章节定位。"
         return None

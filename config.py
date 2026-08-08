@@ -71,6 +71,9 @@ class GraphRAGConfig:
     )
     # 阶段 2：实体直达必须同时依赖已启用且健康的 PDS，默认保持关闭。
     retrieval_entity_direct_enabled: bool = _env_bool("RETRIEVAL_ENTITY_DIRECT_ENABLED", False)
+    # 阶段 3：固定 QueryPlan 与目标化图查询，默认保持关闭。
+    retrieval_query_plan_enabled: bool = _env_bool("RETRIEVAL_QUERY_PLAN_ENABLED", False)
+    retrieval_targeted_graph_enabled: bool = _env_bool("RETRIEVAL_TARGETED_GRAPH_ENABLED", False)
 
     def __post_init__(self):
         """初始化后的处理"""
@@ -113,6 +116,8 @@ class GraphRAGConfig:
             'parent_store_path': self.parent_store_path,
             'parent_store_active_pointer': self.parent_store_active_pointer,
             'retrieval_entity_direct_enabled': self.retrieval_entity_direct_enabled,
+            'retrieval_query_plan_enabled': self.retrieval_query_plan_enabled,
+            'retrieval_targeted_graph_enabled': self.retrieval_targeted_graph_enabled,
         }
 
     def config_hash(self) -> str:
@@ -132,6 +137,8 @@ class GraphRAGConfig:
             "parent_store_path": self.parent_store_path,
             "parent_store_active_pointer": self.parent_store_active_pointer,
             "retrieval_entity_direct_enabled": self.retrieval_entity_direct_enabled,
+            "retrieval_query_plan_enabled": self.retrieval_query_plan_enabled,
+            "retrieval_targeted_graph_enabled": self.retrieval_targeted_graph_enabled,
         }
         payload = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from .retrieval_contracts import EvidenceBundle, GraphFact, TextEvidence
 
@@ -36,6 +36,20 @@ class EvidenceBuilder:
                 "## 正文证据\n" + sections.text_evidence,
                 "## 限制与不可证明项\n" + sections.limitations,
             )
+        )
+
+    @staticmethod
+    def merge_graph_facts(bundle: EvidenceBundle, graph_facts: Sequence[GraphFact]) -> EvidenceBundle:
+        """追加固定目标图事实，不改变正文证据与限制的分栏。"""
+        facts = tuple(graph_facts)
+        if not all(isinstance(fact, GraphFact) for fact in facts):
+            raise ValueError("graph_facts 只能包含 GraphFact")
+        return EvidenceBundle(
+            query_plan=bundle.query_plan,
+            entity_candidates=bundle.entity_candidates,
+            graph_facts=bundle.graph_facts + facts,
+            text_evidence=bundle.text_evidence,
+            limitations=bundle.limitations,
         )
 
     @staticmethod

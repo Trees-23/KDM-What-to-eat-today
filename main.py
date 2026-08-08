@@ -39,6 +39,10 @@ from rag_modules.entity_resolver import EntityResolver
 from rag_modules.entity_direct_retrieval import EntityDirectRetriever
 from rag_modules.rag_audit import RAGAuditManager
 from rag_modules.retrieval_contracts import EvidenceBundle
+from rag_modules.evidence_builder import EvidenceBuilder
+from rag_modules.query_plan import QueryPlan
+from rag_modules.query_plan_validator import QueryPlanValidator
+from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
 
 
 class AdvancedGraphRAGSystem:
@@ -76,6 +80,9 @@ class AdvancedGraphRAGSystem:
         # 阶段 2：默认关闭的实体直达组件；开启失败时保留旧 Router。
         self.entity_resolver = None
         self.entity_direct_retriever = None
+        # 阶段 3：默认关闭的 QueryPlan 与固定图查询组件。
+        self.query_plan_validator = None
+        self.targeted_graph_retriever = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -173,6 +180,21 @@ class AdvancedGraphRAGSystem:
                         database=self.config.neo4j_database,
                     )
                     logger.info("阶段 2 实体直达已启用；旧 Router 仍作为 PDS 故障回退")
+
+            if self.config.retrieval_query_plan_enabled:
+                self.query_plan_validator = QueryPlanValidator()
+                if self.data_module is not None:
+                    self.entity_resolver = self.entity_resolver or EntityResolver(
+                        self.data_module.driver,
+                        database=self.config.neo4j_database,
+                    )
+                    if self.config.retrieval_targeted_graph_enabled:
+                        self.targeted_graph_retriever = TargetedGraphRetriever(
+                            self.data_module.driver,
+                            database=self.config.neo4j_database,
+                            validator=self.query_plan_validator,
+                        )
+                        logger.info("阶段 3 QueryPlan 与目标化图查询已启用")
 
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
@@ -417,6 +439,10 @@ class AdvancedGraphRAGSystem:
         allow_generalized_advice: bool = False,
     ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
+        targeted_bundle = self._try_targeted_graph(query, audit_run=audit_run)
+        if targeted_bundle is not None:
+            self._audit_targeted_graph(audit_run, targeted_bundle)
+            return targeted_bundle, None
         bundle = self._try_entity_direct(
             query,
             audit_run=audit_run,
@@ -429,6 +455,152 @@ class AdvancedGraphRAGSystem:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
         return self.query_router.route_query(query, top_k, audit_run=audit_run)
+
+    def _try_targeted_graph(self, query: str, audit_run=None) -> EvidenceBundle | None:
+        # 保持测试/兼容调用中仅构造部分系统对象时的旧路由语义。
+        config = getattr(self, "config", None)
+        if not getattr(config, "retrieval_query_plan_enabled", False):
+            return None
+        if self.query_plan_validator is None or self.entity_resolver is None:
+            return None
+        intent, expected_type = self._targeted_intent(query)
+        if intent is None:
+            return None
+        candidates = self.entity_resolver.resolve(query, expected_types=(expected_type,))
+        if not candidates:
+            return EvidenceBundle(
+                query_plan=None,
+                entity_candidates=(),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ENTITY_NOT_FOUND", "未定位到关系查询中的同名实体；未调用全库向量检索。"),
+            )
+        if candidates[0].ambiguity:
+            return EvidenceBundle(
+                query_plan=None,
+                entity_candidates=tuple(candidates),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ENTITY_AMBIGUOUS", "关系查询实体候选并列，未自动选择。"),
+            )
+        plan = self._targeted_plan(query, intent, candidates[0].node_id)
+        if plan is None:
+            return None
+        if self.targeted_graph_retriever is None:
+            fact = TargetedGraphRetriever.unavailable_fact(plan, audit_run=audit_run)
+        else:
+            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+        limitations: tuple[str, ...] = ()
+        if fact.status == "not_found":
+            limitations = ("GRAPH_RELATION_NOT_FOUND", "当前图谱未找到该关系；正文不能证明该关系。")
+        elif fact.status == "unavailable":
+            limitations = ("GRAPH_UNAVAILABLE", "图证据当前不可用；不能回答关系已成立。")
+        text_evidence, pds_limitations = self._targeted_text_evidence(plan, candidates[0], fact, audit_run)
+        limitations += pds_limitations
+        base = EvidenceBundle(
+            query_plan=plan.to_dict(),
+            entity_candidates=tuple(candidates),
+            graph_facts=(),
+            text_evidence=text_evidence,
+            limitations=limitations,
+        )
+        return EvidenceBuilder.merge_graph_facts(base, (fact,))
+
+    def _targeted_text_evidence(self, plan: QueryPlan, candidate, fact, audit_run) -> tuple[tuple, tuple[str, ...]]:
+        """仅把 PDS 正文附加给已验证的步骤或技巧图定位结果。"""
+        if fact.status != "verified" or plan.intent not in {"RECIPE_STEP", "TECHNIQUE_CHUNKS"}:
+            return (), ()
+        retriever = getattr(self, "entity_direct_retriever", None)
+        if retriever is None:
+            return (), ("PDS_TEXT_UNAVAILABLE", "图已定位，但 PDS 正文回补未启用。")
+        if plan.intent == "RECIPE_STEP":
+            scope = {
+                "scope": "RECIPE_STEP",
+                "step_id": plan.parameters.get("step_id"),
+                "step_number": plan.parameters.get("step_number"),
+                "before": 1,
+                "after": 1,
+            }
+            if scope["step_id"] is None:
+                scope.pop("step_id")
+            if scope["step_number"] is None:
+                scope.pop("step_number")
+        else:
+            scope = {"scope": "TECHNIQUE_FULL"}
+        try:
+            hydrated = retriever.retrieve(candidate, scope, audit_run=audit_run)
+        except Exception as error:
+            logger.warning("目标图 PDS 回补不可用: %s", error)
+            return (), ("PDS_TEXT_UNAVAILABLE", "图已定位，但 PDS 正文回补当前不可用。")
+        pds_limitations = tuple(
+            limitation
+            for limitation in hydrated.limitations
+            if limitation in {"PARENT_DOCUMENT_NOT_FOUND", "PDS_ANCHOR_NOT_FOUND", "parent-store-unavailable"}
+        )
+        if not hydrated.text_evidence and not pds_limitations:
+            pds_limitations = ("PDS_TEXT_UNAVAILABLE", "图已定位，但没有可验证的 PDS 正文回补。")
+        return hydrated.text_evidence, pds_limitations
+
+    @staticmethod
+    def _targeted_intent(query: str) -> tuple[str | None, str | None]:
+        text = query or ""
+        if "蔬菜" in text and "搭配" in text:
+            return "INGREDIENT_VEGETABLE_PAIRS", "Ingredient"
+        if any(marker in text for marker in ("能做什么", "可以做什么", "适合做什么")):
+            return "INGREDIENT_RECIPES", "Ingredient"
+        if any(marker in text for marker in ("第一步", "第1步", "第 1 步")):
+            return "RECIPE_STEP", "Recipe"
+        if any(marker in text for marker in ("关键要点", "适用场景", "技巧章节")):
+            return "TECHNIQUE_CHUNKS", "TechniqueDoc"
+        return None, None
+
+    def _targeted_plan(self, query: str, intent: str, entity_id: str) -> QueryPlan | None:
+        parameters = {"limit": min(self.config.top_k, QueryPlanValidator.MAX_CANDIDATES)}
+        if intent == "INGREDIENT_VEGETABLE_PAIRS":
+            parameters.update({"ingredient_id": entity_id, "vegetable_category": "蔬菜"})
+            entity_type = "Ingredient"
+        elif intent == "INGREDIENT_RECIPES":
+            parameters["ingredient_id"] = entity_id
+            entity_type = "Ingredient"
+        elif intent == "RECIPE_STEP":
+            import re
+
+            match = re.search(r"第\s*(\d+)\s*步", query or "")
+            parameters.update({"recipe_id": entity_id, "step_number": int(match.group(1)) if match else 1})
+            parameters["limit"] = 1
+            entity_type = "Recipe"
+        elif intent == "TECHNIQUE_CHUNKS":
+            parameters["technique_doc_id"] = entity_id
+            entity_type = "TechniqueDoc"
+        else:
+            return None
+        return self.query_plan_validator.validate(
+            QueryPlan(
+                intent=intent,
+                template_id={
+                    "RECIPE_STEP": "recipe_step_anchor_v1",
+                    "INGREDIENT_RECIPES": "ingredient_recipes_v1",
+                    "INGREDIENT_VEGETABLE_PAIRS": "ingredient_vegetable_pairs_v1",
+                    "TECHNIQUE_CHUNKS": "technique_chunks_v1",
+                }[intent],
+                entity_type=entity_type,
+                parameters=parameters,
+                max_candidates=parameters["limit"],
+            )
+        )
+
+    @staticmethod
+    def _audit_targeted_graph(audit_run, bundle: EvidenceBundle) -> None:
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            fact = bundle.graph_facts[-1] if bundle.graph_facts else None
+            audit_run.record_event(
+                "targeted_graph_selection",
+                status=fact.status if fact else "not_found",
+                template_id=fact.template_id if fact else None,
+                graph_fact_status=fact.status if fact else None,
+                limitations=list(bundle.limitations),
+                vector_search_calls=0,
+            )
 
     def _try_entity_direct(
         self,
