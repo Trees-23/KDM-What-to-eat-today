@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import sqlite3
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -32,20 +32,24 @@ def _fixture_rows():
             metadata={"category": "技巧"},
         ),
     ]
+    provisional_chunks = [
+        CanonicalChunk("recipe-1:chunk:0", "recipe-1", 0, 1, "主标题", parents[0].full_content, ""),
+        CanonicalChunk("tech-1:chunk:0", "tech-1", 0, 1, "主标题", parents[1].full_content, ""),
+    ]
+    provisional_anchors = [
+        AnchorRecord("CookingStep", "step-1", "recipe-1", "", "recipe-1:chunk:0", 0, "CONTAINS_STEP"),
+        AnchorRecord("TechniqueChunk", "chunk-1", "tech-1", "", "tech-1:chunk:0", 0, "HAS_CHUNK"),
+    ]
     manifest = make_build_manifest(
         parents,
+        chunks=provisional_chunks,
+        anchors=provisional_anchors,
         chunk_config={"chunk_size": 80, "chunk_overlap": 10, "splitter": "heading_v1"},
         builder_version="test",
         created_at="2026-08-08T00:00:00+00:00",
     )
-    chunks = [
-        CanonicalChunk("recipe-1:chunk:0", "recipe-1", 0, 1, "主标题", parents[0].full_content, manifest.build_id),
-        CanonicalChunk("tech-1:chunk:0", "tech-1", 0, 1, "主标题", parents[1].full_content, manifest.build_id),
-    ]
-    anchors = [
-        AnchorRecord("CookingStep", "step-1", "recipe-1", manifest.build_id, "recipe-1:chunk:0", 0, "CONTAINS_STEP"),
-        AnchorRecord("TechniqueChunk", "chunk-1", "tech-1", manifest.build_id, "tech-1:chunk:0", 0, "HAS_CHUNK"),
-    ]
+    chunks = [replace(chunk, build_id=manifest.build_id) for chunk in provisional_chunks]
+    anchors = [replace(anchor, build_id=manifest.build_id) for anchor in provisional_anchors]
     return parents, manifest, chunks, anchors
 
 
@@ -86,7 +90,7 @@ def test_failed_build_does_not_publish_or_overwrite(tmp_path: Path):
     bad_anchor = AnchorRecord(
         "CookingStep", "bad", "recipe-1", manifest.build_id, "missing-chunk", 0, "CONTAINS_STEP"
     )
-    with pytest.raises(sqlite3.IntegrityError):
+    with pytest.raises(ValueError, match="manifest"):
         ParentDocumentStore.create_build(db_path, manifest, parents, chunks, [bad_anchor], publish=True, active_pointer=pointer)
     assert not db_path.exists()
     assert pointer.read_text(encoding="utf-8").strip() == "old-build"
@@ -137,8 +141,26 @@ def test_build_identity_covers_metadata_and_anchors():
         chunk_config=first.chunk_config,
         builder_version="test",
     )
+    chunk_changed = make_build_manifest(
+        parents,
+        chunks=[replace(chunks[0], text="改动后的 chunk 正文", section_title="改动章节"), chunks[1]],
+        anchors=anchors,
+        chunk_config=first.chunk_config,
+        builder_version="test",
+    )
     assert first.build_id != metadata_changed.build_id
     assert first.build_id != anchor_changed.build_id
+    assert first.build_id != chunk_changed.build_id
+    assert first.source_fingerprint != chunk_changed.source_fingerprint
+
+
+def test_create_build_rejects_manifest_that_does_not_cover_rows(tmp_path: Path):
+    parents, manifest, chunks, anchors = _fixture_rows()
+    mismatched_parents = [replace(parents[0], metadata={"category": "川菜"}), parents[1]]
+    with pytest.raises(ValueError, match="manifest"):
+        ParentDocumentStore.create_build(
+            tmp_path / "parent_store.sqlite", manifest, mismatched_parents, chunks, anchors
+        )
 
 
 def test_publish_requires_pointer_and_pointer_failure_leaves_ready_build(tmp_path: Path, monkeypatch):
@@ -172,20 +194,24 @@ def test_active_pointer_can_roll_back_to_verified_build(tmp_path: Path):
         ParentRecord("recipe-1", "Recipe", "新版测试菜谱", "# 新版测试菜谱", {}),
         parents[1],
     ]
+    second_chunks = [
+        CanonicalChunk("recipe-1:chunk:0", "recipe-1", 0, 1, "主标题", changed_parents[0].full_content, ""),
+        CanonicalChunk("tech-1:chunk:0", "tech-1", 0, 1, "主标题", parents[1].full_content, ""),
+    ]
+    second_anchors = [
+        AnchorRecord("CookingStep", "step-1", "recipe-1", "", "recipe-1:chunk:0", 0, "CONTAINS_STEP"),
+        AnchorRecord("TechniqueChunk", "chunk-1", "tech-1", "", "tech-1:chunk:0", 0, "HAS_CHUNK"),
+    ]
     second_manifest = make_build_manifest(
         changed_parents,
+        chunks=second_chunks,
+        anchors=second_anchors,
         chunk_config=first_manifest.chunk_config,
         builder_version="test",
         created_at="2026-08-08T00:00:01+00:00",
     )
-    second_chunks = [
-        CanonicalChunk("recipe-1:chunk:0", "recipe-1", 0, 1, "主标题", changed_parents[0].full_content, second_manifest.build_id),
-        CanonicalChunk("tech-1:chunk:0", "tech-1", 0, 1, "主标题", parents[1].full_content, second_manifest.build_id),
-    ]
-    second_anchors = [
-        AnchorRecord("CookingStep", "step-1", "recipe-1", second_manifest.build_id, "recipe-1:chunk:0", 0, "CONTAINS_STEP"),
-        AnchorRecord("TechniqueChunk", "chunk-1", "tech-1", second_manifest.build_id, "tech-1:chunk:0", 0, "HAS_CHUNK"),
-    ]
+    second_chunks = [replace(chunk, build_id=second_manifest.build_id) for chunk in second_chunks]
+    second_anchors = [replace(anchor, build_id=second_manifest.build_id) for anchor in second_anchors]
     second_path = tmp_path / "second.sqlite"
     ParentDocumentStore.create_build(second_path, second_manifest, changed_parents, second_chunks, second_anchors, publish=True, active_pointer=pointer)
     with ParentDocumentStore.open(tmp_path, active_pointer=pointer) as store:

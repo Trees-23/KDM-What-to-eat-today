@@ -271,6 +271,18 @@ class ParentDocumentStore:
         parent_rows = [parent.with_hash() for parent in parents]
         chunk_rows = [chunk.with_hash() for chunk in chunks]
         anchor_rows = list(anchors)
+        calculated_manifest = make_build_manifest(
+            parent_rows,
+            chunks=chunk_rows,
+            anchors=anchor_rows,
+            chunk_config=manifest.chunk_config,
+            builder_version=manifest.builder_version,
+        )
+        if (
+            manifest.build_id != calculated_manifest.build_id
+            or manifest.source_fingerprint != calculated_manifest.source_fingerprint
+        ):
+            raise ValueError("传入 manifest 与待持久化 PDS 工件不一致")
         expected_manifest = BuildManifest(
             **{
                 **manifest.__dict__,
