@@ -267,3 +267,77 @@ def test_cutover_requires_protected_approval_and_atomically_publishes(tmp_path, 
 def test_cutover_rejects_missing_protected_arguments():
     with pytest.raises(SystemExit):
         retrieval_cutover.main(["--database", "default", "--allowed-database", "other"])
+
+
+def test_protected_cutover_still_rejects_missing_approval_before_reading_paths(monkeypatch):
+    monkeypatch.setenv("RETRIEVAL_RELEASE_ENVIRONMENT", "staging")
+    args = types.SimpleNamespace(
+        database="default",
+        allowed_database="default",
+        from_collection="cooking_knowledge",
+        to_collection="cooking_knowledge_v2_pds_build123",
+        allowed_from_collection="cooking_knowledge",
+        allowed_to_collection="cooking_knowledge_v2_pds_build123",
+        parent_store_build="pds_build123",
+        release_profile="protected",
+        protected_environment="staging",
+        approval_record=None,
+        allowed_approval_root=None,
+    )
+
+    with pytest.raises(retrieval_cutover.CutoverGuardError, match="审批记录"):
+        retrieval_cutover._validate(args)
+
+
+def test_personal_local_cutover_keeps_backup_and_manifest_guards_without_dual_approval(tmp_path, monkeypatch):
+    build_id = "pds_build123"
+    to_collection = f"cooking_knowledge_v2_{build_id[:12]}"
+    manifest = RetrievalArtifactManifest(
+        pds_build_id=build_id,
+        pds_manifest_sha256="pds-manifest-sha",
+        milvus_database="default",
+        milvus_collection=to_collection,
+        milvus_schema_hash="schema-sha",
+        milvus_build_id=build_id,
+        created_at="2026-08-09T00:00:00+00:00",
+        rollback_database="default",
+        rollback_collection="cooking_knowledge",
+        rollback_pds_build="pds_old",
+    )
+    artifact_root = tmp_path / "artifacts"
+    backup_root = tmp_path / "backups"
+    active_root = tmp_path / "active"
+    artifact_root.mkdir()
+    backup_root.mkdir()
+    active_root.mkdir()
+    artifact_path = manifest.write_atomic(artifact_root / "candidate.json")
+    backup_dir = backup_root / "source"
+    milvus_snapshot.create_snapshot(
+        _SnapshotClient([{"id": "chunk-1", "vector": [0.1, 0.2], "text": "正文一"}]),
+        database="default",
+        collection="cooking_knowledge",
+        output=backup_dir,
+    )
+    backup_path = backup_dir / "manifest.json"
+    backup_sha = hashlib.sha256(backup_path.read_bytes()).hexdigest()
+    argv = [
+        "--release-profile", "personal-local",
+        "--database", "default", "--allowed-database", "default",
+        "--from", "cooking_knowledge", "--allowed-from-collection", "cooking_knowledge",
+        "--to", to_collection, "--allowed-to-collection", to_collection,
+        "--parent-store-build", build_id,
+        "--artifact-manifest", str(artifact_path),
+        "--backup-manifest", str(backup_path), "--expected-backup-sha256", backup_sha,
+        "--active-pointer", str(active_root / "active.json"),
+        "--allowed-backup-root", str(backup_root), "--allowed-artifact-root", str(artifact_root),
+        "--allowed-active-root", str(active_root),
+        "--environment", "personal-local", "--confirm-cutover",
+    ]
+    monkeypatch.setenv("RETRIEVAL_RELEASE_ENVIRONMENT", "personal-local")
+
+    assert retrieval_cutover.main(argv) == 0
+    assert RetrievalArtifactManifest.read(active_root / "active.json") == manifest
+
+    monkeypatch.setenv("RETRIEVAL_RELEASE_ENVIRONMENT", "staging")
+    with pytest.raises(retrieval_cutover.CutoverGuardError, match="personal-local"):
+        retrieval_cutover.main(argv)
