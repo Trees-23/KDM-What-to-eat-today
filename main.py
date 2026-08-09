@@ -455,13 +455,13 @@ class AdvancedGraphRAGSystem:
         allow_generalized_advice: bool = False,
     ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
+        nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
+        if nutrition_bundle is not None:
+            return nutrition_bundle, None
         targeted_bundle = self._try_targeted_graph(query, audit_run=audit_run)
         if targeted_bundle is not None:
             self._audit_targeted_graph(audit_run, targeted_bundle)
             return targeted_bundle, None
-        nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
-        if nutrition_bundle is not None:
-            return nutrition_bundle, None
         preference_plan = self._preference_plan(query, top_k)
         if preference_plan is not None and getattr(self.config, "retrieval_milvus_v2_enabled", False):
             preference_bundle = self._try_restricted_vector(

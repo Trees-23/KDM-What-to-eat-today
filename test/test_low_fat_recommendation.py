@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
+
 from main import AdvancedGraphRAGSystem
 from rag_modules.query_plan_validator import QueryPlanValidator
-from rag_modules.retrieval_contracts import EvidenceBundle, GraphFact, TextEvidence
+from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle, GraphFact, TextEvidence
 
 
 class _ParentStore:
@@ -156,3 +158,41 @@ def test_soft_preference_audit_records_evidence_level_policy_and_missing_reason(
     assert fields["evidence_level"] == "soft_preference"
     assert fields["policy_version"] == "nutrition_soft_preference_v1"
     assert "不能验证严格低脂" in fields["missing_reason"]
+
+
+def test_medical_nutrition_request_preempts_targeted_graph_vector_and_legacy_routes():
+    system = _system()
+    system.config.retrieval_query_plan_enabled = True
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda *args, **kwargs: [
+            EntityCandidate("ingredient-chicken", "Ingredient", "鸡肉", "exact_name", 1.0, False)
+        ]
+    )
+
+    bundle, analysis = system.retrieve_for_generation("糖尿病患者鸡肉能做什么？", 3)
+
+    assert analysis is None
+    assert bundle.recommendation_evidence.level == "evidence_insufficient"
+    assert "NUTRITION_EVIDENCE_INSUFFICIENT" in bundle.limitations
+    assert system.targeted_graph_retriever.calls == []
+    assert system.restricted_vector_retriever.calls == []
+
+
+@pytest.mark.parametrize(
+    "query",
+    (
+        "推荐 5 克脂肪以下的川菜",
+        "推荐热量不超过 500 千卡的川菜",
+        "高血压饮食推荐川菜",
+    ),
+)
+def test_threshold_and_medical_variants_fail_closed_without_graph_or_vector_calls(query):
+    system = _system()
+
+    bundle, analysis = system.retrieve_for_generation(query, 3)
+
+    assert analysis is None
+    assert bundle.recommendation_evidence.level == "evidence_insufficient"
+    assert "NUTRITION_EVIDENCE_INSUFFICIENT" in bundle.limitations
+    assert system.targeted_graph_retriever.calls == []
+    assert system.restricted_vector_retriever.calls == []

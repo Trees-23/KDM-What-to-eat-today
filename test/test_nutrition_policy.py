@@ -23,8 +23,11 @@ def test_soft_preference_policy_rejects_threshold_strict_and_medical_requests_wi
     for query in (
         "推荐严格低脂川菜",
         "推荐每份脂肪不超过 5 克的川菜",
+        "推荐 5 克脂肪以下的川菜",
         "高血脂患者能吃什么川菜？",
+        "高血压饮食推荐川菜",
         "推荐低热量川菜",
+        "推荐热量不超过 500 千卡的川菜",
     ):
         decision = SOFT_PREFERENCE_POLICY.assess(query)
 

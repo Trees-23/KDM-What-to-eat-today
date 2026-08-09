@@ -14,6 +14,22 @@ from .recommendation_evidence import RecommendationEvidence
 
 
 SOFT_PREFERENCE_POLICY_VERSION = "nutrition_soft_preference_v1"
+_MEDICAL_MARKERS = (
+    "医疗",
+    "医嘱",
+    "患者",
+    "治疗",
+    "高血脂",
+    "高血压",
+    "糖尿病",
+    "冠心病",
+    "肾病",
+    "痛风",
+    "孕期",
+    "妊娠",
+)
+_NUTRITION_MARKERS = ("低脂", "脂肪", "控脂", "减脂", "低热量", "热量", "能量", "千卡", "大卡", "卡路里")
+_MEASUREMENT_PATTERN = re.compile(r"\d+(?:\.\d+)?\s*(?:克|g|千卡|kcal|大卡|卡)", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -66,23 +82,7 @@ class NutritionPolicy:
 
     @staticmethod
     def _is_nutrition_request(text: str) -> bool:
-        return any(
-            marker in text
-            for marker in (
-                "低脂",
-                "脂肪",
-                "控脂",
-                "减脂",
-                "低热量",
-                "医疗",
-                "医嘱",
-                "患者",
-                "治疗",
-                "高血脂",
-                "糖尿病",
-                "冠心病",
-            )
-        )
+        return any(marker in text for marker in _NUTRITION_MARKERS + _MEDICAL_MARKERS)
 
     @staticmethod
     def _requires_hard_evidence(text: str) -> bool:
@@ -92,18 +92,17 @@ class NutritionPolicy:
             "脂肪克数",
             "脂肪含量",
             "每份",
-            "医疗",
-            "医嘱",
-            "患者",
-            "治疗",
-            "高血脂",
-            "糖尿病",
-            "冠心病",
+            *_MEDICAL_MARKERS,
             "低热量",
+            "热量",
+            "能量",
+            "千卡",
+            "大卡",
+            "卡路里",
         )
         if any(marker in text for marker in strict_markers):
             return True
-        return bool(re.search(r"(?:脂肪|低脂|减脂).{0,12}(?:\\d+\\s*(?:克|g)|克)", text, re.IGNORECASE))
+        return bool(_MEASUREMENT_PATTERN.search(text) and any(marker in text for marker in _NUTRITION_MARKERS))
 
 
 SOFT_PREFERENCE_POLICY = NutritionPolicy()
