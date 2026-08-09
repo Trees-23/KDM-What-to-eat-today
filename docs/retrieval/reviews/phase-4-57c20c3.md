@@ -33,3 +33,4 @@
 - `RETRIEVAL_MILVUS_V2_ENABLED` 默认保持 `false`，未变更运行时流量或联合 artifact 指针。
 - 回退步骤：保持或设置 `RETRIEVAL_MILVUS_V2_ENABLED=false`，并使用旧 `cooking_knowledge`；必要时只读切向已验证 restore collection。不得删除 V2 或旧集合。
 - 2026-08-09 的只读检查未发现受保护发布环境、`RETRIEVAL_RELEASE_ENVIRONMENT`、双人审批、变更单、未过期 approval record 或人工 `--confirm-cutover` 确认。因此不运行 `retrieval_cutover.py`，也不把代码审查通过表述为阶段 4 完成。
+- GitHub 仓库只读复查显示 Environment 数量为 `0`，Actions variable 数量为 `0`，唯一 workflow 为 Dependency Graph；仓库中也没有发布或切换 workflow。未枚举或猜测 secret，且上述配置缺失不能替代受保护审批记录。
