@@ -301,6 +301,7 @@ def test_real_recipe_sources_exclude_tools_and_calculation_formulae():
         "data/dishes/meat_dish/带把肘子.md": "小斧头",
         "data/dishes/aquatic/微波葱姜黑鳕鱼.md": "密封袋",
         "data/dishes/drink/泰国手标红茶/泰国手标红茶.md": "港式奶茶过滤袋",
+        "data/dishes/staple/基础牛奶面包/基础牛奶面包.md": "布",
     }
     for relative_path, tool_name in tool_only_sources.items():
         assert tool_name not in ingredient_names(relative_path)
