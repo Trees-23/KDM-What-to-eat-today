@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from typing import Any, Mapping
 
 from .query_plan import TEMPLATE_BY_INTENT, QueryPlan
-from .query_plan_validator import QueryPlanValidator
+from .query_plan_validator import QueryPlanValidationError, QueryPlanValidator
 from .retrieval_contracts import GraphFact
 
 
@@ -96,7 +96,7 @@ class TargetedGraphRetriever:
 
     def retrieve(self, plan: QueryPlan | Mapping[str, Any], audit_run: Any = None) -> GraphFact:
         validated = self.validator.validate(plan)
-        spec = TEMPLATE_SPECS[validated.template_id]
+        spec = self._template_spec(validated)
         timestamp = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
         parameters = self._query_parameters(validated)
         self._audit(audit_run, "started", validated, timestamp)
@@ -131,7 +131,7 @@ class TargetedGraphRetriever:
         timestamp = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
         fact = cls._fact(
             validated,
-            TEMPLATE_SPECS[validated.template_id],
+            cls._template_spec(validated),
             rows=(),
             status="unavailable",
             timestamp=timestamp,
@@ -152,7 +152,9 @@ class TargetedGraphRetriever:
         template_id = TEMPLATE_BY_INTENT.get(intent)
         if template_id is None:
             raise ValueError(f"不支持的目标图 intent: {intent}")
-        spec = TEMPLATE_SPECS[template_id]
+        spec = TEMPLATE_SPECS.get(template_id)
+        if spec is None:
+            raise ValueError(f"intent 仅支持非图检索路径: {intent}")
         timestamp = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
         fact = GraphFact(
             fact_id=f"{template_id}:{timestamp}",
@@ -188,6 +190,15 @@ class TargetedGraphRetriever:
             parameters.setdefault("step_id", None)
             parameters.setdefault("step_number", None)
         return parameters
+
+    @staticmethod
+    def _template_spec(plan: QueryPlan) -> Mapping[str, Any]:
+        """偏好向量计划通过验证后也不得落入 Neo4j 模板执行器。"""
+
+        spec = TEMPLATE_SPECS.get(plan.template_id)
+        if spec is None:
+            raise QueryPlanValidationError(f"目标图检索不支持模板: {plan.template_id}")
+        return spec
 
     def _run(self, query: str, parameters: Mapping[str, Any]) -> list[Mapping[str, Any]]:
         try:

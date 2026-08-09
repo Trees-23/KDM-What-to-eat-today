@@ -436,6 +436,31 @@ def test_preference_initialization_failure_returns_to_legacy_router(tmp_path):
     assert any(event[:2] == ("restricted_vector", "artifact-unavailable") for event in audit.events)
 
 
+def test_preference_initialization_artifact_mismatch_is_audited_before_legacy_fallback(tmp_path):
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.config.retrieval_artifact_manifest_path = str(tmp_path / "mismatched-manifest.json")
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = object()
+    system.query_router = _Router()
+    audit = _AuditRun()
+
+    with patch.object(RetrievalArtifactManifest, "read", side_effect=ArtifactMismatchError("PDS build mismatch")):
+        system._initialize_restricted_vector_retriever()
+
+    documents, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, audit_run=audit)
+
+    assert system.restricted_vector_retriever is None
+    assert documents == ["legacy"]
+    assert analysis == "legacy-analysis"
+    assert len(system.query_router.calls) == 1
+    assert any(event[:2] == ("restricted_vector", "artifact-mismatch") for event in audit.events)
+
+
 def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(tmp_path):
     system_type = _load_main_system_type()
     session = FakeSession({"recipe_id": "recipe-1", "step_id": "step-1", "step_order": 1, "step_number": 1})

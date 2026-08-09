@@ -93,6 +93,7 @@ class AdvancedGraphRAGSystem:
         self.targeted_graph_retriever = None
         # 阶段 4：V2 只读受限 child chunk 检索，必须绑定联合 artifact。
         self.restricted_vector_retriever = None
+        self._restricted_vector_init_status = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -508,9 +509,15 @@ class AdvancedGraphRAGSystem:
                 dimension=self.config.milvus_dimension,
                 embedder=getattr(self.index_module, "embeddings", None),
             )
+            self._restricted_vector_init_status = None
+        except ArtifactMismatchError as error:
+            logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
+            self.restricted_vector_retriever = None
+            self._restricted_vector_init_status = "artifact-mismatch"
         except Exception as error:
             logger.warning("阶段 4 V2 artifact 不可用: %s", error)
             self.restricted_vector_retriever = None
+            self._restricted_vector_init_status = "artifact-unavailable"
 
     @staticmethod
     def _is_preference_query(query: str) -> bool:
@@ -577,7 +584,13 @@ class AdvancedGraphRAGSystem:
         retriever = getattr(self, "restricted_vector_retriever", None)
         if retriever is None:
             if audit_run is not None and hasattr(audit_run, "record_event"):
-                audit_run.record_event("restricted_vector", status="artifact-unavailable", parent_count=0)
+                status = getattr(self, "_restricted_vector_init_status", None) or "artifact-unavailable"
+                audit_run.record_event(
+                    "restricted_vector",
+                    status=status,
+                    parent_count=0,
+                    vector_scope="rejected" if status == "artifact-mismatch" else "none",
+                )
             return None
         parent_ids = plan.parameters.get("parent_ids")
         try:

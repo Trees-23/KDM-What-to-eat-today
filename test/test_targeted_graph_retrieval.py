@@ -5,6 +5,7 @@ from contextlib import contextmanager
 import pytest
 
 from rag_modules.query_plan import QueryPlan
+from rag_modules.query_plan_validator import QueryPlanValidationError
 from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
 
 
@@ -100,5 +101,22 @@ def test_retriever_rejects_free_cypher_before_opening_driver_session():
                 "parameters": {"ingredient_id": "i1", "cypher": "MATCH (n) RETURN n"},
             }
         )
+
+    assert session.calls == []
+
+
+def test_retriever_rejects_v2_only_preference_plan_before_opening_driver_session():
+    session = FakeSession()
+    retriever = TargetedGraphRetriever(FakeDriver(session))
+    plan = _plan(
+        "preference_recommend_v1",
+        "PREFERENCE_RECOMMEND",
+        "Recipe",
+        {"scope": "all_child_chunks", "limit": 5},
+        5,
+    )
+
+    with pytest.raises(QueryPlanValidationError, match="不支持模板"):
+        retriever.retrieve(plan)
 
     assert session.calls == []
