@@ -34,5 +34,6 @@
 ## 切换状态与回退
 
 - 未发现受保护环境、双人审批、变更单和未过期审批记录，故未执行 `retrieval_cutover.py` 的真实 cutover。
+- 2026-08-09T13:49:44+08:00 的只读复查：`run/` 与 `docs/` 下没有 approval/change/cutover/release 记录，`RETRIEVAL_RELEASE_ENVIRONMENT`、`RETRIEVAL_MILVUS_V2_ENABLED`、`RETRIEVAL_MILVUS_COLLECTION` 均未设置。
 - 保持 `RETRIEVAL_MILVUS_V2_ENABLED=false`。回退动作是保持/设置该值为 `false` 并使用旧 `cooking_knowledge`；不删除 V2 或旧集合。
 - 未修改 `rag_modules/hybrid_retrieval.py`、`rag_modules/graph_rag_retrieval.py` 或 `rag_modules/milvus_index_construction.py`。
