@@ -14,6 +14,7 @@ QUERY_PLAN_INTENTS = frozenset(
         "INGREDIENT_VEGETABLE_PAIRS",
         "TECHNIQUE_CHUNKS",
         "RECIPE_CUISINE_FILTER",
+        "PREFERENCE_RECOMMEND",
     }
 )
 
@@ -23,6 +24,7 @@ TEMPLATE_BY_INTENT = {
     "INGREDIENT_VEGETABLE_PAIRS": "ingredient_vegetable_pairs_v1",
     "TECHNIQUE_CHUNKS": "technique_chunks_v1",
     "RECIPE_CUISINE_FILTER": "recipe_cuisine_filter_v1",
+    "PREFERENCE_RECOMMEND": "preference_recommend_v1",
 }
 
 ENTITY_TYPE_BY_INTENT = {
@@ -31,6 +33,7 @@ ENTITY_TYPE_BY_INTENT = {
     "INGREDIENT_VEGETABLE_PAIRS": "Ingredient",
     "TECHNIQUE_CHUNKS": "TechniqueDoc",
     "RECIPE_CUISINE_FILTER": "Recipe",
+    "PREFERENCE_RECOMMEND": "Recipe",
 }
 
 

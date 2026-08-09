@@ -191,7 +191,7 @@ class AdvancedGraphRAGSystem:
                     )
                     logger.info("阶段 2 实体直达已启用；旧 Router 仍作为 PDS 故障回退")
 
-            if self.config.retrieval_query_plan_enabled:
+            if self.config.retrieval_query_plan_enabled or self.config.retrieval_milvus_v2_enabled:
                 self.query_plan_validator = QueryPlanValidator()
                 if self.data_module is not None:
                     self.entity_resolver = self.entity_resolver or EntityResolver(
@@ -456,8 +456,14 @@ class AdvancedGraphRAGSystem:
         if targeted_bundle is not None:
             self._audit_targeted_graph(audit_run, targeted_bundle)
             return targeted_bundle, None
-        if self._is_preference_query(query) and getattr(self.config, "retrieval_milvus_v2_enabled", False):
-            preference_bundle = self._try_restricted_vector(query, top_k, audit_run=audit_run)
+        preference_plan = self._preference_plan(query, top_k)
+        if preference_plan is not None and getattr(self.config, "retrieval_milvus_v2_enabled", False):
+            preference_bundle = self._try_restricted_vector(
+                query,
+                top_k,
+                preference_plan,
+                audit_run=audit_run,
+            )
             if preference_bundle is not None:
                 return preference_bundle, None
         bundle = self._try_entity_direct(
@@ -511,18 +517,71 @@ class AdvancedGraphRAGSystem:
         text = query or ""
         return any(marker in text for marker in ("夏天吃", "清淡", "清爽偏好"))
 
-    def _try_restricted_vector(self, query: str, top_k: int, audit_run=None) -> EvidenceBundle | None:
+    def _preference_plan(self, query: str, top_k: int) -> QueryPlan | None:
+        """把偏好检索范围冻结为 QueryPlan，禁止隐式全库降级。"""
+
+        if not self._is_preference_query(query):
+            return None
+        validator = getattr(self, "query_plan_validator", None)
+        if validator is None:
+            return None
+        parameters = {
+            "scope": "all_child_chunks",
+            "limit": min(top_k, QueryPlanValidator.MAX_CANDIDATES),
+        }
+        if "川菜" in (query or ""):
+            parent_ids = self._preference_parent_ids("川菜")
+            if parent_ids:
+                parameters["scope"] = "candidate_parents"
+                parameters["parent_ids"] = parent_ids
+        return validator.validate(
+            QueryPlan(
+                "PREFERENCE_RECOMMEND",
+                "preference_recommend_v1",
+                "Recipe",
+                parameters,
+                max_candidates=parameters["limit"],
+            )
+        )
+
+    def _preference_parent_ids(self, cuisine_type: str) -> list[str]:
+        """只从 active PDS build 的结构化 metadata 生成受限 parent 候选。"""
+
+        store = getattr(self, "parent_document_store", None)
+        build_id = getattr(store, "active_build_id", None)
+        if store is None or not build_id:
+            return []
+        parent_ids: list[str] = []
+        seen: set[str] = set()
+        for chunk in store.iter_chunks(build_id):
+            if chunk.parent_id in seen:
+                continue
+            parent = store.get_full_parent(chunk.parent_id)
+            if parent is None or parent.build_id != build_id:
+                continue
+            if str(parent.metadata.get("cuisine_type", "")) != cuisine_type:
+                continue
+            seen.add(parent.parent_id)
+            parent_ids.append(parent.parent_id)
+            if len(parent_ids) == QueryPlanValidator.MAX_CANDIDATES:
+                break
+        return parent_ids
+
+    def _try_restricted_vector(
+        self,
+        query: str,
+        top_k: int,
+        plan: QueryPlan,
+        audit_run=None,
+    ) -> EvidenceBundle | None:
         retriever = getattr(self, "restricted_vector_retriever", None)
         if retriever is None:
-            return EvidenceBundle(
-                query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "restricted_child_chunk_v2"},
-                entity_candidates=(),
-                graph_facts=(),
-                text_evidence=(),
-                limitations=("ARTIFACT_UNAVAILABLE", "V2 联合 artifact 当前不可用，未执行无约束向量检索。"),
-            )
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("restricted_vector", status="artifact-unavailable", parent_count=0)
+            return None
+        parent_ids = plan.parameters.get("parent_ids")
         try:
-            aggregates = retriever.retrieve(query, top_k=top_k)
+            aggregates = retriever.retrieve(query, parent_ids=parent_ids, top_k=top_k)
         except ArtifactMismatchError as error:
             logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
             if audit_run is not None and hasattr(audit_run, "record_event"):
@@ -536,12 +595,13 @@ class AdvancedGraphRAGSystem:
             return None
         except Exception as error:
             logger.warning("阶段 4 V2 检索不可用: %s", error)
-            limitations = ("VECTOR_UNAVAILABLE", "V2 受限向量检索当前不可用。")
-            aggregates = ()
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("restricted_vector", status="vector-unavailable", parent_count=0)
+            return None
         else:
             limitations = () if aggregates else ("NO_PREFERENCE_RESULTS", "当前 V2 build 没有匹配的 child chunk。")
         bundle = EvidenceBundle(
-            query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "restricted_child_chunk_v2", "top_k": top_k},
+            query_plan=plan.to_dict(),
             entity_candidates=(),
             graph_facts=(),
             text_evidence=tuple(item.text_evidence for item in aggregates),
@@ -552,7 +612,7 @@ class AdvancedGraphRAGSystem:
                 "restricted_vector",
                 status="selected" if aggregates else "unavailable",
                 parent_count=len(aggregates),
-                vector_scope="full" if retriever else "none",
+                vector_scope=plan.parameters["scope"],
             )
         return bundle
 

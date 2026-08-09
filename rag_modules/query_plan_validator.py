@@ -24,6 +24,7 @@ class QueryPlanValidator:
         "ingredient_vegetable_pairs_v1": frozenset({"ingredient_id", "vegetable_category", "limit"}),
         "technique_chunks_v1": frozenset({"technique_doc_id", "limit"}),
         "recipe_cuisine_filter_v1": frozenset({"recipe_ids", "cuisine_type", "limit"}),
+        "preference_recommend_v1": frozenset({"scope", "parent_ids", "limit"}),
     }
     _FORBIDDEN_KEYS = frozenset(
         {"cypher", "query", "label", "labels", "relationship", "relationships", "where", "filter"}
@@ -177,3 +178,20 @@ class QueryPlanValidator:
                     raise QueryPlanValidationError("recipe_ids 含非法 ID")
             parameters["recipe_ids"] = [recipe_id.strip() for recipe_id in recipe_ids]
             parameters["cuisine_type"] = self._required_id(parameters, "cuisine_type")
+        elif template_id == "preference_recommend_v1":
+            scope = parameters.get("scope")
+            if scope not in {"candidate_parents", "all_child_chunks"}:
+                raise QueryPlanValidationError("偏好检索 scope 必须为 candidate_parents 或 all_child_chunks")
+            parent_ids = parameters.get("parent_ids")
+            if scope == "all_child_chunks":
+                if parent_ids is not None:
+                    raise QueryPlanValidationError("全库 child chunk 检索不得携带 parent_ids")
+                return
+            if not isinstance(parent_ids, (list, tuple)) or not parent_ids or len(parent_ids) > self.MAX_CANDIDATES:
+                raise QueryPlanValidationError("候选 parent_ids 必须是有限非空序列")
+            normalized_ids = []
+            for parent_id in parent_ids:
+                if not isinstance(parent_id, str) or not parent_id.strip() or len(parent_id) > 150:
+                    raise QueryPlanValidationError("parent_ids 含非法 ID")
+                normalized_ids.append(parent_id.strip())
+            parameters["parent_ids"] = list(dict.fromkeys(normalized_ids))

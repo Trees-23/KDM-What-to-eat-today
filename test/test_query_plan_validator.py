@@ -13,6 +13,7 @@ def _plan(intent, entity_type, parameters, *, max_candidates=20):
         "INGREDIENT_VEGETABLE_PAIRS": "ingredient_vegetable_pairs_v1",
         "TECHNIQUE_CHUNKS": "technique_chunks_v1",
         "RECIPE_CUISINE_FILTER": "recipe_cuisine_filter_v1",
+        "PREFERENCE_RECOMMEND": "preference_recommend_v1",
     }
     return QueryPlan(intent, templates[intent], entity_type, parameters, max_candidates=max_candidates)
 
@@ -25,6 +26,8 @@ def _plan(intent, entity_type, parameters, *, max_candidates=20):
         (_plan("INGREDIENT_VEGETABLE_PAIRS", "Ingredient", {"ingredient_id": "i1", "vegetable_category": "蔬菜", "limit": 10}), "ingredient_vegetable_pairs_v1"),
         (_plan("TECHNIQUE_CHUNKS", "TechniqueDoc", {"technique_doc_id": "t1", "limit": 10}), "technique_chunks_v1"),
         (_plan("RECIPE_CUISINE_FILTER", "Recipe", {"recipe_ids": ["r1", "r2"], "cuisine_type": "川菜", "limit": 10}), "recipe_cuisine_filter_v1"),
+        (_plan("PREFERENCE_RECOMMEND", "Recipe", {"scope": "candidate_parents", "parent_ids": ["r1"], "limit": 10}), "preference_recommend_v1"),
+        (_plan("PREFERENCE_RECOMMEND", "Recipe", {"scope": "all_child_chunks", "limit": 10}), "preference_recommend_v1"),
     ],
 )
 def test_validator_accepts_only_complete_whitelist_plans(candidate, expected_template):
@@ -86,3 +89,17 @@ def test_validator_normalizes_technique_document_id():
     validated = QueryPlanValidator().validate(candidate)
 
     assert validated.parameters["technique_doc_id"] == "t1"
+
+
+@pytest.mark.parametrize(
+    "parameters",
+    [
+        {"scope": "candidate_parents", "limit": 1},
+        {"scope": "candidate_parents", "parent_ids": [], "limit": 1},
+        {"scope": "all_child_chunks", "parent_ids": ["r1"], "limit": 1},
+        {"scope": "unknown", "limit": 1},
+    ],
+)
+def test_preference_plan_rejects_implicit_or_invalid_vector_scope(parameters):
+    with pytest.raises(QueryPlanValidationError):
+        QueryPlanValidator().validate(_plan("PREFERENCE_RECOMMEND", "Recipe", parameters, max_candidates=1))

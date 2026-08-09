@@ -65,7 +65,7 @@ def _build_store(tmp_path):
         node_type="Recipe",
         title="测试菜谱",
         full_content="# 测试菜谱\n\n## 所需食材\n花生米\n\n## 制作步骤\n### 第1步\n先腌制鸡肉\n\n### 第2步\n下锅翻炒",
-        metadata={"node_id": "recipe-1"},
+        metadata={"node_id": "recipe-1", "cuisine_type": "川菜"},
         anchors=(
             AnchorSpec("CookingStep", "step-1", "### 第1步\n先腌制鸡肉", 0, "CONTAINS_STEP"),
             AnchorSpec("CookingStep", "step-2", "### 第2步\n下锅翻炒", 1, "CONTAINS_STEP"),
@@ -196,6 +196,15 @@ class _Router:
 class _MismatchedVectorRetriever:
     def retrieve(self, *_args, **_kwargs):
         raise ArtifactMismatchError("test artifact mismatch")
+
+
+class _RecordingVectorRetriever:
+    def __init__(self):
+        self.calls = []
+
+    def retrieve(self, query, **kwargs):
+        self.calls.append((query, kwargs))
+        return []
 
 
 class _AuditRun:
@@ -343,6 +352,7 @@ def test_v2_artifact_mismatch_returns_to_legacy_router():
     system = system_type.__new__(system_type)
     system.config = _Config()
     system.config.retrieval_milvus_v2_enabled = True
+    system.query_plan_validator = QueryPlanValidator()
     system.entity_resolver = None
     system.entity_direct_retriever = None
     system.restricted_vector_retriever = _MismatchedVectorRetriever()
@@ -355,6 +365,75 @@ def test_v2_artifact_mismatch_returns_to_legacy_router():
     assert analysis == "legacy-analysis"
     assert len(system.query_router.calls) == 1
     assert any(event[:2] == ("restricted_vector", "artifact-mismatch") for event in audit.events)
+
+
+def test_preference_query_plan_passes_cuisine_parent_scope_to_v2(tmp_path):
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.query_plan_validator = QueryPlanValidator()
+    system.parent_document_store = _build_store(tmp_path)
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = _RecordingVectorRetriever()
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("推荐川菜清淡的菜", 3)
+
+    assert analysis is None
+    assert bundle.query_plan["intent"] == "PREFERENCE_RECOMMEND"
+    assert bundle.query_plan["parameters"]["scope"] == "candidate_parents"
+    assert bundle.query_plan["parameters"]["parent_ids"] == ["recipe-1"]
+    assert system.restricted_vector_retriever.calls == [
+        ("推荐川菜清淡的菜", {"parent_ids": ["recipe-1"], "top_k": 3})
+    ]
+    assert system.query_router.calls == []
+
+
+def test_preference_query_without_candidates_uses_explicit_full_child_scope():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = _RecordingVectorRetriever()
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3)
+
+    assert analysis is None
+    assert bundle.query_plan["parameters"]["scope"] == "all_child_chunks"
+    assert "parent_ids" not in bundle.query_plan["parameters"]
+    assert system.restricted_vector_retriever.calls == [
+        ("夏天吃什么清淡的？", {"parent_ids": None, "top_k": 3})
+    ]
+
+
+def test_preference_initialization_failure_returns_to_legacy_router(tmp_path):
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.config.retrieval_artifact_manifest_path = str(tmp_path / "missing-manifest.json")
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = object()
+    system.query_router = _Router()
+    audit = _AuditRun()
+
+    system._initialize_restricted_vector_retriever()
+
+    documents, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, audit_run=audit)
+
+    assert system.restricted_vector_retriever is None
+    assert documents == ["legacy"]
+    assert analysis == "legacy-analysis"
+    assert len(system.query_router.calls) == 1
+    assert any(event[:2] == ("restricted_vector", "artifact-unavailable") for event in audit.events)
 
 
 def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(tmp_path):
