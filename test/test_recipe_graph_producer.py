@@ -8,6 +8,9 @@ from pathlib import Path
 from scripts import build_recipe_graph_csv, validate_recipe_graph_csv
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+
+
 def _write_source_manifest(tmp_path: Path) -> Path:
     dishes = tmp_path / "dishes"
     meat = dishes / "meat"
@@ -183,6 +186,121 @@ def test_calculation_section_supplies_amounts_and_excludes_cooking_tools(tmp_pat
     assert amounts["鱼肉"] == ("500", "g")
     assert amounts["大蒜"] == ("2", "瓣")
     assert amounts["盐"] == ("5", "g")
+
+
+def test_ingredient_extraction_excludes_described_tools_and_formulae(tmp_path: Path):
+    dishes = tmp_path / "dishes"
+    dishes.mkdir()
+    (dishes / "示例.md").write_text(
+        """# 示例的做法
+
+## 必备原料和工具
+
+- 鸡肉
+- 八角
+- 火锅底料
+- 平底煎锅
+- 烤箱 大小不限
+- 蒸笼
+- 小碗若干
+- 筛网（可选）
+- 厨房用夹
+
+## 计算
+
+- 鸡肉 500g
+- 八角 = 5g
+- 冷藏时间 Tc = 生米体积 / 10 ml
+- 腌制温度 = 20 摄氏度
+- 配方 = 鸡肉 * 0.1 = 50g
+
+## 操作
+
+- 准备食材
+- 完成烹饪
+""",
+        encoding="utf-8",
+    )
+    output = tmp_path / "output"
+
+    assert build_recipe_graph_csv.main(["--input-dir", str(dishes), "--output", str(output)]) == 0
+
+    ingredient_names = {row["name"] for row in _rows(output / "nodes.csv") if row["labels"] == "Ingredient"}
+    assert {"鸡肉", "八角", "火锅底料"}.issubset(ingredient_names)
+    assert not {
+        "平底煎锅", "烤箱 大小不限", "蒸笼", "小碗若干", "筛网", "厨房用夹",
+        "冷藏时间 Tc = 生米体积 /", "腌制温度 =", "配方 = 鸡肉 0.1 =",
+    } & ingredient_names
+
+
+def test_cooking_tool_recognition_handles_descriptions_and_preserves_food_names():
+    tools = {
+        "1 个小碗", "32 厘米以上的炒锅一个", "不粘平底锅", "平底锅 或 微波炉",
+        "筛网 网孔约为", "需要烤箱", "一次性透明塑料杯", "大号的玻璃杯",
+        "油 + 锅 + 菜刀 + 铲子", "厚底煮锅+严丝合缝的锅盖", "电饭煲/电炖锅",
+        "可选：空气炸锅烤架", "洗菜盆、直径 18cm 的小锅", "调酒杯", "100°C 沸水锅",
+        "瓦罐或者高压锅", "砵或者有一定深度的碗", "硅油纸或模具", "能放进微波炉的容器",
+        "蒸锅或电蒸炉", "锡纸盘", "调理机/果汁机", "餐刀", "高球杯",
+        "放得下玉米的锅", "厨房用温度计", "一个容量在 600 毫升以上的容器",
+        "[可选] 分蛋器", "冰淇淋模具", "手动压汁器", "可密封容器", "吧勺",
+        "深一点的小铁盆", "漏勺", "蒸架", "量酒器", "金属蛋糕模具",
+    }
+    foods = {"火锅底料", "火锅牛肉卷", "麻辣香锅调料", "北京二锅头酒", "蒸锅用水"}
+
+    assert all(build_recipe_graph_csv._is_cooking_tool(name) for name in tools)
+    assert not any(build_recipe_graph_csv._is_cooking_tool(name) for name in foods)
+
+
+def test_real_recipe_sources_exclude_tools_and_calculation_formulae():
+    def ingredient_names(relative_path: str) -> set[str]:
+        text = (REPOSITORY_ROOT / relative_path).read_text(encoding="utf-8")
+        return {
+            name
+            for name, _amount, _unit in build_recipe_graph_csv._extract_ingredients(
+                build_recipe_graph_csv._h2_sections(build_recipe_graph_csv._clean_markdown(text))
+            )
+        }
+
+    shrimp = ingredient_names("data/dishes/aquatic/蒜香黄油虾/蒜香黄油虾.md")
+    egg_tart = ingredient_names("data/dishes/dessert/烤蛋挞/烤蛋挞.md")
+    crayfish = ingredient_names("data/dishes/aquatic/小龙虾/小龙虾.md")
+    porridge = ingredient_names("data/dishes/soup/米粥.md")
+    ribs = ingredient_names("data/dishes/meat_dish/土豆炖排骨/土豆炖排骨.md")
+
+    assert {"大虾", "大蒜", "无盐黄油"}.issubset(shrimp)
+    assert not {"平底煎锅", "厨房用夹"} & shrimp
+    assert {"鸡蛋", "牛奶", "淡奶油", "白砂糖"}.issubset(egg_tart)
+    assert not {"烤箱 大小不限", "克数称", "搅拌器 包含且不限于筷子 打蛋器等工具", "筛网 网孔约为"} & egg_tart
+    assert {"小龙虾", "油", "桂皮", "八角"}.issubset(crayfish)
+    assert porridge == {"米", "水", "植物油"}
+    assert "八角" in ribs
+
+
+def test_manifest_sha_is_bound_to_the_same_bytes_used_for_parsing(tmp_path: Path, monkeypatch):
+    manifest = _write_source_manifest(tmp_path)
+    original_manifest_bytes = manifest.read_bytes()
+    original_load_source_file = build_recipe_graph_csv._load_source_file
+
+    def mutate_manifest_after_first_source(*args, **kwargs):
+        source = original_load_source_file(*args, **kwargs)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "schema_version": "recipe-source-manifest-v1",
+                    "source_root": "dishes",
+                    "files": [{"path": "meat/菜A.md"}],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        return source
+
+    monkeypatch.setattr(build_recipe_graph_csv, "_load_source_file", mutate_manifest_after_first_source)
+    sources, manifest_sha256 = build_recipe_graph_csv.load_sources(input_manifest=str(manifest), input_dir=None)
+
+    assert [source.logical_path for source in sources] == ["meat/菜A.md", "vegetable/菜B.md"]
+    assert manifest_sha256 == hashlib.sha256(original_manifest_bytes).hexdigest()
 
 
 def test_build_uses_the_bytes_that_were_hashed_when_sources_were_loaded(tmp_path: Path):

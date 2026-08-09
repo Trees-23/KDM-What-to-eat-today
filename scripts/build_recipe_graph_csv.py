@@ -102,9 +102,10 @@ def load_sources(*, input_manifest: str | None, input_dir: str | None) -> tuple[
         if not manifest_path.is_file():
             raise RecipeBuildError(f"输入 manifest 不存在: {manifest_path}")
         try:
-            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as error:
-            raise RecipeBuildError(f"输入 manifest 不是有效 JSON: {error.msg}") from error
+            manifest_content = manifest_path.read_bytes()
+            payload = json.loads(manifest_content.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise RecipeBuildError(f"输入 manifest 不是有效 JSON: {error}") from error
         if not isinstance(payload, dict) or payload.get("schema_version") != SOURCE_SCHEMA_VERSION:
             raise RecipeBuildError(f"输入 manifest 必须声明 schema_version={SOURCE_SCHEMA_VERSION}")
         source_root_value = payload.get("source_root")
@@ -137,7 +138,9 @@ def load_sources(*, input_manifest: str | None, input_dir: str | None) -> tuple[
                 if actual_hash != expected_hash:
                     raise RecipeBuildError(f"来源 SHA-256 不匹配: {logical_path}")
             selected.append(source)
-        return sorted(selected, key=lambda item: item.logical_path), _sha256_file(manifest_path)
+        # 解析与溯源摘要必须来自同一份字节，避免 manifest 在构建期间变更导致
+        # CSV 选择的来源与记录的 SHA-256 不一致。
+        return sorted(selected, key=lambda item: item.logical_path), _sha256_bytes(manifest_content)
 
     root = Path(str(input_dir)).resolve()
     if not root.is_dir():
@@ -210,9 +213,32 @@ COOKING_TOOL_NAMES = frozenset(
         "量杯", "厨房秤", "秤", "大不锈钢碗", "不锈钢碗", "碗", "盘子", "碗与盘子",
         "炒锅", "平底锅", "蒸锅", "砂锅", "高压锅", "锅", "烤箱", "微波炉", "空气炸锅",
         "电饭煲", "燃气灶", "电磁炉", "菜刀", "剪刀", "砧板", "筷子", "炒勺", "锅铲",
-        "保鲜膜", "锡纸", "烘焙纸", "打蛋器", "料理机", "破壁机",
+        "保鲜膜", "锡纸", "烘焙纸", "打蛋器", "料理机", "破壁机", "平底煎锅", "蒸笼",
+        "筛网", "小碗", "厨房用夹", "厨房夹", "食品夹", "夹子",
     }
 )
+COOKING_TOOL_CORES = (
+    "空气炸锅烤架", "平底煎锅", "平底锅", "空气炸锅", "电压力锅", "高压锅", "压力锅",
+    "电饭煲", "电饭锅", "电炖锅", "微波炉", "电磁炉", "燃气灶", "烘焙刮刀", "削皮刀",
+    "水果刀", "厨房用夹", "厨房夹", "食品夹", "防烫盘夹", "保鲜膜", "烘焙油纸", "烘焙纸",
+    "厨房纸", "吸油纸", "锡箔纸", "打蛋器", "搅拌器", "分蛋器", "压汁器", "料理机", "破壁机",
+    "厨房秤", "克数称", "克称", "定时器", "蒸鱼盘子",
+    "蒸锅", "炒锅", "煮锅", "炖煮锅", "砂锅", "煎锅", "汤锅", "奶锅", "油锅", "粥锅",
+    "电蒸炉", "筛网", "滤网", "过滤网", "砧板", "锅铲", "炒勺", "蒜臼", "笊篱", "笼屉", "烤架",
+    "量杯", "量酒器", "酒杯", "雪克杯", "高球杯", "模具", "容器", "菜刀", "剪刀", "筷子", "锡纸", "硅油纸",
+    "锡纸盘", "调理机", "果汁机", "洗菜盆", "瓦罐", "灶台", "盘子", "锅盖", "夹子", "铲子",
+    "刮刀", "餐刀", "温度计", "吧勺", "漏勺", "勺子", "蒸架", "杯子", "碗", "盘", "盆", "杯", "砵", "网", "刀", "锅",
+)
+TOOL_MODIFIER_PATTERN = re.compile(
+    r"^(?:(?:大|中|小|特大|超大|大号|中号|小号|不锈钢|厨房用|家用|家庭|普通|深口|浅口|长柄|带盖|"
+    r"带孔|玻璃|陶瓷|耐热|木制|竹制|硅胶|塑料|透明|一次性|电动|手动|可调温|多功能|圆形|方形|"
+    r"不粘|厚底|严丝合缝|有点深度|有一定深度|能放进微波炉|分可控火候|不可控火候|铁|铸铁|电|煮|炖|油|"
+    r"粥|利口酒|海波|雪克|调酒|餐|高球|可密封|带刻度|额外|家庭|铁))+$"
+)
+CALCULATION_NON_INGREDIENT_NAMES = frozenset({"时间", "冷藏时间", "加热时间", "烹饪时间", "温度", "体积", "重量", "容量", "比例"})
+CALCULATION_NON_INGREDIENT_MARKERS = ("时间", "温度", "体积", "重量", "容量", "比例", "分量", "质量", "基于", "一般一个人")
+NON_INGREDIENT_TEXT_MARKERS = ("注：", "如果有可能", "请尽量", "炒糖色过程")
+TOOL_LIST_SEPARATOR = re.compile(r"\s*(?:[/+、，,]|或者|或|以及|及|和|与)\s*")
 
 
 def _extract_amount_and_unit(item: str) -> tuple[str, str, str]:
@@ -230,7 +256,7 @@ def _extract_amount_and_unit(item: str) -> tuple[str, str, str]:
 def _normalise_ingredient_name(value: str) -> str:
     value = _plain_text(value)
     value = re.split(r"[（(]", value, maxsplit=1)[0]
-    value = re.sub(r"\s+", " ", value).strip(" -:：；;，,。")
+    value = re.sub(r"\s+", " ", value).strip(" -:：；;，,。=")
     return INGREDIENT_ALIASES.get(value, value)
 
 
@@ -239,14 +265,75 @@ def _extract_calculated_ingredient(item: str) -> tuple[str, str, str] | None:
     match = QUANTITY_PATTERN.search(value)
     if match is None:
         return None
-    name = _normalise_ingredient_name(value[:match.start()])
-    if not name:
+    name_source = value[:match.start()].strip()
+    suffix = value[match.end():].strip()
+    if any(symbol in name_source or symbol in suffix for symbol in ("+", "-", "*", "/", "\\", "×", "÷", "^", "%", "<", ">")):
+        return None
+    if "=" in name_source:
+        assignment = name_source.split("=")
+        if len(assignment) != 2 or assignment[1].strip():
+            return None
+        name_source = assignment[0].strip()
+    if "=" in suffix or re.search(r"[A-Za-z0-9]", name_source):
+        return None
+    name = _normalise_ingredient_name(name_source)
+    if (
+        not name
+        or name in CALCULATION_NON_INGREDIENT_NAMES
+        or any(marker in name for marker in CALCULATION_NON_INGREDIENT_MARKERS)
+    ):
         return None
     return name, match.group("amount").replace(" ", ""), match.group("unit")
 
 
+def _is_single_cooking_tool(name: str) -> bool:
+    candidate = _normalise_ingredient_name(name)
+    candidate = re.sub(r"^\[(?:可选|工具)\]\s*", "", candidate)
+    if candidate in COOKING_TOOL_NAMES:
+        return True
+    candidate = re.sub(r"^(?:工具|器具|必备|可选|需要|准备|使用)\s*[：:]?\s*", "", candidate)
+    candidate = re.sub(r"^(?:直径\s*)?\d+\s*(?:厘米|cm)(?:以上)?的?\s*", "", candidate, flags=re.I)
+    candidate = re.sub(r"^(?:[一二三四五六七八九十\d]+\s*(?:个|只|把|口|套|张)|一口|一把|一只|一个|若干)\s*", "", candidate)
+    candidate = re.sub(r"(?:\s*|[，,;；])(大小不限|若干|适量|[一二三四五六七八九十\d]+(?:个|只|把|口|套|张)|需.*|网孔.*|例如.*)$", "", candidate)
+    candidate = re.sub(r"(?:一个|一只|一把|一口|若干)$", "", candidate)
+    if re.fullmatch(r"\d+(?:°C|摄氏度)\s*.+锅", candidate, flags=re.I):
+        return True
+    if candidate in COOKING_TOOL_NAMES:
+        return True
+    for core in COOKING_TOOL_CORES:
+        if candidate == core:
+            return True
+        if not candidate.endswith(core):
+            continue
+        modifier = candidate[: -len(core)].replace("的", "").strip()
+        if modifier and TOOL_MODIFIER_PATTERN.fullmatch(modifier):
+            return True
+    if candidate.endswith(("容器", "模具", "盆")):
+        return True
+    if candidate.startswith("搅拌器") and "工具" in candidate:
+        return True
+    return False
+
+
 def _is_cooking_tool(name: str) -> bool:
-    return name in COOKING_TOOL_NAMES
+    raw = _plain_text(name)
+    if "容量" in raw and "容器" in raw:
+        return True
+    candidate = _normalise_ingredient_name(name)
+    if _is_single_cooking_tool(candidate):
+        return True
+    if candidate.endswith("锅") and "的" in candidate:
+        return True
+    parts = [part for part in TOOL_LIST_SEPARATOR.split(candidate) if part]
+    if len(parts) < 2:
+        return False
+    tool_count = sum(_is_single_cooking_tool(part) for part in parts)
+    return tool_count >= 2 and tool_count >= len(parts) - 1
+
+
+def _is_non_ingredient_text(name: str) -> bool:
+    candidate = _normalise_ingredient_name(name)
+    return any(marker in candidate for marker in NON_INGREDIENT_TEXT_MARKERS)
 
 
 def _extract_ingredients(sections: Iterable[tuple[str, str]]) -> list[tuple[str, str, str]]:
@@ -257,16 +344,16 @@ def _extract_ingredients(sections: Iterable[tuple[str, str]]) -> list[tuple[str,
         if "计算" in title:
             for item in _list_items(body):
                 calculated = _extract_calculated_ingredient(item)
-                if calculated is not None and not _is_cooking_tool(calculated[0]):
+                if calculated is not None and not _is_cooking_tool(calculated[0]) and not _is_non_ingredient_text(calculated[0]):
                     calculated_rows.append(calculated)
             continue
         if not any(marker in title for marker in ("原料", "配料", "食材")):
             continue
         for item in _list_items(body):
-            if item in skipped:
+            if item in skipped or _is_cooking_tool(item) or _is_non_ingredient_text(item):
                 continue
             name, amount, unit = _extract_amount_and_unit(item)
-            if name and not _is_cooking_tool(name):
+            if name and not _is_cooking_tool(name) and not _is_non_ingredient_text(name):
                 raw_rows.append((name, amount, unit))
     deduplicated: dict[str, tuple[str, str, str]] = {}
     for name, amount, unit in calculated_rows + raw_rows:
