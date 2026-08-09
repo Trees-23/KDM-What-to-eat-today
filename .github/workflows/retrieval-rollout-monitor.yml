@@ -18,6 +18,7 @@ jobs:
       ARTIFACT_DIR: ${{ runner.temp }}/retrieval-rollout-artifacts
       VARIANT: ${{ vars.RETRIEVAL_VARIANT }}
       CONFIG_HASH: ${{ vars.RETRIEVAL_CONFIG_HASH }}
+      ROLLOUT_PROFILE: ${{ vars.RETRIEVAL_ROLLOUT_PROFILE || 'personal-local' }}
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
@@ -38,6 +39,7 @@ jobs:
           --thresholds eval/retrieval_release_thresholds.yaml
           --window-days 7
           --min-requests 100
+          --profile "$ROLLOUT_PROFILE"
       - name: 保存不可变监控工件
         if: always()
         uses: actions/upload-artifact@v4

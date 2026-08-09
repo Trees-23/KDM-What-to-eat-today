@@ -17,6 +17,7 @@ def _matching_rows(expanded, variant, latency_ms=10):
             "evidence": [item["required_evidence"]],
             "graph_status": item.get("required_graph_status"),
             "graph_paths": item.get("gold_relation_paths", []),
+            "entity_ids": item.get("gold_entity_ids", []),
             "answer_faithful": True,
             "entity_status": "not_found" if item.get("intent") == "ENTITY_MISSING" else None,
             "evidence_links": [{"store": "pds", "build_id": "build-test", "parent_id": item["gold_parent_ids"][0], "evidence_id": item["evaluation_id"]}] if item.get("requires_evidence_link") else [],
@@ -31,7 +32,8 @@ def test_cases_expand_to_frozen_minimum_with_distinct_fixed_paraphrases():
     cases = json.loads((ROOT / "eval/retrieval_refactor_cases.yaml").read_text(encoding="utf-8"))
     thresholds = json.loads((ROOT / "eval/retrieval_release_thresholds.yaml").read_text(encoding="utf-8"))
     expanded = _expanded_cases(cases)
-    old_report = evaluate(cases, thresholds, _matching_rows(expanded, "old"), "old")
+    old_rows = _matching_rows(expanded, "old")
+    old_report = evaluate(cases, thresholds, old_rows, "old")
     old_report["variant"] = "old"
     new_report = evaluate(
         cases,
@@ -40,6 +42,7 @@ def test_cases_expand_to_frozen_minimum_with_distinct_fixed_paraphrases():
         "new",
         old_report,
         require_baseline=True,
+        baseline_rows=old_rows,
     )
 
     assert len(expanded) == 50
@@ -99,12 +102,13 @@ def test_new_path_requires_old_baseline_and_blocks_metric_regression():
         "fault_injection_violation_count_max": 0,
         "new_vs_old": {"recall_at_5_max_regression": 0.02, "mrr_at_5_max_regression": 0.02, "p95_latency_ratio_max": 1.2},
     }
-    old_report = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "retrieved_parent_ids": ["recipe-x"], "evidence": ["text"], "answer_faithful": True, "latency_ms": 100, "variant": "old"}], "old")
+    old_rows = [{"evaluation_id": "x-p1", "retrieved_parent_ids": ["recipe-x"], "evidence": ["text"], "answer_faithful": True, "latency_ms": 100, "variant": "old"}]
+    old_report = evaluate(cases, thresholds, old_rows, "old")
     old_report["variant"] = "old"
     old_report["cases_schema_version"] = cases.get("schema_version")
     old_report["thresholds_schema_version"] = thresholds.get("schema_version")
     missing_baseline = evaluate(cases, thresholds, _matching_rows(_expanded_cases(cases), "new"), "new", require_baseline=True)
-    regressed = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "retrieved_parent_ids": [], "evidence": ["text"], "answer_faithful": True, "latency_ms": 121, "variant": "new"}], "new", old_report, require_baseline=True)
+    regressed = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "retrieved_parent_ids": [], "evidence": ["text"], "answer_faithful": True, "latency_ms": 121, "variant": "new"}], "new", old_report, require_baseline=True, baseline_rows=old_rows)
 
     assert "baseline_report_required" in missing_baseline["errors"]
     assert "recall_at_5_regression" in regressed["errors"]
@@ -164,6 +168,14 @@ def test_new_path_rejects_untrusted_or_wrong_baseline_report():
     assert "baseline_report_required" in report["errors"]
 
 
+def test_non_finite_latency_cannot_count_toward_baseline_or_coverage():
+    cases = {"required_case_count": 1, "paraphrase_repetitions": 1, "cases": [{"id": "x", "paraphrases": ["测试问题"], "gold_parent_ids": [], "required_evidence": "entity_not_found", "forbidden_assertions": []}]}
+    thresholds = {"min_case_count": 1, "result_coverage_min": 1, "latency_coverage_min": 1, "evidence_completeness_min": 1, "forbidden_assertion_count_max": 0, "strict_nutrition_misclaim_count_max": 0}
+    report = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "evidence": ["entity_not_found"], "entity_status": "not_found", "answer_faithful": True, "latency_ms": float("inf")}])
+
+    assert "latency_coverage" in report["errors"]
+
+
 def test_duplicate_empty_cases_and_malformed_result_rows_fail_closed():
     with pytest.raises(ValueError, match="不能为空"):
         _expanded_cases({"cases": [], "paraphrase_repetitions": 1})
@@ -182,14 +194,16 @@ def test_cli_writes_comparison_report_and_nonzero_on_latency_regression(tmp_path
     thresholds_path = ROOT / "eval/retrieval_release_thresholds.yaml"
     expanded = _expanded_cases(json.loads(cases_path.read_text(encoding="utf-8")))
     results_path = tmp_path / "results.jsonl"
+    baseline_results_path = tmp_path / "baseline-results.jsonl"
     old_report_path = tmp_path / "old-report.json"
     new_report_path = tmp_path / "new-report.json"
 
     results_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in _matching_rows(expanded, "old", 100)) + "\n", encoding="utf-8")
+    baseline_results_path.write_text(results_path.read_text(encoding="utf-8"), encoding="utf-8")
     assert main(["--cases", str(cases_path), "--thresholds", str(thresholds_path), "--results", str(results_path), "--report", str(old_report_path), "--variant", "old"]) == 0
 
     results_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in _matching_rows(expanded, "new", 121)) + "\n", encoding="utf-8")
-    assert main(["--cases", str(cases_path), "--thresholds", str(thresholds_path), "--results", str(results_path), "--report", str(new_report_path), "--variant", "new", "--baseline-report", str(old_report_path)]) == 2
+    assert main(["--cases", str(cases_path), "--thresholds", str(thresholds_path), "--results", str(results_path), "--report", str(new_report_path), "--variant", "new", "--baseline-report", str(old_report_path), "--baseline-results", str(baseline_results_path)]) == 2
     new_report = json.loads(new_report_path.read_text(encoding="utf-8"))
     assert new_report["comparison"]["baseline_metrics"]["p95_latency_ms"] == 100.0
     assert "p95_latency_ms" in new_report["errors"]

@@ -53,6 +53,13 @@ def test_evaluate_requires_real_seven_day_window_and_keeps_legacy_when_blocked(t
     assert report["recommended_action"] == "keep_legacy_traffic"
 
 
+def test_personal_local_profile_does_not_require_online_window(tmp_path):
+    report = evaluate_window(artifact_dir=tmp_path / "artifacts", thresholds={"deployment_profile": "personal-local"}, window_days=7, min_requests=100)
+    assert report["status"] == "not_applicable"
+    assert report["valid"] is True
+    assert report["recommended_action"] == "offline_evaluation_only"
+
+
 def test_evaluate_passes_only_with_old_baseline_and_full_window(tmp_path):
     artifact_dir = tmp_path / "artifacts"
     artifact_dir.mkdir()

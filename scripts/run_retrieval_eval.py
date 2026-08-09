@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import math
+import re
 from pathlib import Path
 from statistics import quantiles
 from typing import Any
@@ -62,7 +65,7 @@ def _strict_nutrition_claim_audit(row: dict[str, Any]) -> list[dict[str, Any]]:
     assertions = row.get("assertions") or []
     if isinstance(assertions, list):
         for assertion in assertions:
-            if isinstance(assertion, str) and assertion in {"strict_nutrition_misclaim", "strict_low_fat_claim"}:
+            if isinstance(assertion, str) and assertion.startswith("strict_"):
                 claims.append({"assertion": str(assertion), "source": "assertions", "evidence_verified": False, "valid": False})
 
     nutrition_claims = row.get("nutrition_claims") or []
@@ -91,9 +94,15 @@ def _baseline_metrics(baseline_report: dict[str, Any] | None) -> dict[str, float
     if not isinstance(metrics, dict):
         return None
     required = ("case_count", "recall_at_5", "mrr_at_5", "p95_latency_ms")
-    if any(not isinstance(metrics.get(metric), (int, float)) for metric in required):
+    if any(not isinstance(metrics.get(metric), (int, float)) or not math.isfinite(float(metrics[metric])) for metric in required):
         return None
     return {metric: float(metrics[metric]) for metric in required}
+
+
+def _rows_fingerprint(rows: list[dict[str, Any]]) -> str:
+    # 指纹也要能覆盖会被 schema 门控拒绝的 Infinity/NaN 输入，避免异常退出掩盖评测错误。
+    encoded = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=True).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _evidence_links_valid(case: dict[str, Any], row: dict[str, Any], ranked: list[Any]) -> bool:
@@ -156,6 +165,7 @@ def evaluate(
     variant: str | None = None,
     baseline_report: dict[str, Any] | None = None,
     require_baseline: bool = False,
+    baseline_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if variant:
         rows = [row for row in rows if isinstance(row, dict) and row.get("variant") == variant]
@@ -187,6 +197,7 @@ def evaluate(
     relation_checks = []
     faithfulness_checks = []
     linkage_checks = []
+    entity_checks = []
     for case in cases:
         row = by_id.get(case["evaluation_id"])
         if row is None:
@@ -230,10 +241,15 @@ def evaluate(
         if case.get("requires_evidence_link") is True:
             linkage_complete = _evidence_links_valid(case, row, ranked)
             linkage_checks.append(linkage_complete)
+        expected_entities = set(case.get("gold_entity_ids") or [])
+        entity_correct = None
+        if expected_entities:
+            entity_correct = expected_entities <= set(_string_list(row.get("entity_ids")))
+            entity_checks.append(entity_correct)
         fault_violations = _fault_injection_violations(case, row, ranked)
         fault_injection_violations.extend({"evaluation_id": case["evaluation_id"], "assertion": item} for item in fault_violations)
         latency = row.get("latency_ms")
-        if isinstance(latency, (int, float)) and latency >= 0:
+        if isinstance(latency, (int, float)) and not isinstance(latency, bool) and math.isfinite(float(latency)) and latency >= 0:
             latencies.append(float(latency))
         outcomes.append(
             {
@@ -244,6 +260,7 @@ def evaluate(
                 "relation_path_correct": relation_correct,
                 "answer_faithful": faithful,
                 "evidence_linked": linkage_complete,
+                "entity_resolution_correct": entity_correct,
                 "fault_injection_violations": fault_violations,
             }
         )
@@ -260,6 +277,7 @@ def evaluate(
         "relation_path_correctness": sum(relation_checks) / len(relation_checks) if relation_checks else 1.0,
         "answer_faithfulness": sum(faithfulness_checks) / case_count,
         "evidence_linkage": sum(linkage_checks) / len(linkage_checks) if linkage_checks else 1.0,
+        "entity_resolution_correctness": sum(entity_checks) / len(entity_checks) if entity_checks else 1.0,
         "forbidden_assertion_count": forbidden,
         "strict_nutrition_misclaim_count": len(nutrition_misclaims),
         "fault_injection_violation_count": len(fault_injection_violations),
@@ -276,6 +294,7 @@ def evaluate(
         ("relation_path_correctness_min", "relation_path_correctness"),
         ("answer_faithfulness_min", "answer_faithfulness"),
         ("evidence_linkage_min", "evidence_linkage"),
+        ("entity_resolution_min", "entity_resolution_correctness"),
     ):
         if metrics[metric] < thresholds.get(threshold, 1.0):
             errors.append(metric)
@@ -301,7 +320,12 @@ def evaluate(
         same_cases = isinstance(baseline_report, dict) and baseline_report.get("cases_schema_version") == cases_payload.get("schema_version")
         same_thresholds = isinstance(baseline_report, dict) and baseline_report.get("thresholds_schema_version") == thresholds.get("schema_version")
         same_case_count = baseline_metrics is not None and baseline_metrics.get("case_count", metrics["case_count"]) == metrics["case_count"]
-        if not isinstance(comparison_thresholds, dict) or baseline_metrics is None or not baseline_valid or not baseline_variant or not same_cases or not same_thresholds or not same_case_count:
+        baseline_hash_matches = baseline_rows is not None and baseline_report is not None and baseline_report.get("results_sha256") == _rows_fingerprint([row for row in baseline_rows if isinstance(row, dict) and row.get("variant") == "old"])
+        if require_baseline and baseline_rows is None:
+            baseline_hash_matches = False
+        if not isinstance(comparison_thresholds, dict) or baseline_metrics is None or not baseline_valid or not baseline_variant or not same_cases or not same_thresholds or not same_case_count or not baseline_hash_matches:
+            errors.append("baseline_report_required")
+        elif baseline_report.get("generated_by") != "scripts/run_retrieval_eval.py" or not isinstance(baseline_report.get("results_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", baseline_report["results_sha256"]):
             errors.append("baseline_report_required")
         elif baseline_metrics["p95_latency_ms"] <= 0:
             errors.append("baseline_p95_latency_ms")
@@ -320,7 +344,7 @@ def evaluate(
             if comparison["p95_latency_ratio"] is None or comparison["p95_latency_ratio"] > comparison_thresholds["p95_latency_ratio_max"]:
                 errors.append("p95_latency_ms")
 
-    return {
+    report = {
         "valid": not errors,
         "metrics": metrics,
         "errors": errors,
@@ -334,7 +358,12 @@ def evaluate(
         "comparison": comparison,
         "cases_schema_version": cases_payload.get("schema_version"),
         "thresholds_schema_version": thresholds.get("schema_version"),
+        "report_schema_version": "retrieval-eval-report-v2",
+        "generated_by": "scripts/run_retrieval_eval.py",
+        "results_sha256": _rows_fingerprint(rows),
+        "variant": variant,
     }
+    return report
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -345,18 +374,29 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--report", required=True, type=Path)
     parser.add_argument("--variant", required=True, choices=("old", "new"))
     parser.add_argument("--baseline-report", type=Path)
+    parser.add_argument("--baseline-results", type=Path)
     args = parser.parse_args(argv)
     rows = [json.loads(line) for line in args.results.read_text(encoding="utf-8").splitlines() if line.strip()]
+    cases_payload = _load_json(args.cases)
+    thresholds = _load_json(args.thresholds)
     baseline_report = _load_json(args.baseline_report) if args.baseline_report else None
+    baseline_rows = None
+    if args.variant == "new" and args.baseline_results:
+        baseline_rows = [json.loads(line) for line in args.baseline_results.read_text(encoding="utf-8").splitlines() if line.strip()]
+        computed_baseline = evaluate(cases_payload, thresholds, baseline_rows, "old")
+        computed_baseline["variant"] = "old"
+        if baseline_report is not None and baseline_report.get("results_sha256") != computed_baseline.get("results_sha256"):
+            raise ValueError("baseline-report 与 baseline-results 摘要不一致")
+        baseline_report = computed_baseline
     report = evaluate(
-        _load_json(args.cases),
-        _load_json(args.thresholds),
+        cases_payload,
+        thresholds,
         rows,
         args.variant,
         baseline_report,
         require_baseline=args.variant == "new",
+        baseline_rows=baseline_rows,
     )
-    report["variant"] = args.variant
     report["baseline_report"] = args.baseline_report.name if args.baseline_report else None
     args.report.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"valid": report["valid"], "metrics": report["metrics"], "errors": report["errors"]}, ensure_ascii=False, sort_keys=True))

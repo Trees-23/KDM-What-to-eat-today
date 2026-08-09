@@ -488,7 +488,7 @@ python scripts/validate_nutrition_dataset.py --source <governed-source> --policy
 - Recipe 输入来源、授权、规范、ID 生成、变更检测、CSV 输出和导入预检设计已评审。
 - 阶段 0 的 B 已通过；任何目标环境导入另有备份、白名单和人工批准。
 - eval/retrieval_release_thresholds.yaml 已提交并冻结：至少 50 条评测（10 个必测场景各至少 1 条、其余为固定释义或故障注入）；10 个必测场景的必需事实与证据等级通过率为 100%；禁止断言、关系伪证和严格营养误报为 0；Recall@5、MRR@5 均不得低于旧路径超过 0.02；PDS/Milvus evidence linkage 为 100%；P95 延迟不高于旧路径基线的 1.20 倍；连续 7 个自然日且至少 100 次新路径请求满足同样的零禁止断言与错误率不高于旧路径加 1 个百分点。任何调整必须以新的阈值文件提交和产品/检索负责人批准完成，不能在评测后口头修改。 |
-- 持久化 rollout 监控已配置：受保护 CI/CD 身份每 15 分钟从已授权指标源采集时间戳、流量、错误率、P95、禁止断言计数、营养误报计数和 variant，保存为不可变 job artifact；启动监控、可读取指标源和首个成功采样均已验证。没有指标源、调度器或运行身份时，阶段 6 只能保持 blocked，不能把离线评测替代连续 7 天观察。 |
+- 持久化 rollout 监控已配置：受保护部署 profile 每 15 分钟从已授权指标源采集时间戳、流量、错误率、P95、禁止断言计数、营养误报计数和 variant，保存为不可变 job artifact；启动监控、可读取指标源和首个成功采样均已验证。个人本地 profile 不接入真实流量，7 天/100 请求观察标记为 not_applicable，以冻结离线评测和安全守卫作为完成依据；受保护部署 profile 没有指标源、调度器或运行身份时才保持 blocked。 |
 
 ### 文件范围、生产闭环与评测
 
@@ -504,7 +504,7 @@ python scripts/validate_nutrition_dataset.py --source <governed-source> --policy
 
 CSV 生成和 dry-run 是非破坏性的；任何 apply 会写入图数据库，属于受控迁移动作而非普通构建。只有 staging 完整导入、快照恢复、阶段 6 评测和用户验收均通过后，才可用同一 immutable CSV manifest 对经过明确批准的新建隔离目标 database 重复“快照 -> verify -> dry-run -> batch apply -> postcheck”流程，再通过配置切换读流量。回退优先将流量/配置留在旧 PDS 与旧 collection；数据恢复只还原到新的 restore database 供比较。对原目标 database 的覆盖、清空、删除或同库就地迁移不在本计划授权范围内，须另行批准。
 
-monitor_retrieval_rollout.py 必须有 --once 和 --evaluate 两种模式：--once 只能读已授权指标源，生成带 UTC 时间、variant 和配置 hash 的不可变 artifact；--evaluate 合并连续 artifact，计算 7 个自然日、至少 100 次请求和所有冻结阈值，输出 rollout-window.json。CI 工作流以受保护身份每 15 分钟执行 --once，并在窗口满足时执行 --evaluate；执行身份、指标源别名、artifact 保留期和下一次计划运行时间写入 PR。连续监控到第 8 个自然日仍未收集够 100 次、指标源持续不可用或任一禁止断言非零时，自动创建 blocked 报告并保持旧流量/开关，不扩大流量；只要调度器仍可用就继续采样，不把超时报告当作通过。
+monitor_retrieval_rollout.py 必须有 --once 和 --evaluate 两种模式，并支持 personal-local/protected profile：--once 只能读已授权指标源，生成带 UTC 时间、variant 和配置 hash 的不可变 artifact；protected 的 --evaluate 合并连续 artifact，计算 7 个自然日、至少 100 次请求和所有冻结阈值，输出 rollout-window.json；personal-local 直接输出 not_applicable，不等待真实流量，也不把离线结果伪装成线上通过。CI 工作流以受保护身份每 15 分钟执行 --once，并在窗口满足时执行 --evaluate；执行身份、指标源别名、artifact 保留期和下一次计划运行时间写入 PR。连续监控到第 8 个自然日仍未收集够 100 次、指标源持续不可用或任一禁止断言非零时，自动创建 blocked 报告并保持旧流量/开关，不扩大流量；只要调度器仍可用就继续采样，不把超时报告当作通过。
 
 评测集每条样本记录 intent、gold entity ID、gold relation/path（若有）、可接受 parent_id、必需证据等级、禁止断言和故障注入期望。至少覆盖以下问题：
 
@@ -545,7 +545,7 @@ python scripts/monitor_retrieval_rollout.py --evaluate --artifact-dir <artifact-
 
 发布以 allowlist -> 小比例 -> 明确默认新路径三步进行，每一步必须由 rollout-window.json 证明满足已冻结观察窗口和错误审计阈值。执行代理在前一步窗口达标后立即推进下一步，而不是等待常规确认；受保护环境切换仍以已存在且可验证的审批记录为前提。旧路径保留在 RETRIEVAL_LEGACY_FALLBACK_ENABLED 下，直至评测、线上错误率和用户反馈达标并获得单独删除批准。回退是把 allowlist/比例归零或关闭新开关，不删除任何 collection、PDS build 或模块。
 
-- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；监控器单测、首个采样、连续 7 天/100 请求 rollout-window 和阈值计算通过；独立审查代理或非实施者完成最终 staging 签收；新路径分阶段发布与回退演练成功；旧模块仍可通过兼容开关运行。
+- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；personal-local profile 通过离线评测、监控器单测和安全守卫，rollout-window 标记 not_applicable；protected profile 另需首个采样、连续 7 天/100 请求 rollout-window 和阈值计算通过；独立审查代理或非实施者完成最终 staging 签收；新路径分阶段发布与回退演练成功；旧模块仍可通过兼容开关运行。
 - 提交/PR：依次提交“构建（菜谱数据）：增加可复现 CSV 生产器”、“测试（检索评测）：覆盖证据与降级场景”、“维护（检索迁移）：增加渐进切换”。每次推送更新同一 PR 的指标表、流量阶段、风险和回退状态；没有用户明确确认不得合并 main。
 
 ## 测试矩阵

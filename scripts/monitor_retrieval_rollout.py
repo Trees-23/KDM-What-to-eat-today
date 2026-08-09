@@ -147,8 +147,28 @@ def _aggregate(samples: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def evaluate_window(*, artifact_dir: Path, thresholds: dict[str, Any], window_days: int, min_requests: int, output: Path | None = None) -> dict[str, Any]:
-    artifacts = _read_artifacts(_absolute_path(str(artifact_dir), "artifact-dir"))
+def evaluate_window(*, artifact_dir: Path, thresholds: dict[str, Any], window_days: int, min_requests: int, output: Path | None = None, profile: str = "protected") -> dict[str, Any]:
+    profile = str(thresholds.get("deployment_profile", profile))
+    artifact_dir = _absolute_path(str(artifact_dir), "artifact-dir")
+    if profile == "personal-local":
+        report = {
+            "status": "not_applicable",
+            "valid": True,
+            "profile": profile,
+            "window": {"window_days": 0, "min_requests": 0, "first_date": None, "last_date": None, "calendar_days": 0},
+            "aggregates": {},
+            "comparison": None,
+            "errors": [],
+            "recommended_action": "offline_evaluation_only",
+            "reason": "个人本地项目不接入真实流量，使用冻结离线评测作为发布依据",
+        }
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        output = _absolute_path(str(output or artifact_dir / "rollout-window.json"), "rollout-window")
+        if output.parent != artifact_dir:
+            raise RolloutGuardError("rollout-window 必须写入 artifact-dir")
+        _atomic_json(output, report)
+        return report
+    artifacts = _read_artifacts(artifact_dir)
     errors = []
     if not artifacts:
         errors.append("no_samples")
@@ -199,7 +219,7 @@ def evaluate_window(*, artifact_dir: Path, thresholds: dict[str, Any], window_da
         output = _absolute_path(str(artifact_dir / "rollout-window.json"), "rollout-window")
     else:
         output = _absolute_path(str(output), "rollout-window")
-    if output.parent != _absolute_path(str(artifact_dir), "artifact-dir"):
+    if output.parent != artifact_dir:
         raise RolloutGuardError("rollout-window 必须写入 artifact-dir")
     _atomic_json(output, report)
     return report
@@ -219,6 +239,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--window-days", type=int, default=7)
     parser.add_argument("--min-requests", type=int, default=100)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--profile", choices=("protected", "personal-local"))
     args = parser.parse_args(argv)
     if args.once:
         if not args.metrics_source or not args.allowed_metrics_root or not args.variant:
@@ -227,7 +248,9 @@ def main(argv: list[str] | None = None) -> int:
     else:
         if not args.thresholds:
             parser.error("--evaluate 必须提供 --thresholds")
-        result = evaluate_window(artifact_dir=args.artifact_dir, thresholds=_load_object(_absolute_path(str(args.thresholds), "thresholds"), "thresholds"), window_days=args.window_days, min_requests=args.min_requests, output=args.output)
+        thresholds = _load_object(_absolute_path(str(args.thresholds), "thresholds"), "thresholds")
+        profile = args.profile or thresholds.get("deployment_profile", "protected")
+        result = evaluate_window(artifact_dir=args.artifact_dir, thresholds=thresholds, window_days=args.window_days, min_requests=args.min_requests, output=args.output, profile=profile)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0 if result.get("valid", result.get("status") == "sampled") else 2
 
