@@ -1,11 +1,18 @@
 {
-  "schema_version": "retrieval-release-thresholds-v1",
+  "schema_version": "retrieval-release-thresholds-v2",
   "min_case_count": 50,
-  "recall_at_5_min": 0.0,
-  "mrr_at_5_min": 0.0,
+  "result_coverage_min": 1.0,
+  "latency_coverage_min": 1.0,
   "evidence_completeness_min": 1.0,
+  "relation_path_correctness_min": 1.0,
+  "answer_faithfulness_min": 1.0,
+  "evidence_linkage_min": 1.0,
   "forbidden_assertion_count_max": 0,
   "strict_nutrition_misclaim_count_max": 0,
-  "baseline_p95_latency_ms": 100,
-  "p95_latency_ratio_max": 1.2
+  "new_vs_old": {
+    "baseline_variant": "old",
+    "recall_at_5_max_regression": 0.02,
+    "mrr_at_5_max_regression": 0.02,
+    "p95_latency_ratio_max": 1.2
+  }
 }
