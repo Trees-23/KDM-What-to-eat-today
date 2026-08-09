@@ -3,7 +3,7 @@
 - 门控实现提交：`6f47b44f51694f2df7989f9bfd7c2cef2bac793d`。
 - 门控决策：[phase-4-personal-local-gate.md](../decisions/phase-4-personal-local-gate.md)。
 - 代码独立审查：通过，无 P0/P1/P2；审查代理为 Codex 独立只读审查代理（`/root/phase0_independent_review`）。
-- 当前状态：**待本机运行证据独立复核**。本记录不将实施者执行的验证替代独立服务验收。
+- 当前状态：**阶段 4 passed（personal-local）**。独立复核已完成；本记录不将个人本机例外扩大为共享或受保护环境的发布授权。
 
 ## 门控范围
 
@@ -28,3 +28,14 @@
 - 全量：`147 passed, 6 warnings`；6 条为既有 pytest 测试替身收集警告。
 - 为执行真实入口初始化，在本机 Python 环境安装了 `requirements.txt` 已声明但缺失的 `neo4j`、`langchain-core`、`langchain-community` 和 `langchain-huggingface`。未更改依赖声明或项目源码。
 - `pip check` 仍报告工作站中无关的 `nanobot-ai` 与 `websockets` 版本冲突；本项目测试和本机检索验收未受影响。
+
+## 独立复核签收
+
+2026-08-09，Codex 独立只读审查代理（`/root/phase0_independent_review`）以提交 `a540baba39be90e88ad2d9ef62a07b1d7e2eebe1`、阶段 4 实施方案、相关测试结果和本机服务证据为输入完成复核，结论为通过，未发现 P0/P1/P2。
+
+- 旧集合和 restore verify 集合均通过快照、schema、hash 与检索复核，行数均为 `1333`；V2/PDS 的逐条关联为 `1333/1333`。
+- active pointer、候选 artifact、PDS 摘要与回退快照 SHA 一致；32 个川菜范围检索与全库 child-chunk 检索均返回 5 个聚合 parent，未越界，全文逐条来自 PDS hydration。
+- V2 初始化成功；`personal-local` 预检不会改写 active pointer；默认 `protected` 档位在缺少审批时仍会被拒绝。
+- 复核相关套件为 `52 passed`；全量为 `147 passed, 6 warnings`，警告均为既有 pytest 测试替身收集警告。
+
+本签收只适用于个人本机 `personal-local` 环境。共享、staging 与生产环境仍须遵守 `protected` 档位的双人审批、变更单和审批有效期要求。
