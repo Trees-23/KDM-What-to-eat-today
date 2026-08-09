@@ -8,6 +8,7 @@
       "paraphrases": ["宫保鸡丁怎么做？", "宫保鸡丁的完整做法是什么？", "请给我宫保鸡丁的食材和步骤", "家常宫保鸡丁怎样制作？", "宫保鸡丁从备料到出锅怎么做？"],
       "intent": "RECIPE_FULL",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "text",
       "requires_evidence_link": true,
       "forbidden_assertions": ["full_corpus_vector_search"]
@@ -17,6 +18,7 @@
       "paraphrases": ["宫保鸡丁第一步怎么腌？", "宫保鸡丁开始前如何腌制鸡肉？", "制作宫保鸡丁时鸡丁第一步怎么处理？", "宫保鸡丁的腌肉步骤是什么？", "宫保鸡丁先腌什么、腌多久？"],
       "intent": "RECIPE_STEP",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "text",
       "requires_evidence_link": true,
       "forbidden_assertions": ["arbitrary_cypher"]
@@ -26,6 +28,7 @@
       "paraphrases": ["鸡肉能做什么？", "家里有鸡肉可以做哪些菜？", "鸡肉适合做哪些菜？", "请推荐几道用鸡肉做的菜", "想用鸡肉做饭，有什么菜谱？"],
       "intent": "INGREDIENT_RECIPES",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "graph",
       "required_graph_status": "verified",
       "gold_relation_paths": ["Ingredient:chicken<-REQUIRES-Recipe:recipe-gongbao"],
@@ -37,6 +40,7 @@
       "paraphrases": ["鸡肉搭配什么蔬菜？", "鸡肉和哪些蔬菜一起做比较合适？", "做鸡肉菜可以配什么蔬菜？", "鸡肉适合和什么菜搭配？", "有哪些鸡肉配蔬菜的做法？"],
       "intent": "INGREDIENT_PAIRING",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "graph",
       "required_graph_status": "verified",
       "gold_relation_paths": ["Ingredient:chicken<-REQUIRES-Recipe:recipe-gongbao-REQUIRES->Ingredient:vegetable"],
@@ -48,6 +52,7 @@
       "paraphrases": ["推荐低脂川菜", "有什么川菜比较少油？", "想吃川味但口味清爽，推荐什么？", "川菜里有哪些适合少油偏好的？", "偏好清淡时可以考虑哪些川菜？"],
       "intent": "SOFT_PREFERENCE",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "soft_preference",
       "requires_evidence_link": true,
       "forbidden_assertions": ["strict_low_fat_claim"]
@@ -57,6 +62,7 @@
       "paraphrases": ["夏天吃什么清淡的？", "天气热时适合吃哪些清淡菜？", "夏季想吃清爽一点，有什么推荐？", "炎热天气做什么菜比较清淡？", "不想吃得太油腻，夏天吃什么好？"],
       "intent": "SEMANTIC",
       "gold_parent_ids": ["recipe-gongbao"],
+      "acceptable_parent_ids": ["recipe-gongbao"],
       "required_evidence": "text",
       "requires_evidence_link": true,
       "forbidden_assertions": ["unhydrated_chunk"]
@@ -66,6 +72,7 @@
       "paraphrases": ["腌肉有哪些关键要点和适用场景？", "腌制肉类时最需要注意什么？", "腌肉技巧适合用在哪些菜里？", "请介绍腌肉的关键步骤和使用场景", "哪些情况下适合先把肉腌一下？"],
       "intent": "TECHNIQUE",
       "gold_parent_ids": ["technique-marinate"],
+      "acceptable_parent_ids": ["technique-marinate"],
       "required_evidence": "text",
       "requires_evidence_link": true,
       "forbidden_assertions": ["full_corpus_vector_search"]
