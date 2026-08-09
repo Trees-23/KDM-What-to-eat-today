@@ -5,7 +5,7 @@
 - 首轮审查时间：2026-08-09T01:14:38+08:00。
 - 首轮结论：**不通过**，发现 3 项 P1 与 1 项 P2。
 - 修复输入提交：`d8f0d9a`。
-- 当前状态：修复与自动化、真实 Milvus 复验已完成；等待该独立审查身份对修复提交进行二次签收。阶段 4 在签收前保持未完成，不进入阶段 5。
+- 当前状态：二次复审发现的偏好范围与初始化回退缺口已在 `a4b3c33` 修复；等待该独立审查身份对该修复提交进行签收。阶段 4 在签收前保持未完成，不进入阶段 5。
 
 ## 首轮发现与修复
 
@@ -15,6 +15,13 @@
 | P1 | `ArtifactMismatchError` 只返回空 bundle，没有回退既有 Router。 | 主入口记录 `restricted_vector/artifact-mismatch` 审计事件后返回 `None`；`test_entity_direct_retrieval.py` 验证旧 Router 被调用且没有 V2 正文 hydration。 |
 | P1 | cutover 只校验备份文件 SHA，未校验其数据库、源集合和 artifact rollback 绑定。 | `retrieval_cutover.py` 使用 `load_manifest()` 校验完整可恢复快照、`database/from collection`、非空 payload，以及 `rollback_database`、`rollback_collection`、`rollback_pds_build` 与审批记录。测试拒绝缺少 rollback 审批字段和错误源集合快照。 |
 | P2 | `verify-existing` 未验证向量可检索性。 | `MilvusV2IndexBuilder.verify_existing()` 支持样本向量检索；CLI 可使用 `--vectors-json` 输出 `sample_search=verified`。 |
+
+## 二次复审修复
+
+- `PREFERENCE_RECOMMEND` 已成为冻结 QueryPlan intent。`scope=candidate_parents` 必须提供有限非空 `parent_ids`；`scope=all_child_chunks` 明确表示无候选范围时的全库 child chunk 检索，禁止同时携带 `parent_ids`。
+- “川菜 + 清淡”从 active PDS build 的已物化 `cuisine_type` metadata 得到受限 parent 列表，并通过 `RestrictedVectorRetriever.retrieve(parent_ids=...)` 传给 Milvus；真实 PDS 抽样得到 32 个川菜 parent ID。
+- V2 初始化 artifact 不可用、运行时 artifact mismatch 或向量检索不可用均写审计事件并回退旧 Router；不再返回空 bundle 阻断旧路径。
+- 新增 QueryPlan scope、候选 parent 透传、无候选全库 scope、初始化 manifest 缺失回退的入口回归。`python -m pytest -q` 结果为 `143 passed, 6 warnings`；警告为既有 pytest 测试替身收集警告。
 
 ## 自动化复验
 
@@ -30,6 +37,7 @@
 - PDS build=`pds_f01044e524ef43b413f76b02` 的 preinsert/postinsert linkage：`1333/1333`，无缺失、重复、失配或意外行。
 - 候选联合 manifest 已生成在受忽略的运行时路径 `run/retrieval/retrieval_artifact_manifest.json`，其 PDS manifest hash=`b5402762cfd0b0ba695c420c2fe3fa1c100f1e1314bd70a204e4bfb22daa59ca`；当前 feature flag 仍为默认 `false`。
 - 旧 `cooking_knowledge` 和恢复验证集合 `cooking_knowledge_restore_verify_20260809_v2` 均通过 snapshot schema、1333 行、抽样 hash 与向量检索 verify；旧集合仍存在。
+- 2026-08-09 本轮复验时 Milvus `127.0.0.1:19530` 已不可达，且 `docker ps` 未显示 What-to-eat 的 Neo4j/Milvus 容器。未启动 Compose，以免触发未经批准的数据导入；本轮只完成 PDS candidate scope 的只读校验，Milvus 历史验收证据不被表述为本轮实时结果。
 
 ## 切换状态与回退
 
