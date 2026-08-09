@@ -163,7 +163,8 @@ def _clean_markdown(text: str) -> str:
 
 def _plain_text(value: str) -> str:
     value = re.sub(r"!?(?:\[([^\]]*)\])\([^)]*\)", r"\1", value)
-    value = re.sub(r"[`*_]", "", value)
+    value = re.sub(r"(?<!\S)\*{1,3}(.+?)\*{1,3}(?!\S)", r"\1", value)
+    value = re.sub(r"[`_]", "", value)
     value = re.sub(r"\s+", " ", value)
     return value.strip(" -:：；;，,。")
 
@@ -222,21 +223,22 @@ COOKING_TOOL_CORES = (
     "电饭煲", "电饭锅", "电炖锅", "微波炉", "电磁炉", "燃气灶", "烘焙刮刀", "削皮刀",
     "水果刀", "厨房用夹", "厨房夹", "食品夹", "防烫盘夹", "保鲜膜", "烘焙油纸", "烘焙纸",
     "厨房纸", "吸油纸", "锡箔纸", "打蛋器", "搅拌器", "分蛋器", "压汁器", "料理机", "破壁机",
-    "厨房秤", "克数称", "克称", "定时器", "蒸鱼盘子",
+    "厨房秤", "克数称", "克称", "定时器", "筷子", "牙签", "蒸鱼盘子",
     "蒸锅", "炒锅", "煮锅", "炖煮锅", "砂锅", "煎锅", "汤锅", "奶锅", "油锅", "粥锅",
     "电蒸炉", "筛网", "滤网", "过滤网", "砧板", "锅铲", "炒勺", "蒜臼", "笊篱", "笼屉", "烤架",
     "量杯", "量酒器", "酒杯", "雪克杯", "高球杯", "模具", "容器", "菜刀", "剪刀", "筷子", "锡纸", "硅油纸",
-    "锡纸盘", "调理机", "果汁机", "洗菜盆", "瓦罐", "灶台", "盘子", "锅盖", "夹子", "铲子",
+    "锡纸盘", "调理机", "果汁机", "搅拌机", "榨汁机", "面包机", "轻食机", "洗菜盆", "瓦罐", "灶台", "蒸箱",
+    "冰箱", "打火机", "捣药罐", "盘子", "锅盖", "夹子", "铲子", "手套", "刷子", "擀面杖", "煲汤盅",
     "刮刀", "餐刀", "温度计", "吧勺", "漏勺", "勺子", "蒸架", "杯子", "碗", "盘", "盆", "杯", "砵", "网", "刀", "锅",
 )
 TOOL_MODIFIER_PATTERN = re.compile(
     r"^(?:(?:大|中|小|特大|超大|大号|中号|小号|不锈钢|厨房用|家用|家庭|普通|深口|浅口|长柄|带盖|"
     r"带孔|玻璃|陶瓷|耐热|木制|竹制|硅胶|塑料|透明|一次性|电动|手动|可调温|多功能|圆形|方形|"
     r"不粘|厚底|严丝合缝|有点深度|有一定深度|能放进微波炉|分可控火候|不可控火候|铁|铸铁|电|煮|炖|油|"
-    r"粥|利口酒|海波|雪克|调酒|餐|高球|可密封|带刻度|额外|家庭|铁))+$"
+    r"粥|利口酒|海波|雪克|调酒|餐|高球|可密封|带刻度|额外|家庭|铁|隔热|料理))+$"
 )
 CALCULATION_NON_INGREDIENT_NAMES = frozenset({"时间", "冷藏时间", "加热时间", "烹饪时间", "温度", "体积", "重量", "容量", "比例"})
-CALCULATION_NON_INGREDIENT_MARKERS = ("时间", "温度", "体积", "重量", "容量", "比例", "分量", "质量", "基于", "一般一个人")
+CALCULATION_NON_INGREDIENT_MARKERS = ("时间", "温度", "体积", "重量", "容量", "比例", "分量", "质量", "用量", "基于", "一般一个人")
 NON_INGREDIENT_TEXT_MARKERS = ("注：", "如果有可能", "请尽量", "炒糖色过程")
 TOOL_LIST_SEPARATOR = re.compile(r"\s*(?:[/+、，,]|或者|或|以及|及|和|与)\s*")
 
@@ -280,6 +282,7 @@ def _extract_calculated_ingredient(item: str) -> tuple[str, str, str] | None:
     if (
         not name
         or name in CALCULATION_NON_INGREDIENT_NAMES
+        or name.endswith("量")
         or any(marker in name for marker in CALCULATION_NON_INGREDIENT_MARKERS)
     ):
         return None
@@ -294,7 +297,7 @@ def _is_single_cooking_tool(name: str) -> bool:
     candidate = re.sub(r"^(?:工具|器具|必备|可选|需要|准备|使用)\s*[：:]?\s*", "", candidate)
     candidate = re.sub(r"^(?:直径\s*)?\d+\s*(?:厘米|cm)(?:以上)?的?\s*", "", candidate, flags=re.I)
     candidate = re.sub(r"^(?:[一二三四五六七八九十\d]+\s*(?:个|只|把|口|套|张)|一口|一把|一只|一个|若干)\s*", "", candidate)
-    candidate = re.sub(r"(?:\s*|[，,;；])(大小不限|若干|适量|[一二三四五六七八九十\d]+(?:个|只|把|口|套|张)|需.*|网孔.*|例如.*)$", "", candidate)
+    candidate = re.sub(r"(?:\s*|[，,;；])(大小不限|若干|适量|[一二三四五六七八九十\d]+(?:个|只|把|口|套|张|双)|需.*|网孔.*|例如.*)$", "", candidate)
     candidate = re.sub(r"(?:一个|一只|一把|一口|若干)$", "", candidate)
     if re.fullmatch(r"\d+(?:°C|摄氏度)\s*.+锅", candidate, flags=re.I):
         return True
@@ -311,6 +314,8 @@ def _is_single_cooking_tool(name: str) -> bool:
     if candidate.endswith(("容器", "模具", "盆")):
         return True
     if candidate.startswith("搅拌器") and "工具" in candidate:
+        return True
+    if candidate.startswith("煲汤盅"):
         return True
     return False
 

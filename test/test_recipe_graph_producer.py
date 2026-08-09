@@ -213,6 +213,8 @@ def test_ingredient_extraction_excludes_described_tools_and_formulae(tmp_path: P
 - 冷藏时间 Tc = 生米体积 / 10 ml
 - 腌制温度 = 20 摄氏度
 - 配方 = 鸡肉 * 0.1 = 50g
+- 鸡蛋的用量为 1 个
+- 油量 = 50 克 * 份数
 
 ## 操作
 
@@ -229,7 +231,7 @@ def test_ingredient_extraction_excludes_described_tools_and_formulae(tmp_path: P
     assert {"鸡肉", "八角", "火锅底料"}.issubset(ingredient_names)
     assert not {
         "平底煎锅", "烤箱 大小不限", "蒸笼", "小碗若干", "筛网", "厨房用夹",
-        "冷藏时间 Tc = 生米体积 /", "腌制温度 =", "配方 = 鸡肉 0.1 =",
+        "冷藏时间 Tc = 生米体积 /", "腌制温度 =", "配方 = 鸡肉 * 0.1 =", "鸡蛋的用量为", "油量",
     } & ingredient_names
 
 
@@ -244,6 +246,9 @@ def test_cooking_tool_recognition_handles_descriptions_and_preserves_food_names(
         "放得下玉米的锅", "厨房用温度计", "一个容量在 600 毫升以上的容器",
         "[可选] 分蛋器", "冰淇淋模具", "手动压汁器", "可密封容器", "吧勺",
         "深一点的小铁盆", "漏勺", "蒸架", "量酒器", "金属蛋糕模具",
+        "筷子一双", "筷子或牙签", "一次性手套", "一次性塑料手套", "刷子", "擀面杖",
+        "蒸箱", "面包机", "轻食机", "搅拌机", "料理搅拌机", "榨汁机", "隔热手套", "煲汤盅，按",
+        "冰箱", "打火机", "捣药罐",
     }
     foods = {"火锅底料", "火锅牛肉卷", "麻辣香锅调料", "北京二锅头酒", "蒸锅用水"}
 
@@ -274,6 +279,28 @@ def test_real_recipe_sources_exclude_tools_and_calculation_formulae():
     assert {"小龙虾", "油", "桂皮", "八角"}.issubset(crayfish)
     assert porridge == {"米", "水", "植物油"}
     assert "八角" in ribs
+
+    tool_only_sources = {
+        "data/dishes/staple/螺蛳粉.md": "筷子一双",
+        "data/dishes/breakfast/太阳蛋.md": "筷子或牙签",
+        "data/dishes/aquatic/葱油桂鱼/葱油桂鱼.md": "一次性手套",
+        "data/dishes/dessert/雪花酥/雪花酥.md": "擀面杖",
+        "data/dishes/vegetable_dish/鸡蛋羹/蒸箱鸡蛋羹.md": "蒸箱",
+        "data/dishes/breakfast/吐司果酱.md": "面包机",
+        "data/dishes/breakfast/金枪鱼酱三明治.md": "轻食机",
+        "data/dishes/drink/奇异果菠菜特调/奇异果菠菜特调.md": "榨汁机",
+        "data/dishes/vegetable_dish/糖拌西红柿/糖拌西红柿.md": "冰箱",
+        "data/dishes/aquatic/清蒸生蚝.md": "刷子",
+        "data/dishes/drink/B52轰炸机.md": "打火机",
+        "data/dishes/meat_dish/孜然牛肉.md": "捣药罐",
+    }
+    for relative_path, tool_name in tool_only_sources.items():
+        assert tool_name not in ingredient_names(relative_path)
+
+    sunny_side_up = ingredient_names("data/dishes/breakfast/太阳蛋.md")
+    cucumber_pork = ingredient_names("data/dishes/meat_dish/黄瓜炒肉.md")
+    assert not {"鸡蛋的用量为", "盐的用量为", "油的用量为"} & sunny_side_up
+    assert not {"油量", "盐量"} & cucumber_pork
 
 
 def test_manifest_sha_is_bound_to_the_same_bytes_used_for_parsing(tmp_path: Path, monkeypatch):
