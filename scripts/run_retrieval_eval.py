@@ -62,7 +62,7 @@ def _strict_nutrition_claim_audit(row: dict[str, Any]) -> list[dict[str, Any]]:
     assertions = row.get("assertions") or []
     if isinstance(assertions, list):
         for assertion in assertions:
-            if assertion in {"strict_nutrition_misclaim", "strict_low_fat_claim"}:
+            if isinstance(assertion, str) and assertion in {"strict_nutrition_misclaim", "strict_low_fat_claim"}:
                 claims.append({"assertion": str(assertion), "source": "assertions", "evidence_verified": False, "valid": False})
 
     nutrition_claims = row.get("nutrition_claims") or []

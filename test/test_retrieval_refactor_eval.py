@@ -160,7 +160,7 @@ def test_duplicate_empty_cases_and_malformed_result_rows_fail_closed():
 
     cases = {"required_case_count": 1, "paraphrase_repetitions": 1, "cases": [{"id": "x", "paraphrases": ["测试问题"], "gold_parent_ids": [], "required_evidence": "entity_not_found", "forbidden_assertions": []}]}
     thresholds = {"min_case_count": 1, "result_coverage_min": 1, "latency_coverage_min": 1, "evidence_completeness_min": 1, "forbidden_assertion_count_max": 0, "strict_nutrition_misclaim_count_max": 0}
-    report = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "retrieved_parent_ids": "not-a-list", "evidence": {"entity_not_found": True}, "latency_ms": 1, "answer_faithful": True}])
+    report = evaluate(cases, thresholds, [{"evaluation_id": "x-p1", "retrieved_parent_ids": "not-a-list", "evidence": {"entity_not_found": True}, "assertions": [{}], "latency_ms": 1, "answer_faithful": True}])
 
     assert "invalid_result_schema" in report["errors"]
 
