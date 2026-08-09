@@ -11,6 +11,8 @@ import math
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
+from .recommendation_evidence import RecommendationEvidence
+
 
 ENTITY_TYPES = frozenset({"Recipe", "Ingredient", "CookingStep", "TechniqueDoc", "TechniqueChunk"})
 MATCH_KINDS = frozenset({"exact_name", "governed_alias", "fulltext"})
@@ -187,6 +189,7 @@ class EvidenceBundle:
     graph_facts: tuple[GraphFact, ...]
     text_evidence: tuple[TextEvidence, ...]
     limitations: tuple[str, ...]
+    recommendation_evidence: RecommendationEvidence | None = None
 
     def __post_init__(self) -> None:
         if self.query_plan is not None and not isinstance(self.query_plan, Mapping):
@@ -202,6 +205,10 @@ class EvidenceBundle:
         if not all(isinstance(item, TextEvidence) for item in self.text_evidence):
             raise ValueError("text_evidence 只能包含 TextEvidence")
         object.__setattr__(self, "limitations", _string_tuple(self.limitations, "limitations"))
+        if self.recommendation_evidence is not None and not isinstance(
+            self.recommendation_evidence, RecommendationEvidence
+        ):
+            raise ValueError("recommendation_evidence 必须是 RecommendationEvidence 或 None")
 
     @property
     def verified_graph_facts(self) -> tuple[GraphFact, ...]:
@@ -218,6 +225,9 @@ class EvidenceBundle:
             "graph_facts": [fact.to_dict() for fact in self.graph_facts],
             "text_evidence": [evidence.to_dict() for evidence in self.text_evidence],
             "limitations": list(self.limitations),
+            "recommendation_evidence": (
+                self.recommendation_evidence.to_dict() if self.recommendation_evidence is not None else None
+            ),
         }
 
     def to_json(self) -> str:
@@ -231,6 +241,11 @@ class EvidenceBundle:
             graph_facts=tuple(GraphFact.from_dict(item) for item in value["graph_facts"]),
             text_evidence=tuple(TextEvidence.from_dict(item) for item in value["text_evidence"]),
             limitations=tuple(value["limitations"]),
+            recommendation_evidence=(
+                RecommendationEvidence.from_dict(value["recommendation_evidence"])
+                if value.get("recommendation_evidence") is not None
+                else None
+            ),
         )
 
     @classmethod

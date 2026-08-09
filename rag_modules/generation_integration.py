@@ -178,6 +178,7 @@ class GenerationIntegrationModule:
         - “正文证据”只能作为烹饪说明，不得证明未在图事实中验证的关系。
         - 必须明确说明“限制与不可证明项”中的缺失或不可用状态，不得补造事实。
         - 没有正文证据时，不要编造食材、步骤或营养结论。
+        - “推荐证据等级”为 soft_preference 时，只能表述为少油/清爽偏好，不能声称已验证低脂或给出脂肪数值。
 
         回答：
         """
@@ -435,6 +436,7 @@ class GenerationIntegrationModule:
             sections = EvidenceBuilder.sections(evidence_bundle)
             audit_run.append_recall("Evidence / 已验证图事实", sections.verified_graph_facts)
             audit_run.append_recall("Evidence / 正文证据", sections.text_evidence)
+            audit_run.append_recall("Evidence / 推荐证据等级", sections.recommendation_evidence)
             audit_run.append_recall("Evidence / 限制与不可证明项", sections.limitations)
         audit_run.append_process(
             "Prompt Assembly",
@@ -452,6 +454,16 @@ class GenerationIntegrationModule:
                 "verified_graph_fact_count": len(evidence_bundle.verified_graph_facts) if evidence_bundle else 0,
                 "text_evidence_count": len(evidence_bundle.text_evidence) if evidence_bundle else 0,
                 "limitation_count": len(evidence_bundle.limitations) if evidence_bundle else 0,
+                "recommendation_evidence_level": (
+                    evidence_bundle.recommendation_evidence.level
+                    if evidence_bundle and evidence_bundle.recommendation_evidence
+                    else None
+                ),
+                "recommendation_policy_version": (
+                    evidence_bundle.recommendation_evidence.policy_version
+                    if evidence_bundle and evidence_bundle.recommendation_evidence
+                    else None
+                ),
             },
         )
 
@@ -461,6 +473,14 @@ class GenerationIntegrationModule:
         if evidence_bundle is None:
             return None
         limitations = set(evidence_bundle.limitations)
+        if "NUTRITION_EVIDENCE_INSUFFICIENT" in limitations:
+            return "当前没有可信营养数值或治理标签，无法验证严格低脂、脂肪克数或医疗饮食条件，因此不能给出满足该条件的推荐。"
+        if "NUTRITION_CUISINE_EVIDENCE_UNAVAILABLE" in limitations:
+            return "营养或菜系硬证据当前不可用，不能把未受限的向量结果称为低脂川菜。"
+        if "NUTRITION_CUISINE_SCOPE_NOT_FOUND" in limitations:
+            return "当前图谱没有可验证的川菜候选范围，不能把向量结果称为低脂川菜。"
+        if "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE" in limitations:
+            return "当前少油/清爽偏好检索不可用，不能用旧路径补造低脂推荐。"
         if "ENTITY_NOT_FOUND" in limitations:
             return "未定位到同名实体。若你接受泛化烹饪建议，请明确说明可以接受泛化建议。"
         if "ENTITY_AMBIGUOUS" in limitations:

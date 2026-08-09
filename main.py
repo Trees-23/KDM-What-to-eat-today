@@ -39,6 +39,8 @@ from rag_modules.entity_resolver import EntityResolver
 from rag_modules.entity_direct_retrieval import EntityDirectRetriever
 from rag_modules.rag_audit import RAGAuditManager
 from rag_modules.retrieval_contracts import EvidenceBundle
+from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
+from rag_modules.recommendation_evidence import RecommendationEvidence
 from rag_modules.evidence_builder import EvidenceBuilder
 from rag_modules.query_plan import QueryPlan
 from rag_modules.query_plan_validator import QueryPlanValidator
@@ -457,6 +459,9 @@ class AdvancedGraphRAGSystem:
         if targeted_bundle is not None:
             self._audit_targeted_graph(audit_run, targeted_bundle)
             return targeted_bundle, None
+        nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
+        if nutrition_bundle is not None:
+            return nutrition_bundle, None
         preference_plan = self._preference_plan(query, top_k)
         if preference_plan is not None and getattr(self.config, "retrieval_milvus_v2_enabled", False):
             preference_bundle = self._try_restricted_vector(
@@ -524,10 +529,17 @@ class AdvancedGraphRAGSystem:
         text = query or ""
         return any(marker in text for marker in ("夏天吃", "清淡", "清爽偏好"))
 
-    def _preference_plan(self, query: str, top_k: int) -> QueryPlan | None:
+    def _preference_plan(
+        self,
+        query: str,
+        top_k: int,
+        *,
+        parent_ids: list[str] | None = None,
+        allow_nutrition: bool = False,
+    ) -> QueryPlan | None:
         """把偏好检索范围冻结为 QueryPlan，禁止隐式全库降级。"""
 
-        if not self._is_preference_query(query):
+        if not self._is_preference_query(query) and not allow_nutrition:
             return None
         validator = getattr(self, "query_plan_validator", None)
         if validator is None:
@@ -536,11 +548,14 @@ class AdvancedGraphRAGSystem:
             "scope": "all_child_chunks",
             "limit": min(top_k, QueryPlanValidator.MAX_CANDIDATES),
         }
-        if "川菜" in (query or ""):
-            parent_ids = self._preference_parent_ids("川菜")
-            if parent_ids:
+        if parent_ids:
+            parameters["scope"] = "candidate_parents"
+            parameters["parent_ids"] = parent_ids
+        elif "川菜" in (query or ""):
+            cuisine_parent_ids = self._preference_parent_ids("川菜")
+            if cuisine_parent_ids:
                 parameters["scope"] = "candidate_parents"
-                parameters["parent_ids"] = parent_ids
+                parameters["parent_ids"] = cuisine_parent_ids
         return validator.validate(
             QueryPlan(
                 "PREFERENCE_RECOMMEND",
@@ -580,6 +595,9 @@ class AdvancedGraphRAGSystem:
         top_k: int,
         plan: QueryPlan,
         audit_run=None,
+        *,
+        recommendation_evidence: RecommendationEvidence | None = None,
+        extra_limitations: tuple[str, ...] = (),
     ) -> EvidenceBundle | None:
         retriever = getattr(self, "restricted_vector_retriever", None)
         if retriever is None:
@@ -618,7 +636,8 @@ class AdvancedGraphRAGSystem:
             entity_candidates=(),
             graph_facts=(),
             text_evidence=tuple(item.text_evidence for item in aggregates),
-            limitations=limitations,
+            limitations=tuple(extra_limitations) + limitations,
+            recommendation_evidence=recommendation_evidence,
         )
         if audit_run is not None and hasattr(audit_run, "record_event"):
             audit_run.record_event(
@@ -628,6 +647,172 @@ class AdvancedGraphRAGSystem:
                 vector_scope=plan.parameters["scope"],
             )
         return bundle
+
+    def _try_nutrition_recommendation(self, query: str, top_k: int, audit_run=None) -> EvidenceBundle | None:
+        """执行阶段 5 的软偏好出口，严格请求绝不退回旧检索路径。"""
+
+        decision = SOFT_PREFERENCE_POLICY.assess(query)
+        if decision is None:
+            return None
+        if decision.requires_evidence_insufficient:
+            bundle = self._nutrition_terminal_bundle(
+                decision.evidence,
+                (
+                    "NUTRITION_EVIDENCE_INSUFFICIENT",
+                    decision.evidence.missing_reason,
+                ),
+            )
+            self._audit_nutrition_recommendation(audit_run, "evidence-insufficient", bundle)
+            return bundle
+        if not getattr(self.config, "retrieval_milvus_v2_enabled", False):
+            bundle = self._nutrition_terminal_bundle(
+                decision.evidence,
+                (
+                    "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE",
+                    "少油/清爽偏好检索未启用；不能用旧路径补造低脂推荐。",
+                ),
+            )
+            self._audit_nutrition_recommendation(audit_run, "preference-retrieval-unavailable", bundle)
+            return bundle
+        if not decision.requires_cuisine_scope:
+            bundle = self._nutrition_terminal_bundle(
+                decision.evidence,
+                (
+                    "NUTRITION_CUISINE_SCOPE_NOT_FOUND",
+                    "当前软偏好出口只支持经图谱验证的川菜候选范围。",
+                ),
+            )
+            self._audit_nutrition_recommendation(audit_run, "cuisine-scope-required", bundle)
+            return bundle
+        parent_ids, scope_status = self._verified_nutrition_cuisine_scope(audit_run)
+        if scope_status is not None:
+            evidence = decision.evidence
+            if scope_status[0] == "NUTRITION_CUISINE_EVIDENCE_UNAVAILABLE":
+                evidence = self._nutrition_unavailable_evidence(decision.evidence, scope_status[1])
+            bundle = self._nutrition_terminal_bundle(evidence, scope_status)
+            self._audit_nutrition_recommendation(audit_run, "cuisine-scope-unavailable", bundle)
+            return bundle
+        plan = self._preference_plan(query, top_k, parent_ids=parent_ids, allow_nutrition=True)
+        if plan is None:
+            bundle = self._nutrition_terminal_bundle(
+                decision.evidence,
+                (
+                    "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE",
+                    "偏好检索计划不可用；不能扩大为全库低脂推荐。",
+                ),
+            )
+            self._audit_nutrition_recommendation(audit_run, "preference-plan-unavailable", bundle)
+            return bundle
+        bundle = self._try_restricted_vector(
+            query,
+            top_k,
+            plan,
+            audit_run=audit_run,
+            recommendation_evidence=decision.evidence,
+            extra_limitations=("NUTRITION_SOFT_PREFERENCE_ONLY", decision.evidence.missing_reason),
+        )
+        if bundle is None:
+            bundle = self._nutrition_terminal_bundle(
+                decision.evidence,
+                (
+                    "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE",
+                    "少油/清爽偏好检索当前不可用；不能回退为未受限的低脂推荐。",
+                ),
+            )
+            self._audit_nutrition_recommendation(audit_run, "restricted-vector-unavailable", bundle)
+            return bundle
+        self._audit_nutrition_recommendation(audit_run, "soft-preference-selected", bundle)
+        return bundle
+
+    def _verified_nutrition_cuisine_scope(self, audit_run=None) -> tuple[list[str], tuple[str, str] | None]:
+        """先用固定图模板验证 PDS 的川菜候选，图不可用时不允许全库降级。"""
+
+        candidate_ids = self._preference_parent_ids("川菜")
+        if not candidate_ids:
+            return [], (
+                "NUTRITION_CUISINE_SCOPE_NOT_FOUND",
+                "当前没有可供图谱验证的川菜候选范围。",
+            )
+        validator = getattr(self, "query_plan_validator", None)
+        retriever = getattr(self, "targeted_graph_retriever", None)
+        if validator is None or retriever is None:
+            return [], (
+                "NUTRITION_CUISINE_EVIDENCE_UNAVAILABLE",
+                "营养或菜系硬证据当前不可用；不能把未受限向量结果称为低脂川菜。",
+            )
+        plan = validator.validate(
+            QueryPlan(
+                "RECIPE_CUISINE_FILTER",
+                "recipe_cuisine_filter_v1",
+                "Recipe",
+                {
+                    "recipe_ids": candidate_ids,
+                    "cuisine_type": "川菜",
+                    "limit": len(candidate_ids),
+                },
+                max_candidates=len(candidate_ids),
+            )
+        )
+        fact = retriever.retrieve(plan, audit_run=audit_run)
+        if fact.status == "unavailable":
+            return [], (
+                "NUTRITION_CUISINE_EVIDENCE_UNAVAILABLE",
+                "营养或菜系硬证据当前不可用；不能把未受限向量结果称为低脂川菜。",
+            )
+        if fact.status != "verified" or not fact.node_ids:
+            return [], (
+                "NUTRITION_CUISINE_SCOPE_NOT_FOUND",
+                "当前图谱没有验证到川菜候选，不能把向量结果称为低脂川菜。",
+            )
+        return list(fact.node_ids), None
+
+    @staticmethod
+    def _nutrition_terminal_bundle(
+        evidence: RecommendationEvidence,
+        limitations: tuple[str, str],
+    ) -> EvidenceBundle:
+        return EvidenceBundle(
+            query_plan={
+                "intent": "PREFERENCE_RECOMMEND",
+                "template_id": "preference_recommend_v1",
+                "source": "nutrition_policy",
+            },
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=limitations,
+            recommendation_evidence=evidence,
+        )
+
+    @staticmethod
+    def _nutrition_unavailable_evidence(
+        evidence: RecommendationEvidence,
+        missing_reason: str,
+    ) -> RecommendationEvidence:
+        return RecommendationEvidence(
+            level="evidence_unavailable",
+            policy_version=evidence.policy_version,
+            source_status="nutrition_or_cuisine_hard_evidence_unavailable",
+            missing_reason=missing_reason,
+            claim_scope="不得把未受限向量结果称为低脂川菜",
+        )
+
+    @staticmethod
+    def _audit_nutrition_recommendation(audit_run, status: str, bundle: EvidenceBundle) -> None:
+        if audit_run is None or not hasattr(audit_run, "record_event"):
+            return
+        evidence = bundle.recommendation_evidence
+        audit_run.record_event(
+            "nutrition_recommendation",
+            status=status,
+            evidence_level=evidence.level if evidence else None,
+            policy_version=evidence.policy_version if evidence else None,
+            source_status=evidence.source_status if evidence else None,
+            missing_reason=evidence.missing_reason if evidence else None,
+            claim_scope=evidence.claim_scope if evidence else None,
+            text_evidence_count=len(bundle.text_evidence),
+            limitations=list(bundle.limitations),
+        )
 
     def _try_targeted_graph(self, query: str, audit_run=None) -> EvidenceBundle | None:
         # 保持测试/兼容调用中仅构造部分系统对象时的旧路由语义。

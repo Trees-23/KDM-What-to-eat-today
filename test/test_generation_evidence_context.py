@@ -3,6 +3,7 @@ from __future__ import annotations
 import types
 
 from rag_modules.generation_integration import GenerationIntegrationModule
+from rag_modules.recommendation_evidence import RecommendationEvidence
 from rag_modules.retrieval_contracts import EvidenceBundle, GraphFact, TextEvidence
 
 
@@ -114,3 +115,60 @@ def test_generation_does_not_fill_in_step_text_when_only_graph_location_is_avail
 
     assert "父文档正文当前不可用" in answer
     assert module.client.calls == []
+
+
+def test_generation_rejects_strict_nutrition_request_without_calling_llm():
+    bundle = EvidenceBundle(
+        query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "preference_recommend_v1"},
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(),
+        limitations=("NUTRITION_EVIDENCE_INSUFFICIENT",),
+        recommendation_evidence=RecommendationEvidence(
+            level="evidence_insufficient",
+            policy_version="nutrition_soft_preference_v1",
+            source_status="missing_governed_nutrition_source",
+            missing_reason="没有可信营养数据。",
+            claim_scope="不得给出满足营养约束的候选",
+        ),
+    )
+    module = GenerationModuleForTest()
+
+    answer = module.generate_adaptive_answer("每份脂肪不超过 5 克的川菜", bundle)
+
+    assert "无法验证严格低脂" in answer
+    assert module.client.calls == []
+
+
+def test_generation_prompt_marks_soft_preference_as_non_nutrition_claim():
+    bundle = EvidenceBundle(
+        query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "preference_recommend_v1"},
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(
+            TextEvidence(
+                parent_id="recipe-1",
+                build_id="build-test",
+                chunk_ids=("recipe-1:chunk:0",),
+                anchor_ids=(),
+                text="少油烹饪提示。",
+                origin="parent_store",
+            ),
+        ),
+        limitations=("NUTRITION_SOFT_PREFERENCE_ONLY", "当前资料不能验证严格低脂。"),
+        recommendation_evidence=RecommendationEvidence(
+            level="soft_preference",
+            policy_version="nutrition_soft_preference_v1",
+            source_status="missing_governed_nutrition_source",
+            missing_reason="当前资料不能验证严格低脂。",
+            claim_scope="少油/清爽偏好",
+        ),
+    )
+    module = GenerationModuleForTest()
+
+    module.generate_adaptive_answer("推荐低脂川菜", bundle)
+    prompt = module.client.calls[0]["messages"][0]["content"]
+
+    assert "推荐证据等级" in prompt
+    assert "soft_preference" in prompt
+    assert "不能声称已验证低脂" in prompt

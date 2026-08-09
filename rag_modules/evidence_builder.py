@@ -14,6 +14,7 @@ class EvidencePromptSections:
     verified_graph_facts: str
     text_evidence: str
     limitations: str
+    recommendation_evidence: str
 
 
 class EvidenceBuilder:
@@ -25,6 +26,7 @@ class EvidenceBuilder:
             verified_graph_facts=EvidenceBuilder._render_graph_facts(bundle.verified_graph_facts),
             text_evidence=EvidenceBuilder._render_text_evidence(bundle.text_evidence),
             limitations=EvidenceBuilder._render_limitations(bundle.limitations),
+            recommendation_evidence=EvidenceBuilder._render_recommendation_evidence(bundle),
         )
 
     @staticmethod
@@ -34,6 +36,7 @@ class EvidenceBuilder:
             (
                 "## 已验证图事实\n" + sections.verified_graph_facts,
                 "## 正文证据\n" + sections.text_evidence,
+                "## 推荐证据等级\n" + sections.recommendation_evidence,
                 "## 限制与不可证明项\n" + sections.limitations,
             )
         )
@@ -88,3 +91,10 @@ class EvidenceBuilder:
     def _render_limitations(limitations: Iterable[str]) -> str:
         rows = [f"- {item}" for item in limitations]
         return "\n".join(rows) if rows else "- 无额外限制。"
+
+    @staticmethod
+    def _render_recommendation_evidence(bundle: EvidenceBundle) -> str:
+        evidence = bundle.recommendation_evidence
+        if evidence is None:
+            return "- 未使用营养或饮食推荐策略。"
+        return "- " + json.dumps(evidence.to_dict(), ensure_ascii=False, sort_keys=True)

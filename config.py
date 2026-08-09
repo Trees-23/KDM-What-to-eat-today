@@ -8,6 +8,8 @@ import hashlib
 from dataclasses import dataclass
 from typing import Dict, Any
 
+from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
+
 
 def _env_bool(name: str, default: bool) -> bool:
     """读取布尔环境变量，支持常见 true/false 写法。"""
@@ -15,6 +17,11 @@ def _env_bool(name: str, default: bool) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _strict_nutrition_enabled() -> bool:
+    """严格营养开关只能在治理策略明确允许时生效。"""
+    return _env_bool("RETRIEVAL_STRICT_NUTRITION_ENABLED", False) and SOFT_PREFERENCE_POLICY.strict_mode_available
 
 
 @dataclass
@@ -82,6 +89,8 @@ class GraphRAGConfig:
         "RETRIEVAL_ARTIFACT_MANIFEST_PATH",
         os.path.join(os.path.dirname(__file__), "run", "retrieval", "retrieval_artifact_manifest.json"),
     )
+    # 阶段 5：当前软偏好策略没有受治理营养源，因此即使环境变量为 true 也保持关闭。
+    retrieval_strict_nutrition_enabled: bool = _strict_nutrition_enabled()
 
     def __post_init__(self):
         """初始化后的处理"""
@@ -130,6 +139,7 @@ class GraphRAGConfig:
             'retrieval_milvus_database': self.retrieval_milvus_database,
             'retrieval_milvus_collection': self.retrieval_milvus_collection,
             'retrieval_artifact_manifest_path': self.retrieval_artifact_manifest_path,
+            'retrieval_strict_nutrition_enabled': self.retrieval_strict_nutrition_enabled,
         }
 
     def config_hash(self) -> str:
@@ -155,6 +165,7 @@ class GraphRAGConfig:
             "retrieval_milvus_database": self.retrieval_milvus_database,
             "retrieval_milvus_collection": self.retrieval_milvus_collection,
             "retrieval_artifact_manifest_path": self.retrieval_artifact_manifest_path,
+            "retrieval_strict_nutrition_enabled": self.retrieval_strict_nutrition_enabled,
         }
         payload = json.dumps(snapshot, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
