@@ -1,0 +1,17 @@
+{
+  "schema_version": "retrieval-refactor-cases-v1",
+  "required_case_count": 50,
+  "cases": [
+    {"id":"recipe-full-01","query":"宫保鸡丁怎么做？","intent":"RECIPE_FULL","gold_parent_ids":["recipe-gongbao"],"required_evidence":"text","forbidden_assertions":["full_corpus_vector_search"]},
+    {"id":"recipe-step-01","query":"宫保鸡丁第一步怎么腌？","intent":"RECIPE_STEP","gold_parent_ids":["recipe-gongbao"],"required_evidence":"text","forbidden_assertions":["arbitrary_cypher"]},
+    {"id":"ingredient-recipes-01","query":"鸡肉能做什么？","intent":"INGREDIENT_RECIPES","gold_parent_ids":["recipe-gongbao"],"required_evidence":"graph","required_graph_status":"verified","forbidden_assertions":["text_as_relation_proof"]},
+    {"id":"ingredient-pairing-01","query":"鸡肉搭配什么蔬菜？","intent":"INGREDIENT_PAIRING","gold_parent_ids":["recipe-gongbao"],"required_evidence":"graph","required_graph_status":"verified","forbidden_assertions":["text_as_relation_proof"]},
+    {"id":"soft-preference-01","query":"推荐低脂川菜","intent":"SOFT_PREFERENCE","gold_parent_ids":["recipe-gongbao"],"required_evidence":"soft_preference","forbidden_assertions":["strict_low_fat_claim"]},
+    {"id":"semantic-01","query":"夏天吃什么清淡的？","intent":"SEMANTIC","gold_parent_ids":["recipe-gongbao"],"required_evidence":"text","forbidden_assertions":["unhydrated_chunk"]},
+    {"id":"technique-01","query":"腌肉有哪些关键要点和适用场景？","intent":"TECHNIQUE","gold_parent_ids":["technique-marinate"],"required_evidence":"text","forbidden_assertions":["full_corpus_vector_search"]},
+    {"id":"entity-missing-01","query":"不存在的菜怎么做？","intent":"ENTITY_MISSING","gold_parent_ids":[],"required_evidence":"entity_not_found","forbidden_assertions":["silent_entity_guess"]},
+    {"id":"relation-missing-01","query":"鸡肉和不存在食材有什么关系？","intent":"RELATION_MISSING","gold_parent_ids":[],"required_evidence":"graph_not_found","required_graph_status":"not_found","forbidden_assertions":["text_as_relation_proof"]},
+    {"id":"graph-unavailable-01","query":"图服务故障时鸡肉能做什么？","intent":"GRAPH_UNAVAILABLE","gold_parent_ids":[],"required_evidence":"graph_unavailable","required_graph_status":"unavailable","forbidden_assertions":["text_as_relation_proof"]}
+  ],
+  "paraphrase_repetitions": 5
+}
