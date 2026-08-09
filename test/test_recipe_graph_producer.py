@@ -215,6 +215,7 @@ def test_ingredient_extraction_excludes_described_tools_and_formulae(tmp_path: P
 - 配方 = 鸡肉 * 0.1 = 50g
 - 鸡蛋的用量为 1 个
 - 油量 = 50 克 * 份数
+- 面类材料：单人一个方便面大小的量，可以在 70g
 
 ## 操作
 
@@ -232,6 +233,7 @@ def test_ingredient_extraction_excludes_described_tools_and_formulae(tmp_path: P
     assert not {
         "平底煎锅", "烤箱 大小不限", "蒸笼", "小碗若干", "筛网", "厨房用夹",
         "冷藏时间 Tc = 生米体积 /", "腌制温度 =", "配方 = 鸡肉 * 0.1 =", "鸡蛋的用量为", "油量",
+        "面类材料：单人一个方便面大小的量，可以在",
     } & ingredient_names
 
 
@@ -249,6 +251,7 @@ def test_cooking_tool_recognition_handles_descriptions_and_preserves_food_names(
         "筷子一双", "筷子或牙签", "一次性手套", "一次性塑料手套", "刷子", "擀面杖",
         "蒸箱", "面包机", "轻食机", "搅拌机", "料理搅拌机", "榨汁机", "隔热手套", "煲汤盅，按",
         "冰箱", "打火机", "捣药罐",
+        "粉碎机", "过滤豆浆渣的纱布一块", "短吸管", "消毒纱布", "小斧头", "密封袋", "港式奶茶过滤袋",
     }
     foods = {"火锅底料", "火锅牛肉卷", "麻辣香锅调料", "北京二锅头酒", "蒸锅用水"}
 
@@ -293,14 +296,23 @@ def test_real_recipe_sources_exclude_tools_and_calculation_formulae():
         "data/dishes/aquatic/清蒸生蚝.md": "刷子",
         "data/dishes/drink/B52轰炸机.md": "打火机",
         "data/dishes/meat_dish/孜然牛肉.md": "捣药罐",
+        "data/dishes/semi-finished/牛油火锅底料.md": "粉碎机",
+        "data/dishes/drink/冰粉/冰粉.md": "过滤豆浆渣的纱布一块",
+        "data/dishes/meat_dish/带把肘子.md": "小斧头",
+        "data/dishes/aquatic/微波葱姜黑鳕鱼.md": "密封袋",
+        "data/dishes/drink/泰国手标红茶/泰国手标红茶.md": "港式奶茶过滤袋",
     }
     for relative_path, tool_name in tool_only_sources.items():
         assert tool_name not in ingredient_names(relative_path)
 
     sunny_side_up = ingredient_names("data/dishes/breakfast/太阳蛋.md")
     cucumber_pork = ingredient_names("data/dishes/meat_dish/黄瓜炒肉.md")
+    noodles = ingredient_names("data/dishes/staple/汤面.md")
+    lamb_ribs = ingredient_names("data/dishes/meat_dish/萝卜炖羊排.md")
     assert not {"鸡蛋的用量为", "盐的用量为", "油的用量为"} & sunny_side_up
     assert not {"油量", "盐量"} & cucumber_pork
+    assert not {"面类材料：单人一个方便面大小的量，可以在", "冷水： 加入能浸没面的量，一般在"} & noodles
+    assert "水：没过食材的量，需要" not in lamb_ribs
 
 
 def test_manifest_sha_is_bound_to_the_same_bytes_used_for_parsing(tmp_path: Path, monkeypatch):
