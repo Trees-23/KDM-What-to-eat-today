@@ -78,7 +78,8 @@ def _strict_nutrition_claim_audit(row: dict[str, Any]) -> list[dict[str, Any]]:
             "assertion": str(assertion or "strict_nutrition_claim"),
             "source": str(source or "missing"),
             "evidence_verified": claim.get("evidence_verified") is True,
-            "valid": valid,
+            "policy_version": str(claim.get("policy_version") or ""),
+            "valid": valid and bool(str(claim.get("policy_version") or "")) and str(source or "").startswith("governed:"),
         })
     return claims
 
@@ -182,6 +183,7 @@ def evaluate(
     missing_result_ids = []
     invalid_result_ids = []
     fault_injection_violations = []
+    relation_path_violations = []
     relation_checks = []
     faithfulness_checks = []
     linkage_checks = []
@@ -203,6 +205,9 @@ def evaluate(
             not case.get("required_graph_status") or graph_status == case["required_graph_status"]
         )
         claim_audit = _strict_nutrition_claim_audit(row)
+        allowed_nutrition_claims = set(case.get("allowed_strict_nutrition_assertions") or [])
+        for claim in claim_audit:
+            claim["valid"] = claim["valid"] and claim["assertion"] in allowed_nutrition_claims
         assertions = set(_string_list(row.get("assertions")))
         assertions.update(claim["assertion"] for claim in claim_audit)
         violations = sorted(assertions & set(case.get("forbidden_assertions") or []))
@@ -212,10 +217,13 @@ def evaluate(
         for violation in (claim for claim in claim_audit if not claim["valid"]):
             nutrition_misclaims.append({"evaluation_id": case["evaluation_id"], **violation})
         expected_paths = set(case.get("gold_relation_paths") or [])
+        actual_paths = set(_string_list(row.get("graph_paths")))
         relation_correct = None
         if expected_paths:
-            relation_correct = bool(expected_paths & set(_string_list(row.get("graph_paths"))))
+            relation_correct = bool(expected_paths & actual_paths) and actual_paths <= expected_paths
             relation_checks.append(relation_correct)
+        if actual_paths - expected_paths:
+            relation_path_violations.append({"evaluation_id": case["evaluation_id"], "paths": sorted(actual_paths - expected_paths)})
         faithful = row.get("answer_faithful") is True
         faithfulness_checks.append(faithful)
         linkage_complete = None
@@ -255,6 +263,7 @@ def evaluate(
         "forbidden_assertion_count": forbidden,
         "strict_nutrition_misclaim_count": len(nutrition_misclaims),
         "fault_injection_violation_count": len(fault_injection_violations),
+        "relation_path_violation_count": len(relation_path_violations),
         "p95_latency_ms": p95,
     }
     errors = []
@@ -276,6 +285,8 @@ def evaluate(
         errors.append("strict_nutrition_misclaim_count")
     if len(fault_injection_violations) > thresholds.get("fault_injection_violation_count_max", 0):
         errors.append("fault_injection_violation_count")
+    if relation_path_violations:
+        errors.append("relation_path_violation_count")
     if duplicate_result_ids:
         errors.append("duplicate_evaluation_id")
     if invalid_result_ids:
@@ -319,6 +330,7 @@ def evaluate(
         "invalid_result_ids": invalid_result_ids,
         "strict_nutrition_misclaims": nutrition_misclaims,
         "strict_nutrition_claims": nutrition_claims,
+        "relation_path_violations": relation_path_violations,
         "comparison": comparison,
         "cases_schema_version": cases_payload.get("schema_version"),
         "thresholds_schema_version": thresholds.get("schema_version"),

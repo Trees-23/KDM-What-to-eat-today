@@ -140,6 +140,18 @@ def test_fault_injection_fake_links_and_soft_strict_claims_cannot_bypass_release
     assert "evidence_linkage" in fake_link_report["errors"]
     assert "forbidden_assertion_count" in strict_claim_report["errors"]
 
+    forged_path_rows = _matching_rows(expanded, "old")
+    for item, row in zip(expanded, forged_path_rows):
+        if item.get("gold_relation_paths"):
+            row["graph_paths"] = list(item["gold_relation_paths"]) + ["FORGED_RELATION"]
+    forged_path_report = evaluate(cases, thresholds, forged_path_rows, "old")
+    assert "relation_path_violation_count" in forged_path_report["errors"]
+
+    unknown_nutrition_rows = _matching_rows(expanded, "old")
+    unknown_nutrition_rows[0]["nutrition_claims"] = [{"strict": True, "assertion": "strict_calorie_claim", "evidence_source": "fake", "evidence_verified": True, "policy_version": "fake-v1"}]
+    unknown_nutrition_report = evaluate(cases, thresholds, unknown_nutrition_rows, "old")
+    assert "strict_nutrition_misclaim_count" in unknown_nutrition_report["errors"]
+
 
 def test_new_path_rejects_untrusted_or_wrong_baseline_report():
     cases = json.loads((ROOT / "eval/retrieval_refactor_cases.yaml").read_text(encoding="utf-8"))
