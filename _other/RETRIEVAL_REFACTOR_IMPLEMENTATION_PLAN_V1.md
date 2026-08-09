@@ -500,9 +500,9 @@ python scripts/validate_nutrition_dataset.py --source <governed-source> --policy
 
 生产器输入必须是显式目录或 manifest，禁止请求期递归扫描。它以确定性顺序生成 nodes.csv、relationships.csv、manifest（源文件哈希、producer 版本、schema 版本、节点/边数量、稳定 ID 摘要）。validate_recipe_graph_csv.py 检查唯一 nodeId、外键、关系方向、步骤顺序、CSV 转义和与 PDS/Milvus build 的映射可行性。
 
-任何图导入先在独立 staging Neo4j 实例或新建、隔离的 staging database 运行，脚本必须要求精确 database 名、CSV 目录、受控备份根目录和白名单；不允许默认 database、通配符、相对路径、既有生产数据库或生产/开发混用。neo4j_snapshot.py 依据阶段 0 已记录的运行方式执行原生 dump 或可恢复导出，写入带 schema、节点/边计数、样本 nodeId 哈希的 manifest。neo4j_graph_import.py 的 apply 模式必须接收 --backup-manifest、--expected-backup-sha256 和 --backup-root，验证其对应同一个 database、CSV manifest、备份根目录和已通过的 verify 记录后才能继续；还必须在前后运行 schema、唯一性、关系计数、样本 ID、CSV manifest 哈希核对。批次大小固定且可记录，失败时停止后续批次，不自动继续。
+protected profile 的图导入先在独立 staging Neo4j 实例或新建、隔离的 staging database 运行，脚本必须要求精确 database 名、CSV 目录、受控备份根目录和白名单；不允许默认 database、通配符、相对路径、既有生产数据库或生产/开发混用。personal-local profile 不连接图数据库，只使用隔离夹具演练 CSV 校验、快照 verify/restore 和 apply 守卫拒绝路径。neo4j_snapshot.py 依据阶段 0 已记录的运行方式执行原生 dump 或可恢复导出，写入带 schema、节点/边计数、样本 nodeId 哈希的 manifest。neo4j_graph_import.py 的 apply 模式必须接收 --backup-manifest、--expected-backup-sha256 和 --backup-root，验证其对应同一个 database、CSV manifest、备份根目录和已通过的 verify 记录后才能继续；还必须在前后运行 schema、唯一性、关系计数、样本 ID、CSV manifest 哈希核对。批次大小固定且可记录，失败时停止后续批次，不自动继续。
 
-CSV 生成和 dry-run 是非破坏性的；任何 apply 会写入图数据库，属于受控迁移动作而非普通构建。只有 staging 完整导入、快照恢复、阶段 6 评测和用户验收均通过后，才可用同一 immutable CSV manifest 对经过明确批准的新建隔离目标 database 重复“快照 -> verify -> dry-run -> batch apply -> postcheck”流程，再通过配置切换读流量。回退优先将流量/配置留在旧 PDS 与旧 collection；数据恢复只还原到新的 restore database 供比较。对原目标 database 的覆盖、清空、删除或同库就地迁移不在本计划授权范围内，须另行批准。
+CSV 生成和 dry-run 是非破坏性的；任何 apply 会写入图数据库，属于受控迁移动作而非普通构建。protected profile 只有在 staging 完整导入、快照恢复、阶段 6 评测和用户验收均通过后，才可用同一 immutable CSV manifest 对经过明确批准的新建隔离目标 database 重复“快照 -> verify -> dry-run -> batch apply -> postcheck”流程，再通过配置切换读流量。personal-local profile 不执行 apply、不切换读流量，完成本地夹具守卫演练即可。回退优先将流量/配置留在旧 PDS 与旧 collection；数据恢复只还原到新的 restore database 供比较。对原目标 database 的覆盖、清空、删除或同库就地迁移不在本计划授权范围内，须另行批准。
 
 monitor_retrieval_rollout.py 必须有 --once 和 --evaluate 两种模式，并支持 personal-local/protected profile：--once 只能读已授权指标源，生成带 UTC 时间、variant 和配置 hash 的不可变 artifact；protected 的 --evaluate 合并连续 artifact，计算 7 个自然日、至少 100 次请求和所有冻结阈值，输出 rollout-window.json；personal-local 直接输出 not_applicable，不等待真实流量，也不把离线结果伪装成线上通过。CI 工作流以受保护身份每 15 分钟执行 --once，并在窗口满足时执行 --evaluate；执行身份、指标源别名、artifact 保留期和下一次计划运行时间写入 PR。连续监控到第 8 个自然日仍未收集够 100 次、指标源持续不可用或任一禁止断言非零时，自动创建 blocked 报告并保持旧流量/开关，不扩大流量；只要调度器仍可用就继续采样，不把超时报告当作通过。
 
@@ -541,11 +541,11 @@ python scripts/monitor_retrieval_rollout.py --evaluate --artifact-dir <artifact-
 
 导入守卫单测必须验证错误 database、既有非隔离目标、旧 collection/实例、缺失批准、缺失/未验证/不匹配的 backup manifest 或 SHA256、相对路径及无白名单都会拒绝；恢复演练在全新的 staging-restore-db 完成后才算备份可用。对旧、新变体分别报告 Recall@K、MRR、关系路径正确率、证据完整率、答案忠实率、严格营养错误率、P95 延迟和故障降级正确率，并逐项与已冻结的 release thresholds 比较。未达到进入时冻结的阈值或任一禁止断言出现时，不扩大流量。
 
-干净测试进程只能提供自动化辅助证据，不能签收最终用户场景验收。最终验收必须由可识别的独立审查代理或非实施者在 staging UI/API 逐条提交 10 个必测问题与三类故障注入，按评测文件中的“必需事实、可见限制、禁止断言”签收。签收记录必须保存审查身份、输入 commit、实际 QueryPlan、GraphFact 状态、TextEvidence build_id/parent_id、最终可见回复和结果；实体不存在、关系不存在、图服务失败三项分别确认没有静默臆测、没有关系伪证、没有将文本伪装为图事实。
+protected profile 的最终验收必须由可识别的独立审查代理或非实施者在 staging UI/API 逐条提交 10 个必测问题与三类故障注入，按评测文件中的“必需事实、可见限制、禁止断言”签收。personal-local profile 由独立只读审查代理复核 50 条冻结离线案例、三类故障注入、CSV/导入守卫和 feature flag 回退测试；不得将该离线复核表述为 staging UI/API 验收。两种 profile 的签收记录都必须保存审查身份、输入 commit、实际结果和结论；protected 额外保存 QueryPlan、GraphFact 状态、TextEvidence build_id/parent_id 和最终可见回复。实体不存在、关系不存在、图服务失败三项分别确认没有静默臆测、没有关系伪证、没有将文本伪装为图事实。
 
 发布以 allowlist -> 小比例 -> 明确默认新路径三步进行，每一步必须由 rollout-window.json 证明满足已冻结观察窗口和错误审计阈值。执行代理在前一步窗口达标后立即推进下一步，而不是等待常规确认；受保护环境切换仍以已存在且可验证的审批记录为前提。旧路径保留在 RETRIEVAL_LEGACY_FALLBACK_ENABLED 下，直至评测、线上错误率和用户反馈达标并获得单独删除批准。回退是把 allowlist/比例归零或关闭新开关，不删除任何 collection、PDS build 或模块。
 
-- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；personal-local profile 通过离线评测、监控器单测和安全守卫，rollout-window 标记 not_applicable；protected profile 另需首个采样、连续 7 天/100 请求 rollout-window 和阈值计算通过；独立审查代理或非实施者完成最终 staging 签收；新路径分阶段发布与回退演练成功；旧模块仍可通过兼容开关运行。
+- DoD：Recipe 生产器可重放并通过 CSV 校验；评测覆盖表中全部场景和故障注入；personal-local profile 通过离线评测、监控器单测、快照/导入夹具守卫和独立只读签收，rollout-window 标记 not_applicable，feature flag 保持关闭且不执行真实 apply/切流；protected profile 另需首个采样、连续 7 天/100 请求 rollout-window、staging UI/API 签收、受控 apply 和回退演练；旧模块仍可通过兼容开关运行。
 - 提交/PR：依次提交“构建（菜谱数据）：增加可复现 CSV 生产器”、“测试（检索评测）：覆盖证据与降级场景”、“维护（检索迁移）：增加渐进切换”。每次推送更新同一 PR 的指标表、流量阶段、风险和回退状态；没有用户明确确认不得合并 main。
 
 ## 测试矩阵
