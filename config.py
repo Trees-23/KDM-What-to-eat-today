@@ -93,8 +93,10 @@ class GraphRAGConfig:
     retrieval_strict_nutrition_enabled: bool = _strict_nutrition_enabled()
 
     def __post_init__(self):
-        """初始化后的处理"""
-        pass
+        """严格营养开关始终受当前治理策略约束。"""
+        self.retrieval_strict_nutrition_enabled = bool(
+            self.retrieval_strict_nutrition_enabled and SOFT_PREFERENCE_POLICY.strict_mode_available
+        )
     
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any]) -> 'GraphRAGConfig':

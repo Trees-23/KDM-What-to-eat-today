@@ -29,6 +29,7 @@ _MEDICAL_MARKERS = (
     "妊娠",
 )
 _NUTRITION_MARKERS = ("低脂", "脂肪", "控脂", "减脂", "低热量", "热量", "能量", "千卡", "大卡", "卡路里")
+_SCOPED_SOFT_PREFERENCE_MARKERS = ("少油", "清爽")
 _MEASUREMENT_PATTERN = re.compile(r"\d+(?:\.\d+)?\s*(?:克|g|千卡|kcal|大卡|卡)", re.IGNORECASE)
 
 
@@ -82,7 +83,9 @@ class NutritionPolicy:
 
     @staticmethod
     def _is_nutrition_request(text: str) -> bool:
-        return any(marker in text for marker in _NUTRITION_MARKERS + _MEDICAL_MARKERS)
+        return any(marker in text for marker in _NUTRITION_MARKERS + _MEDICAL_MARKERS) or (
+            "川菜" in text and any(marker in text for marker in _SCOPED_SOFT_PREFERENCE_MARKERS)
+        )
 
     @staticmethod
     def _requires_hard_evidence(text: str) -> bool:

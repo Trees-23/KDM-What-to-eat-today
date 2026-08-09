@@ -103,10 +103,11 @@ def _system(*, graph_unavailable=False):
     return system
 
 
-def test_low_fat_sichuan_query_uses_verified_cuisine_scope_then_returns_soft_preference_evidence():
+@pytest.mark.parametrize("query", ("推荐低脂川菜", "推荐少油川菜", "推荐清爽川菜"))
+def test_scoped_soft_preference_query_uses_verified_cuisine_scope_then_returns_soft_preference_evidence(query):
     system = _system()
 
-    bundle, analysis = system.retrieve_for_generation("推荐低脂川菜", 3)
+    bundle, analysis = system.retrieve_for_generation(query, 3)
 
     assert analysis is None
     assert isinstance(bundle, EvidenceBundle)
@@ -116,7 +117,7 @@ def test_low_fat_sichuan_query_uses_verified_cuisine_scope_then_returns_soft_pre
         "limit": 1,
     }
     assert system.restricted_vector_retriever.calls == [
-        ("推荐低脂川菜", ("recipe-sichuan",), 3)
+        (query, ("recipe-sichuan",), 3)
     ]
     assert bundle.recommendation_evidence.level == "soft_preference"
     assert "NUTRITION_SOFT_PREFERENCE_ONLY" in bundle.limitations

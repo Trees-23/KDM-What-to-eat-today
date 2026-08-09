@@ -19,6 +19,15 @@ def test_soft_preference_policy_keeps_strict_mode_disabled_and_marks_low_fat_as_
     assert decision.requires_cuisine_scope is True
 
 
+def test_soft_preference_policy_routes_less_oil_and_clean_sichuan_requests_to_scoped_preference():
+    for query in ("推荐少油川菜", "推荐清爽川菜"):
+        decision = SOFT_PREFERENCE_POLICY.assess(query)
+
+        assert decision is not None
+        assert decision.evidence.level == "soft_preference"
+        assert decision.requires_cuisine_scope is True
+
+
 def test_soft_preference_policy_rejects_threshold_strict_and_medical_requests_without_candidates():
     for query in (
         "推荐严格低脂川菜",
@@ -48,6 +57,8 @@ def test_config_cannot_enable_strict_nutrition_without_governed_policy(monkeypat
     reloaded = importlib.reload(config_module)
 
     assert reloaded.GraphRAGConfig().retrieval_strict_nutrition_enabled is False
+    assert reloaded.GraphRAGConfig(retrieval_strict_nutrition_enabled=True).retrieval_strict_nutrition_enabled is False
+    assert reloaded.GraphRAGConfig.from_dict({"retrieval_strict_nutrition_enabled": True}).retrieval_strict_nutrition_enabled is False
 
 
 def test_recommendation_evidence_round_trips_and_is_rendered_as_a_separate_section():
