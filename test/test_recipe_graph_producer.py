@@ -135,6 +135,78 @@ def test_directory_input_and_dry_run_are_explicit_and_non_writing(tmp_path: Path
     assert not dry_output.exists()
 
 
+def test_calculation_section_supplies_amounts_and_excludes_cooking_tools(tmp_path: Path):
+    dishes = tmp_path / "dishes"
+    dishes.mkdir()
+    recipe = dishes / "示例.md"
+    recipe.write_text(
+        """# 示例的做法
+
+## 必备原料和工具
+
+- 鱼肉
+- 蒜瓣
+- 盐
+- 量杯
+- 厨房秤（可选）
+- 大不锈钢碗
+
+## 计算
+
+- 鱼肉 500g
+- 大蒜 2 瓣
+- 盐 5g
+- 豆豉 10g（可选）
+- 量杯 1个
+
+## 操作
+
+- 准备食材
+- 下锅煮熟
+""",
+        encoding="utf-8",
+    )
+    output = tmp_path / "output"
+    assert build_recipe_graph_csv.main(["--input-dir", str(dishes), "--output", str(output)]) == 0
+
+    nodes = _rows(output / "nodes.csv")
+    labels_by_id = {row["nodeId"]: row["labels"] for row in nodes}
+    name_by_id = {row["nodeId"]: row["name"] for row in nodes}
+    ingredient_names = {row["name"] for row in nodes if row["labels"] == "Ingredient"}
+    assert {"鱼肉", "大蒜", "盐", "豆豉"}.issubset(ingredient_names)
+    assert not {"量杯", "厨房秤", "大不锈钢碗", "蒜瓣"} & ingredient_names
+    amounts = {
+        name_by_id[row["endNodeId"]]: (row["amount"], row["unit"])
+        for row in _rows(output / "relationships.csv")
+        if row["relationshipType"] == "801000001" and labels_by_id[row["endNodeId"]] == "Ingredient"
+    }
+    assert amounts["鱼肉"] == ("500", "g")
+    assert amounts["大蒜"] == ("2", "瓣")
+    assert amounts["盐"] == ("5", "g")
+
+
+def test_build_uses_the_bytes_that_were_hashed_when_sources_were_loaded(tmp_path: Path):
+    manifest = _write_source_manifest(tmp_path)
+    sources, source_manifest_sha256 = build_recipe_graph_csv.load_sources(
+        input_manifest=str(manifest), input_dir=None
+    )
+    source = next(item for item in sources if item.logical_path == "meat/菜A.md")
+    source.path.write_text("# 已被替换的做法\n", encoding="utf-8")
+    output = tmp_path / "output"
+
+    report = build_recipe_graph_csv.build_artifact(
+        sources=sources,
+        source_manifest_sha256=source_manifest_sha256,
+        output=output,
+        dry_run=False,
+    )
+
+    assert report["valid"]
+    recipe_names = {row["name"] for row in _rows(output / "nodes.csv") if row["labels"] == "Recipe"}
+    assert "菜A" in recipe_names
+    assert "已被替换" not in recipe_names
+
+
 def test_validator_rejects_bad_relationship_direction(tmp_path: Path, capsys):
     manifest = _write_source_manifest(tmp_path)
     output = tmp_path / "output"
@@ -176,3 +248,26 @@ def test_validator_rejects_missing_foreign_key_and_non_contiguous_step_order(tmp
     report = json.loads(capsys.readouterr().out.splitlines()[-1])
     assert any("关系外键不存在" in error for error in report["errors"])
     assert any("Recipe 步骤顺序不连续" in error for error in report["errors"])
+
+
+def test_validator_enforces_every_manifest_schema_constraint(tmp_path: Path, capsys):
+    manifest = _write_source_manifest(tmp_path)
+    output = tmp_path / "output"
+    assert build_recipe_graph_csv.main(["--input-manifest", str(manifest), "--output", str(output)]) == 0
+
+    build_manifest_path = output / "recipe-build-manifest.json"
+    build_manifest = json.loads(build_manifest_path.read_text(encoding="utf-8"))
+    build_manifest["source_manifest_sha256"] = "not-a-sha256"
+    build_manifest["stable_id_summary"]["algorithm"] = "unverified"
+    del build_manifest["pds_milvus_mapping"]["reason"]
+    build_manifest.pop("manifest_sha256")
+    build_manifest["manifest_sha256"] = hashlib.sha256(
+        build_recipe_graph_csv._canonical_json(build_manifest).encode("utf-8")
+    ).hexdigest()
+    build_manifest_path.write_text(json.dumps(build_manifest, ensure_ascii=False), encoding="utf-8")
+
+    assert validate_recipe_graph_csv.main(["--input", str(output), "--strict"]) == 2
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])
+    assert any("source_manifest_sha256" in error for error in report["errors"])
+    assert any("stable_id_summary" in error for error in report["errors"])
+    assert any("pds_milvus_mapping" in error for error in report["errors"])

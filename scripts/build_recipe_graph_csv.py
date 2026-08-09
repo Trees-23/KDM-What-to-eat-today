@@ -43,6 +43,7 @@ class SourceFile:
     path: Path
     logical_path: str
     sha256: str
+    content: bytes
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -83,6 +84,15 @@ def _ensure_inside(root: Path, candidate: Path) -> Path:
     return resolved
 
 
+def _load_source_file(path: Path, logical_path: str) -> SourceFile:
+    content = path.read_bytes()
+    try:
+        content.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise RecipeBuildError(f"来源不是 UTF-8 Markdown: {logical_path}") from error
+    return SourceFile(path, logical_path, _sha256_bytes(content), content)
+
+
 def load_sources(*, input_manifest: str | None, input_dir: str | None) -> tuple[list[SourceFile], str | None]:
     if bool(input_manifest) == bool(input_dir):
         raise RecipeBuildError("必须且只能提供 --input-manifest 或 --input-dir")
@@ -118,14 +128,15 @@ def load_sources(*, input_manifest: str | None, input_dir: str | None) -> tuple[
             candidate = _ensure_inside(root, root / logical_path)
             if candidate.suffix.lower() != ".md" or not candidate.is_file():
                 raise RecipeBuildError(f"来源必须是存在的 Markdown 文件: {logical_path}")
-            actual_hash = _sha256_file(candidate)
+            source = _load_source_file(candidate, logical_path)
+            actual_hash = source.sha256
             expected_hash = item.get("sha256")
             if expected_hash is not None:
                 if not isinstance(expected_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
                     raise RecipeBuildError(f"来源 SHA-256 格式无效: {logical_path}")
                 if actual_hash != expected_hash:
                     raise RecipeBuildError(f"来源 SHA-256 不匹配: {logical_path}")
-            selected.append(SourceFile(candidate, logical_path, actual_hash))
+            selected.append(source)
         return sorted(selected, key=lambda item: item.logical_path), _sha256_file(manifest_path)
 
     root = Path(str(input_dir)).resolve()
@@ -135,7 +146,7 @@ def load_sources(*, input_manifest: str | None, input_dir: str | None) -> tuple[
     for candidate in sorted(root.rglob("*.md"), key=lambda item: item.as_posix()):
         resolved = _ensure_inside(root, candidate)
         if resolved.is_file():
-            selected.append(SourceFile(resolved, resolved.relative_to(root).as_posix(), _sha256_file(resolved)))
+            selected.append(_load_source_file(resolved, resolved.relative_to(root).as_posix()))
     if not selected:
         raise RecipeBuildError("输入目录没有 Markdown 文件")
     return selected, None
@@ -189,6 +200,21 @@ def _recipe_description(text: str) -> str:
     return _plain_text(preface)[:500]
 
 
+QUANTITY_PATTERN = re.compile(
+    r"(?P<amount>\d+(?:\.\d+)?(?:\s*[-~至]\s*\d+(?:\.\d+)?)?)\s*"
+    r"(?P<unit>毫升|ml|mL|ML|千克|kg|KG|克|g|G|人份|个|支|瓣|根|只|片|勺|汤匙|茶匙|杯|斤|两|块|条|颗|把|份|盘)"
+)
+INGREDIENT_ALIASES = {"蒜瓣": "大蒜", "大蒜瓣": "大蒜"}
+COOKING_TOOL_NAMES = frozenset(
+    {
+        "量杯", "厨房秤", "秤", "大不锈钢碗", "不锈钢碗", "碗", "盘子", "碗与盘子",
+        "炒锅", "平底锅", "蒸锅", "砂锅", "高压锅", "锅", "烤箱", "微波炉", "空气炸锅",
+        "电饭煲", "燃气灶", "电磁炉", "菜刀", "剪刀", "砧板", "筷子", "炒勺", "锅铲",
+        "保鲜膜", "锡纸", "烘焙纸", "打蛋器", "料理机", "破壁机",
+    }
+)
+
+
 def _extract_amount_and_unit(item: str) -> tuple[str, str, str]:
     value = _plain_text(item)
     match = re.match(
@@ -203,26 +229,47 @@ def _extract_amount_and_unit(item: str) -> tuple[str, str, str]:
 
 def _normalise_ingredient_name(value: str) -> str:
     value = _plain_text(value)
-    value = re.sub(r"[（(](?:可选|推荐|约|或者|或)[^）)]*[）)]", "", value)
-    value = re.sub(r"[（(][^）)]*(?:备用|适量)[^）)]*[）)]", "", value)
+    value = re.split(r"[（(]", value, maxsplit=1)[0]
     value = re.sub(r"\s+", " ", value).strip(" -:：；;，,。")
-    return value
+    return INGREDIENT_ALIASES.get(value, value)
+
+
+def _extract_calculated_ingredient(item: str) -> tuple[str, str, str] | None:
+    value = _plain_text(item)
+    match = QUANTITY_PATTERN.search(value)
+    if match is None:
+        return None
+    name = _normalise_ingredient_name(value[:match.start()])
+    if not name:
+        return None
+    return name, match.group("amount").replace(" ", ""), match.group("unit")
+
+
+def _is_cooking_tool(name: str) -> bool:
+    return name in COOKING_TOOL_NAMES
 
 
 def _extract_ingredients(sections: Iterable[tuple[str, str]]) -> list[tuple[str, str, str]]:
-    rows: list[tuple[str, str, str]] = []
+    raw_rows: list[tuple[str, str, str]] = []
+    calculated_rows: list[tuple[str, str, str]] = []
     skipped = {"必须配料", "进阶配料", "可选配料", "调味料", "配料"}
     for title, body in sections:
+        if "计算" in title:
+            for item in _list_items(body):
+                calculated = _extract_calculated_ingredient(item)
+                if calculated is not None and not _is_cooking_tool(calculated[0]):
+                    calculated_rows.append(calculated)
+            continue
         if not any(marker in title for marker in ("原料", "配料", "食材")):
             continue
         for item in _list_items(body):
             if item in skipped:
                 continue
             name, amount, unit = _extract_amount_and_unit(item)
-            if name:
-                rows.append((name, amount, unit))
+            if name and not _is_cooking_tool(name):
+                raw_rows.append((name, amount, unit))
     deduplicated: dict[str, tuple[str, str, str]] = {}
-    for name, amount, unit in rows:
+    for name, amount, unit in calculated_rows + raw_rows:
         current = deduplicated.get(name)
         if current is None or (not current[1] and amount):
             deduplicated[name] = (name, amount, unit)
@@ -262,7 +309,7 @@ def _build_rows(sources: Iterable[SourceFile]) -> tuple[list[dict[str, str]], li
         return node_id
 
     for source in sources:
-        text = _clean_markdown(source.path.read_text(encoding="utf-8"))
+        text = _clean_markdown(source.content.decode("utf-8"))
         if not text:
             raise RecipeBuildError(f"菜谱 Markdown 不能为空: {source.logical_path}")
         title = _title_from_markdown(text, source.path.stem)

@@ -12,6 +12,8 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator
+
 try:
     from scripts.build_recipe_graph_csv import (
         BUILD_MANIFEST_NAME,
@@ -73,6 +75,18 @@ def _parse_positive_integer(value: str) -> int | None:
     if decimal <= 0 or decimal != decimal.to_integral_value():
         return None
     return int(decimal)
+
+
+def _validate_manifest_schema(manifest: dict[str, Any], errors: list[str]) -> None:
+    schema_path = Path(__file__).resolve().parents[1] / "data" / "manifests" / "recipe-build.schema.json"
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        errors.append(f"无法读取 manifest schema: {error}")
+        return
+    for error in sorted(Draft202012Validator(schema).iter_errors(manifest), key=lambda item: list(item.absolute_path)):
+        location = ".".join(str(part) for part in error.absolute_path) or "根对象"
+        errors.append(f"manifest schema 无效: {location}: {error.message}")
 
 
 def validate_artifact(directory: Path, *, strict: bool) -> dict[str, Any]:
@@ -153,6 +167,7 @@ def validate_artifact(directory: Path, *, strict: bool) -> dict[str, Any]:
                 errors.append(f"CookingStep 与 CONTAINS_STEP 顺序不一致: {row.get('relationshipId', '')}")
 
     if manifest:
+        _validate_manifest_schema(manifest, errors)
         if manifest.get("schema_version") != BUILD_SCHEMA_VERSION:
             errors.append("manifest schema_version 无效")
         if manifest.get("producer_version") != PRODUCER_VERSION:
