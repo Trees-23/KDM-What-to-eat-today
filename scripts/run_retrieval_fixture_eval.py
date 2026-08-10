@@ -62,6 +62,12 @@ class Route:
     entity_ids: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class LegacyGraphOutcome:
+    status: str
+    rows: tuple[dict[str, Any], ...]
+
+
 def _read_object(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -70,11 +76,6 @@ def _read_object(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise FixtureRunnerError(f"{path} 必须是 JSON 对象")
     return value
-
-
-def _canonical_sha256(value: Any) -> str:
-    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
 
 
 def _atomic_write(path: Path, content: str) -> None:
@@ -116,6 +117,14 @@ def _route(query: str) -> Route:
     if "宫保鸡丁" in normalized:
         return Route("recipe_full", (_PARENT_ID,))
     return Route("entity_missing", ())
+
+
+class _FixtureEntityResolver:
+    """用最小实体目录夹具复现确定性实体定位和缺失处理。"""
+
+    @staticmethod
+    def resolve(query: str) -> Route:
+        return _route(query)
 
 
 def _query_vector(query: str) -> list[float]:
@@ -212,6 +221,33 @@ class _FixtureGraphDriver:
         yield _FixtureGraphSession(self._graph_rows, unavailable=self._unavailable)
 
 
+class _LegacyGraphFixtureAdapter:
+    """用固定查询调用 legacy 夹具 driver，不从 runner 直接读取 graph_rows。"""
+
+    _TEMPLATE_BY_ROUTE = {
+        "ingredient_recipes": "ingredient_recipes_v1",
+        "ingredient_pairing": "ingredient_vegetable_pairs_v1",
+        "relation_missing": "ingredient_recipes_v1",
+        "graph_unavailable": "ingredient_recipes_v1",
+    }
+
+    def __init__(self, driver: _FixtureGraphDriver):
+        self._driver = driver
+
+    def retrieve(self, route: Route) -> LegacyGraphOutcome:
+        template = self._TEMPLATE_BY_ROUTE[route.kind]
+        parameters: dict[str, Any] = {"ingredient_id": _MISSING_ID if route.kind == "relation_missing" else _CHICKEN_ID, "limit": 20}
+        if template == "ingredient_vegetable_pairs_v1":
+            parameters["vegetable_category"] = "蔬菜"
+        query = f"// {template}\nRETURN fixture"
+        try:
+            with self._driver.session(database="fixture") as session:
+                rows = tuple(dict(row) for row in session.run(query, parameters))
+        except OSError:
+            return LegacyGraphOutcome("unavailable", ())
+        return LegacyGraphOutcome("verified" if rows else "not_found", rows)
+
+
 class _EmptyGraphIndex:
     entity_kv_store: dict[str, Any] = {}
 
@@ -260,14 +296,14 @@ class _LegacyVectorAdapter:
         return [{"text": parent["full_content"], "score": 1.0, "metadata": {"node_id": parent_id, "node_type": parent["node_type"], "recipe_name": parent["title"]}}][:k]
 
 
-def _make_legacy_retriever(graph_rows: Mapping[str, list[dict[str, Any]]], parent_data: Mapping[str, Mapping[str, Any]]) -> HybridRetrievalModule:
+def _make_legacy_retriever(driver: _FixtureGraphDriver, parent_data: Mapping[str, Mapping[str, Any]]) -> HybridRetrievalModule:
     """以最小适配器运行未修改的 legacy HybridRetrievalModule。"""
     retriever = object.__new__(HybridRetrievalModule)
     retriever.config = SimpleNamespace(enable_rerank=False, rerank_model="fixture-disabled", rerank_batch_size=8, embedding_model="fixture-vector-v1", llm_model="fixture-rule-model")
     retriever.milvus_module = _LegacyVectorAdapter(parent_data)
     retriever.data_module = SimpleNamespace()
     retriever.llm_client = _LegacyCompletionClient()
-    retriever.driver = _FixtureGraphDriver(graph_rows)
+    retriever.driver = driver
     retriever.graph_indexing = _EmptyGraphIndex()
     retriever.graph_indexed = True
     retriever.reranker = None
@@ -355,53 +391,71 @@ def _base_row(evaluation_id: str, query: str, variant: str, fixture_sha256: str,
             "runner_id": RUNNER_ID,
             "evidence_mode": EVIDENCE_MODE,
             "fixture_sha256": fixture_sha256,
+            "variant": variant,
             "live_services": False,
             "components": components,
         },
     }
 
 
+def _record_components(row: dict[str, Any], *components: str) -> None:
+    recorded = row["provenance"]["components"]
+    for component in components:
+        if component not in recorded:
+            recorded.append(component)
+
+
 def _new_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: ParentDocumentStore, graph_rows: Mapping[str, list[dict[str, Any]]], vectors: Mapping[str, list[float]]) -> dict[str, Any]:
-    route = _route(query)
-    row = _base_row(evaluation_id, query, "new", fixture_sha256, ["QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore", "RestrictedVectorRetriever"])
-    validator = QueryPlanValidator()
-    driver = _FixtureGraphDriver(graph_rows, unavailable=route.kind == "graph_unavailable")
-    graph = TargetedGraphRetriever(driver, database="fixture", validator=validator)
-    client = _FixtureMilvusClient(vectors, store.iter_chunks())
-    vector = RestrictedVectorRetriever(client, parent_store=store, collection=f"cooking_knowledge_v2_{store.active_build_id[:12]}", build_id=store.active_build_id, database="fixture", dimension=2, embedder=_FixtureEmbedder())
+    route = _FixtureEntityResolver().resolve(query)
+    row = _base_row(evaluation_id, query, "new", fixture_sha256, ["FixtureEntityResolver"])
+    row["provenance"]["route"] = route.kind
     row["entity_ids"] = list(route.entity_ids)
     if route.kind == "recipe_full":
         parent = store.get_full_parent(_PARENT_ID, expected_node_type="Recipe")
         if parent is None:
             raise FixtureRunnerError("PDS 夹具缺少 recipe-gongbao")
+        _record_components(row, "ParentDocumentStore")
         row.update(retrieved_parent_ids=[parent.parent_id], evidence=["text"], evidence_links=[_text_link(store, parent.parent_id)], latency_ms=3.0)
     elif route.kind == "recipe_step":
+        validator = QueryPlanValidator()
+        graph = TargetedGraphRetriever(_FixtureGraphDriver(graph_rows), database="fixture", validator=validator)
         plan = validator.validate(QueryPlan("RECIPE_STEP", "recipe_step_anchor_v1", "Recipe", {"recipe_id": _PARENT_ID, "step_number": 1, "limit": 1}, 1))
         fact = graph.retrieve(plan)
         window = store.get_anchor_window(_PARENT_ID, "recipe_step", "step-gongbao-1", 0, 1)
         if fact.status != "verified" or not window:
             raise FixtureRunnerError("recipe-step 夹具未能走通图查询与锚点回补")
+        _record_components(row, "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore")
         row.update(query_plan=plan.to_dict(), graph_fact=_fact_dict(fact), graph_status=fact.status, retrieved_parent_ids=[_PARENT_ID], evidence=["text"], evidence_links=[_text_link(store, _PARENT_ID)], latency_ms=4.0)
     elif route.kind in {"ingredient_recipes", "ingredient_pairing", "relation_missing", "graph_unavailable"}:
+        validator = QueryPlanValidator()
+        graph = TargetedGraphRetriever(_FixtureGraphDriver(graph_rows, unavailable=route.kind == "graph_unavailable"), database="fixture", validator=validator)
         pairing = route.kind == "ingredient_pairing"
         plan = validator.validate(QueryPlan("INGREDIENT_VEGETABLE_PAIRS" if pairing else "INGREDIENT_RECIPES", "ingredient_vegetable_pairs_v1" if pairing else "ingredient_recipes_v1", "Ingredient", {"ingredient_id": _CHICKEN_ID if route.kind != "relation_missing" else _MISSING_ID, "vegetable_category": "蔬菜", "limit": 20} if pairing else {"ingredient_id": _CHICKEN_ID if route.kind != "relation_missing" else _MISSING_ID, "limit": 20}))
         fact = graph.retrieve(plan)
+        _record_components(row, "QueryPlanValidator", "TargetedGraphRetriever")
         row.update(query_plan=plan.to_dict(), graph_fact=_fact_dict(fact), graph_status=fact.status, latency_ms=5.0)
         if route.kind in {"ingredient_recipes", "ingredient_pairing"}:
             rows = fact.properties["rows"]
             parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in rows))
+            _record_components(row, "ParentDocumentStore")
             row.update(retrieved_parent_ids=parent_ids, evidence=["graph"], graph_paths=_graph_paths(route.kind, rows), evidence_links=[_text_link(store, parent_id) for parent_id in parent_ids])
         elif route.kind == "relation_missing":
             row["evidence"] = ["graph_not_found"]
         else:
             row["evidence"] = ["graph_unavailable"]
     elif route.kind == "technique":
+        validator = QueryPlanValidator()
+        graph = TargetedGraphRetriever(_FixtureGraphDriver(graph_rows), database="fixture", validator=validator)
         plan = validator.validate(QueryPlan("TECHNIQUE_CHUNKS", "technique_chunks_v1", "TechniqueDoc", {"technique_doc_id": _TECHNIQUE_ID, "limit": 20}))
         fact = graph.retrieve(plan)
         if fact.status != "verified":
             raise FixtureRunnerError("technique 夹具图查询失败")
+        _record_components(row, "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore")
         row.update(query_plan=plan.to_dict(), graph_fact=_fact_dict(fact), graph_status=fact.status, retrieved_parent_ids=[_TECHNIQUE_ID], evidence=["text"], evidence_links=[_text_link(store, _TECHNIQUE_ID)], latency_ms=4.0)
     elif route.kind in {"soft_preference", "semantic"}:
+        validator = QueryPlanValidator()
+        client = _FixtureMilvusClient(vectors, store.iter_chunks())
+        vector = RestrictedVectorRetriever(client, parent_store=store, collection=f"cooking_knowledge_v2_{store.active_build_id[:12]}", build_id=store.active_build_id, database="fixture", dimension=2, embedder=_FixtureEmbedder())
         scope = "candidate_parents" if route.kind == "soft_preference" else "all_child_chunks"
         parameters: dict[str, Any] = {"scope": scope, "limit": 5}
         if scope == "candidate_parents":
@@ -412,6 +466,7 @@ def _new_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: Pare
         if not parent_ids:
             raise FixtureRunnerError("向量夹具未返回 parent")
         selected_parent_ids = parent_ids[:1]
+        _record_components(row, "QueryPlanValidator", "FixtureMilvusClient", "RestrictedVectorRetriever", "ParentDocumentStore")
         row.update(query_plan=plan.to_dict(), retrieved_parent_ids=selected_parent_ids, evidence=["soft_preference" if route.kind == "soft_preference" else "text"], evidence_links=[_text_link(store, parent_id, store_name="milvus") for parent_id in selected_parent_ids], latency_ms=4.0)
     else:
         row.update(entity_status="not_found", evidence=["entity_not_found"], latency_ms=2.0)
@@ -421,9 +476,11 @@ def _new_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: Pare
 
 
 def _old_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: ParentDocumentStore, graph_rows: Mapping[str, list[dict[str, Any]]], parent_data: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
-    route = _route(query)
-    row = _base_row(evaluation_id, query, "old", fixture_sha256, ["HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter", "ParentDocumentStore"])
-    legacy = _make_legacy_retriever(graph_rows, parent_data)
+    route = _FixtureEntityResolver().resolve(query)
+    driver = _FixtureGraphDriver(graph_rows, unavailable=route.kind == "graph_unavailable")
+    row = _base_row(evaluation_id, query, "old", fixture_sha256, ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search"])
+    row["provenance"]["route"] = route.kind
+    legacy = _make_legacy_retriever(driver, parent_data)
     documents = legacy.hybrid_search(query, top_k=5)
     parent_ids = []
     for document in documents:
@@ -434,18 +491,23 @@ def _old_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: Pare
     if route.kind == "entity_missing":
         row.update(entity_status="not_found", evidence=["entity_not_found"], latency_ms=7.0)
     elif route.kind == "relation_missing":
-        row.update(graph_status="not_found", evidence=["graph_not_found"], latency_ms=8.0)
+        outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
+        _record_components(row, "LegacyGraphFixtureAdapter")
+        row.update(graph_status=outcome.status, evidence=["graph_not_found"], latency_ms=8.0)
     elif route.kind == "graph_unavailable":
-        row.update(graph_status="unavailable", evidence=["graph_unavailable"], latency_ms=8.0)
+        outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
+        _record_components(row, "LegacyGraphFixtureAdapter")
+        row.update(graph_status=outcome.status, evidence=["graph_unavailable"], latency_ms=8.0)
     elif route.kind in {"ingredient_recipes", "ingredient_pairing"}:
-        template = "ingredient_recipes_v1" if route.kind == "ingredient_recipes" else "ingredient_vegetable_pairs_v1"
-        rows = [dict(item) for item in graph_rows[template]]
-        graph_parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in rows))
-        row.update(retrieved_parent_ids=graph_parent_ids, evidence=["graph"], graph_status="verified", graph_paths=_graph_paths(route.kind, rows), evidence_links=[_text_link(store, parent_id) for parent_id in graph_parent_ids], latency_ms=8.0)
+        outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
+        _record_components(row, "LegacyGraphFixtureAdapter", "ParentDocumentStore")
+        graph_parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in outcome.rows))
+        row.update(retrieved_parent_ids=graph_parent_ids, evidence=["graph"], graph_status=outcome.status, graph_paths=_graph_paths(route.kind, outcome.rows), evidence_links=[_text_link(store, parent_id) for parent_id in graph_parent_ids], latency_ms=8.0)
     else:
         expected = _TECHNIQUE_ID if route.kind == "technique" else _PARENT_ID
         if expected not in parent_ids:
             raise FixtureRunnerError(f"legacy HybridRetrievalModule 未返回预期 fixture parent: {expected}")
+        _record_components(row, "ParentDocumentStore")
         row.update(retrieved_parent_ids=[expected], evidence=["soft_preference" if route.kind == "soft_preference" else "text"], evidence_links=[_text_link(store, expected)], latency_ms=7.0)
     row["legacy_document_count"] = len(documents)
     row["visible_response"] = _response(route.kind, row["retrieved_parent_ids"], row.get("graph_status"))
@@ -462,7 +524,7 @@ def run_fixture_evaluation(*, cases_path: Path, fixture_path: Path, variant: str
         raise FixtureRunnerError("variant 必须为 old 或 new")
     # 只保留执行所需的评测 ID 与原始查询，输出由夹具和实际组件行为决定。
     inputs = [(str(item["evaluation_id"]), str(item["query"])) for item in _expanded_cases(cases)]
-    fixture_sha256 = _canonical_sha256(fixture)
+    fixture_sha256 = hashlib.sha256(fixture_path.read_bytes()).hexdigest()
     with tempfile.TemporaryDirectory(prefix="retrieval-fixture-pds-") as temporary:
         with_store, vectors, parent_data = _build_store(fixture, Path(temporary))
         try:

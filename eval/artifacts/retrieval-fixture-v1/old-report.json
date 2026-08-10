@@ -580,7 +580,10 @@
   "relation_path_violations": [],
   "report_schema_version": "retrieval-eval-report-v2",
   "required_evidence_mode": "fixture_component_contract",
-  "results_sha256": "c8c50fab85a23638fb1192b24c20a9267a5e78d710e1772552d97f835546974b",
+  "results_sha256": "f58959b218d6ae2550205e980b88b327da8b008c705e07b4576eb57ccccb5e7e",
+  "skipped_thresholds": [
+    "latency_coverage_min"
+  ],
   "strict_nutrition_claims": [],
   "strict_nutrition_misclaims": [],
   "thresholds_schema_version": "retrieval-release-thresholds-v2",

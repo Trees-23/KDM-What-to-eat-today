@@ -10,7 +10,8 @@
     },
     "baseline_variant": "old",
     "mrr_at_5_regression": 0.0,
-    "p95_latency_ratio": 0.625,
+    "p95_latency_gate": "not_applicable_fixture_component_budget",
+    "p95_latency_ratio": null,
     "recall_at_5_regression": 0.0
   },
   "duplicate_result_ids": [],
@@ -591,7 +592,11 @@
   "relation_path_violations": [],
   "report_schema_version": "retrieval-eval-report-v2",
   "required_evidence_mode": "fixture_component_contract",
-  "results_sha256": "52acbb79efe1c58eeedcfb06ea60ee8021b51aeb86505fff4cd9ea84b5d89e0c",
+  "results_sha256": "32bd97aa1cb119958a293e2c10ceb9cc4706a508303612bd02e1e00a14e646ad",
+  "skipped_thresholds": [
+    "latency_coverage_min",
+    "new_vs_old.p95_latency_ratio_max"
+  ],
   "strict_nutrition_claims": [],
   "strict_nutrition_misclaims": [],
   "thresholds_schema_version": "retrieval-release-thresholds-v2",

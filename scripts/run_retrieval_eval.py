@@ -105,6 +105,10 @@ def _rows_fingerprint(rows: list[dict[str, Any]]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def _evidence_links_valid(case: dict[str, Any], row: dict[str, Any], ranked: list[Any]) -> bool:
     links = row.get("evidence_links")
     if not isinstance(links, list) or not links:
@@ -158,11 +162,11 @@ def _result_schema_valid(row: dict[str, Any]) -> bool:
     return row.get("graph_status") is None or isinstance(row["graph_status"], str)
 
 
-def _provenance_matches(row: dict[str, Any], required_evidence_mode: str | None) -> bool:
+def _provenance_matches(row: dict[str, Any], required_evidence_mode: str | None, expected_provenance: dict[str, Any] | None) -> bool:
     if required_evidence_mode is None:
         return True
     provenance = row.get("provenance")
-    return (
+    valid = (
         isinstance(provenance, dict)
         and provenance.get("evidence_mode") == required_evidence_mode
         and isinstance(provenance.get("runner_id"), str)
@@ -172,6 +176,18 @@ def _provenance_matches(row: dict[str, Any], required_evidence_mode: str | None)
         and bool(re.fullmatch(r"[0-9a-f]{64}", provenance["fixture_sha256"]))
         and isinstance(provenance.get("components"), list)
         and bool(provenance["components"])
+    )
+    if not valid or expected_provenance is None:
+        return valid
+    route = provenance.get("route")
+    requirements = expected_provenance.get("component_requirements")
+    return (
+        provenance.get("runner_id") == expected_provenance.get("runner_id")
+        and provenance.get("fixture_sha256") == expected_provenance.get("fixture_sha256")
+        and provenance.get("variant") == row.get("variant") == expected_provenance.get("variant")
+        and isinstance(route, str)
+        and isinstance(requirements, dict)
+        and provenance.get("components") == requirements.get(route)
     )
 
 
@@ -184,6 +200,7 @@ def evaluate(
     require_baseline: bool = False,
     baseline_rows: list[dict[str, Any]] | None = None,
     required_evidence_mode: str | None = None,
+    expected_provenance: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if variant:
         rows = [row for row in rows if isinstance(row, dict) and row.get("variant") == variant]
@@ -224,7 +241,7 @@ def evaluate(
             row = {}
         if not _result_schema_valid(row):
             invalid_result_ids.append(case["evaluation_id"])
-        if not _provenance_matches(row, required_evidence_mode):
+        if not _provenance_matches(row, required_evidence_mode, expected_provenance):
             invalid_provenance_ids.append(case["evaluation_id"])
         ranked = _string_list(row.get("retrieved_parent_ids"))[:5]
         gold = set(case.get("acceptable_parent_ids") or case.get("gold_parent_ids") or [])
@@ -308,7 +325,8 @@ def evaluate(
     errors = []
     if metrics["case_count"] < thresholds["min_case_count"]:
         errors.append("case_count")
-    for threshold, metric in (
+    skipped_thresholds = []
+    threshold_metrics = (
         ("result_coverage_min", "result_coverage"),
         ("latency_coverage_min", "latency_coverage"),
         ("evidence_completeness_min", "evidence_completeness"),
@@ -316,7 +334,11 @@ def evaluate(
         ("answer_faithfulness_min", "answer_faithfulness"),
         ("evidence_linkage_min", "evidence_linkage"),
         ("entity_resolution_min", "entity_resolution_correctness"),
-    ):
+    )
+    for threshold, metric in threshold_metrics:
+        if required_evidence_mode == "fixture_component_contract" and threshold == "latency_coverage_min":
+            skipped_thresholds.append(threshold)
+            continue
         if metrics[metric] < thresholds.get(threshold, 1.0):
             errors.append(metric)
     if forbidden > thresholds["forbidden_assertion_count_max"]:
@@ -353,19 +375,23 @@ def evaluate(
         elif baseline_metrics["p95_latency_ms"] <= 0:
             errors.append("baseline_p95_latency_ms")
         else:
+            fixture_latency = required_evidence_mode == "fixture_component_contract"
             comparison = {
                 "baseline_variant": comparison_thresholds.get("baseline_variant", "old"),
                 "baseline_metrics": baseline_metrics,
                 "recall_at_5_regression": baseline_metrics["recall_at_5"] - metrics["recall_at_5"],
                 "mrr_at_5_regression": baseline_metrics["mrr_at_5"] - metrics["mrr_at_5"],
-                "p95_latency_ratio": metrics["p95_latency_ms"] / baseline_metrics["p95_latency_ms"] if metrics["p95_latency_ms"] is not None else None,
+                "p95_latency_ratio": None if fixture_latency else (metrics["p95_latency_ms"] / baseline_metrics["p95_latency_ms"] if metrics["p95_latency_ms"] is not None else None),
+                "p95_latency_gate": "not_applicable_fixture_component_budget" if fixture_latency else "enforced",
             }
             if comparison["recall_at_5_regression"] > comparison_thresholds["recall_at_5_max_regression"]:
                 errors.append("recall_at_5_regression")
             if comparison["mrr_at_5_regression"] > comparison_thresholds["mrr_at_5_max_regression"]:
                 errors.append("mrr_at_5_regression")
-            if comparison["p95_latency_ratio"] is None or comparison["p95_latency_ratio"] > comparison_thresholds["p95_latency_ratio_max"]:
+            if not fixture_latency and (comparison["p95_latency_ratio"] is None or comparison["p95_latency_ratio"] > comparison_thresholds["p95_latency_ratio_max"]):
                 errors.append("p95_latency_ms")
+            if fixture_latency:
+                skipped_thresholds.append("new_vs_old.p95_latency_ratio_max")
 
     report = {
         "valid": not errors,
@@ -387,8 +413,42 @@ def evaluate(
         "results_sha256": _rows_fingerprint(rows),
         "variant": variant,
         "required_evidence_mode": required_evidence_mode,
+        "skipped_thresholds": sorted(set(skipped_thresholds)),
     }
     return report
+
+
+def _fixture_manifest_context(*, manifest_path: Path, fixture_path: Path, cases_path: Path, thresholds_path: Path, results_path: Path, report_path: Path, variant: str) -> dict[str, Any]:
+    manifest = _load_json(manifest_path)
+    if manifest.get("schema_version") != "retrieval-fixture-evidence-manifest-v1":
+        raise ValueError("evidence-manifest 不是受支持的 fixture evidence manifest")
+    if manifest.get("evidence_mode") != "fixture_component_contract":
+        raise ValueError("evidence-manifest 未声明 fixture_component_contract")
+    inputs = manifest.get("inputs")
+    artifacts = manifest.get("artifacts")
+    requirements = manifest.get("component_requirements")
+    if not isinstance(inputs, dict) or not isinstance(artifacts, dict) or not isinstance(requirements, dict):
+        raise ValueError("evidence-manifest 缺少 inputs、artifacts 或 component_requirements")
+    for name, path in (("fixture", fixture_path), ("cases", cases_path), ("thresholds", thresholds_path)):
+        entry = inputs.get(name)
+        if not isinstance(entry, dict) or entry.get("sha256") != _file_sha256(path):
+            raise ValueError(f"evidence-manifest 的 {name} SHA-256 不匹配")
+    result_entry = artifacts.get(f"{variant}_results")
+    report_entry = artifacts.get(f"{variant}_report")
+    if not isinstance(result_entry, dict) or result_entry.get("sha256") != _file_sha256(results_path):
+        raise ValueError(f"evidence-manifest 的 {variant} results SHA-256 不匹配")
+    if not isinstance(report_entry, dict) or not isinstance(report_entry.get("path"), str) or report_path.resolve() != (manifest_path.parent / report_entry["path"]).resolve():
+        raise ValueError(f"fixture 评测报告必须写入 evidence-manifest 声明的 {variant} report 路径")
+    expected = requirements.get(variant)
+    if not isinstance(expected, dict):
+        raise ValueError(f"evidence-manifest 缺少 {variant} 组件契约")
+    return {
+        "runner_id": manifest.get("runner_id"),
+        "fixture_sha256": _file_sha256(fixture_path),
+        "variant": variant,
+        "component_requirements": expected,
+        "expected_report_sha256": report_entry.get("sha256"),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -401,15 +461,47 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--baseline-report", type=Path)
     parser.add_argument("--baseline-results", type=Path)
     parser.add_argument("--require-evidence-mode", choices=("fixture_component_contract",))
+    parser.add_argument("--evidence-manifest", type=Path)
+    parser.add_argument("--fixture", type=Path)
     args = parser.parse_args(argv)
+    if args.require_evidence_mode and (not args.evidence_manifest or not args.fixture):
+        parser.error("--require-evidence-mode 必须同时提供 --evidence-manifest 和 --fixture")
+    if (args.evidence_manifest or args.fixture) and not args.require_evidence_mode:
+        parser.error("--evidence-manifest 和 --fixture 只可与 --require-evidence-mode 一起使用")
     rows = [json.loads(line) for line in args.results.read_text(encoding="utf-8").splitlines() if line.strip()]
     cases_payload = _load_json(args.cases)
     thresholds = _load_json(args.thresholds)
+    expected_provenance = None
+    if args.require_evidence_mode:
+        expected_provenance = _fixture_manifest_context(
+            manifest_path=args.evidence_manifest,
+            fixture_path=args.fixture,
+            cases_path=args.cases,
+            thresholds_path=args.thresholds,
+            results_path=args.results,
+            report_path=args.report,
+            variant=args.variant,
+        )
     baseline_report = _load_json(args.baseline_report) if args.baseline_report else None
     baseline_rows = None
     if args.variant == "new" and args.baseline_results:
         baseline_rows = [json.loads(line) for line in args.baseline_results.read_text(encoding="utf-8").splitlines() if line.strip()]
-        computed_baseline = evaluate(cases_payload, thresholds, baseline_rows, "old", required_evidence_mode=args.require_evidence_mode)
+        baseline_expected_provenance = None
+        if args.require_evidence_mode:
+            if not args.baseline_report:
+                parser.error("fixture new 评测必须提供 --baseline-report")
+            baseline_expected_provenance = _fixture_manifest_context(
+                manifest_path=args.evidence_manifest,
+                fixture_path=args.fixture,
+                cases_path=args.cases,
+                thresholds_path=args.thresholds,
+                results_path=args.baseline_results,
+                report_path=args.baseline_report,
+                variant="old",
+            )
+            if _file_sha256(args.baseline_report) != baseline_expected_provenance["expected_report_sha256"]:
+                raise ValueError("evidence-manifest 的 old report SHA-256 不匹配")
+        computed_baseline = evaluate(cases_payload, thresholds, baseline_rows, "old", required_evidence_mode=args.require_evidence_mode, expected_provenance=baseline_expected_provenance)
         computed_baseline["variant"] = "old"
         if baseline_report is not None and baseline_report.get("results_sha256") != computed_baseline.get("results_sha256"):
             raise ValueError("baseline-report 与 baseline-results 摘要不一致")
@@ -423,9 +515,12 @@ def main(argv: list[str] | None = None) -> int:
         require_baseline=args.variant == "new",
         baseline_rows=baseline_rows,
         required_evidence_mode=args.require_evidence_mode,
+        expected_provenance=expected_provenance,
     )
     report["baseline_report"] = args.baseline_report.name if args.baseline_report else None
     args.report.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    if expected_provenance is not None and _file_sha256(args.report) != expected_provenance["expected_report_sha256"]:
+        raise ValueError("evidence-manifest 的 report SHA-256 不匹配；请重新生成并更新审计 manifest")
     print(json.dumps({"valid": report["valid"], "metrics": report["metrics"], "errors": report["errors"]}, ensure_ascii=False, sort_keys=True))
     return 0 if report["valid"] else 2
 
