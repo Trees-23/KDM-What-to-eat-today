@@ -249,7 +249,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         if not args.thresholds:
             parser.error("--evaluate 必须提供 --thresholds")
-        thresholds = _load_object(_absolute_path(str(args.thresholds), "thresholds"), "thresholds")
+        thresholds = _load_object(args.thresholds.expanduser().resolve(), "thresholds")
         profile = args.profile or thresholds.get("deployment_profile", "protected")
         result = evaluate_window(artifact_dir=args.artifact_dir, thresholds=thresholds, window_days=args.window_days, min_requests=args.min_requests, output=args.output, profile=profile)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))

@@ -24,6 +24,23 @@ def _strict_nutrition_enabled() -> bool:
     return _env_bool("RETRIEVAL_STRICT_NUTRITION_ENABLED", False) and SOFT_PREFERENCE_POLICY.strict_mode_available
 
 
+def _env_rollout_percentage(name: str, default: float = 0.0) -> float:
+    """读取 0..100 的渐进流量比例；非法配置保持关闭。"""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        percentage = float(value)
+    except ValueError:
+        return default
+    return percentage if 0.0 <= percentage <= 100.0 else default
+
+
+def _env_rollout_allowlist(name: str) -> tuple[str, ...]:
+    """读取以逗号分隔的稳定请求标识，不接受空白项。"""
+    return tuple(item.strip() for item in os.getenv(name, "").split(",") if item.strip())
+
+
 @dataclass
 class GraphRAGConfig:
     """基于图数据库的RAG系统配置类"""
@@ -83,6 +100,9 @@ class GraphRAGConfig:
     retrieval_targeted_graph_enabled: bool = _env_bool("RETRIEVAL_TARGETED_GRAPH_ENABLED", False)
     # 阶段 4：仅允许联合 artifact manifest 指向全新 V2 collection，默认关闭。
     retrieval_milvus_v2_enabled: bool = _env_bool("RETRIEVAL_MILVUS_V2_ENABLED", False)
+    # 阶段 6：默认不将任何请求分流至新路径；allowlist 优先于流量比例。
+    retrieval_new_path_allowlist: tuple[str, ...] = _env_rollout_allowlist("RETRIEVAL_NEW_PATH_ALLOWLIST")
+    retrieval_new_path_traffic_percent: float = _env_rollout_percentage("RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT")
     # 阶段 6：新路径无法安全完成时，默认保留现有 Router 作为兼容回退。
     retrieval_legacy_fallback_enabled: bool = _env_bool("RETRIEVAL_LEGACY_FALLBACK_ENABLED", True)
     retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
@@ -140,6 +160,8 @@ class GraphRAGConfig:
             'retrieval_query_plan_enabled': self.retrieval_query_plan_enabled,
             'retrieval_targeted_graph_enabled': self.retrieval_targeted_graph_enabled,
             'retrieval_milvus_v2_enabled': self.retrieval_milvus_v2_enabled,
+            'retrieval_new_path_allowlist': self.retrieval_new_path_allowlist,
+            'retrieval_new_path_traffic_percent': self.retrieval_new_path_traffic_percent,
             'retrieval_legacy_fallback_enabled': self.retrieval_legacy_fallback_enabled,
             'retrieval_milvus_database': self.retrieval_milvus_database,
             'retrieval_milvus_collection': self.retrieval_milvus_collection,
@@ -167,6 +189,8 @@ class GraphRAGConfig:
             "retrieval_query_plan_enabled": self.retrieval_query_plan_enabled,
             "retrieval_targeted_graph_enabled": self.retrieval_targeted_graph_enabled,
             "retrieval_milvus_v2_enabled": self.retrieval_milvus_v2_enabled,
+            "retrieval_new_path_allowlist": self.retrieval_new_path_allowlist,
+            "retrieval_new_path_traffic_percent": self.retrieval_new_path_traffic_percent,
             "retrieval_legacy_fallback_enabled": self.retrieval_legacy_fallback_enabled,
             "retrieval_milvus_database": self.retrieval_milvus_database,
             "retrieval_milvus_collection": self.retrieval_milvus_collection,

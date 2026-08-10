@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.monitor_retrieval_rollout import RolloutGuardError, collect_once, evaluate_window
+from scripts.monitor_retrieval_rollout import RolloutGuardError, collect_once, evaluate_window, main
 
 
 THRESHOLDS = {
@@ -58,6 +58,19 @@ def test_personal_local_profile_does_not_require_online_window(tmp_path):
     assert report["status"] == "not_applicable"
     assert report["valid"] is True
     assert report["recommended_action"] == "offline_evaluation_only"
+
+
+def test_cli_allows_relative_thresholds_path(tmp_path, monkeypatch):
+    thresholds = tmp_path / "thresholds.json"
+    thresholds.write_text(json.dumps({"deployment_profile": "personal-local"}), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    assert main([
+        "--evaluate",
+        "--artifact-dir", str(tmp_path / "artifacts"),
+        "--thresholds", "thresholds.json",
+        "--profile", "personal-local",
+    ]) == 0
 
 
 def test_explicit_protected_profile_overrides_local_thresholds_and_rejects_nan(tmp_path):

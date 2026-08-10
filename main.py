@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import logging
+import hashlib
 from datetime import datetime
 from typing import List, Optional
 
@@ -338,6 +339,7 @@ class AdvancedGraphRAGSystem:
         stream: bool = False,
         explain_routing: bool = False,
         allow_generalized_advice: bool = False,
+        rollout_key: str | None = None,
         audit_run=None,
     ):
         """
@@ -366,6 +368,7 @@ class AdvancedGraphRAGSystem:
                 self.config.top_k,
                 audit_run=audit_run,
                 allow_generalized_advice=allow_generalized_advice,
+                rollout_key=rollout_key,
             )
             
             # 2. 显示路由信息
@@ -453,11 +456,17 @@ class AdvancedGraphRAGSystem:
         audit_run=None,
         *,
         allow_generalized_advice: bool = False,
+        rollout_key: str | None = None,
     ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
         nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
         if nutrition_bundle is not None:
             return nutrition_bundle, None
+        rollout_stage = self._new_path_rollout_stage(query, rollout_key=rollout_key)
+        if rollout_stage is None:
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("retrieval_rollout", status="legacy", reason="not_selected")
+            return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
         targeted_bundle = self._try_targeted_graph(query, audit_run=audit_run)
         if targeted_bundle is not None:
             self._audit_targeted_graph(audit_run, targeted_bundle)
@@ -484,6 +493,25 @@ class AdvancedGraphRAGSystem:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
         return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+
+    def _new_path_rollout_stage(self, query: str, *, rollout_key: str | None = None) -> str | None:
+        """按稳定 allowlist 或确定性比例决定单个请求是否可尝试新路径。"""
+
+        config = getattr(self, "config", None)
+        allowlist = set(getattr(config, "retrieval_new_path_allowlist", ()))
+        request_key = rollout_key or query
+        if request_key and request_key in allowlist:
+            return "allowlist"
+        try:
+            percentage = float(getattr(config, "retrieval_new_path_traffic_percent", 100.0))
+        except (TypeError, ValueError):
+            return None
+        if not 0.0 < percentage <= 100.0 or not request_key:
+            return None
+        if percentage == 100.0:
+            return "percentage"
+        bucket = int(hashlib.sha256(request_key.encode("utf-8")).hexdigest()[:8], 16) % 10_000
+        return "percentage" if bucket < int(percentage * 100) else None
 
     def _legacy_fallback_or_decline(self, query: str, top_k: int, audit_run=None):
         """仅在兼容开关开启时调用未改动的旧 Router。"""

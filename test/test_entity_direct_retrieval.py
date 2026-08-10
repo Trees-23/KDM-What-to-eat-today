@@ -245,6 +245,8 @@ class _Config:
     rag_audit_max_content_chars: int = 4000
     retrieval_query_plan_enabled: bool = False
     retrieval_targeted_graph_enabled: bool = False
+    retrieval_new_path_allowlist: tuple[str, ...] = ()
+    retrieval_new_path_traffic_percent: float = 100.0
 
 
 def _system_with_empty_resolver(audit_manager=None):
@@ -392,6 +394,33 @@ def test_legacy_fallback_can_be_explicitly_disabled():
     assert "LEGACY_FALLBACK_DISABLED" in bundle.limitations
     assert system.query_router.calls == []
     assert any(event[:2] == ("legacy_fallback", "disabled") for event in audit.events)
+
+
+def test_rollout_allowlist_selects_new_path_before_default_traffic():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config(
+        retrieval_new_path_allowlist=("accepted-request",),
+        retrieval_new_path_traffic_percent=0.0,
+    )
+    system.config.retrieval_milvus_v2_enabled = True
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = _RecordingVectorRetriever()
+    system.query_router = _Router()
+
+    documents, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, rollout_key="not-accepted")
+
+    assert documents == ["legacy"]
+    assert analysis == "legacy-analysis"
+    assert system.query_router.calls
+
+    bundle, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, rollout_key="accepted-request")
+
+    assert analysis is None
+    assert isinstance(bundle, EvidenceBundle)
+    assert len(system.restricted_vector_retriever.calls) == 1
 
 
 def test_preference_query_plan_passes_cuisine_parent_scope_to_v2(tmp_path):

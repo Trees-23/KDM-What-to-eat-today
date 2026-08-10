@@ -18,12 +18,11 @@ jobs:
       ARTIFACT_DIR: ${{ runner.temp }}/retrieval-rollout-artifacts
       VARIANT: ${{ vars.RETRIEVAL_VARIANT }}
       CONFIG_HASH: ${{ vars.RETRIEVAL_CONFIG_HASH }}
-      ROLLOUT_PROFILE: ${{ vars.RETRIEVAL_ROLLOUT_PROFILE || 'personal-local' }}
+      ROLLOUT_PROFILE: ${{ vars.RETRIEVAL_ROLLOUT_PROFILE || 'protected' }}
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
       - name: 采集已授权指标
-        continue-on-error: true
         run: >-
           python scripts/monitor_retrieval_rollout.py --once
           --metrics-source "$METRICS_SOURCE"
@@ -32,7 +31,6 @@ jobs:
           --config-hash "$CONFIG_HASH"
           --artifact-dir "$ARTIFACT_DIR"
       - name: 评估观察窗口
-        continue-on-error: true
         run: >-
           python scripts/monitor_retrieval_rollout.py --evaluate
           --artifact-dir "$ARTIFACT_DIR"
