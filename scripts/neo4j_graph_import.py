@@ -12,9 +12,15 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+# 支持文档约定的 ``python scripts/neo4j_graph_import.py`` 调用方式。
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.neo4j_snapshot import SnapshotGuardError, _absolute_path, _within, load_manifest, sha256_file, validate_database
 from scripts.validate_recipe_graph_csv import validate_artifact

@@ -83,6 +83,8 @@ class GraphRAGConfig:
     retrieval_targeted_graph_enabled: bool = _env_bool("RETRIEVAL_TARGETED_GRAPH_ENABLED", False)
     # 阶段 4：仅允许联合 artifact manifest 指向全新 V2 collection，默认关闭。
     retrieval_milvus_v2_enabled: bool = _env_bool("RETRIEVAL_MILVUS_V2_ENABLED", False)
+    # 阶段 6：新路径无法安全完成时，默认保留现有 Router 作为兼容回退。
+    retrieval_legacy_fallback_enabled: bool = _env_bool("RETRIEVAL_LEGACY_FALLBACK_ENABLED", True)
     retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
     retrieval_milvus_collection: str = os.getenv("RETRIEVAL_MILVUS_COLLECTION", "")
     retrieval_artifact_manifest_path: str = os.getenv(
@@ -138,6 +140,7 @@ class GraphRAGConfig:
             'retrieval_query_plan_enabled': self.retrieval_query_plan_enabled,
             'retrieval_targeted_graph_enabled': self.retrieval_targeted_graph_enabled,
             'retrieval_milvus_v2_enabled': self.retrieval_milvus_v2_enabled,
+            'retrieval_legacy_fallback_enabled': self.retrieval_legacy_fallback_enabled,
             'retrieval_milvus_database': self.retrieval_milvus_database,
             'retrieval_milvus_collection': self.retrieval_milvus_collection,
             'retrieval_artifact_manifest_path': self.retrieval_artifact_manifest_path,
@@ -164,6 +167,7 @@ class GraphRAGConfig:
             "retrieval_query_plan_enabled": self.retrieval_query_plan_enabled,
             "retrieval_targeted_graph_enabled": self.retrieval_targeted_graph_enabled,
             "retrieval_milvus_v2_enabled": self.retrieval_milvus_v2_enabled,
+            "retrieval_legacy_fallback_enabled": self.retrieval_legacy_fallback_enabled,
             "retrieval_milvus_database": self.retrieval_milvus_database,
             "retrieval_milvus_collection": self.retrieval_milvus_collection,
             "retrieval_artifact_manifest_path": self.retrieval_artifact_manifest_path,

@@ -483,7 +483,22 @@ class AdvancedGraphRAGSystem:
             else:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
-        return self.query_router.route_query(query, top_k, audit_run=audit_run)
+        return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+
+    def _legacy_fallback_or_decline(self, query: str, top_k: int, audit_run=None):
+        """仅在兼容开关开启时调用未改动的旧 Router。"""
+
+        if getattr(getattr(self, "config", None), "retrieval_legacy_fallback_enabled", True):
+            return self.query_router.route_query(query, top_k, audit_run=audit_run)
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("legacy_fallback", status="disabled")
+        return EvidenceBundle(
+            query_plan=None,
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=("LEGACY_FALLBACK_DISABLED", "新路径未提供可用证据，且旧路径兼容回退已关闭。"),
+        ), None
 
     def _initialize_restricted_vector_retriever(self) -> None:
         """仅从已验证联合 manifest 初始化 V2，任何不一致都保持不可用。"""

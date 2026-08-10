@@ -26,6 +26,8 @@ from rag_modules.milvus_v2_index import (
     create_milvus_client,
     pds_manifest_sha256,
 )
+from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
+from rag_modules.recommendation_evidence import RecommendationEvidence
 from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
 
 
@@ -276,6 +278,7 @@ def _load_main_system_type(audit_manager=None):
         audit_manager = _UnusedAuditManager
 
     modules = {
+        "config": module_with(DEFAULT_CONFIG=object(), GraphRAGConfig=object),
         "rag_modules": package,
         "rag_modules.hybrid_retrieval": module_with(HybridRetrievalModule=object),
         "rag_modules.graph_rag_retrieval": module_with(GraphRAGRetrieval=object),
@@ -300,6 +303,8 @@ def _load_main_system_type(audit_manager=None):
         "rag_modules.restricted_vector_retrieval": module_with(RestrictedVectorRetriever=RestrictedVectorRetriever),
         "rag_modules.rag_audit": module_with(RAGAuditManager=audit_manager),
         "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
+        "rag_modules.nutrition_policy": module_with(SOFT_PREFERENCE_POLICY=SOFT_PREFERENCE_POLICY),
+        "rag_modules.recommendation_evidence": module_with(RecommendationEvidence=RecommendationEvidence),
     }
     main_path = Path(__file__).resolve().parents[1] / "main.py"
     spec = importlib.util.spec_from_file_location("_phase2_main_under_test", main_path)
@@ -365,6 +370,28 @@ def test_v2_artifact_mismatch_returns_to_legacy_router():
     assert analysis == "legacy-analysis"
     assert len(system.query_router.calls) == 1
     assert any(event[:2] == ("restricted_vector", "artifact-mismatch") for event in audit.events)
+
+
+def test_legacy_fallback_can_be_explicitly_disabled():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.config.retrieval_legacy_fallback_enabled = False
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = None
+    system.entity_direct_retriever = None
+    system.restricted_vector_retriever = _MismatchedVectorRetriever()
+    system.query_router = _Router()
+    audit = _AuditRun()
+
+    bundle, analysis = system.retrieve_for_generation("夏天吃什么清淡的？", 3, audit_run=audit)
+
+    assert analysis is None
+    assert isinstance(bundle, EvidenceBundle)
+    assert "LEGACY_FALLBACK_DISABLED" in bundle.limitations
+    assert system.query_router.calls == []
+    assert any(event[:2] == ("legacy_fallback", "disabled") for event in audit.events)
 
 
 def test_preference_query_plan_passes_cuisine_parent_scope_to_v2(tmp_path):
