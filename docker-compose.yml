@@ -145,6 +145,11 @@ services:
       # 统一API配置
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.moonshot.cn/v1}
+      # 允许本地受限网络通过宿主代理访问模型服务。
+      - HTTP_PROXY=${HTTP_PROXY:-}
+      - HTTPS_PROXY=${HTTPS_PROXY:-}
+      - ALL_PROXY=${ALL_PROXY:-}
+      - NO_PROXY=${NO_PROXY:-localhost,127.0.0.1,neo4j,milvus-standalone}
     ports:
       - "8000:8000"
     volumes:
