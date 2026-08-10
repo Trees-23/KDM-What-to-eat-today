@@ -158,6 +158,23 @@ def _result_schema_valid(row: dict[str, Any]) -> bool:
     return row.get("graph_status") is None or isinstance(row["graph_status"], str)
 
 
+def _provenance_matches(row: dict[str, Any], required_evidence_mode: str | None) -> bool:
+    if required_evidence_mode is None:
+        return True
+    provenance = row.get("provenance")
+    return (
+        isinstance(provenance, dict)
+        and provenance.get("evidence_mode") == required_evidence_mode
+        and isinstance(provenance.get("runner_id"), str)
+        and bool(provenance["runner_id"].strip())
+        and provenance.get("live_services") is False
+        and isinstance(provenance.get("fixture_sha256"), str)
+        and bool(re.fullmatch(r"[0-9a-f]{64}", provenance["fixture_sha256"]))
+        and isinstance(provenance.get("components"), list)
+        and bool(provenance["components"])
+    )
+
+
 def evaluate(
     cases_payload: dict[str, Any],
     thresholds: dict[str, Any],
@@ -166,6 +183,7 @@ def evaluate(
     baseline_report: dict[str, Any] | None = None,
     require_baseline: bool = False,
     baseline_rows: list[dict[str, Any]] | None = None,
+    required_evidence_mode: str | None = None,
 ) -> dict[str, Any]:
     if variant:
         rows = [row for row in rows if isinstance(row, dict) and row.get("variant") == variant]
@@ -192,6 +210,7 @@ def evaluate(
     latencies = []
     missing_result_ids = []
     invalid_result_ids = []
+    invalid_provenance_ids = []
     fault_injection_violations = []
     relation_path_violations = []
     relation_checks = []
@@ -205,6 +224,8 @@ def evaluate(
             row = {}
         if not _result_schema_valid(row):
             invalid_result_ids.append(case["evaluation_id"])
+        if not _provenance_matches(row, required_evidence_mode):
+            invalid_provenance_ids.append(case["evaluation_id"])
         ranked = _string_list(row.get("retrieved_parent_ids"))[:5]
         gold = set(case.get("acceptable_parent_ids") or case.get("gold_parent_ids") or [])
         rank = next((index + 1 for index, parent_id in enumerate(ranked) if parent_id in gold), None)
@@ -310,6 +331,8 @@ def evaluate(
         errors.append("duplicate_evaluation_id")
     if invalid_result_ids:
         errors.append("invalid_result_schema")
+    if invalid_provenance_ids:
+        errors.append("runner_provenance_required")
 
     comparison = None
     comparison_thresholds = thresholds.get("new_vs_old")
@@ -352,6 +375,7 @@ def evaluate(
         "missing_result_ids": missing_result_ids,
         "duplicate_result_ids": duplicate_result_ids,
         "invalid_result_ids": invalid_result_ids,
+        "invalid_provenance_ids": invalid_provenance_ids,
         "strict_nutrition_misclaims": nutrition_misclaims,
         "strict_nutrition_claims": nutrition_claims,
         "relation_path_violations": relation_path_violations,
@@ -362,6 +386,7 @@ def evaluate(
         "generated_by": "scripts/run_retrieval_eval.py",
         "results_sha256": _rows_fingerprint(rows),
         "variant": variant,
+        "required_evidence_mode": required_evidence_mode,
     }
     return report
 
@@ -375,6 +400,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--variant", required=True, choices=("old", "new"))
     parser.add_argument("--baseline-report", type=Path)
     parser.add_argument("--baseline-results", type=Path)
+    parser.add_argument("--require-evidence-mode", choices=("fixture_component_contract",))
     args = parser.parse_args(argv)
     rows = [json.loads(line) for line in args.results.read_text(encoding="utf-8").splitlines() if line.strip()]
     cases_payload = _load_json(args.cases)
@@ -383,7 +409,7 @@ def main(argv: list[str] | None = None) -> int:
     baseline_rows = None
     if args.variant == "new" and args.baseline_results:
         baseline_rows = [json.loads(line) for line in args.baseline_results.read_text(encoding="utf-8").splitlines() if line.strip()]
-        computed_baseline = evaluate(cases_payload, thresholds, baseline_rows, "old")
+        computed_baseline = evaluate(cases_payload, thresholds, baseline_rows, "old", required_evidence_mode=args.require_evidence_mode)
         computed_baseline["variant"] = "old"
         if baseline_report is not None and baseline_report.get("results_sha256") != computed_baseline.get("results_sha256"):
             raise ValueError("baseline-report 与 baseline-results 摘要不一致")
@@ -396,6 +422,7 @@ def main(argv: list[str] | None = None) -> int:
         baseline_report,
         require_baseline=args.variant == "new",
         baseline_rows=baseline_rows,
+        required_evidence_mode=args.require_evidence_mode,
     )
     report["baseline_report"] = args.baseline_report.name if args.baseline_report else None
     args.report.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")

@@ -1,0 +1,69 @@
+{
+  "schema_version": "retrieval-fixture-evidence-manifest-v1",
+  "evidence_mode": "fixture_component_contract",
+  "generated_by": "scripts/run_retrieval_fixture_eval.py",
+  "runner_id": "retrieval-fixture-runner-v1",
+  "generated_on": "2026-08-10",
+  "live_services": false,
+  "inputs": {
+    "fixture": {
+      "path": "eval/retrieval_component_fixture_v1.json",
+      "sha256": "1d3ff89ce20e3d5f72e5eba0852ccb1d76a35498d5c380239540512e89345c52"
+    },
+    "cases": {
+      "path": "eval/retrieval_refactor_cases.yaml",
+      "sha256": "06dc70eeb5aac6e897af3db9d12b41e3a6dababb32636c24dd7eb6b30d465043"
+    },
+    "thresholds": {
+      "path": "eval/retrieval_release_thresholds.yaml",
+      "sha256": "57dee48bc44a62b11f8a9eb8a2a37d47a8a3eaebc2718345c03e97b463f6fb6f"
+    }
+  },
+  "artifacts": {
+    "old_results": {
+      "path": "old-results.jsonl",
+      "sha256": "ff3d807e7cfd13394b8d76718745f4a9b416e54495db8dad4dc909393c1c684a"
+    },
+    "old_report": {
+      "path": "old-report.json",
+      "sha256": "010dd7fce8183ba4c8dc1a64bad9dc65a78de94ae4abc6524e481b305c6bb5b5"
+    },
+    "new_results": {
+      "path": "new-results.jsonl",
+      "sha256": "76970026ea007bf6695fece5c088cef1cccfa8c4f510784de53e695c9b79076a"
+    },
+    "new_report": {
+      "path": "new-report.json",
+      "sha256": "f372ae4d20f11b26a0fea77046d36855745806f1584aaf920dea159710be3bb0"
+    }
+  },
+  "components": {
+    "old": ["HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter", "ParentDocumentStore"],
+    "new": ["QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore", "RestrictedVectorRetriever"]
+  },
+  "metrics": {
+    "case_count": 50,
+    "recall_at_5": {"old": 1.0, "new": 1.0},
+    "mrr_at_5": {"old": 0.7, "new": 0.7},
+    "p95_latency_ms": {"old": 8.0, "new": 5.0},
+    "latency_measurement": "fixture_component_budget_ms",
+    "evidence_completeness": {"old": 1.0, "new": 1.0},
+    "evidence_linkage": {"old": 1.0, "new": 1.0},
+    "entity_resolution_correctness": {"old": 1.0, "new": 1.0},
+    "forbidden_assertion_count": {"old": 0, "new": 0},
+    "strict_nutrition_misclaim_count": {"old": 0, "new": 0},
+    "fault_injection_violation_count": {"old": 0, "new": 0}
+  },
+  "valid": true,
+  "limitations": [
+    "这是 personal-local 的组件契约夹具；不连接真实 Neo4j、Milvus、staging 或线上流量。",
+    "latency_measurement 是确定性组件预算，不是墙钟延迟、真实服务延迟或线上性能证明。",
+    "protected profile 仍需独立的真实服务、受控导入、staging 验收和 rollout 观察证据。"
+  ],
+  "reproduction": [
+    "python scripts/run_retrieval_fixture_eval.py --cases eval/retrieval_refactor_cases.yaml --fixture eval/retrieval_component_fixture_v1.json --variant old --results eval/artifacts/retrieval-fixture-v1/old-results.jsonl",
+    "python scripts/run_retrieval_fixture_eval.py --cases eval/retrieval_refactor_cases.yaml --fixture eval/retrieval_component_fixture_v1.json --variant new --results eval/artifacts/retrieval-fixture-v1/new-results.jsonl",
+    "python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml --thresholds eval/retrieval_release_thresholds.yaml --results eval/artifacts/retrieval-fixture-v1/old-results.jsonl --report eval/artifacts/retrieval-fixture-v1/old-report.json --variant old --require-evidence-mode fixture_component_contract",
+    "python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml --thresholds eval/retrieval_release_thresholds.yaml --results eval/artifacts/retrieval-fixture-v1/new-results.jsonl --report eval/artifacts/retrieval-fixture-v1/new-report.json --variant new --baseline-report eval/artifacts/retrieval-fixture-v1/old-report.json --baseline-results eval/artifacts/retrieval-fixture-v1/old-results.jsonl --require-evidence-mode fixture_component_contract"
+  ]
+}

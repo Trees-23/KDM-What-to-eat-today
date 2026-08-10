@@ -1,0 +1,77 @@
+{
+  "schema_version": "retrieval-component-fixture-v1",
+  "fixture_id": "personal-local-retrieval-contract-v1",
+  "vector_dimension": 2,
+  "parents": [
+    {
+      "parent_id": "recipe-gongbao",
+      "node_type": "Recipe",
+      "title": "宫保鸡丁",
+      "full_content": "宫保鸡丁。食材：鸡肉、花生、黄瓜。步骤一：鸡丁加入少量调料腌制。步骤二：炒香配料后下鸡丁。",
+      "metadata": {"cuisine_type": "川菜", "fixture_rank": 1},
+      "chunks": [
+        {
+          "chunk_id": "chunk-recipe-gongbao-0",
+          "section_title": "食材与腌制",
+          "text": "鸡丁加入少量调料腌制，准备花生和黄瓜。",
+          "vector": [1.0, 0.0]
+        },
+        {
+          "chunk_id": "chunk-recipe-gongbao-1",
+          "section_title": "炒制",
+          "text": "炒香配料后下鸡丁，快速翻炒至熟。",
+          "vector": [0.9, 0.0]
+        }
+      ],
+      "anchors": [
+        {
+          "anchor_type": "recipe_step",
+          "anchor_id": "step-gongbao-1",
+          "chunk_id": "chunk-recipe-gongbao-0",
+          "ordinal": 1,
+          "source_relation": "CONTAINS_STEP"
+        }
+      ]
+    },
+    {
+      "parent_id": "technique-marinate",
+      "node_type": "TechniqueDoc",
+      "title": "腌肉",
+      "full_content": "腌肉关键要点：用适量调味料抓匀并留出入味时间。适用场景：炒、煎、烤前的肉类预处理。",
+      "metadata": {"fixture_rank": 2},
+      "chunks": [
+        {
+          "chunk_id": "chunk-technique-marinate-0",
+          "section_title": "关键要点",
+          "text": "调味料抓匀，留出入味时间。",
+          "vector": [0.0, 1.0]
+        },
+        {
+          "chunk_id": "chunk-technique-marinate-1",
+          "section_title": "适用场景",
+          "text": "适合炒、煎、烤前的肉类预处理。",
+          "vector": [0.0, 0.9]
+        }
+      ],
+      "anchors": []
+    }
+  ],
+  "graph_rows": {
+    "recipe_step_anchor_v1": [
+      {"recipe_id": "recipe-gongbao", "step_id": "step-gongbao-1", "step_order": 1}
+    ],
+    "ingredient_recipes_v1": [
+      {"ingredient_id": "ingredient-chicken", "ingredient_name": "鸡肉", "recipe_id": "recipe-gongbao", "recipe_name": "宫保鸡丁"}
+    ],
+    "ingredient_vegetable_pairs_v1": [
+      {"ingredient_id": "ingredient-chicken", "ingredient_name": "鸡肉", "recipe_id": "recipe-gongbao", "recipe_name": "宫保鸡丁", "vegetable_id": "ingredient-vegetable", "vegetable_name": "黄瓜", "vegetable_category": "蔬菜"}
+    ],
+    "technique_chunks_v1": [
+      {"technique_doc_id": "technique-marinate", "technique_chunk_id": "chunk-technique-marinate-0", "chunk_order": 1, "chunk_title": "关键要点"},
+      {"technique_doc_id": "technique-marinate", "technique_chunk_id": "chunk-technique-marinate-1", "chunk_order": 2, "chunk_title": "适用场景"}
+    ],
+    "recipe_cuisine_filter_v1": [
+      {"recipe_id": "recipe-gongbao", "recipe_name": "宫保鸡丁", "cuisine_type": "川菜"}
+    ]
+  }
+}
