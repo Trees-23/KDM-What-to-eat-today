@@ -22,11 +22,11 @@
   "artifacts": {
     "old_results": {
       "path": "old-results.jsonl",
-      "sha256": "c0c2479aadd0afb549b05a404ebea56bd27378ce9bfed80ca94dc83a60a30a05"
+      "sha256": "a3a257af818a741ecb7761d557954ce26170a19c8e4aba5778ed12d7b58b1d97"
     },
     "old_report": {
       "path": "old-report.json",
-      "sha256": "53cec7fc3dc17291256cb2beb7a8880a57f8e1314e9507003feffe4fa4f44583"
+      "sha256": "47e09e2ef13eef9aa899c133f73e5773fee535eafc96bd59710aab2c6ee02960"
     },
     "new_results": {
       "path": "new-results.jsonl",
@@ -45,13 +45,13 @@
     "old": {
       "recipe_full": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
       "recipe_step": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
-      "ingredient_recipes": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter", "ParentDocumentStore"],
-      "ingredient_pairing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter", "ParentDocumentStore"],
+      "ingredient_recipes": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
+      "ingredient_pairing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
       "soft_preference": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
       "semantic": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
       "technique": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
-      "entity_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search"],
-      "relation_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter"],
+      "entity_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "relation_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
       "graph_unavailable": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter"]
     },
     "new": {

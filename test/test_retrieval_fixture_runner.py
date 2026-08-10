@@ -35,6 +35,23 @@ def test_fixture_runner_executes_old_and_new_components_without_reading_gold_fie
     assert any("RestrictedVectorRetriever" in row["provenance"]["components"] for row in new_rows)
 
 
+def test_relation_missing_outcome_and_reply_follow_the_fixture_driver(tmp_path):
+    fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    fixture["graph_rows"]["ingredient_recipes_v1"][0]["ingredient_id"] = "ingredient-missing"
+    changed_fixture = tmp_path / "relation-present-fixture.json"
+    changed_fixture.write_text(json.dumps(fixture, ensure_ascii=False), encoding="utf-8")
+
+    for variant in ("old", "new"):
+        rows = run_fixture_evaluation(cases_path=CASES, fixture_path=changed_fixture, variant=variant)
+        relation_rows = [row for row in rows if row["evaluation_id"].startswith("relation-missing-01-")]
+        assert relation_rows
+        assert all(row["graph_status"] == "verified" for row in relation_rows)
+        assert all(row["evidence"] == ["graph"] for row in relation_rows)
+        assert all(row["visible_response"] == "图查询返回了关系记录。" for row in relation_rows)
+        if variant == "old":
+            assert all("ParentDocumentStore" in row["provenance"]["components"] for row in relation_rows)
+
+
 def test_fixture_provenance_is_bound_to_runner_fixture_variant_and_route_components():
     cases = {"required_case_count": 1, "paraphrase_repetitions": 1, "cases": [{"id": "x", "paraphrases": ["不存在的菜怎么做"], "gold_parent_ids": [], "required_evidence": "entity_not_found", "forbidden_assertions": []}]}
     thresholds = {"min_case_count": 1, "result_coverage_min": 1, "latency_coverage_min": 1, "evidence_completeness_min": 1, "forbidden_assertion_count_max": 0, "strict_nutrition_misclaim_count_max": 0}

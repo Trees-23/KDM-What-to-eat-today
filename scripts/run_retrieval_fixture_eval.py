@@ -366,7 +366,11 @@ def _response(kind: str, parent_ids: list[str], graph_status: str | None) -> str
     if kind == "entity_missing":
         return "未在当前菜谱夹具中定位到该实体。"
     if kind == "relation_missing":
-        return "图谱未找到该关系，未以文本补充关系结论。"
+        if graph_status == "not_found":
+            return "图谱未找到该关系，未以文本补充关系结论。"
+        if graph_status == "unavailable":
+            return "图证据当前不可用，未给出关系结论。"
+        return "图查询返回了关系记录。"
     if kind == "graph_unavailable":
         return "图证据当前不可用，未给出关系结论。"
     if graph_status == "verified":
@@ -440,9 +444,17 @@ def _new_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: Pare
             _record_components(row, "ParentDocumentStore")
             row.update(retrieved_parent_ids=parent_ids, evidence=["graph"], graph_paths=_graph_paths(route.kind, rows), evidence_links=[_text_link(store, parent_id) for parent_id in parent_ids])
         elif route.kind == "relation_missing":
-            row["evidence"] = ["graph_not_found"]
+            if fact.status == "not_found":
+                row["evidence"] = ["graph_not_found"]
+            elif fact.status == "unavailable":
+                row["evidence"] = ["graph_unavailable"]
+            else:
+                rows = fact.properties["rows"]
+                parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in rows))
+                _record_components(row, "ParentDocumentStore")
+                row.update(retrieved_parent_ids=parent_ids, evidence=["graph"], graph_paths=_graph_paths("ingredient_recipes", rows), evidence_links=[_text_link(store, parent_id) for parent_id in parent_ids])
         else:
-            row["evidence"] = ["graph_unavailable"]
+            row["evidence"] = ["graph_unavailable" if fact.status == "unavailable" else "graph_not_found"]
     elif route.kind == "technique":
         validator = QueryPlanValidator()
         graph = TargetedGraphRetriever(_FixtureGraphDriver(graph_rows), database="fixture", validator=validator)
@@ -483,31 +495,40 @@ def _old_row(evaluation_id: str, query: str, *, fixture_sha256: str, store: Pare
     legacy = _make_legacy_retriever(driver, parent_data)
     documents = legacy.hybrid_search(query, top_k=5)
     parent_ids = []
+    parent_store_queried = False
     for document in documents:
         node_id = str((document.metadata or {}).get("node_id", ""))
+        parent_store_queried = True
         if node_id and store.get_full_parent(node_id) is not None and node_id not in parent_ids:
             parent_ids.append(node_id)
+    if parent_store_queried:
+        _record_components(row, "ParentDocumentStore")
     row["entity_ids"] = list(route.entity_ids)
     if route.kind == "entity_missing":
         row.update(entity_status="not_found", evidence=["entity_not_found"], latency_ms=7.0)
     elif route.kind == "relation_missing":
         outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
         _record_components(row, "LegacyGraphFixtureAdapter")
-        row.update(graph_status=outcome.status, evidence=["graph_not_found"], latency_ms=8.0)
+        if outcome.status == "not_found":
+            row.update(graph_status=outcome.status, evidence=["graph_not_found"], latency_ms=8.0)
+        elif outcome.status == "unavailable":
+            row.update(graph_status=outcome.status, evidence=["graph_unavailable"], latency_ms=8.0)
+        else:
+            graph_parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in outcome.rows))
+            row.update(retrieved_parent_ids=graph_parent_ids, graph_status=outcome.status, evidence=["graph"], graph_paths=_graph_paths("ingredient_recipes", outcome.rows), evidence_links=[_text_link(store, parent_id) for parent_id in graph_parent_ids], latency_ms=8.0)
     elif route.kind == "graph_unavailable":
         outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
         _record_components(row, "LegacyGraphFixtureAdapter")
         row.update(graph_status=outcome.status, evidence=["graph_unavailable"], latency_ms=8.0)
     elif route.kind in {"ingredient_recipes", "ingredient_pairing"}:
         outcome = _LegacyGraphFixtureAdapter(driver).retrieve(route)
-        _record_components(row, "LegacyGraphFixtureAdapter", "ParentDocumentStore")
+        _record_components(row, "LegacyGraphFixtureAdapter")
         graph_parent_ids = list(dict.fromkeys(str(item["recipe_id"]) for item in outcome.rows))
         row.update(retrieved_parent_ids=graph_parent_ids, evidence=["graph"], graph_status=outcome.status, graph_paths=_graph_paths(route.kind, outcome.rows), evidence_links=[_text_link(store, parent_id) for parent_id in graph_parent_ids], latency_ms=8.0)
     else:
         expected = _TECHNIQUE_ID if route.kind == "technique" else _PARENT_ID
         if expected not in parent_ids:
             raise FixtureRunnerError(f"legacy HybridRetrievalModule 未返回预期 fixture parent: {expected}")
-        _record_components(row, "ParentDocumentStore")
         row.update(retrieved_parent_ids=[expected], evidence=["soft_preference" if route.kind == "soft_preference" else "text"], evidence_links=[_text_link(store, expected)], latency_ms=7.0)
     row["legacy_document_count"] = len(documents)
     row["visible_response"] = _response(route.kind, row["retrieved_parent_ids"], row.get("graph_status"))
