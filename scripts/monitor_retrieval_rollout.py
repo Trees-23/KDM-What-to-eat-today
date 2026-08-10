@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 from datetime import date, datetime, timedelta, timezone
@@ -91,7 +92,7 @@ def _validate_sample(sample: dict[str, Any], *, requested_variant: str | None = 
     numeric_fields = ("request_count", "error_count", "p95_latency_ms", "forbidden_assertion_count", "strict_nutrition_misclaim_count")
     for field in numeric_fields:
         value = sample.get(field)
-        if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0:
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(float(value)) or value < 0:
             raise RolloutGuardError(f"指标 {field} 必须是非负数字")
     if sample["error_count"] > sample["request_count"]:
         raise RolloutGuardError("error_count 不能大于 request_count")
@@ -147,8 +148,8 @@ def _aggregate(samples: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def evaluate_window(*, artifact_dir: Path, thresholds: dict[str, Any], window_days: int, min_requests: int, output: Path | None = None, profile: str = "protected") -> dict[str, Any]:
-    profile = str(thresholds.get("deployment_profile", profile))
+def evaluate_window(*, artifact_dir: Path, thresholds: dict[str, Any], window_days: int, min_requests: int, output: Path | None = None, profile: str | None = None) -> dict[str, Any]:
+    profile = profile or str(thresholds.get("deployment_profile", "protected"))
     artifact_dir = _absolute_path(str(artifact_dir), "artifact-dir")
     if profile == "personal-local":
         report = {

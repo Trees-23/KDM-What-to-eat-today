@@ -120,8 +120,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--neo4j-uri")
     args = parser.parse_args(argv)
     result = validate_import(database=args.database, allowed_database=args.allowed_database, csv_dir=args.csv_dir, allowed_csv_root=args.allowed_csv_root, apply=args.apply, backup_manifest=args.backup_manifest, backup_root=args.backup_root, expected_backup_sha256=args.expected_backup_sha256, approval_record=args.approval_record, allowed_approval_root=args.allowed_approval_root, batch_size=args.batch_size)
-    if args.apply and not args.neo4j_uri:
-        raise Neo4jImportGuardError("真实 apply 还必须提供显式 staging Neo4j URI；未连接任何服务")
+    if args.apply:
+        raise Neo4jImportGuardError("真实 Neo4j apply 尚未实现；守卫预检不会连接、导入或报告成功")
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 

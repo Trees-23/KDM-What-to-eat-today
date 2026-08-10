@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from scripts import build_recipe_graph_csv
+from scripts import neo4j_graph_import
 from scripts.neo4j_graph_import import Neo4jImportGuardError, validate_import
 from scripts.neo4j_snapshot import SnapshotGuardError, create_snapshot, restore_snapshot, verify_snapshot
 
@@ -71,3 +72,9 @@ def test_import_dry_run_and_apply_require_verified_backup_and_approval(tmp_path)
     approval.write_text(json.dumps({"database": "staging-db", "csv_manifest_sha256": csv_sha, "backup_sha256": backup_sha, "batch_size": 50, "approved_by": "owner", "change_id": "local-6c", "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()}), encoding="utf-8")
     result = validate_import(database="staging-db", allowed_database="staging-db", csv_dir=csv_dir, allowed_csv_root=tmp_path, apply=True, backup_manifest=backup / "manifest.json", backup_root=backup_root, expected_backup_sha256=backup_sha, approval_record=approval, allowed_approval_root=approval_root, batch_size=50)
     assert result["status"] == "guarded_apply_ready"
+
+
+def test_apply_never_reports_success_without_a_real_executor(monkeypatch, tmp_path):
+    monkeypatch.setattr(neo4j_graph_import, "validate_import", lambda **_kwargs: {"status": "guarded_apply_ready"})
+    with pytest.raises(Neo4jImportGuardError, match="尚未实现"):
+        neo4j_graph_import.main(["--database", "staging-db", "--allowed-database", "staging-db", "--csv-dir", str(tmp_path), "--allowed-csv-root", str(tmp_path), "--apply", "--neo4j-uri", "bolt://staging"])

@@ -60,6 +60,20 @@ def test_personal_local_profile_does_not_require_online_window(tmp_path):
     assert report["recommended_action"] == "offline_evaluation_only"
 
 
+def test_explicit_protected_profile_overrides_local_thresholds_and_rejects_nan(tmp_path):
+    artifact_dir = tmp_path / "artifacts"
+    artifact_dir.mkdir()
+    report = evaluate_window(artifact_dir=artifact_dir, thresholds={"deployment_profile": "personal-local"}, window_days=7, min_requests=100, profile="protected")
+    assert report["status"] == "blocked"
+
+    source_root = tmp_path / "approved"
+    source_root.mkdir()
+    source = source_root / "metrics.json"
+    source.write_text(json.dumps({**_sample(date(2026, 8, 1), "old"), "p95_latency_ms": float("nan")}), encoding="utf-8")
+    with pytest.raises(RolloutGuardError, match="非负数字"):
+        collect_once(source=source, source_root=source_root, artifact_dir=artifact_dir, variant="old")
+
+
 def test_evaluate_passes_only_with_old_baseline_and_full_window(tmp_path):
     artifact_dir = tmp_path / "artifacts"
     artifact_dir.mkdir()
