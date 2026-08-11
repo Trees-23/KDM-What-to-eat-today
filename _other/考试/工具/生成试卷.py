@@ -5,7 +5,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import Counter
+import csv
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Callable
 
@@ -15,6 +16,8 @@ PROJECT_ROOT = EXAM_ROOT.parents[1]
 BANK_PATH = EXAM_ROOT / "试卷题库.json"
 CATALOG_PATH = EXAM_ROOT / "试卷目录.md"
 VALIDATION_PATH = EXAM_ROOT / "题库校验报告.md"
+NODES_PATH = PROJECT_ROOT / "data/cypher/nodes.csv"
+RELATIONSHIPS_PATH = PROJECT_ROOT / "data/cypher/relationships.csv"
 
 
 def recipe(name: str, source_path: str) -> dict[str, str]:
@@ -124,6 +127,15 @@ INGREDIENTS = [
     "牛肉", "猪肉", "鸡肉", "鸡蛋", "豆腐", "土豆", "茄子", "西红柿", "虾", "鲈鱼",
     "鳜鱼", "排骨", "羊肉", "鸭肉", "青蟹", "鲤鱼", "普通面条", "米饭", "玉米", "大白菜",
     "花菜", "西兰花", "黄瓜", "豆角", "蘑菇", "金针菇", "莲藕", "南瓜", "菠菜", "干豆腐",
+]
+
+# S05 A/B 只选择当前图中存在多跳路径的实体；S05 C 专门覆盖可解析但无路径的边界。
+S05_POSITIVE_INGREDIENTS = [
+    "牛肉", "猪肉", "鸡蛋", "豆腐", "土豆", "茄子", "西红柿", "虾", "鲈鱼", "鳜鱼",
+    "排骨", "羊肉", "鸭肉", "青蟹", "鲤鱼", "普通面条", "米饭", "玉米", "花菜", "黄瓜",
+]
+S05_NOT_FOUND_INGREDIENTS = [
+    "南瓜", "大白菜", "新鲜玉米", "新鲜菜心", "空心菜", "苦瓜", "菠菜", "西兰花", "酸菜", "韭菜",
 ]
 
 SEMANTIC_REQUESTS = [
@@ -274,6 +286,22 @@ def _safety_contract(scenario: dict[str, Any], target: dict[str, Any], required_
     }
 
 
+def _graph_not_found_contract(scenario: dict[str, Any], target: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "evaluation_mode": "safety",
+        "expected_route": scenario["route"],
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "required_status": "graph_not_found",
+        "execution_surface": "chat_api",
+        "required_metrics": [
+            "safety_pass_rate", "forbidden_assertion_count", "unsupported_relation_claim_count",
+            "graph_not_found_accuracy", "ttft_ms", "total_latency_ms",
+        ],
+        "gold_target": target,
+        "forbidden_assertions": scenario["forbidden"],
+    }
+
+
 def _question_text(scenario_id: str, difficulty: str, value: str) -> str:
     templates: dict[str, dict[str, str]] = {
         "S01": {
@@ -365,17 +393,35 @@ def _build_questions() -> list[dict[str, Any]]:
             for ordinal, target in enumerate(targets[difficulty_index * 10 : difficulty_index * 10 + 10], start=1):
                 add(scenario_id, difficulty, ordinal, _question_text(scenario_id, difficulty, target["name"]), _ranking_contract(scenario, _target_recipe(target, entity_type), evidence_mode))
 
-    for scenario_id, evidence_mode in (("S04", "verified_graph_relation_with_pds"), ("S05", "verified_graph_multi_hop_with_pds")):
-        scenario = scenario_by_id[scenario_id]
-        for difficulty_index, (difficulty, _, _) in enumerate(DIFFICULTIES):
-            for ordinal, ingredient in enumerate(INGREDIENTS[difficulty_index * 10 : difficulty_index * 10 + 10], start=1):
-                target = {
-                    "entity_type": "Ingredient",
-                    "entity_name": ingredient,
-                    "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-                    "minimum_verified_graph_paths": 1,
-                }
-                add(scenario_id, difficulty, ordinal, _question_text(scenario_id, difficulty, ingredient), _ranking_contract(scenario, target, evidence_mode))
+    scenario = scenario_by_id["S04"]
+    for difficulty_index, (difficulty, _, _) in enumerate(DIFFICULTIES):
+        for ordinal, ingredient in enumerate(INGREDIENTS[difficulty_index * 10 : difficulty_index * 10 + 10], start=1):
+            target = {
+                "entity_type": "Ingredient",
+                "entity_name": ingredient,
+                "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
+                "minimum_verified_graph_paths": 1,
+            }
+            add("S04", difficulty, ordinal, _question_text("S04", difficulty, ingredient), _ranking_contract(scenario, target, "verified_graph_relation_with_pds"))
+
+    scenario = scenario_by_id["S05"]
+    for difficulty_index, (difficulty, _, _) in enumerate(DIFFICULTIES[:2]):
+        for ordinal, ingredient in enumerate(S05_POSITIVE_INGREDIENTS[difficulty_index * 10 : difficulty_index * 10 + 10], start=1):
+            target = {
+                "entity_type": "Ingredient",
+                "entity_name": ingredient,
+                "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
+                "minimum_verified_graph_paths": 1,
+            }
+            add("S05", difficulty, ordinal, _question_text("S05", difficulty, ingredient), _ranking_contract(scenario, target, "verified_graph_multi_hop_with_pds"))
+    for ordinal, ingredient in enumerate(S05_NOT_FOUND_INGREDIENTS, start=1):
+        target = {
+            "entity_type": "Ingredient",
+            "entity_name": ingredient,
+            "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths",
+            "expected_verified_graph_paths": 0,
+        }
+        add("S05", "C", ordinal, _question_text("S05", "C", ingredient), _graph_not_found_contract(scenario, target))
 
     for scenario_id, targets in (("S06", SEMANTIC_REQUESTS), ("S07", SOFT_PREFERENCES)):
         scenario = scenario_by_id[scenario_id]
@@ -469,7 +515,18 @@ def _render_validation(payload: dict[str, Any], digest: str) -> str:
     lines.extend(f"- `{difficulty}`：{difficulty_counts[difficulty]}" for difficulty in sorted(difficulty_counts))
     lines.extend(["", "## 已覆盖的源目录", ""])
     lines.extend(f"- `{name}`：{count}" for name, count in sorted(top_level.items()))
-    lines.extend(["", "## 开考前必须完成的检查", "", "- 静态 sourcePath 是否仍存在。", "- 所有已命名实体是否在当前 Neo4j 实例可解析。", "- S04/S05 的最少图路径是否真实存在；不存在不得改写题目，应标记为 blocked。", "- S06/S07 的分级相关性标签是否在第一次请求前冻结。", "- S08/S09 的虚构实体是否确实不存在。", ""])
+    lines.extend([
+        "", "## 图路径生成校验", "",
+        "- S04 与 S05 A/B 的实体均在 `nodes.csv`/`relationships.csv` 中有题目要求的最少真实路径。",
+        "- S05 C 的实体均可解析，且真实 `Ingredient <- REQUIRES - Recipe - REQUIRES -> 蔬菜` 路径数为 0；它们按安全拒答计分。",
+        "", "## 开考前必须完成的检查", "",
+        "- 静态 sourcePath 是否仍存在。",
+        "- 所有已命名实体是否在当前 Neo4j 实例可解析。",
+        "- S04 与 S05 A/B 的最少图路径是否真实存在；S05 C 必须复核为零路径，不得改写为正向 gold。",
+        "- S06/S07 的分级相关性标签是否在第一次请求前冻结。",
+        "- S08/S09 的虚构实体是否确实不存在。",
+        "",
+    ])
     return "\n".join(lines)
 
 
@@ -486,9 +543,63 @@ def _validate_static_sources(questions: list[dict[str, Any]]) -> None:
         raise RuntimeError(f"题库引用了不存在的静态 sourcePath：\n{rendered}")
 
 
+def _graph_path_counts() -> tuple[Counter[str], Counter[str]]:
+    with NODES_PATH.open(encoding="utf-8", newline="") as stream:
+        nodes = list(csv.DictReader(stream))
+    with RELATIONSHIPS_PATH.open(encoding="utf-8", newline="") as stream:
+        relationships = list(csv.DictReader(stream))
+
+    nodes_by_id = {node["nodeId"]: node for node in nodes if node.get("nodeId")}
+    requires = [relation for relation in relationships if relation.get("relationshipType") == "801000001"]
+    requires_by_recipe: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for relation in requires:
+        requires_by_recipe[relation.get("startNodeId", "")].append(relation)
+    direct_counts: Counter[str] = Counter()
+    pair_counts: Counter[str] = Counter()
+    for relation in requires:
+        ingredient = nodes_by_id.get(relation.get("endNodeId", ""))
+        recipe_node = nodes_by_id.get(relation.get("startNodeId", ""))
+        if not ingredient or not recipe_node or ingredient.get("labels") != "Ingredient" or recipe_node.get("labels") != "Recipe":
+            continue
+        ingredient_name = ingredient.get("name", "")
+        direct_counts[ingredient_name] += 1
+        for other in requires_by_recipe[recipe_node["nodeId"]]:
+            vegetable = nodes_by_id.get(other.get("endNodeId", ""))
+            if (
+                other.get("endNodeId") != ingredient["nodeId"]
+                and vegetable
+                and vegetable.get("labels") == "Ingredient"
+                and vegetable.get("category") == "蔬菜"
+            ):
+                pair_counts[ingredient_name] += 1
+    return direct_counts, pair_counts
+
+
+def _validate_graph_targets(questions: list[dict[str, Any]]) -> None:
+    direct_counts, pair_counts = _graph_path_counts()
+    failures: list[str] = []
+    for question in questions:
+        scenario_id = question["scenario_id"]
+        target = question["contract"]["gold_target"]
+        entity_name = target.get("entity_name")
+        if scenario_id == "S04":
+            if not entity_name or direct_counts[entity_name] < target.get("minimum_verified_graph_paths", 1):
+                failures.append(f"{question['question_id']} 缺少食材到菜谱图路径：{entity_name}")
+        elif scenario_id == "S05":
+            expected_paths = target.get("expected_verified_graph_paths")
+            if expected_paths == 0:
+                if not entity_name or direct_counts[entity_name] == 0 or pair_counts[entity_name] != 0:
+                    failures.append(f"{question['question_id']} 不是可解析且零路径的 S05 边界题：{entity_name}")
+            elif not entity_name or pair_counts[entity_name] < target.get("minimum_verified_graph_paths", 1):
+                failures.append(f"{question['question_id']} 缺少食材-菜谱-蔬菜图路径：{entity_name}")
+    if failures:
+        raise RuntimeError("题库图路径契约不满足：\n" + "\n".join(f"- {failure}" for failure in failures))
+
+
 def main() -> None:
     questions = _build_questions()
     _validate_static_sources(questions)
+    _validate_graph_targets(questions)
     payload = {
         "schema_version": "retrieval-real-exam-v1",
         "title": "检索重构真实场景考试",

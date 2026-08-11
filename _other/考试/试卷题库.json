@@ -4787,45 +4787,6 @@
           "invented_relation_path"
         ],
         "gold_target": {
-          "entity_name": "鸡肉",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "A",
-      "difficulty_name": "正向命中",
-      "question": "鸡肉适合搭配什么蔬菜？",
-      "question_id": "S05-A-03",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
           "entity_name": "鸡蛋",
           "entity_type": "Ingredient",
           "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
@@ -4852,7 +4813,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "鸡蛋适合搭配什么蔬菜？",
-      "question_id": "S05-A-04",
+      "question_id": "S05-A-03",
       "scenario_id": "S05"
     },
     {
@@ -4891,7 +4852,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "豆腐适合搭配什么蔬菜？",
-      "question_id": "S05-A-05",
+      "question_id": "S05-A-04",
       "scenario_id": "S05"
     },
     {
@@ -4930,7 +4891,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "土豆适合搭配什么蔬菜？",
-      "question_id": "S05-A-06",
+      "question_id": "S05-A-05",
       "scenario_id": "S05"
     },
     {
@@ -4969,7 +4930,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "茄子适合搭配什么蔬菜？",
-      "question_id": "S05-A-07",
+      "question_id": "S05-A-06",
       "scenario_id": "S05"
     },
     {
@@ -5008,7 +4969,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "西红柿适合搭配什么蔬菜？",
-      "question_id": "S05-A-08",
+      "question_id": "S05-A-07",
       "scenario_id": "S05"
     },
     {
@@ -5047,7 +5008,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "虾适合搭配什么蔬菜？",
-      "question_id": "S05-A-09",
+      "question_id": "S05-A-08",
       "scenario_id": "S05"
     },
     {
@@ -5086,7 +5047,7 @@
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
       "question": "鲈鱼适合搭配什么蔬菜？",
-      "question_id": "S05-A-10",
+      "question_id": "S05-A-09",
       "scenario_id": "S05"
     },
     {
@@ -5122,10 +5083,10 @@
           "total_latency_ms"
         ]
       },
-      "difficulty_code": "B",
-      "difficulty_name": "释义与歧义",
-      "question": "做鳜鱼相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-01",
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "鳜鱼适合搭配什么蔬菜？",
+      "question_id": "S05-A-10",
       "scenario_id": "S05"
     },
     {
@@ -5164,7 +5125,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做排骨相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-02",
+      "question_id": "S05-B-01",
       "scenario_id": "S05"
     },
     {
@@ -5203,7 +5164,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做羊肉相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-03",
+      "question_id": "S05-B-02",
       "scenario_id": "S05"
     },
     {
@@ -5242,7 +5203,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做鸭肉相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-04",
+      "question_id": "S05-B-03",
       "scenario_id": "S05"
     },
     {
@@ -5281,7 +5242,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做青蟹相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-05",
+      "question_id": "S05-B-04",
       "scenario_id": "S05"
     },
     {
@@ -5320,7 +5281,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做鲤鱼相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-06",
+      "question_id": "S05-B-05",
       "scenario_id": "S05"
     },
     {
@@ -5359,7 +5320,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做普通面条相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-07",
+      "question_id": "S05-B-06",
       "scenario_id": "S05"
     },
     {
@@ -5398,7 +5359,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做米饭相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-08",
+      "question_id": "S05-B-07",
       "scenario_id": "S05"
     },
     {
@@ -5437,46 +5398,7 @@
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
       "question": "做玉米相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-09",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "大白菜",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "B",
-      "difficulty_name": "释义与歧义",
-      "question": "做大白菜相关菜时，知识图谱里有哪些蔬菜搭配？",
-      "question_id": "S05-B-10",
+      "question_id": "S05-B-08",
       "scenario_id": "S05"
     },
     {
@@ -5512,49 +5434,10 @@
           "total_latency_ms"
         ]
       },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的花菜与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-01",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "西兰花",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的西兰花与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-02",
+      "difficulty_code": "B",
+      "difficulty_name": "释义与歧义",
+      "question": "做花菜相关菜时，知识图谱里有哪些蔬菜搭配？",
+      "question_id": "S05-B-09",
       "scenario_id": "S05"
     },
     {
@@ -5590,172 +5473,17 @@
           "total_latency_ms"
         ]
       },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的黄瓜与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-03",
+      "difficulty_code": "B",
+      "difficulty_name": "释义与歧义",
+      "question": "做黄瓜相关菜时，知识图谱里有哪些蔬菜搭配？",
+      "question_id": "S05-B-10",
       "scenario_id": "S05"
     },
     {
       "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "豆角",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的豆角与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-04",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "蘑菇",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的蘑菇与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-05",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "金针菇",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的金针菇与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-06",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
-        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
-        "forbidden_assertions": [
-          "text_as_relation_proof",
-          "invented_relation_path"
-        ],
-        "gold_target": {
-          "entity_name": "莲藕",
-          "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
-        },
-        "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
-          "ttft_ms",
-          "total_latency_ms"
-        ]
-      },
-      "difficulty_code": "C",
-      "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的莲藕与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-07",
-      "scenario_id": "S05"
-    },
-    {
-      "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
         "expected_route": "targeted_graph_ingredient_vegetable_pairs",
         "forbidden_assertions": [
           "text_as_relation_proof",
@@ -5764,37 +5492,190 @@
         "gold_target": {
           "entity_name": "南瓜",
           "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
         },
         "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
           "ttft_ms",
           "total_latency_ms"
-        ]
+        ],
+        "required_status": "graph_not_found"
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
       "question": "只给出图中能验证的南瓜与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-08",
+      "question_id": "S05-C-01",
       "scenario_id": "S05"
     },
     {
       "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "大白菜",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的大白菜与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-02",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "新鲜玉米",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的新鲜玉米与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-03",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "新鲜菜心",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的新鲜菜心与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-04",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "空心菜",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的空心菜与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-05",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "苦瓜",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的苦瓜与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-06",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
         "expected_route": "targeted_graph_ingredient_vegetable_pairs",
         "forbidden_assertions": [
           "text_as_relation_proof",
@@ -5803,69 +5684,118 @@
         "gold_target": {
           "entity_name": "菠菜",
           "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
         },
         "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
           "ttft_ms",
           "total_latency_ms"
-        ]
+        ],
+        "required_status": "graph_not_found"
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
       "question": "只给出图中能验证的菠菜与蔬菜搭配；没有路径时请说明无法证明。",
-      "question_id": "S05-C-09",
+      "question_id": "S05-C-07",
       "scenario_id": "S05"
     },
     {
       "contract": {
-        "evaluation_mode": "ranking",
-        "evidence_mode": "verified_graph_multi_hop_with_pds",
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
         "expected_route": "targeted_graph_ingredient_vegetable_pairs",
         "forbidden_assertions": [
           "text_as_relation_proof",
           "invented_relation_path"
         ],
         "gold_target": {
-          "entity_name": "干豆腐",
+          "entity_name": "西兰花",
           "entity_type": "Ingredient",
-          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
-          "minimum_verified_graph_paths": 1
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
         },
         "required_metrics": [
-          "recall_at_1",
-          "recall_at_3",
-          "recall_at_5",
-          "precision_at_1",
-          "precision_at_3",
-          "precision_at_5",
-          "mrr_at_5",
-          "ndcg_at_5",
-          "hit_rate_at_5",
-          "route_accuracy",
-          "evidence_completeness",
-          "evidence_linkage",
-          "answer_faithfulness",
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
           "ttft_ms",
           "total_latency_ms"
-        ]
+        ],
+        "required_status": "graph_not_found"
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只给出图中能验证的干豆腐与蔬菜搭配；没有路径时请说明无法证明。",
+      "question": "只给出图中能验证的西兰花与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-08",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "酸菜",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的酸菜与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-09",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "韭菜",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的韭菜与蔬菜搭配；没有路径时请说明无法证明。",
       "question_id": "S05-C-10",
       "scenario_id": "S05"
     },
