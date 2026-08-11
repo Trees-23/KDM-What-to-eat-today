@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import importlib.util
 import unittest
 from pathlib import Path
@@ -37,6 +38,15 @@ class ExamBankGenerationTest(unittest.TestCase):
         self.assertTrue(all(question["contract"]["gold_target"]["minimum_verified_graph_paths"] == 1 for question in positive))
         self.assertTrue(all(question["contract"]["evaluation_mode"] == "safety" for question in negative))
         self.assertTrue(all(question["contract"]["gold_target"]["expected_verified_graph_paths"] == 0 for question in negative))
+
+    def test_s03_targets_share_the_technique_import_source(self) -> None:
+        generator = load_generator()
+        with generator.TIPS_NODES_PATH.open(encoding="utf-8", newline="") as stream:
+            rows = [row for row in csv.DictReader(stream) if row["labels"] == "TechniqueDoc"]
+        docs = {(row["name"], f"data/{row['sourcePath']}") for row in rows}
+
+        self.assertEqual(len(generator.TECHNIQUE_TARGETS), 30)
+        self.assertTrue(all((target["name"], target["source_path"]) in docs for target in generator.TECHNIQUE_TARGETS))
 
 
 if __name__ == "__main__":

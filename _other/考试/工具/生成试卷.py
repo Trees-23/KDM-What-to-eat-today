@@ -18,6 +18,7 @@ CATALOG_PATH = EXAM_ROOT / "试卷目录.md"
 VALIDATION_PATH = EXAM_ROOT / "题库校验报告.md"
 NODES_PATH = PROJECT_ROOT / "data/cypher/nodes.csv"
 RELATIONSHIPS_PATH = PROJECT_ROOT / "data/cypher/relationships.csv"
+TIPS_NODES_PATH = PROJECT_ROOT / "data/cypher/tips_nodes.csv"
 
 
 def recipe(name: str, source_path: str) -> dict[str, str]:
@@ -90,38 +91,64 @@ RECIPE_STEP_TARGETS = [
     recipe("戚风蛋糕", "data/dishes/dessert/戚风蛋糕/戚风蛋糕.md"),
 ]
 
-TECHNIQUE_TARGETS = [
-    recipe("如何选择现在吃什么", "data/tips/如何选择现在吃什么.md"),
-    recipe("高级专业术语", "data/tips/advanced/高级专业术语.md"),
-    recipe("辅料技巧", "data/tips/advanced/辅料技巧.md"),
-    recipe("油温判断技巧", "data/tips/advanced/油温判断技巧.md"),
-    recipe("糖色的炒制", "data/tips/advanced/糖色的炒制.md"),
-    recipe("厨房准备", "data/tips/厨房准备.md"),
-    recipe("高压力锅", "data/tips/learn/高压力锅.md"),
-    recipe("学习炒与煎", "data/tips/learn/学习炒与煎.md"),
-    recipe("微波炉", "data/tips/learn/微波炉.md"),
-    recipe("学习蒸", "data/tips/learn/学习蒸.md"),
-    recipe("学习凉拌", "data/tips/learn/学习凉拌.md"),
-    recipe("学习焯水", "data/tips/learn/学习焯水.md"),
-    recipe("去腥", "data/tips/learn/去腥.md"),
-    recipe("空气炸锅", "data/tips/learn/空气炸锅.md"),
-    recipe("学习煮", "data/tips/learn/学习煮.md"),
-    recipe("学习腌", "data/tips/learn/学习腌.md"),
-    recipe("食品安全", "data/tips/learn/食品安全.md"),
-    recipe("食材相克与禁忌", "data/tips/食材相克与禁忌.md"),
-    recipe("油温判断技巧", "data/tips/advanced/油温判断技巧.md"),
-    recipe("糖色的炒制", "data/tips/advanced/糖色的炒制.md"),
-    recipe("去腥", "data/tips/learn/去腥.md"),
-    recipe("学习腌", "data/tips/learn/学习腌.md"),
-    recipe("学习焯水", "data/tips/learn/学习焯水.md"),
-    recipe("学习蒸", "data/tips/learn/学习蒸.md"),
-    recipe("学习炒与煎", "data/tips/learn/学习炒与煎.md"),
-    recipe("空气炸锅", "data/tips/learn/空气炸锅.md"),
-    recipe("高压力锅", "data/tips/learn/高压力锅.md"),
-    recipe("厨房准备", "data/tips/厨房准备.md"),
-    recipe("辅料技巧", "data/tips/advanced/辅料技巧.md"),
-    recipe("食品安全", "data/tips/learn/食品安全.md"),
+TECHNIQUE_SOURCE_PATHS = [
+    "data/tips/如何选择现在吃什么.md",
+    "data/tips/advanced/高级专业术语.md",
+    "data/tips/advanced/辅料技巧.md",
+    "data/tips/advanced/油温判断技巧.md",
+    "data/tips/advanced/糖色的炒制.md",
+    "data/tips/厨房准备.md",
+    "data/tips/learn/高压力锅.md",
+    "data/tips/learn/学习炒与煎.md",
+    "data/tips/learn/微波炉.md",
+    "data/tips/learn/学习蒸.md",
+    "data/tips/learn/学习凉拌.md",
+    "data/tips/learn/学习焯水.md",
+    "data/tips/learn/去腥.md",
+    "data/tips/learn/空气炸锅.md",
+    "data/tips/learn/学习煮.md",
+    "data/tips/learn/学习腌.md",
+    "data/tips/learn/食品安全.md",
+    "data/tips/食材相克与禁忌.md",
+    "data/tips/advanced/油温判断技巧.md",
+    "data/tips/advanced/糖色的炒制.md",
+    "data/tips/learn/去腥.md",
+    "data/tips/learn/学习腌.md",
+    "data/tips/learn/学习焯水.md",
+    "data/tips/learn/学习蒸.md",
+    "data/tips/learn/学习炒与煎.md",
+    "data/tips/learn/空气炸锅.md",
+    "data/tips/learn/高压力锅.md",
+    "data/tips/厨房准备.md",
+    "data/tips/advanced/辅料技巧.md",
+    "data/tips/learn/食品安全.md",
 ]
+
+
+def _technique_targets_from_import_source() -> list[dict[str, str]]:
+    """让 S03 的命名 gold 与实际导入的 TechniqueDoc 共享同一来源。"""
+
+    with TIPS_NODES_PATH.open(encoding="utf-8", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    docs_by_path: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in rows:
+        if row.get("labels") == "TechniqueDoc":
+            docs_by_path[row.get("sourcePath", "")].append(row)
+
+    targets = []
+    for source_path in TECHNIQUE_SOURCE_PATHS:
+        import_source_path = source_path.removeprefix("data/")
+        matches = docs_by_path.get(import_source_path, [])
+        if len(matches) != 1:
+            raise RuntimeError(f"S03 sourcePath 未唯一映射到 TechniqueDoc: {source_path}")
+        name = matches[0].get("name", "").strip()
+        if not name:
+            raise RuntimeError(f"S03 TechniqueDoc 名称为空: {source_path}")
+        targets.append(recipe(name, source_path))
+    return targets
+
+
+TECHNIQUE_TARGETS = _technique_targets_from_import_source()
 
 INGREDIENTS = [
     "牛肉", "猪肉", "鸡肉", "鸡蛋", "豆腐", "土豆", "茄子", "西红柿", "虾", "鲈鱼",

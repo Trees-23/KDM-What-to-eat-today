@@ -2369,7 +2369,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "如何选择现在吃什么",
+          "entity_name": "如何决策吃什么",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/如何选择现在吃什么.md"
@@ -2394,7 +2394,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“如何选择现在吃什么”这个技巧的关键要点和适用情形。",
+      "question": "请说明“如何决策吃什么”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-01",
       "scenario_id": "S03"
     },
@@ -2408,7 +2408,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "高级专业术语",
+          "entity_name": "做菜专业术语",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/advanced/高级专业术语.md"
@@ -2433,7 +2433,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“高级专业术语”这个技巧的关键要点和适用情形。",
+      "question": "请说明“做菜专业术语”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-02",
       "scenario_id": "S03"
     },
@@ -2486,7 +2486,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "油温判断技巧",
+          "entity_name": "油温判断技巧及常见温度和单位换算表",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/advanced/油温判断技巧.md"
@@ -2511,7 +2511,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“油温判断技巧”这个技巧的关键要点和适用情形。",
+      "question": "请说明“油温判断技巧及常见温度和单位换算表”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-04",
       "scenario_id": "S03"
     },
@@ -2603,7 +2603,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "高压力锅",
+          "entity_name": "蒸（米）/炖（使用电饭煲/高压锅/电压力锅）",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/高压力锅.md"
@@ -2628,7 +2628,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“高压力锅”这个技巧的关键要点和适用情形。",
+      "question": "请说明“蒸（米）/炖（使用电饭煲/高压锅/电压力锅）”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-07",
       "scenario_id": "S03"
     },
@@ -2642,7 +2642,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习炒与煎",
+          "entity_name": "炒/煎",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习炒与煎.md"
@@ -2667,7 +2667,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“学习炒与煎”这个技巧的关键要点和适用情形。",
+      "question": "请说明“炒/煎”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-08",
       "scenario_id": "S03"
     },
@@ -2681,7 +2681,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "微波炉",
+          "entity_name": "使用微波炉",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/微波炉.md"
@@ -2706,7 +2706,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“微波炉”这个技巧的关键要点和适用情形。",
+      "question": "请说明“使用微波炉”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-09",
       "scenario_id": "S03"
     },
@@ -2720,7 +2720,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习蒸",
+          "entity_name": "蒸",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习蒸.md"
@@ -2745,7 +2745,7 @@
       },
       "difficulty_code": "A",
       "difficulty_name": "正向命中",
-      "question": "请说明“学习蒸”这个技巧的关键要点和适用情形。",
+      "question": "请说明“蒸”这个技巧的关键要点和适用情形。",
       "question_id": "S03-A-10",
       "scenario_id": "S03"
     },
@@ -2759,7 +2759,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习凉拌",
+          "entity_name": "凉拌",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习凉拌.md"
@@ -2784,7 +2784,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学学习凉拌，它的关键要点和适用场景是什么？",
+      "question": "我想学凉拌，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-01",
       "scenario_id": "S03"
     },
@@ -2798,7 +2798,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习焯水",
+          "entity_name": "焯水",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习焯水.md"
@@ -2823,7 +2823,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学学习焯水，它的关键要点和适用场景是什么？",
+      "question": "我想学焯水，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-02",
       "scenario_id": "S03"
     },
@@ -2876,7 +2876,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "空气炸锅",
+          "entity_name": "使用空气炸锅",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/空气炸锅.md"
@@ -2901,7 +2901,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学空气炸锅，它的关键要点和适用场景是什么？",
+      "question": "我想学使用空气炸锅，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-04",
       "scenario_id": "S03"
     },
@@ -2915,7 +2915,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习煮",
+          "entity_name": "煮",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习煮.md"
@@ -2940,7 +2940,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学学习煮，它的关键要点和适用场景是什么？",
+      "question": "我想学煮，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-05",
       "scenario_id": "S03"
     },
@@ -2954,7 +2954,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习腌",
+          "entity_name": "腌（肉）",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习腌.md"
@@ -2979,7 +2979,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学学习腌，它的关键要点和适用场景是什么？",
+      "question": "我想学腌（肉），它的关键要点和适用场景是什么？",
       "question_id": "S03-B-06",
       "scenario_id": "S03"
     },
@@ -3032,7 +3032,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "食材相克与禁忌",
+          "entity_name": "揭秘食材搭配的智慧：这些食物不宜同食",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/食材相克与禁忌.md"
@@ -3057,7 +3057,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学食材相克与禁忌，它的关键要点和适用场景是什么？",
+      "question": "我想学揭秘食材搭配的智慧：这些食物不宜同食，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-08",
       "scenario_id": "S03"
     },
@@ -3071,7 +3071,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "油温判断技巧",
+          "entity_name": "油温判断技巧及常见温度和单位换算表",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/advanced/油温判断技巧.md"
@@ -3096,7 +3096,7 @@
       },
       "difficulty_code": "B",
       "difficulty_name": "释义与歧义",
-      "question": "我想学油温判断技巧，它的关键要点和适用场景是什么？",
+      "question": "我想学油温判断技巧及常见温度和单位换算表，它的关键要点和适用场景是什么？",
       "question_id": "S03-B-09",
       "scenario_id": "S03"
     },
@@ -3188,7 +3188,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习腌",
+          "entity_name": "腌（肉）",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习腌.md"
@@ -3213,7 +3213,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“学习腌”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“腌（肉）”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-02",
       "scenario_id": "S03"
     },
@@ -3227,7 +3227,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习焯水",
+          "entity_name": "焯水",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习焯水.md"
@@ -3252,7 +3252,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“学习焯水”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“焯水”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-03",
       "scenario_id": "S03"
     },
@@ -3266,7 +3266,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习蒸",
+          "entity_name": "蒸",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习蒸.md"
@@ -3291,7 +3291,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“学习蒸”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“蒸”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-04",
       "scenario_id": "S03"
     },
@@ -3305,7 +3305,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "学习炒与煎",
+          "entity_name": "炒/煎",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/学习炒与煎.md"
@@ -3330,7 +3330,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“学习炒与煎”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“炒/煎”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-05",
       "scenario_id": "S03"
     },
@@ -3344,7 +3344,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "空气炸锅",
+          "entity_name": "使用空气炸锅",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/空气炸锅.md"
@@ -3369,7 +3369,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“空气炸锅”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“使用空气炸锅”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-06",
       "scenario_id": "S03"
     },
@@ -3383,7 +3383,7 @@
           "unhydrated_chunk"
         ],
         "gold_target": {
-          "entity_name": "高压力锅",
+          "entity_name": "蒸（米）/炖（使用电饭煲/高压锅/电压力锅）",
           "entity_type": "TechniqueDoc",
           "gold_resolution": "preflight_exact_name_and_source_path",
           "source_path": "data/tips/learn/高压力锅.md"
@@ -3408,7 +3408,7 @@
       },
       "difficulty_code": "C",
       "difficulty_name": "边界与反例",
-      "question": "只根据“高压力锅”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
+      "question": "只根据“蒸（米）/炖（使用电饭煲/高压锅/电压力锅）”技巧章节的关键要点回答；资料没有说明的结论请明确保留。",
       "question_id": "S03-C-07",
       "scenario_id": "S03"
     },
