@@ -168,10 +168,18 @@ WHERE row.relationshipType = '801000001'
   AND row.endNodeId IS NOT NULL
 MATCH (source:Recipe {nodeId: row.startNodeId})
 MATCH (target:Ingredient {nodeId: row.endNodeId})
-MERGE (source)-[r:REQUIRES]->(target)
+MERGE (source)-[r:REQUIRES {relationshipId: row.relationshipId}]->(target)
 SET r.relationshipId = row.relationshipId,
     r.amount = row.amount,
     r.unit = row.unit,
+    r.ingredientCategory = CASE
+        WHEN row.ingredientCategory IS NOT NULL AND trim(row.ingredientCategory) <> '' THEN row.ingredientCategory
+        ELSE target.category
+    END,
+    r.isMain = CASE
+        WHEN row.isMain IS NOT NULL AND trim(row.isMain) <> '' THEN toBoolean(row.isMain)
+        ELSE null
+    END,
     r.originalType = row.relationshipType;
 
 // 创建包含步骤关系 (801000003)

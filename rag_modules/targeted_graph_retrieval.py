@@ -32,7 +32,7 @@ LIMIT $limit""",
         "edge": ("recipe_id", "ingredient_id", "REQUIRES"),
         "query": """// ingredient_recipes_v1
 MATCH (ingredient:Ingredient {nodeId: $ingredient_id})<-[:REQUIRES]-(recipe:Recipe)
-RETURN ingredient.nodeId AS ingredient_id, ingredient.name AS ingredient_name,
+RETURN DISTINCT ingredient.nodeId AS ingredient_id, ingredient.name AS ingredient_name,
        recipe.nodeId AS recipe_id, recipe.name AS recipe_name
 ORDER BY recipe.nodeId
 LIMIT $limit""",
@@ -46,12 +46,13 @@ LIMIT $limit""",
             ("recipe_id", "vegetable_id", "REQUIRES"),
         ),
         "query": """// ingredient_vegetable_pairs_v1
-MATCH (ingredient:Ingredient {nodeId: $ingredient_id})<-[:REQUIRES]-(recipe:Recipe)-[:REQUIRES]->(vegetable:Ingredient)
-WHERE vegetable.nodeId <> $ingredient_id AND vegetable.category = $vegetable_category
-RETURN ingredient.nodeId AS ingredient_id, ingredient.name AS ingredient_name,
+MATCH (ingredient:Ingredient {nodeId: $ingredient_id})<-[:REQUIRES]-(recipe:Recipe)-[vegetable_requirement:REQUIRES]->(vegetable:Ingredient)
+WHERE vegetable.nodeId <> $ingredient_id
+  AND coalesce(vegetable_requirement.ingredientCategory, vegetable.category) = $vegetable_category
+RETURN DISTINCT ingredient.nodeId AS ingredient_id, ingredient.name AS ingredient_name,
        recipe.nodeId AS recipe_id, recipe.name AS recipe_name,
        vegetable.nodeId AS vegetable_id, vegetable.name AS vegetable_name,
-       vegetable.category AS vegetable_category
+       coalesce(vegetable_requirement.ingredientCategory, vegetable.category) AS vegetable_category
 ORDER BY recipe.nodeId, vegetable.nodeId
 LIMIT $limit""",
     },
