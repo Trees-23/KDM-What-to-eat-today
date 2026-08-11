@@ -534,7 +534,6 @@ class AdvancedGraphRAGSystem:
             manifest = RetrievalArtifactManifest.read(self.config.retrieval_artifact_manifest_path)
             schema = MilvusV2Schema(
                 dimension=self.config.milvus_dimension,
-                embedding_model=self.config.embedding_model,
             )
             manifest.validate_runtime(
                 pds_build_id=self.parent_document_store.active_build_id,
