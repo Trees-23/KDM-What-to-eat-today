@@ -563,6 +563,15 @@ def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(t
     assert system.query_router.calls == []
 
 
+def test_targeted_intent_recognizes_exam_ingredient_recipe_wording():
+    system_type = _load_main_system_type()
+
+    assert system_type._targeted_intent("家里有牛肉，知识库里能做哪些菜？") == (
+        "INGREDIENT_RECIPES",
+        "Ingredient",
+    )
+
+
 def test_targeted_graph_aggregates_parallel_exact_name_ingredients_without_selecting_one():
     system_type = _load_main_system_type()
     system = system_type.__new__(system_type)

@@ -1004,7 +1004,7 @@ class AdvancedGraphRAGSystem:
         text = query or ""
         if "蔬菜" in text and "搭配" in text:
             return "INGREDIENT_VEGETABLE_PAIRS", "Ingredient"
-        if any(marker in text for marker in ("能做什么", "可以做什么", "适合做什么")):
+        if any(marker in text for marker in ("能做什么", "能做哪些", "可以做什么", "适合做什么")):
             return "INGREDIENT_RECIPES", "Ingredient"
         if any(marker in text for marker in ("第一步", "第1步", "第 1 步")):
             return "RECIPE_STEP", "Recipe"
