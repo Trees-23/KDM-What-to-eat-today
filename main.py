@@ -894,6 +894,8 @@ class AdvancedGraphRAGSystem:
                 limitations=("ENTITY_NOT_FOUND", "未定位到关系查询中的同名实体；未调用全库向量检索。"),
             )
         if candidates[0].ambiguity:
+            if expected_type == "Ingredient" and intent in {"INGREDIENT_RECIPES", "INGREDIENT_VEGETABLE_PAIRS"}:
+                return self._try_parallel_ingredient_graph(query, intent, candidates, audit_run)
             return EvidenceBundle(
                 query_plan=None,
                 entity_candidates=tuple(candidates),
@@ -924,6 +926,43 @@ class AdvancedGraphRAGSystem:
             limitations=limitations,
         )
         return EvidenceBuilder.merge_graph_facts(base, (fact,))
+
+    def _try_parallel_ingredient_graph(self, query: str, intent: str, candidates, audit_run) -> EvidenceBundle:
+        """聚合精确同名 Ingredient 的固定图路径，绝不从并列候选中任选一个。"""
+
+        plans = [self._targeted_plan(query, intent, candidate.node_id) for candidate in candidates]
+        if not plans or any(plan is None for plan in plans):
+            return EvidenceBundle(
+                query_plan=None,
+                entity_candidates=tuple(candidates),
+                graph_facts=(),
+                text_evidence=(),
+                limitations=("ENTITY_AMBIGUOUS", "关系查询实体候选并列，未自动选择。"),
+            )
+        targeted_retriever = getattr(self, "targeted_graph_retriever", None)
+        facts = []
+        for plan in plans:
+            if targeted_retriever is None:
+                facts.append(TargetedGraphRetriever.unavailable_fact(plan, audit_run=audit_run))
+            else:
+                facts.append(targeted_retriever.retrieve(plan, audit_run=audit_run))
+        limitations: tuple[str, ...] = ()
+        if not any(fact.status == "verified" for fact in facts):
+            if any(fact.status == "unavailable" for fact in facts):
+                limitations = ("GRAPH_UNAVAILABLE", "图证据当前不可用；不能回答关系已成立。")
+            else:
+                limitations = ("GRAPH_RELATION_NOT_FOUND", "当前图谱未找到该关系；正文不能证明该关系。")
+        query_plan = plans[0].to_dict()
+        query_plan["parallel_candidate_ids"] = [candidate.node_id for candidate in candidates]
+        query_plan["resolution_strategy"] = "parallel_exact_name_ingredients"
+        base = EvidenceBundle(
+            query_plan=query_plan,
+            entity_candidates=tuple(candidates),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=limitations,
+        )
+        return EvidenceBuilder.merge_graph_facts(base, tuple(facts))
 
     def _targeted_text_evidence(self, plan: QueryPlan, candidate, fact, audit_run) -> tuple[tuple, tuple[str, ...]]:
         """仅把 PDS 正文附加给已验证的步骤或技巧图定位结果。"""
@@ -1011,12 +1050,14 @@ class AdvancedGraphRAGSystem:
     @staticmethod
     def _audit_targeted_graph(audit_run, bundle: EvidenceBundle) -> None:
         if audit_run is not None and hasattr(audit_run, "record_event"):
-            fact = bundle.graph_facts[-1] if bundle.graph_facts else None
+            fact = next((item for item in bundle.graph_facts if item.status == "verified"), None)
+            fact = fact or (bundle.graph_facts[-1] if bundle.graph_facts else None)
             audit_run.record_event(
                 "targeted_graph_selection",
                 status=fact.status if fact else "not_found",
                 template_id=fact.template_id if fact else None,
                 graph_fact_status=fact.status if fact else None,
+                graph_fact_count=len(bundle.graph_facts),
                 limitations=list(bundle.limitations),
                 vector_search_calls=0,
             )

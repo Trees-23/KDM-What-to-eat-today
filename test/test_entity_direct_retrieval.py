@@ -17,7 +17,7 @@ from rag_modules.parent_document_store import ParentDocumentStore
 from rag_modules.query_plan import QueryPlan
 from rag_modules.query_plan_validator import QueryPlanValidator
 from rag_modules.rag_audit import NULL_AUDIT_RUN
-from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
+from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle, GraphFact
 from rag_modules.targeted_graph_retrieval import TargetedGraphRetriever
 from rag_modules.milvus_v2_index import (
     ArtifactMismatchError,
@@ -179,6 +179,31 @@ class _SingleResolver:
     def resolve(self, query, expected_types):
         self.calls.append((query, expected_types))
         return [self.candidate]
+
+
+class _ParallelResolver:
+    def __init__(self, candidates):
+        self.candidates = candidates
+
+    def resolve(self, query, expected_types):
+        return self.candidates
+
+
+class _RecordingTargetedGraphRetriever:
+    def __init__(self):
+        self.calls = []
+
+    def retrieve(self, plan, audit_run=None):
+        self.calls.append(plan)
+        ingredient_id = plan.parameters["ingredient_id"]
+        return GraphFact(
+            fact_id=f"fact:{ingredient_id}",
+            template_id=plan.template_id,
+            node_ids=(ingredient_id, f"recipe:{ingredient_id}", f"vegetable:{ingredient_id}"),
+            edges=(),
+            properties={"rows": [{"ingredient_id": ingredient_id}]},
+            status="verified",
+        )
 
 
 class _FailingResolver:
@@ -535,6 +560,31 @@ def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(t
     assert len(bundle.graph_facts) == 1
     assert bundle.graph_facts[0].status == "verified"
     assert "先腌制鸡肉" in bundle.text_evidence[0].text
+    assert system.query_router.calls == []
+
+
+def test_targeted_graph_aggregates_parallel_exact_name_ingredients_without_selecting_one():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config(retrieval_query_plan_enabled=True, retrieval_targeted_graph_enabled=True)
+    system.entity_resolver = _ParallelResolver(
+        [
+            EntityCandidate("beef-a", "Ingredient", "牛肉", "exact_name", 1.0, True),
+            EntityCandidate("beef-b", "Ingredient", "牛肉", "exact_name", 1.0, True),
+        ]
+    )
+    system.entity_direct_retriever = None
+    system.query_plan_validator = QueryPlanValidator()
+    system.targeted_graph_retriever = _RecordingTargetedGraphRetriever()
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("牛肉适合搭配什么蔬菜？", 3)
+
+    assert analysis is None
+    assert [plan.parameters["ingredient_id"] for plan in system.targeted_graph_retriever.calls] == ["beef-a", "beef-b"]
+    assert [fact.status for fact in bundle.graph_facts] == ["verified", "verified"]
+    assert bundle.query_plan["parallel_candidate_ids"] == ["beef-a", "beef-b"]
+    assert "ENTITY_AMBIGUOUS" not in bundle.limitations
     assert system.query_router.calls == []
 
 

@@ -21,7 +21,7 @@ _ENTITY_CONFIG = {
 class EntityResolver:
     """按精确名称、治理别名、已验证全文索引依次定位实体。"""
 
-    def __init__(self, driver: Any, *, database: str | None = None, max_candidates: int = 5) -> None:
+    def __init__(self, driver: Any, *, database: str | None = None, max_candidates: int = 20) -> None:
         if driver is None:
             raise ValueError("EntityResolver 需要已初始化的 Neo4j driver")
         if max_candidates < 1 or max_candidates > 20:

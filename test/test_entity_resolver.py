@@ -75,6 +75,19 @@ def test_governed_alias_precedes_fulltext_and_tied_candidates_are_ambiguous():
     assert len(driver.session_instance.calls) == 2
 
 
+def test_exact_name_keeps_all_parallel_ingredient_candidates_within_the_governed_limit():
+    rows = [
+        {"node_id": f"ingredient-{index}", "display_name": "牛肉"}
+        for index in range(8)
+    ]
+    resolver = EntityResolver(FakeDriver({"exact": rows}))
+
+    candidates = resolver.resolve("牛肉适合搭配什么蔬菜", expected_types=("Ingredient",))
+
+    assert len(candidates) == 8
+    assert all(candidate.ambiguity for candidate in candidates)
+
+
 def test_fulltext_is_the_last_fixed_fallback_and_score_tie_is_not_silently_selected():
     driver = FakeDriver(
         {
