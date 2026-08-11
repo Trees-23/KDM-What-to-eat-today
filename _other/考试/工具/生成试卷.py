@@ -569,7 +569,7 @@ def _graph_path_counts() -> tuple[Counter[str], Counter[str]]:
                 other.get("endNodeId") != ingredient["nodeId"]
                 and vegetable
                 and vegetable.get("labels") == "Ingredient"
-                and vegetable.get("category") == "蔬菜"
+                and (other.get("ingredientCategory") or vegetable.get("category")) == "蔬菜"
             ):
                 pair_counts[ingredient_name] += 1
     return direct_counts, pair_counts
