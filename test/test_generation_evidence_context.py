@@ -88,7 +88,7 @@ def test_generation_returns_deterministic_message_for_missing_entity_without_cal
 
     answer = module.generate_adaptive_answer("不存在的菜怎么做？", bundle)
 
-    assert "未定位到同名实体" in answer
+    assert "知识库未收录" in answer
     assert module.client.calls == []
 
 

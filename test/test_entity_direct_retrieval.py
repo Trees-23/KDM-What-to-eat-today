@@ -206,6 +206,27 @@ class _RecordingTargetedGraphRetriever:
         )
 
 
+class _RecipeGraphRetriever:
+    def retrieve(self, plan, audit_run=None):
+        ingredient_id = plan.parameters["ingredient_id"]
+        return GraphFact(
+            fact_id=f"fact:{ingredient_id}",
+            template_id=plan.template_id,
+            node_ids=(ingredient_id, "recipe-1"),
+            edges=(),
+            properties={
+                "rows": [
+                    {
+                        "ingredient_id": ingredient_id,
+                        "recipe_id": "recipe-1",
+                        "recipe_name": "测试菜谱",
+                    }
+                ]
+            },
+            status="verified",
+        )
+
+
 class _FailingResolver:
     def resolve(self, query, expected_types):
         raise OSError("neo4j resolver down")
@@ -563,6 +584,27 @@ def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(t
     assert system.query_router.calls == []
 
 
+def test_weather_hot_and_not_greasy_request_uses_restricted_vector():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config()
+    system.config.retrieval_milvus_v2_enabled = True
+    system.query_plan_validator = QueryPlanValidator()
+    system.entity_resolver = _EmptyResolver()
+    system.entity_direct_retriever = object()
+    system.restricted_vector_retriever = _RecordingVectorRetriever()
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("天气热，想做一道清爽不腻的晚饭", 3)
+
+    assert analysis is None
+    assert bundle.query_plan["intent"] == "PREFERENCE_RECOMMEND"
+    assert system.restricted_vector_retriever.calls == [
+        ("天气热，想做一道清爽不腻的晚饭", {"parent_ids": None, "top_k": 3})
+    ]
+    assert system.entity_resolver.calls == []
+
+
 def test_targeted_intent_recognizes_exam_ingredient_recipe_wording():
     system_type = _load_main_system_type()
 
@@ -595,6 +637,26 @@ def test_targeted_graph_aggregates_parallel_exact_name_ingredients_without_selec
     assert bundle.query_plan["parallel_candidate_ids"] == ["beef-a", "beef-b"]
     assert "ENTITY_AMBIGUOUS" not in bundle.limitations
     assert system.query_router.calls == []
+
+
+def test_targeted_ingredient_recipe_graph_hydrates_recipe_pds_text(tmp_path):
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    system.config = _Config(retrieval_query_plan_enabled=True, retrieval_targeted_graph_enabled=True)
+    system.entity_resolver = _SingleResolver(
+        EntityCandidate("ingredient-1", "Ingredient", "花生米", "exact_name", 1.0, False)
+    )
+    system.entity_direct_retriever = EntityDirectRetriever(_build_store(tmp_path), FakeDriver(FakeSession()))
+    system.query_plan_validator = QueryPlanValidator()
+    system.targeted_graph_retriever = _RecipeGraphRetriever()
+    system.query_router = _Router()
+
+    bundle, analysis = system.retrieve_for_generation("花生米能做哪些菜？", 3)
+
+    assert analysis is None
+    assert bundle.graph_facts[0].status == "verified"
+    assert [evidence.parent_id for evidence in bundle.text_evidence] == ["recipe-1"]
+    assert "所需食材" in bundle.text_evidence[0].text
 
 
 def test_query_plan_returns_unavailable_when_targeted_graph_flag_is_disabled():

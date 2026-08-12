@@ -39,7 +39,7 @@ from rag_modules.parent_document_store import ParentDocumentStore
 from rag_modules.entity_resolver import EntityResolver
 from rag_modules.entity_direct_retrieval import EntityDirectRetriever
 from rag_modules.rag_audit import RAGAuditManager
-from rag_modules.retrieval_contracts import EvidenceBundle
+from rag_modules.retrieval_contracts import EntityCandidate, EvidenceBundle
 from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 from rag_modules.recommendation_evidence import RecommendationEvidence
 from rag_modules.evidence_builder import EvidenceBuilder
@@ -569,7 +569,7 @@ class AdvancedGraphRAGSystem:
     @staticmethod
     def _is_preference_query(query: str) -> bool:
         text = query or ""
-        return any(marker in text for marker in ("夏天吃", "清淡", "清爽偏好"))
+        return any(marker in text for marker in ("夏天吃", "天气热", "清淡", "清爽", "不腻"))
 
     def _preference_plan(
         self,
@@ -955,18 +955,20 @@ class AdvancedGraphRAGSystem:
         query_plan = plans[0].to_dict()
         query_plan["parallel_candidate_ids"] = [candidate.node_id for candidate in candidates]
         query_plan["resolution_strategy"] = "parallel_exact_name_ingredients"
+        text_evidence, pds_limitations = self._targeted_graph_recipe_evidence(facts, audit_run)
+        limitations += pds_limitations
         base = EvidenceBundle(
             query_plan=query_plan,
             entity_candidates=tuple(candidates),
             graph_facts=(),
-            text_evidence=(),
+            text_evidence=text_evidence,
             limitations=limitations,
         )
         return EvidenceBuilder.merge_graph_facts(base, tuple(facts))
 
     def _targeted_text_evidence(self, plan: QueryPlan, candidate, fact, audit_run) -> tuple[tuple, tuple[str, ...]]:
-        """仅把 PDS 正文附加给已验证的步骤或技巧图定位结果。"""
-        if fact.status != "verified" or plan.intent not in {"RECIPE_STEP", "TECHNIQUE_CHUNKS"}:
+        """为已验证目标图结果回补其所属实体的 PDS 正文。"""
+        if fact.status != "verified":
             return (), ()
         retriever = getattr(self, "entity_direct_retriever", None)
         if retriever is None:
@@ -983,8 +985,10 @@ class AdvancedGraphRAGSystem:
                 scope.pop("step_id")
             if scope["step_number"] is None:
                 scope.pop("step_number")
-        else:
+        elif plan.intent == "TECHNIQUE_CHUNKS":
             scope = {"scope": "TECHNIQUE_FULL"}
+        else:
+            return self._targeted_graph_recipe_evidence((fact,), audit_run)
         try:
             hydrated = retriever.retrieve(candidate, scope, audit_run=audit_run)
         except Exception as error:
@@ -998,6 +1002,40 @@ class AdvancedGraphRAGSystem:
         if not hydrated.text_evidence and not pds_limitations:
             pds_limitations = ("PDS_TEXT_UNAVAILABLE", "图已定位，但没有可验证的 PDS 正文回补。")
         return hydrated.text_evidence, pds_limitations
+
+    def _targeted_graph_recipe_evidence(self, facts, audit_run) -> tuple[tuple, tuple[str, ...]]:
+        """为食材关系图中的 Recipe 节点回补正文，绝不以正文替代图关系。"""
+        retriever = getattr(self, "entity_direct_retriever", None)
+        if retriever is None:
+            return (), ("PDS_TEXT_UNAVAILABLE", "图已定位，但 PDS 正文回补未启用。")
+        seen_recipe_ids: set[str] = set()
+        evidence = []
+        limitations = []
+        for fact in facts:
+            if fact.status != "verified":
+                continue
+            for row in fact.properties.get("rows", []):
+                recipe_id = str(row.get("recipe_id") or "").strip()
+                if not recipe_id or recipe_id in seen_recipe_ids:
+                    continue
+                seen_recipe_ids.add(recipe_id)
+                recipe_name = str(row.get("recipe_name") or recipe_id)
+                candidate = EntityCandidate(recipe_id, "Recipe", recipe_name, "exact_name", 1.0, False)
+                try:
+                    hydrated = retriever.retrieve(candidate, {"scope": "RECIPE_FULL"}, audit_run=audit_run)
+                except Exception as error:
+                    logger.warning("目标图菜谱 PDS 回补不可用: %s", error)
+                    limitations.append("PDS_TEXT_UNAVAILABLE")
+                    continue
+                evidence.extend(hydrated.text_evidence)
+                limitations.extend(
+                    limitation
+                    for limitation in hydrated.limitations
+                    if limitation in {"PARENT_DOCUMENT_NOT_FOUND", "parent-store-unavailable"}
+                )
+        if seen_recipe_ids and not evidence and not limitations:
+            limitations.append("PDS_TEXT_UNAVAILABLE")
+        return tuple(evidence), tuple(dict.fromkeys(limitations))
 
     @staticmethod
     def _targeted_intent(query: str) -> tuple[str | None, str | None]:

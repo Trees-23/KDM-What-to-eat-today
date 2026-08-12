@@ -178,12 +178,26 @@ LIMIT $limit""",
             current = by_id.get(candidate.node_id)
             if current is None or candidate.score > current.score:
                 by_id[candidate.node_id] = candidate
-        return sorted(by_id.values(), key=lambda item: (-item.score, item.node_id))
+        # 同一匹配等级下，完整名称优先于其在问题中出现的短前缀。例如
+        # “红烧鱼头怎么做”必须优先解析为“红烧鱼头”，而不是与“红烧鱼”并列。
+        return sorted(
+            by_id.values(),
+            key=lambda item: (-item.score, -len(EntityResolver._normalized_name(item.display_name)), item.node_id),
+        )
 
     @staticmethod
     def _mark_ambiguity(candidates: list[EntityCandidate]) -> list[EntityCandidate]:
         if not candidates:
             return []
         top_score = candidates[0].score
-        ambiguous = sum(abs(candidate.score - top_score) < 1e-9 for candidate in candidates) > 1
+        top_name_length = len(EntityResolver._normalized_name(candidates[0].display_name))
+        ambiguous = sum(
+            abs(candidate.score - top_score) < 1e-9
+            and len(EntityResolver._normalized_name(candidate.display_name)) == top_name_length
+            for candidate in candidates
+        ) > 1
         return [replace(candidate, ambiguity=ambiguous) for candidate in candidates]
+
+    @staticmethod
+    def _normalized_name(value: str) -> str:
+        return re.sub(r"[^0-9A-Za-z\u4e00-\u9fff]+", "", value).lower()

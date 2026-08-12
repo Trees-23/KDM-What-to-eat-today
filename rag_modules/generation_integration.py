@@ -482,7 +482,7 @@ class GenerationIntegrationModule:
         if "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE" in limitations:
             return "当前少油/清爽偏好检索不可用，不能用旧路径补造低脂推荐。"
         if "ENTITY_NOT_FOUND" in limitations:
-            return "未定位到同名实体。若你接受泛化烹饪建议，请明确说明可以接受泛化建议。"
+            return "知识库未收录该实体，无法在知识库中找到对应菜谱；因此不猜测或生成做法、食材和步骤。"
         if "ENTITY_AMBIGUOUS" in limitations:
             names = "、".join(candidate.display_name for candidate in evidence_bundle.entity_candidates[:3])
             suffix = f"候选包括：{names}。" if names else ""

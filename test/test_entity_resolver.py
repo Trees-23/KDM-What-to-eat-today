@@ -88,6 +88,24 @@ def test_exact_name_keeps_all_parallel_ingredient_candidates_within_the_governed
     assert all(candidate.ambiguity for candidate in candidates)
 
 
+def test_exact_name_prefers_the_longest_name_in_the_query_over_its_prefix():
+    resolver = EntityResolver(
+        FakeDriver(
+            {
+                "exact": [
+                    {"node_id": "fish", "display_name": "红烧鱼"},
+                    {"node_id": "fish-head", "display_name": "红烧鱼头"},
+                ]
+            }
+        )
+    )
+
+    candidates = resolver.resolve("请给出红烧鱼头的完整做法", expected_types=("Recipe",))
+
+    assert [candidate.node_id for candidate in candidates] == ["fish-head", "fish"]
+    assert not candidates[0].ambiguity
+
+
 def test_fulltext_is_the_last_fixed_fallback_and_score_tie_is_not_silently_selected():
     driver = FakeDriver(
         {
