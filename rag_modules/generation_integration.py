@@ -492,7 +492,7 @@ class GenerationIntegrationModule:
         if "STEP_NOT_FOUND" in limitations or "TECHNIQUE_CHUNK_NOT_FOUND" in limitations:
             return "图谱未找到请求的目标步骤或技巧章节，无法用正文补造该定位结果。"
         if "GRAPH_RELATION_NOT_FOUND" in limitations:
-            return "当前图谱未找到该关系；不能用文本证据把该关系表述为已成立。"
+            return "当前图谱未找到该关系，无法证明该关系存在；不能用文本证据把该关系表述为已成立。"
         if "GRAPH_UNAVAILABLE" in limitations:
             return "图证据当前不可用，无法验证请求的关系是否成立。"
         if "PDS_TEXT_UNAVAILABLE" in limitations or (

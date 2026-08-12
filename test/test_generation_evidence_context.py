@@ -117,6 +117,22 @@ def test_generation_does_not_fill_in_step_text_when_only_graph_location_is_avail
     assert module.client.calls == []
 
 
+def test_generation_relation_not_found_explicitly_states_that_the_relation_cannot_be_proven():
+    bundle = EvidenceBundle(
+        query_plan=None,
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(),
+        limitations=("GRAPH_RELATION_NOT_FOUND",),
+    )
+    module = GenerationModuleForTest()
+
+    answer = module.generate_adaptive_answer("新鲜玉米和蔬菜能否搭配？", bundle)
+
+    assert "无法证明" in answer
+    assert module.client.calls == []
+
+
 def test_generation_rejects_strict_nutrition_request_without_calling_llm():
     bundle = EvidenceBundle(
         query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "preference_recommend_v1"},
