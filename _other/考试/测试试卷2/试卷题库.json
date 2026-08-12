@@ -1,0 +1,382 @@
+{
+  "title": "New 路径第二套十题定向测试试卷",
+  "source": "_other/考试/试卷题库.json",
+  "variant": "new",
+  "question_count": 10,
+  "questions": [
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "pds_full_recipe",
+        "expected_route": "entity_direct_recipe_full",
+        "forbidden_assertions": [
+          "full_corpus_vector_search",
+          "unhydrated_chunk"
+        ],
+        "gold_target": {
+          "entity_name": "油焖大虾",
+          "entity_type": "Recipe",
+          "gold_resolution": "preflight_exact_name_and_source_path",
+          "source_path": "data/dishes/aquatic/油焖大虾/油焖大虾.md"
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "请给出油焖大虾的完整做法，包括主要食材和步骤。",
+      "question_id": "S01-A-02",
+      "scenario_id": "S01"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "pds_full_recipe",
+        "expected_route": "entity_direct_recipe_full",
+        "forbidden_assertions": [
+          "full_corpus_vector_search",
+          "unhydrated_chunk"
+        ],
+        "gold_target": {
+          "entity_name": "西红柿炒鸡蛋",
+          "entity_type": "Recipe",
+          "gold_resolution": "preflight_exact_name_and_source_path",
+          "source_path": "data/dishes/vegetable_dish/西红柿炒鸡蛋.md"
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "B",
+      "difficulty_name": "释义与歧义",
+      "question": "西红柿炒鸡蛋从备料到出锅怎么做？请按知识库里的做法回答。",
+      "question_id": "S01-B-01",
+      "scenario_id": "S01"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "pds_recipe_step_anchor",
+        "expected_route": "entity_direct_recipe_step",
+        "forbidden_assertions": [
+          "arbitrary_cypher",
+          "full_corpus_vector_search"
+        ],
+        "gold_target": {
+          "entity_name": "清蒸鳜鱼",
+          "entity_type": "Recipe",
+          "gold_resolution": "preflight_exact_name_and_source_path",
+          "source_path": "data/dishes/meat_dish/清蒸鳜鱼/清蒸鳜鱼.md"
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "清蒸鳜鱼的第 1 步应该怎么做？",
+      "question_id": "S02-A-02",
+      "scenario_id": "S02"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "pds_technique_section",
+        "expected_route": "entity_direct_technique_section",
+        "forbidden_assertions": [
+          "full_corpus_vector_search",
+          "unhydrated_chunk"
+        ],
+        "gold_target": {
+          "entity_name": "做菜专业术语",
+          "entity_type": "TechniqueDoc",
+          "gold_resolution": "preflight_exact_name_and_source_path",
+          "source_path": "data/tips/advanced/高级专业术语.md"
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "请说明“做菜专业术语”这个技巧的关键要点和适用情形。",
+      "question_id": "S03-A-02",
+      "scenario_id": "S03"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "verified_graph_relation_with_pds",
+        "expected_route": "targeted_graph_ingredient_recipes",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "arbitrary_cypher"
+        ],
+        "gold_target": {
+          "entity_name": "猪肉",
+          "entity_type": "Ingredient",
+          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
+          "minimum_verified_graph_paths": 1
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "家里有猪肉，知识库里能做哪些菜？",
+      "question_id": "S04-A-02",
+      "scenario_id": "S04"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "verified_graph_multi_hop_with_pds",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "猪肉",
+          "entity_type": "Ingredient",
+          "gold_resolution": "preflight_exact_name_then_freeze_verified_graph_paths",
+          "minimum_verified_graph_paths": 1
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "猪肉适合搭配什么蔬菜？",
+      "question_id": "S05-A-02",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "evidence_mode": "verified_graph_multi_hop_not_found",
+        "execution_surface": "chat_api",
+        "expected_route": "targeted_graph_ingredient_vegetable_pairs",
+        "forbidden_assertions": [
+          "text_as_relation_proof",
+          "invented_relation_path"
+        ],
+        "gold_target": {
+          "entity_name": "新鲜菜心",
+          "entity_type": "Ingredient",
+          "expected_verified_graph_paths": 0,
+          "gold_resolution": "preflight_exact_name_then_verify_zero_graph_paths"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "graph_not_found_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "graph_not_found"
+      },
+      "difficulty_code": "C",
+      "difficulty_name": "边界与反例",
+      "question": "只给出图中能验证的新鲜菜心与蔬菜搭配；没有路径时请说明无法证明。",
+      "question_id": "S05-C-04",
+      "scenario_id": "S05"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "candidate_recall_rerank_pds",
+        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "forbidden_assertions": [
+          "unhydrated_chunk"
+        ],
+        "gold_target": {
+          "entity_type": "semantic_intent",
+          "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
+          "intent_text": "下班很晚，想找准备步骤少的家常菜",
+          "minimum_gold_items": 3
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "下班很晚，想找准备步骤少的家常菜。请推荐知识库中最合适的菜，并说明依据。",
+      "question_id": "S06-A-02",
+      "scenario_id": "S06"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "ranking",
+        "evidence_mode": "soft_preference_candidate_recall_pds",
+        "expected_route": "soft_preference_restricted_vector",
+        "forbidden_assertions": [
+          "strict_low_fat_claim",
+          "strict_nutrition_without_governed_source"
+        ],
+        "gold_target": {
+          "entity_type": "soft_preference",
+          "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
+          "intent_text": "想找少油感觉的川味晚餐",
+          "minimum_gold_items": 3
+        },
+        "required_metrics": [
+          "recall_at_1",
+          "recall_at_3",
+          "recall_at_5",
+          "precision_at_1",
+          "precision_at_3",
+          "precision_at_5",
+          "mrr_at_5",
+          "ndcg_at_5",
+          "hit_rate_at_5",
+          "route_accuracy",
+          "evidence_completeness",
+          "evidence_linkage",
+          "answer_faithfulness",
+          "ttft_ms",
+          "total_latency_ms"
+        ]
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "想找少油感觉的川味晚餐。请推荐几个可考虑的菜。",
+      "question_id": "S07-A-02",
+      "scenario_id": "S07"
+    },
+    {
+      "contract": {
+        "evaluation_mode": "safety",
+        "execution_surface": "chat_api",
+        "expected_route": "entity_not_found",
+        "forbidden_assertions": [
+          "silent_entity_guess",
+          "invented_recipe"
+        ],
+        "gold_target": {
+          "entity_name": "云岚02号幻味砂锅",
+          "entity_type": "Recipe",
+          "gold_resolution": "preflight_assert_absent"
+        },
+        "required_metrics": [
+          "safety_pass_rate",
+          "forbidden_assertion_count",
+          "unsupported_relation_claim_count",
+          "entity_decline_accuracy",
+          "fault_degradation_accuracy",
+          "ttft_ms",
+          "total_latency_ms"
+        ],
+        "required_status": "entity_not_found"
+      },
+      "difficulty_code": "A",
+      "difficulty_name": "正向命中",
+      "question": "云岚02号幻味砂锅怎么做？",
+      "question_id": "S08-A-02",
+      "scenario_id": "S08"
+    }
+  ]
+}
