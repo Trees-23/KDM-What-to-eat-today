@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -204,9 +205,14 @@ class ParentDocumentStore:
         *,
         active_build_id: Optional[str] = None,
         active_pointer: Optional[Path] = None,
+        read_only: bool = True,
     ) -> None:
         self.db_path = Path(db_path)
-        self._connection = connection
+        self._read_only = read_only
+        self._connections = threading.local()
+        self._connections.connection = connection
+        self._closed = False
+        self._closed_lock = threading.Lock()
         self.active_pointer = Path(active_pointer) if active_pointer else None
         self._active_build_id = active_build_id or self._read_active_pointer()
         if self._active_build_id is None:
@@ -243,16 +249,15 @@ class ParentDocumentStore:
         if not db_path.exists():
             raise FileNotFoundError(f"PDS build 不存在: {db_path}")
         if read_only:
-            connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+            connection = cls._open_connection(db_path, read_only=True)
         else:
-            connection = sqlite3.connect(str(db_path))
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA foreign_keys = ON")
+            connection = cls._open_connection(db_path, read_only=False)
         return cls(
             db_path,
             connection,
             active_build_id=active_build_id,
             active_pointer=pointer_path,
+            read_only=read_only,
         )
 
     @classmethod
@@ -516,6 +521,35 @@ class ParentDocumentStore:
             raise ValueError(f"active pointer 格式错误: {pointer}")
         return {str(key): str(value) for key, value in parsed.items() if value is not None}
 
+    @staticmethod
+    def _open_connection(db_path: Path, *, read_only: bool) -> sqlite3.Connection:
+        """为当前线程创建独立连接，避免流式请求跨线程复用 SQLite 对象。"""
+
+        if read_only:
+            connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        else:
+            connection = sqlite3.connect(str(db_path))
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys = ON")
+        return connection
+
+    @property
+    def _connection(self) -> sqlite3.Connection:
+        """返回当前线程专用的 SQLite 连接。
+
+        系统启动时 PDS 在应用线程打开，而流式 API 在工作线程读取。SQLite 默认
+        禁止这种跨线程复用；每个线程改为按同一不可变 build 打开只读连接。
+        """
+
+        with self._closed_lock:
+            if self._closed:
+                raise RuntimeError("ParentDocumentStore 已关闭")
+        connection = getattr(self._connections, "connection", None)
+        if connection is None:
+            connection = self._open_connection(self.db_path, read_only=self._read_only)
+            self._connections.connection = connection
+        return connection
+
     def _assert_build_exists(self, build_id: str) -> None:
         row = self._connection.execute(
             "SELECT 1 FROM builds WHERE build_id = ? AND status IN ('ready', 'published')", (build_id,)
@@ -658,7 +692,14 @@ class ParentDocumentStore:
         return LinkageReport(len(rows), matched, tuple(missing), tuple(mismatched))
 
     def close(self) -> None:
-        self._connection.close()
+        with self._closed_lock:
+            if self._closed:
+                return
+            self._closed = True
+        connection = getattr(self._connections, "connection", None)
+        if connection is not None:
+            connection.close()
+            del self._connections.connection
 
     def __enter__(self) -> "ParentDocumentStore":
         return self

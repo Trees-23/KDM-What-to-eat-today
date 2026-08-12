@@ -38,3 +38,10 @@ def test_preflight_normalizes_recipe_and_tip_source_paths():
 
     assert preflight._normalize_source_path(r"dishes\aquatic\清蒸鲈鱼\清蒸鲈鱼.md") == "data/dishes/aquatic/清蒸鲈鱼/清蒸鲈鱼.md"
     assert preflight._normalize_source_path("tips/learn/学习蒸.md") == "data/tips/learn/学习蒸.md"
+
+
+def test_new_path_probe_exercises_a_request_thread():
+    preflight = _load(PREFLIGHT_PATH, "exam_preflight_threads")
+    source = preflight._probe_new_path.__code__.co_consts
+
+    assert any(isinstance(item, str) and "threading.Thread" in item for item in source)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 from pathlib import Path
+import threading
 
 import pytest
 
@@ -81,6 +82,33 @@ def test_create_open_read_and_anchor_windows(tmp_path: Path):
         )
         assert not report.valid
         assert report.mismatched_rows == ("recipe-1:chunk:0",)
+
+
+def test_open_store_reads_from_a_different_thread(tmp_path: Path):
+    """流式 API 工作线程必须不能复用启动线程创建的 SQLite 连接。"""
+
+    parents, manifest, chunks, anchors = _fixture_rows()
+    db_path = tmp_path / "parent_store.sqlite"
+    ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors)
+
+    with ParentDocumentStore.open(db_path, active_build_id=manifest.build_id) as store:
+        assert store.get_full_parent("recipe-1") is not None
+        result: dict[str, object] = {}
+
+        def read_from_worker() -> None:
+            try:
+                parent = store.get_full_parent("recipe-1", expected_node_type="Recipe")
+                result["title"] = parent.title if parent else None
+                result["health"] = store.health_check()["status"]
+            except Exception as error:  # pragma: no cover - 仅用于将线程异常交回断言
+                result["error"] = error
+
+        worker = threading.Thread(target=read_from_worker)
+        worker.start()
+        worker.join()
+
+        assert "error" not in result
+        assert result == {"title": "测试菜谱", "health": "ok"}
 
 
 def test_failed_build_does_not_publish_or_overwrite(tmp_path: Path):

@@ -261,6 +261,7 @@ def _probe_new_path(questions: list[dict[str, Any]]) -> list[str]:
     if set(question_text) != set(selected_ids):
         return ["题库缺少新路径演练题"]
     probe_program = f'''import json
+import threading
 from main import AdvancedGraphRAGSystem
 
 queries = {json.dumps(question_text, ensure_ascii=False)!r}
@@ -275,12 +276,25 @@ try:
         }},
         "queries": {{}},
     }}
-    for question_id, query in json.loads(queries).items():
+    def retrieve_from_request_thread(question_id, query):
         bundle, _ = system.retrieve_for_generation(query, system.config.top_k)
         result["queries"][question_id] = {{
             "has_text": bool(bundle.text_evidence),
             "graph_statuses": sorted({{fact.status for fact in bundle.graph_facts}}),
         }}
+
+    for question_id, query in json.loads(queries).items():
+        worker_error = []
+        def run_request():
+            try:
+                retrieve_from_request_thread(question_id, query)
+            except Exception as error:
+                worker_error.append(f"{{type(error).__name__}}: {{error}}")
+        worker = threading.Thread(target=run_request)
+        worker.start()
+        worker.join()
+        if worker_error:
+            raise RuntimeError(f"{{question_id}} 请求线程演练失败: {{worker_error[0]}}")
     print("__EXAM_PROBE__=" + json.dumps(result, ensure_ascii=False))
 finally:
     system._cleanup()
