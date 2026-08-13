@@ -102,7 +102,7 @@ def test_exact_name_prefers_the_longest_name_in_the_query_over_its_prefix():
 
     candidates = resolver.resolve("请给出红烧鱼头的完整做法", expected_types=("Recipe",))
 
-    assert [candidate.node_id for candidate in candidates] == ["fish-head", "fish"]
+    assert [candidate.node_id for candidate in candidates] == ["fish-head"]
     assert not candidates[0].ambiguity
 
 

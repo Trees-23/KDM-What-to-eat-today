@@ -90,7 +90,7 @@ class EntityResolver:
                         ambiguity=False,
                     )
                 )
-        return self._deduplicate(candidates)
+        return self._deduplicate(candidates, prefer_longest_exact_name=match_kind == "exact_name")
 
     def _run(self, query: str, parameters: Mapping[str, Any]):
         try:
@@ -172,7 +172,11 @@ LIMIT $limit""",
         return len(normalized_name) >= 2 and normalized_name in normalized_query
 
     @staticmethod
-    def _deduplicate(candidates: Iterable[EntityCandidate]) -> list[EntityCandidate]:
+    def _deduplicate(
+        candidates: Iterable[EntityCandidate],
+        *,
+        prefer_longest_exact_name: bool = False,
+    ) -> list[EntityCandidate]:
         by_id: dict[str, EntityCandidate] = {}
         for candidate in candidates:
             current = by_id.get(candidate.node_id)
@@ -180,10 +184,22 @@ LIMIT $limit""",
                 by_id[candidate.node_id] = candidate
         # 同一匹配等级下，完整名称优先于其在问题中出现的短前缀。例如
         # “红烧鱼头怎么做”必须优先解析为“红烧鱼头”，而不是与“红烧鱼”并列。
-        return sorted(
+        ordered = sorted(
             by_id.values(),
             key=lambda item: (-item.score, -len(EntityResolver._normalized_name(item.display_name)), item.node_id),
         )
+        if not ordered:
+            return []
+        if not prefer_longest_exact_name:
+            return ordered
+        # 一个更长的精确名称已完整出现时，短前缀只是同一提及的子串，
+        # 不能与之组成并列实体候选。保留同长度候选以继续走澄清流程。
+        longest_name = EntityResolver._normalized_name(ordered[0].display_name)
+        return [
+            item
+            for item in ordered
+            if len(EntityResolver._normalized_name(item.display_name)) == len(longest_name)
+        ]
 
     @staticmethod
     def _mark_ambiguity(candidates: list[EntityCandidate]) -> list[EntityCandidate]:
