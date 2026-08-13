@@ -26,7 +26,7 @@
 
 本方案不把“川味”“少油感觉”等个别说法做成专用分支。它们只是 LLM 能理解的一类
 自然表达；同一套流程要覆盖场景、时间、工具、食材、菜系、口味、人数、难度、做法
-和步骤等任意组合。
+和步骤等自然表达；实际执行仅限已声明支持的槽位组合。
 
 ## 2. 当前可复用能力与改造边界
 
@@ -113,7 +113,9 @@ LLM 只负责把自然语言归类为有限意图，并抽取用户表达的实�
 3. 根据固定映射选择图查询、向量检索、PDS 正文读取或严格营养拒答。
 4. 将实际使用的证据、检索范围、限制和失败状态写入审计。
 
-LLM 负责“听懂人话”，本地程序负责“决定允许做什么查询”。
+LLM 负责“听懂人话”，本地程序负责“决定允许做什么查询”。两者之间必须保持两份
+不同的 JSON：LLM 只填写不带执行权的**需求单**，本地编译器才生成可交给检索器的
+**执行单（`QueryPlan`）**。任何 LLM 输出均不得直接作为检索器输入。
 
 ## 4. 意图候选单契约
 
@@ -128,8 +130,7 @@ LLM 负责“听懂人话”，本地程序负责“决定允许做什么查询�
   "confidence": 0.99,
   "entity_mentions": [
     {
-      "text": "宫保鸡丁",
-      "expected_type": "Recipe"
+      "text": "宫保鸡丁"
     }
   ],
   "slots": {
@@ -146,6 +147,10 @@ LLM 负责“听懂人话”，本地程序负责“决定允许做什么查询�
   }
 }
 ```
+
+这份 JSON 是“用户要什么”的需求单，不是“数据库怎么查”的执行单。`entity_mentions`
+只能提供用户原话；本地程序根据 `intent` 的固定映射决定允许解析的实体类型。例如
+`RECIPE_STEP` 才允许解析 `Recipe`，不能由 LLM 指定 `expected_type`。
 
 第一版仅允许如下 `intent`：
 
@@ -180,6 +185,18 @@ LLM 负责“听懂人话”，本地程序负责“决定允许做什么查询�
 `LOW_OIL_FEEL` 表示“少油感觉/不油腻偏好”，绝不等于“低脂”。`SICHUAN_STYLE` 表示
 用户说“川味/川菜风格”，本地程序才可将其映射到经过数据核验的“川菜”范围。
 
+第一版还必须冻结以下输入上限，超出即拒绝候选单并返回 `CLARIFY_OR_OUT_OF_SCOPE`：
+
+```text
+entity_mentions 最多 8 项；每项 text 最长 80 个字符
+每个列表槽位最多 5 项；重复值由本地去重
+confidence 必须为 0 至 1 的有限数值
+未知枚举、空字符串、未声明的槽位组合一律不原样透传给检索器
+```
+
+产品能力以“已声明支持的组合”为准，不承诺任意槽位的任意组合都能执行。无法映射为
+硬范围的槽位最多保留为软偏好；无法作为软偏好解释的槽位必须澄清，不能临时拼成检索词。
+
 ### 4.3 LLM 明确禁止输出的字段
 
 以下字段一律不出现在候选单中：
@@ -201,6 +218,19 @@ template_id、vector_scope、排序字段、相似度阈值、营养结论、证
 | 超时、空响应、服务错误 | 有限次数重试后 `PLANNER_UNAVAILABLE` | 回退未受限旧向量检索 |
 | 置信度过低或槽位冲突 | `CLARIFY_OR_OUT_OF_SCOPE`，提出具体澄清问题 | 写成 `ENTITY_NOT_FOUND` |
 | 有效意图但实体解析失败 | 仅实体必须存在的计划才走实体未找到或候选确认 | 让泛化推荐变成实体不存在 |
+
+### 4.5 硬条件、软偏好与展示要求
+
+编译器必须把候选单拆为三类，三类不能互相升级：
+
+| 类型 | 例子 | 可做什么 | 不可做什么 |
+| --- | --- | --- | --- |
+| `hard_constraints` | 属于川菜、包含鸡肉、指定第 1 步 | 仅在本地取得图事实或正文证据后过滤/断言 | 无证据时放宽范围或写成事实 |
+| `soft_preferences` | 清淡、少油感觉、家常、步骤少 | 用于受限向量排序和“贴近偏好”的措辞 | 说成低脂、低热量、一定省时 |
+| `display_requests` | 想看步骤、食材、时间 | 仅展示 PDS 中实际存在的字段 | 从菜名、相似度或常识补写字段 |
+
+工具、做法和时间默认都是软偏好；只有正文存在可解析、可回补的对应字段时，才可在答案中
+作为事实陈述。每一个硬条件必须记录其证据来源；缺少来源时终止该条件路径，不得降级为全库。
 
 ## 5. 检索路径与选择规则
 
@@ -257,6 +287,10 @@ LLM：PREFERENCE_RECOMMEND
 这里的 `all_child_chunks` 是受 `QueryPlan`、构建版本和 PDS 链接校验约束的新版范围，
 不是旧路径中没有正文回补和范围治理的向量检索。
 
+`all_child_chunks` 只表示当前 active build 内、类型为 Recipe 的 child chunk，不包含技巧
+文档、历史 build、未链接 parent 或任意其他 collection。`top_k`、向量相似度阈值、候选
+扩展倍数和排序算法均为本地固定配置，LLM 不可见也不可控。
+
 若没有匹配结果，状态应为 `NO_PREFERENCE_RESULTS`，而不是 `ENTITY_NOT_FOUND`。
 
 ### 路径 D：图缩小范围后再条件推荐
@@ -295,6 +329,11 @@ LLM：PREFERENCE_RECOMMEND
 “少油感觉”“清淡”“不厚重”只能称为偏好匹配；“属于川菜”“包含鸡肉”必须由图事实
 验证。
 
+范围不能静默截断。若图查询得到的可验证 Recipe 范围超过当前检索器可表达的上限，实施时
+必须采用可验证的分页/服务端范围过滤；在此能力上线前返回 `SCOPE_TOO_LARGE`，不能只取
+前 N 条后仍声称覆盖全部范围。硬范围为空、图服务不可用或 PDS/Milvus build 不一致时，也
+不得扩大成无范围全库检索。
+
 ### 路径 E：严格营养和医疗饮食
 
 适用于用户明确提出可计算/可核验的营养阈值或医疗条件。
@@ -320,6 +359,10 @@ LLM：PREFERENCE_RECOMMEND
 - 对“少油感觉”“不想太腻”“清爽一点”继续按路径 C 或 D 做软偏好推荐，并明确不得把
   其表述升级为低脂或医疗建议。
 
+严格营养门只识别用户的**正向要求**，并且只读取 `user_message`。例如“不要说低脂”、
+“我不要求低脂”以及评测规则中的“不要断言低脂”都不是严格营养请求；它们分别是回答
+限制或否定信息。若本地硬门与 LLM 候选冲突，本地硬门优先，严格请求不得被降级为软偏好。
+
 ### 路径 F：澄清、近似名称和不存在实体
 
 实体解析顺序应固定为：
@@ -341,6 +384,8 @@ LLM：PREFERENCE_RECOMMEND
 | 意图不够明确 | “给我推荐最健康的” | 请求补充标准；医疗/严格营养风险时提示证据边界 |
 
 近似匹配只能用于提出候选或在唯一高置信时规范化名称，不能直接伪造稳定 ID。
+唯一高置信的定义必须在配置中冻结：最低分、第一名与第二名的最小分差、最大候选数均由
+本地决定并纳入审计；任一条件不满足即为 `ENTITY_AMBIGUOUS`，不能静默选择第一名。
 
 ## 6. 意图到执行器、证据和失败状态映射
 
@@ -371,15 +416,21 @@ LLM：PREFERENCE_RECOMMEND
       + 实体解析结果
       + PDS/图数据库可验证的运行态范围
 
-输出：以下之一
-      1. 已通过 QueryPlanValidator 的 QueryPlan
-      2. 请求用户澄清的结构化状态
-      3. 明确证据不足/服务不可用的结构化状态
+输出：`CompileResult`，以下之一
+      1. `EXECUTE`：已通过 QueryPlanValidator 的 QueryPlan 和声明策略
+      2. `CLARIFY`：请求用户澄清的结构化状态
+      3. `TERMINAL`：明确证据不足、实体不存在或超出范围的结构化状态
+      4. `UNAVAILABLE`：依赖服务或工件不可用的结构化状态
 ```
 
 编译器包含一张写死在代码中的意图映射表。它不接受 LLM 指定模板、ID 或检索范围。
 例如 `RECIPE_STEP` 永远只能编译到固定的步骤模板；`PREFERENCE_RECOMMEND` 永远只能
 编译到受限 V2 范围，不可转到旧的无约束检索。
+
+只有 `EXECUTE` 可以调用图、Milvus、PDS 和生成模型。`CLARIFY`、`TERMINAL`、`UNAVAILABLE`
+使用本地固定回复模板，不调用生成模型，不写语义缓存和会话上下文。`EXECUTE` 的输出还必须
+携带本地构造的 `claim_policy`：可断言的硬事实、可说的软偏好、禁止声明和必要提示分别列出；
+生成层只能在该范围内组织语言。
 
 ### 7.2 多实体推荐范围规则
 
@@ -395,6 +446,11 @@ LLM：PREFERENCE_RECOMMEND
 菜系、食材、做法等只有在本地已存在可验证映射时才可作为硬范围。没有映射时，槽位
 可保留为语义偏好，但不得伪装成图事实。
 
+第一版一轮只允许一个主任务。若请求包含互不从属的多个任务，例如“推荐鸡肉菜并讲其中
+一道的第一步”，编译器返回 `CLARIFY`，要求用户先选择任务；不得由 LLM 自行拆成多次
+查询或自行选定“其中一道”。后续若产品需要多任务能力，应单独定义 `primary_intent`、
+follow-up 范围、最大子计划数和原子失败策略。
+
 ### 7.3 规则保留位置
 
 | 类别 | 保留为本地规则 | 不再作为顶层意图抢占规则 |
@@ -403,6 +459,35 @@ LLM：PREFERENCE_RECOMMEND
 | 结构合法性 | JSON schema、枚举、置信度、槽位组合、数值范围 | 无 |
 | 执行边界 | 固定模板、最大候选数、PDS/Milvus 构建一致性、实体类型、证据要求 | 无 |
 | 普通语义 | 川味、少油感觉、清爽、快手、步骤少、家常、口味温和、地方特色 | 是；由 LLM 槽位理解，必要时做后校验 |
+
+### 7.4 回退矩阵
+
+| 情况 | planner 路径行为 | 是否允许旧 Router |
+| --- | --- | --- |
+| planner 开关关闭 | 保持当前路径，供灰度对照 | 允许 |
+| planner JSON 非法、超时、低置信度或编译失败 | `CLARIFY` 或 `UNAVAILABLE`，fail-closed | 不允许 |
+| 严格营养/医疗证据不足 | `TERMINAL`，固定说明证据边界 | 不允许 |
+| 图、Milvus、PDS 不可用或 build 不一致 | `UNAVAILABLE`，不得扩大查询范围 | 不允许 |
+| 已验证范围为空或超过实现上限 | `TERMINAL`（如 `NO_PREFERENCE_RESULTS`、`SCOPE_TOO_LARGE`） | 不允许 |
+
+旧 Router 只能在 planner 根本未启用时使用，不能作为 planner 已启用后的“猜测补救”。
+实现必须移除新 planner 调用链对 `validate_or_conservative()`、关键词 `_try_*` 抢占和
+隐式 legacy fallback 的依赖；这些兼容逻辑不得绕过 `CompileResult`。
+
+### 7.5 不可违反的不变量
+
+```text
+1. LLM 只生成需求单，永远不能直接生成或执行 QueryPlan。
+2. LLM 永远不能产生 ID、模板、范围、过滤器、排序、候选数或证据等级。
+3. 只有 EXECUTE 可以访问检索器和生成模型。
+4. 只有 verified 图事实才能支持结构化关系断言，只有 PDS 回补正文才能进入最终回答。
+5. 严格营养和医疗请求不得降级为软偏好；软偏好不得升级为营养或医疗结论。
+6. 任一失败、范围为空或依赖不可用时，均不得扩大检索范围。
+7. 未声明支持的槽位组合和多任务请求必须澄清或终止。
+8. 范围截断必须显式返回状态，禁止静默截断后宣称完整覆盖。
+9. CLARIFY、TERMINAL、UNAVAILABLE 不得生成、缓存或写入会话。
+10. 所有上述决定必须进入审计，且可由测试观测。
+```
 
 ## 8. 分阶段实施计划
 
@@ -413,8 +498,10 @@ LLM：PREFERENCE_RECOMMEND
 - 新增 `IntentCandidate` 数据模型和 JSON schema，不修改现有执行 `QueryPlan` 契约。
 - 新增明确的 API 请求边界：`user_message` 与 `evaluation_constraints` 分离；旧单字段兼容
   期间不得把内部约束拼接进用户语义输入。
-- 定义所有意图、槽位枚举、置信度阈值、澄清状态和审计字段。
+- 定义所有意图、槽位枚举、置信度阈值、字段/列表长度上限、硬软条件分类、澄清状态和审计字段。
 - 冻结多食材交集/并集策略、菜系规范化映射和无法验证时的表达规则。
+- 冻结 `CompileResult` 的 `EXECUTE`、`CLARIFY`、`TERMINAL`、`UNAVAILABLE` 状态及其是否
+  允许检索、生成、缓存的矩阵。
 
 验收：S07-C 中“不要断言低脂”等文字不进入 planner 与营养识别；planner-only 测试能
 确认输入边界。
@@ -426,6 +513,7 @@ LLM：PREFERENCE_RECOMMEND
 - 新增独立 planner 模块，使用低温度、短输出、严格 JSON 约束和明确超时。
 - prompt 只列出允许意图、允许槽位、反例和禁止字段；不暴露数据库结构、真实 ID 或查询语句。
 - 使用 JSON schema/Pydantic 校验模型响应，拒绝多余字段。
+- 校验需求单只能包含用户需求字段；拒绝 ID、模板、范围、过滤器、排序和证据字段。
 - 记录 planner 模型版本、延迟、响应哈希、解析状态、规范化候选和拒绝原因；不把原始敏感
   内容写入非受控日志。
 
@@ -437,12 +525,14 @@ LLM：PREFERENCE_RECOMMEND
 目标：由一个入口替代当前按关键词抢占的 `_try_*` 顺序。
 
 - 新增 `IntentPlanCompiler`，输入为候选单与本地解析结果，输出 `QueryPlan` 或结构化终止状态。
+- 编译结果必须显式标记 `EXECUTE`、`CLARIFY`、`TERMINAL` 或 `UNAVAILABLE`；只有 `EXECUTE`
+  可以继续访问检索器和生成模型。
 - 先处理明确的高风险营养/医疗门，再执行 planner；普通“少油、清爽”等不抢占流程。
 - 将现有实体直达、目标图、受限向量执行器接到编译结果，不重写其白名单边界。
 - 修改 `retrieve_for_generation()`：new 路径选择后先进入 planner/compile，而不是先分别运行
   营养、目标图、偏好词表和实体直达。
-- 保留旧 Router 仅作为配置明确、且本地安全边界允许的故障兼容回退；不作为 planner 正常失败
-  的默认替代。
+- planner 已启用后的非法输出、编译失败、证据不足、范围为空或依赖不可用均 fail-closed，
+  不允许旧 Router 回退；旧 Router 只在 planner 开关关闭时保留作灰度对照。
 
 验收：S06-A-02 编译为路径 C；S07-A-02 编译为路径 D；两者不进入 `ENTITY_NOT_FOUND`。
 
@@ -454,6 +544,7 @@ LLM：PREFERENCE_RECOMMEND
 - 将实体解析用于需要实体的计划，而不再对所有问题盲目尝试菜谱/技巧名匹配。
 - 实现“图缩范围 -> 范围内 V2 向量 -> PDS 回补”的组合编译。
 - 明确当硬范围不存在、图服务不可用、范围为空时的状态；禁止扩大为未验证全库范围并声称硬事实。
+- 增加范围超过上限时的 `SCOPE_TOO_LARGE` 状态；在分页/完整过滤实现前不得静默截断。
 
 验收：川味/川菜、鸡肉+清淡、多食材交集/并集、近似菜名、同名歧义都有单元和集成测试。
 
@@ -488,8 +579,8 @@ LLM：PREFERENCE_RECOMMEND
 - 审计记录候选意图、编译路径、实体解析结果数量、范围来源、图事实状态、PDS 回补数量、
   向量范围、最终限制与生成非空状态。
 - 用固定 300 题、释义改写集和失败注入集在灰度前后对比。
-- planner 服务不可用时保持 fail-closed，不把新路径扩大到不受控检索；是否允许回退旧 Router
-  由已有兼容开关和安全策略共同决定。
+- planner 服务不可用时保持 fail-closed，不把新路径扩大到不受控检索；planner 已启用时
+  禁止旧 Router 回退，只有关闭 planner 的对照流量才可使用旧 Router。
 
 ## 9. 测试与验收计划
 
@@ -501,6 +592,7 @@ LLM：PREFERENCE_RECOMMEND
 - S06/S07 扩展释义矩阵：快手/省事/步骤少/准备少、川菜/川味、少油感觉/不油腻/轻口味/
   不厚重、清蒸/蒸制/煮制等。
 - 注入未知意图、非法 JSON、多余字段、伪造 ID、Cypher 字段、超时、空响应、低置信度。
+- 注入超长 mention、过多实体/槽位、未知枚举、否定营养表达、多个独立任务和不支持的槽位组合。
 - 验收指标：候选单合法率、意图准确率、关键槽位准确率、无效候选执行率为零。
 
 ### 9.2 检索层测试
@@ -509,9 +601,11 @@ LLM：PREFERENCE_RECOMMEND
 
 - 每个意图只产生对应白名单 `QueryPlan`。
 - 任何 LLM 输出不得影响模板 ID、图关系类型、数据库名、collection、nodeId 或 `parent_id`。
+- 需求单不能直接交给执行器；`CompileResult` 非 `EXECUTE` 时检索调用次数必须为零。
 - 关系题必须有 verified 图事实；向量命中必须 PDS 回补。
 - 纯偏好题无候选返回 `NO_PREFERENCE_RESULTS`；没有明确实体的题永不返回 `ENTITY_NOT_FOUND`。
 - 菜系/食材范围加偏好的组合路径只在已验证范围中搜索。
+- 范围超过上限返回 `SCOPE_TOO_LARGE`，不得静默取前 N 条。
 
 ### 9.3 生成与 API 层测试
 
@@ -520,6 +614,8 @@ LLM：PREFERENCE_RECOMMEND
 - 验证空答案不会进入缓存和会话上下文。
 - 验证严格营养不足时不会调用生成模型来编造推荐；软偏好回答不会声称低脂、低热量或医疗适用。
 - 验证 `evaluation_constraints` 不进入 planner 输入。
+- 验证 `CLARIFY`、`TERMINAL`、`UNAVAILABLE` 不调用生成、不写缓存、不写会话上下文。
+- 验证多任务请求不会被自动拆解为多个查询计划。
 
 ### 9.4 端到端验收阈值
 
@@ -528,6 +624,7 @@ LLM：PREFERENCE_RECOMMEND
 | S06/S07 泛化推荐误报 `ENTITY_NOT_FOUND` | 0 |
 | 严格营养/医疗误报 | 0 |
 | planner 非法输出实际执行次数 | 0 |
+| 非 `EXECUTE` 状态调用检索/生成次数 | 0 |
 | 图关系无 verified 证据仍被断言次数 | 0 |
 | 向量候选缺 PDS 回补仍进入回答次数 | 0 |
 | `chunk_count=0` 或 `answer_chars=0` 被标成功次数 | 0 |
@@ -583,7 +680,7 @@ LLM 候选：RECIPE_STEP
 用户：想吃鸡肉做的清淡晚餐。
 
 LLM 候选：PREFERENCE_RECOMMEND
-实体提及：鸡肉（Ingredient）
+实体提及：鸡肉；本地按该意图仅解析 Ingredient
 槽位：晚餐、清淡
 
 编译：实体解析鸡肉 -> 图找包含鸡肉的 Recipe ID
@@ -654,12 +751,13 @@ LLM 仅解析用户真实问题：PREFERENCE_RECOMMEND
 planner_input_hash
 planner_model / planner_version / latency
 planner_parse_status / candidate_intent / confidence / normalized_slots
-compiler_status / selected_path / query_plan_hash
+compiler_status / compile_action / selected_path / query_plan_hash
 entity_resolution_status / candidate_count / chosen_ids（仅审计允许时）
 graph_template_id / graph_fact_status
-vector_scope / parent_count / PDS_text_evidence_count
+hard_constraints / soft_preferences / claim_policy
+vector_scope / scope_size / scope_truncated / parent_count / PDS_text_evidence_count
 nutrition_policy_status
-generation_chunk_count / answer_chars / cache_write_status
+generation_chunk_count / answer_chars / generation_called / cache_write_status / context_write_status
 ```
 
 开关应独立于已有 new-path 灰度开关，例如：
@@ -672,8 +770,8 @@ RETRIEVAL_INTENT_PLANNER_VERSION=v1
 回退原则：
 
 - planner 关闭时，保持当前行为，便于对照和回滚。
-- planner 开启但失败时，不扩大检索权限；返回澄清/不可用状态，或仅在现有兼容策略和安全
-  边界允许时走旧 Router。
+- planner 开启但失败时，不扩大检索权限；返回澄清/不可用/证据不足状态，不走旧 Router。
+- 只有 planner 关闭的对照流量才允许旧 Router，并必须审计 `legacy_fallback_reason`。
 - PDS/Milvus 构建不一致、图服务不可用、营养治理数据缺失时，不伪造成功。
 - 流式输出为空时不缓存、不记成功。
 
@@ -685,7 +783,8 @@ RETRIEVAL_INTENT_PLANNER_VERSION=v1
 4. 多食材“交集/并集”的默认产品语义。
 5. 当没有匹配候选时，产品是请求补充条件还是直接说明资料不足。
 6. 未来严格营养数据的来源、审核、每份定义、版本与医疗边界；在此之前严格模式保持关闭。
-7. 是否允许在明确用户授权时使用旧 Router 作为故障兼容回退，以及对应的审计标记。
+7. 仅在 planner 关闭的对照流量中使用旧 Router 的开关与审计标记；planner 启用后的故障
+   始终 fail-closed，不允许以用户授权绕过该边界。
 
 ## 14. 现有实现与审计依据
 
