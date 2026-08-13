@@ -206,11 +206,14 @@ class GenerationIntegrationModule:
         documents: Sequence[Document] | EvidenceBundle,
         audit_run=None,
         timeout: float = 60.0,
+        max_attempts: int = 2,
     ) -> str:
         """
         智能统一答案生成
         自动适应不同类型的查询，无需预先分类
         """
+        if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
+            raise ValueError("max_attempts 必须在 1 到 3 之间")
         context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
         self._record_generation_context(
             audit_run, audit_documents, context, stream=False, evidence_bundle=evidence_bundle
@@ -231,18 +234,30 @@ class GenerationIntegrationModule:
                         "max_tokens": self.max_tokens,
                         "stream": False,
                         "timeout": timeout,
-                        "max_retries": 0,
+                        "max_retries": max_attempts - 1,
                     },
                 )
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-                timeout=timeout,
-            )
+            response = None
+            last_error = None
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=self.temperature,
+                        max_tokens=self.max_tokens,
+                        timeout=timeout,
+                    )
+                    break
+                except Exception as error:
+                    last_error = error
+                    if audit_run:
+                        audit_run.record_error("generation_non_stream", error, attempt=attempt)
+            if response is None:
+                assert last_error is not None
+                raise last_error
             answer = response.choices[0].message.content.strip()
             if not answer:
                 raise RuntimeError("GENERATION_EMPTY_STREAM")
@@ -269,7 +284,8 @@ class GenerationIntegrationModule:
         except Exception as e:
             logger.error(f"LightRAG答案生成失败: {e}")
             if audit_run:
-                audit_run.record_error("generation_non_stream", e, attempt=1)
+                if isinstance(e, RuntimeError) and str(e) == "GENERATION_EMPTY_STREAM":
+                    audit_run.record_error("generation_non_stream", e, attempt=max_attempts)
                 audit_run.append_process(
                     "Final Output",
                     {

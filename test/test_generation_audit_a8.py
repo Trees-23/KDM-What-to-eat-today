@@ -40,6 +40,18 @@ class TestGenerationModule(GenerationIntegrationModule):
         self.client = FakeClient(stream_error=stream_error)
 
 
+class _TransientFailureClient(FakeClient):
+    def __init__(self):
+        super().__init__()
+        self.calls = 0
+
+    def create(self, **kwargs):
+        self.calls += 1
+        if self.calls == 1:
+            raise ConnectionError("temporary reset")
+        return super().create(**kwargs)
+
+
 class GenerationAuditA8Test(unittest.TestCase):
     def docs(self):
         return [
@@ -81,6 +93,16 @@ class GenerationAuditA8Test(unittest.TestCase):
         module.client.chat.completions.create = failing_create
         with self.assertRaisesRegex(RuntimeError, "GENERATION_NON_STREAM_FAILED"):
             module.generate_adaptive_answer("问题", self.docs(), timeout=12)
+
+    def test_non_stream_retries_transient_connection_failure_without_marking_first_attempt_successful(self):
+        module = TestGenerationModule()
+        client = _TransientFailureClient()
+        module.client = client
+
+        answer = module.generate_adaptive_answer("问题", self.docs(), max_attempts=2)
+
+        self.assertEqual(answer, "非流式回答")
+        self.assertEqual(client.calls, 2)
 
     def test_stream_generation_records_chunk_metrics_without_answer_body(self):
         with tempfile.TemporaryDirectory() as tmp:
