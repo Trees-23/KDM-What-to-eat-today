@@ -39,6 +39,18 @@ def _command(*items: str) -> str:
     return subprocess.check_output(items, cwd=ROOT, text=True).strip()
 
 
+def _runtime_environment(overrides: list[str]) -> dict[str, str]:
+    environment = dict(_RUNTIME_ENV)
+    for item in overrides:
+        key, separator, value = item.partition("=")
+        if not separator or not key or not value:
+            raise ValueError("--runtime-env 必须采用 KEY=VALUE 形式")
+        if not key.replace("_", "").isalnum() or not key.isupper():
+            raise ValueError("--runtime-env 的 KEY 必须是大写环境变量名")
+        environment[key] = value
+    return environment
+
+
 def _load_bank() -> dict[str, Any]:
     value = json.loads(BANK.read_text(encoding="utf-8"))
     questions = value.get("questions") if isinstance(value, dict) else None
@@ -179,7 +191,7 @@ def _regression_report(rows_path: Path, report_path: Path, metadata: dict[str, A
     return report
 
 
-def run_failure_regression(output: Path, failure_summary: Path) -> int:
+def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: dict[str, str] | None = None) -> int:
     """执行上一轮失败题的闭合集回归；不改变 300 题最终验收语义。"""
 
     if output.exists():
@@ -202,7 +214,7 @@ def run_failure_regression(output: Path, failure_summary: Path) -> int:
     container_input = f"/app/run/intent-planner-acceptance/{output.name}/frozen_questions.json"
     container_output = f"/app/run/intent-planner-acceptance/{output.name}/new-results.jsonl"
     command = ["docker", "exec"]
-    for key, value in _RUNTIME_ENV.items():
+    for key, value in (runtime_env or _RUNTIME_ENV).items():
         command.extend(["-e", f"{key}={value}"])
     command.extend(["-e", f"RAG_AUDIT_ROOT_DIR=/app/run/intent-planner-acceptance/{output.name}/audits", "-e", "RAG_VARIANT_NAME=intent-planner-failure-regression", CONTAINER, "python", "-m", RUNTIME, "--input", container_input, "--output", container_output])
     process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
@@ -217,7 +229,7 @@ def run_failure_regression(output: Path, failure_summary: Path) -> int:
     return 0 if process.returncode == 0 and report["valid"] else 2
 
 
-def run(output: Path) -> int:
+def run(output: Path, *, runtime_env: dict[str, str] | None = None) -> int:
     if output.exists():
         raise FileExistsError(f"拒绝覆盖已有运行目录: {output}")
     output.mkdir(parents=True)
@@ -248,7 +260,7 @@ def run(output: Path) -> int:
     container_input = f"/app/run/intent-planner-acceptance/{output.name}/frozen_questions.json"
     container_output = f"/app/run/intent-planner-acceptance/{output.name}/new-results.jsonl"
     command = ["docker", "exec"]
-    for key, value in _RUNTIME_ENV.items():
+    for key, value in (runtime_env or _RUNTIME_ENV).items():
         command.extend(["-e", f"{key}={value}"])
     command.extend(["-e", f"RAG_AUDIT_ROOT_DIR=/app/run/intent-planner-acceptance/{output.name}/audits", "-e", "RAG_VARIANT_NAME=intent-planner-enabled", CONTAINER, "python", "-m", RUNTIME, "--input", container_input, "--output", container_output])
     process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
@@ -267,10 +279,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="planner 启用态 300 题真实服务验收")
     parser.add_argument("--output", type=Path, required=True, help="未存在的结果目录")
     parser.add_argument("--failure-summary", type=Path, help="只回归该失败摘要中的冻结题目")
+    parser.add_argument("--runtime-env", action="append", default=[], metavar="KEY=VALUE", help="仅覆盖本次验收容器进程环境")
     arguments = parser.parse_args(argv)
+    runtime_env = _runtime_environment(arguments.runtime_env)
     if arguments.failure_summary:
-        return run_failure_regression(arguments.output.resolve(), arguments.failure_summary)
-    return run(arguments.output.resolve())
+        return run_failure_regression(arguments.output.resolve(), arguments.failure_summary, runtime_env=runtime_env)
+    return run(arguments.output.resolve(), runtime_env=runtime_env)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
+
 from rag_modules.planner_acceptance_runtime import _acceptance_request, _status_for
 from rag_modules.retrieval_contracts import EvidenceBundle
 
@@ -30,6 +32,23 @@ def test_live_acceptance_runner_freezes_exactly_the_official_300_questions():
     assert runner._RUNTIME_ENV["RETRIEVAL_INTENT_PLANNER_ENABLED"] == "true"
     assert runner._RUNTIME_ENV["ENABLE_RAG_AUDIT"] == "true"
     assert runner._RUNTIME_ENV["RETRIEVAL_MILVUS_V2_ENABLED"] == "true"
+
+
+def test_live_acceptance_runner_applies_isolated_runtime_overrides_without_dropping_required_flags():
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_runtime_env")
+
+    environment = runner._runtime_environment([
+        "NEO4J_URI=bolt://isolated:7687",
+        "RETRIEVAL_PARENT_STORE_PATH=/app/run/isolated",
+    ])
+
+    assert environment["RETRIEVAL_INTENT_PLANNER_ENABLED"] == "true"
+    assert environment["NEO4J_URI"] == "bolt://isolated:7687"
+    assert environment["RETRIEVAL_PARENT_STORE_PATH"] == "/app/run/isolated"
+    with pytest.raises(ValueError, match="KEY"):
+        runner._runtime_environment(["neo4j_uri=bolt://isolated:7687"])
+    with pytest.raises(ValueError, match="KEY=VALUE"):
+        runner._runtime_environment(["NEO4J_URI"])
 
 
 def test_live_acceptance_report_rejects_incomplete_or_failed_rows(tmp_path):
