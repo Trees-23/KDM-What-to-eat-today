@@ -108,7 +108,8 @@ class GraphRAGConfig:
     # 意图规划独立开关。启用后 new 路径必须 fail-closed，不能回退旧 Router。
     retrieval_intent_planner_enabled: bool = _env_bool("RETRIEVAL_INTENT_PLANNER_ENABLED", False)
     retrieval_intent_planner_version: str = os.getenv("RETRIEVAL_INTENT_PLANNER_VERSION", "v1")
-    retrieval_intent_planner_timeout_seconds: float = float(os.getenv("RETRIEVAL_INTENT_PLANNER_TIMEOUT_SECONDS", "30"))
+    # 三次瞬时失败重试仍受约一分钟总预算约束，且每次网络调用都有明确上限。
+    retrieval_intent_planner_timeout_seconds: float = float(os.getenv("RETRIEVAL_INTENT_PLANNER_TIMEOUT_SECONDS", "20"))
     retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
     retrieval_milvus_collection: str = os.getenv("RETRIEVAL_MILVUS_COLLECTION", "")
     retrieval_artifact_manifest_path: str = os.getenv(

@@ -56,9 +56,9 @@ class _SchemaFallbackClient(_Client):
 
 
 class _RetryClient(_Client):
-    def __init__(self, content):
+    def __init__(self, content, *, failures=1):
         super().__init__(content)
-        self.remaining_failures = 1
+        self.remaining_failures = failures
 
     def create(self, **kwargs):
         self.calls.append(kwargs)
@@ -113,16 +113,16 @@ def test_planner_uses_configured_timeout_without_expanding_execution_authority()
     assert client.calls[0]["timeout"] == 30
 
 
-def test_planner_retries_transient_failure_with_a_bounded_attempt_count():
-    client = _RetryClient(_payload())
+def test_planner_retries_two_transient_failures_with_a_bounded_attempt_count():
+    client = _RetryClient(_payload(), failures=2)
     audit = _Audit()
 
-    result = IntentPlanner(client, model="test-model", max_attempts=2).plan("清淡晚餐", audit_run=audit)
+    result = IntentPlanner(client, model="test-model", max_attempts=3).plan("清淡晚餐", audit_run=audit)
 
     assert result.executable
-    assert result.attempt_count == 2
-    assert len(client.calls) == 2
-    assert audit.events[0][2]["attempt_count"] == 2
+    assert result.attempt_count == 3
+    assert len(client.calls) == 3
+    assert audit.events[0][2]["attempt_count"] == 3
 
 
 def test_schema_capability_fallback_keeps_local_candidate_validation_and_audit_format():

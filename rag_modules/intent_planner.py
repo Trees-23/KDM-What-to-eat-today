@@ -38,8 +38,8 @@ class IntentPlanner:
         client: Any,
         *,
         model: str,
-        timeout_seconds: float = 8.0,
-        max_attempts: int = 2,
+        timeout_seconds: float = 20.0,
+        max_attempts: int = 3,
         min_confidence: float = PLANNER_MIN_CONFIDENCE,
     ) -> None:
         if client is None:
