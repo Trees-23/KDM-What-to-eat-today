@@ -79,3 +79,9 @@ def test_timeout_and_low_confidence_are_structured_non_executable_results():
     assert low_confidence.status == "PLANNER_LOW_CONFIDENCE"
     assert not unavailable.executable
     assert not low_confidence.executable
+
+
+def test_planner_uses_configured_timeout_without_expanding_execution_authority():
+    client = _Client(_payload())
+    IntentPlanner(client, model="test-model", timeout_seconds=30).plan("清淡晚餐")
+    assert client.calls[0]["timeout"] == 30
