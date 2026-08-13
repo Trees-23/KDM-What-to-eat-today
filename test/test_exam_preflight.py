@@ -45,3 +45,13 @@ def test_new_path_probe_exercises_a_request_thread():
     source = preflight._probe_new_path.__code__.co_consts
 
     assert any(isinstance(item, str) and "threading.Thread" in item for item in source)
+
+
+def test_new_path_probe_explicitly_uses_only_read_only_new_path_components():
+    preflight = _load(PREFLIGHT_PATH, "exam_preflight_probe_env")
+
+    assert preflight._NEW_PATH_PROBE_ENV["RETRIEVAL_INTENT_PLANNER_ENABLED"] == "false"
+    assert preflight._NEW_PATH_PROBE_ENV["RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT"] == "100"
+    assert preflight._NEW_PATH_PROBE_ENV["RETRIEVAL_PARENT_STORE_ENABLED"] == "true"
+    assert preflight._NEW_PATH_PROBE_ENV["RETRIEVAL_TARGETED_GRAPH_ENABLED"] == "true"
+    assert preflight._NEW_PATH_PROBE_ENV["RETRIEVAL_MILVUS_V2_ENABLED"] == "true"

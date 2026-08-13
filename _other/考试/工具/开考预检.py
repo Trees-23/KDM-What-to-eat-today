@@ -29,6 +29,17 @@ PROJECT_ROOT = EXAM_ROOT.parents[1]
 GENERATOR_PATH = EXAM_ROOT / "工具" / "生成试卷.py"
 NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "nodes.csv"
 TIPS_NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "tips_nodes.csv"
+_NEW_PATH_PROBE_ENV = {
+    "RETRIEVAL_INTENT_PLANNER_ENABLED": "false",
+    "RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT": "100",
+    "RETRIEVAL_PARENT_STORE_ENABLED": "true",
+    "RETRIEVAL_ENTITY_DIRECT_ENABLED": "true",
+    "RETRIEVAL_QUERY_PLAN_ENABLED": "true",
+    "RETRIEVAL_TARGETED_GRAPH_ENABLED": "true",
+    "RETRIEVAL_MILVUS_V2_ENABLED": "true",
+    "RETRIEVAL_MILVUS_DATABASE": "default",
+    "RETRIEVAL_MILVUS_COLLECTION": "cooking_knowledge_v2_pds_2a8c0807",
+}
 
 
 @dataclass(frozen=True)
@@ -300,8 +311,12 @@ finally:
     system._cleanup()
 '''
     try:
+        command = ["docker", "exec"]
+        for name, value in _NEW_PATH_PROBE_ENV.items():
+            command.extend(["-e", f"{name}={value}"])
+        command.extend(["what-to-eat-backend", "python", "-c", probe_program])
         completed = subprocess.run(
-            ["docker", "exec", "what-to-eat-backend", "python", "-c", probe_program],
+            command,
             check=False,
             capture_output=True,
             text=True,
