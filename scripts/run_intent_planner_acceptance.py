@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -20,6 +21,7 @@ CONTAINER = "what-to-eat-backend"
 RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
 RUNTIME = "rag_modules.planner_acceptance_runtime"
+RUNTIME_WORK_ROOT = ROOT / "run" / "intent-planner-acceptance"
 
 _RUNTIME_ENV = {
     "RETRIEVAL_INTENT_PLANNER_ENABLED": "true",
@@ -66,6 +68,28 @@ def _write_json_once(path: Path, value: dict[str, Any]) -> None:
     if path.exists():
         raise FileExistsError(f"拒绝覆盖已有验收工件: {path}")
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _stage_runtime_input(output: Path) -> Path:
+    """为容器准备已挂载的临时输入，正式记录仍保留在用户可见目录。"""
+
+    runtime_directory = RUNTIME_WORK_ROOT / output.name
+    if runtime_directory.exists():
+        raise FileExistsError(f"拒绝覆盖已有容器验收工件: {runtime_directory}")
+    runtime_directory.mkdir(parents=True)
+    return runtime_directory
+
+
+def _collect_runtime_output(output: Path, runtime_directory: Path) -> None:
+    """将容器的逐题结果和审计证据回收至正式结果目录。"""
+
+    for name in ("new-results.jsonl",):
+        source = runtime_directory / name
+        if source.is_file():
+            shutil.copy2(source, output / name)
+    source_audits = runtime_directory / "audits"
+    if source_audits.is_dir():
+        shutil.copytree(source_audits, output / "audits")
 
 
 def _report(rows_path: Path, report_path: Path, metadata: dict[str, Any]) -> dict[str, Any]:
@@ -211,6 +235,8 @@ def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: 
         raise RuntimeError("开考预检未就绪")
     metadata["preflight"] = preflight_payload
     _write_json_once(output / "frozen_questions.json", metadata)
+    runtime_directory = _stage_runtime_input(output)
+    shutil.copy2(output / "frozen_questions.json", runtime_directory / "frozen_questions.json")
     container_input = f"/app/run/intent-planner-acceptance/{output.name}/frozen_questions.json"
     container_output = f"/app/run/intent-planner-acceptance/{output.name}/new-results.jsonl"
     command = ["docker", "exec"]
@@ -220,6 +246,7 @@ def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: 
     process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
     (output / "runner.stdout.jsonl").write_text(process.stdout, encoding="utf-8")
     (output / "runner.stderr.txt").write_text(process.stderr, encoding="utf-8")
+    _collect_runtime_output(output, runtime_directory)
     rows = output / "new-results.jsonl"
     if not rows.exists():
         return process.returncode or 2
@@ -273,6 +300,8 @@ def run(output: Path, *, runtime_env: dict[str, str] | None = None) -> int:
         "questions": bank["questions"],
     }
     _write_json_once(output / "frozen_questions.json", metadata)
+    runtime_directory = _stage_runtime_input(output)
+    shutil.copy2(output / "frozen_questions.json", runtime_directory / "frozen_questions.json")
     container_input = f"/app/run/intent-planner-acceptance/{output.name}/frozen_questions.json"
     container_output = f"/app/run/intent-planner-acceptance/{output.name}/new-results.jsonl"
     command = ["docker", "exec"]
@@ -282,6 +311,7 @@ def run(output: Path, *, runtime_env: dict[str, str] | None = None) -> int:
     process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
     (output / "runner.stdout.jsonl").write_text(process.stdout, encoding="utf-8")
     (output / "runner.stderr.txt").write_text(process.stderr, encoding="utf-8")
+    _collect_runtime_output(output, runtime_directory)
     rows = output / "new-results.jsonl"
     if not rows.exists():
         return process.returncode or 2

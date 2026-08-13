@@ -92,6 +92,27 @@ def test_live_acceptance_failure_summary_collects_failed_questions_with_audit_re
     assert summary["failures"] == [{"question_id": "q-fail", "scenario_id": "S06", "difficulty_code": "B", "input": "失败题", "failures": ["empty_answer"], "limitations": ["VECTOR_UNAVAILABLE"], "query_plan": None, "audit_id": "audit-1", "audit_dir": "/audit-1"}]
 
 
+def test_runner_stages_container_input_and_collects_visible_results(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_runtime_stage")
+    monkeypatch.setattr(runner, "RUNTIME_WORK_ROOT", tmp_path / "run")
+    output = tmp_path / "results" / "exam-001"
+    output.mkdir(parents=True)
+    (output / "frozen_questions.json").write_text('{"questions": []}\n', encoding="utf-8")
+
+    runtime_directory = runner._stage_runtime_input(output)
+    __import__("shutil").copy2(output / "frozen_questions.json", runtime_directory / "frozen_questions.json")
+    (runtime_directory / "new-results.jsonl").write_text('{"question_id": "q-1"}\n', encoding="utf-8")
+    (runtime_directory / "audits").mkdir()
+    (runtime_directory / "audits" / "q-1.md").write_text("audit\n", encoding="utf-8")
+
+    runner._collect_runtime_output(output, runtime_directory)
+
+    assert (output / "new-results.jsonl").read_text(encoding="utf-8") == '{"question_id": "q-1"}\n'
+    assert (output / "audits" / "q-1.md").read_text(encoding="utf-8") == "audit\n"
+    with pytest.raises(FileExistsError, match="拒绝覆盖"):
+        runner._stage_runtime_input(output)
+
+
 def test_failure_regression_freezes_only_source_failures_from_the_official_bank(tmp_path, monkeypatch):
     runner = _load(RUNNER_PATH, "intent_planner_failure_regression")
     monkeypatch.setattr(runner, "BANK", tmp_path / "bank.json")
