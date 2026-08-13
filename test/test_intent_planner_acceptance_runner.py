@@ -48,3 +48,5 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'RETRIEVAL_INTENT_PLANNER_ENABLED' in source
     assert 'system.targeted_graph_retriever.driver = _UnavailableGraphDriver()' in source
     assert 'system._cleanup()' in source
+    assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
+    assert 'with output_path.open("a", encoding="utf-8") as handle:' in source

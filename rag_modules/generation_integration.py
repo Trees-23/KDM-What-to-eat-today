@@ -200,7 +200,13 @@ class GenerationIntegrationModule:
         context = "\n\n".join(context_parts)
         return context, self._build_prompt(question, context), documents, None
 
-    def generate_adaptive_answer(self, question: str, documents: Sequence[Document] | EvidenceBundle, audit_run=None) -> str:
+    def generate_adaptive_answer(
+        self,
+        question: str,
+        documents: Sequence[Document] | EvidenceBundle,
+        audit_run=None,
+        timeout: float = 60.0,
+    ) -> str:
         """
         智能统一答案生成
         自动适应不同类型的查询，无需预先分类
@@ -224,7 +230,7 @@ class GenerationIntegrationModule:
                         "temperature": self.temperature,
                         "max_tokens": self.max_tokens,
                         "stream": False,
-                        "timeout": "client_default",
+                        "timeout": timeout,
                         "max_retries": 0,
                     },
                 )
@@ -234,7 +240,8 @@ class GenerationIntegrationModule:
                     {"role": "user", "content": prompt}
                 ],
                 temperature=self.temperature,
-                max_tokens=self.max_tokens
+                max_tokens=self.max_tokens,
+                timeout=timeout,
             )
             answer = response.choices[0].message.content.strip()
             if not answer:
@@ -271,7 +278,7 @@ class GenerationIntegrationModule:
                         "success": False,
                     },
                 )
-            return f"抱歉，生成回答时出现错误：{str(e)}"
+            raise RuntimeError(f"GENERATION_NON_STREAM_FAILED: {e}") from e
     
     def generate_adaptive_answer_stream(self, question: str, documents: Sequence[Document] | EvidenceBundle, max_retries: int = 3, audit_run=None):
         """

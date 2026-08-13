@@ -77,9 +77,13 @@ class _EmptyNonStreamModule(GenerationIntegrationModule):
 def test_empty_non_stream_is_a_failure_not_a_successful_answer():
     with tempfile.TemporaryDirectory() as tmp:
         audit = RAGAuditManager(enabled=True, root_dir=Path(tmp)).create_run()
-        answer = _EmptyNonStreamModule().generate_adaptive_answer("问题", [], audit_run=audit)
+        try:
+            _EmptyNonStreamModule().generate_adaptive_answer("问题", [], audit_run=audit)
+        except RuntimeError as error:
+            assert "GENERATION_NON_STREAM_FAILED" in str(error)
+        else:
+            raise AssertionError("空非流式回答不得作为成功答案返回")
 
-        assert "生成回答" in answer
         text = (audit.run_dir / "rag_process.md").read_text(encoding="utf-8")
         assert "GENERATION_EMPTY_STREAM" in text
         assert "## Generation Non-Stream" not in text

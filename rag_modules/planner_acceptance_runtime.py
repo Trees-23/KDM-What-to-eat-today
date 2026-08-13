@@ -21,6 +21,7 @@ from rag_modules.retrieval_contracts import EvidenceBundle
 
 
 RUNNER_ID = "intent-planner-live-runner-v1"
+GENERATION_TIMEOUT_SECONDS = 60.0
 
 
 class _UnavailableGraphDriver:
@@ -114,8 +115,16 @@ def run(input_path: Path, output_path: Path) -> int:
     if os.getenv("RETRIEVAL_INTENT_PLANNER_ENABLED", "").lower() != "true":
         raise RuntimeError("必须显式启用 RETRIEVAL_INTENT_PLANNER_ENABLED=true")
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    completed_ids: set[str] = set()
     if output_path.exists():
-        raise FileExistsError(f"拒绝覆盖已有验收结果: {output_path}")
+        for line in output_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            question_id = row.get("question_id")
+            if not isinstance(question_id, str) or question_id in completed_ids:
+                raise ValueError("已有验收结果含无效或重复 question_id")
+            completed_ids.add(question_id)
 
     system = AdvancedGraphRAGSystem()
     system.initialize_system()
@@ -125,6 +134,8 @@ def run(input_path: Path, output_path: Path) -> int:
     rows: list[dict[str, Any]] = []
     try:
         for position, question in enumerate(source["questions"], start=1):
+            if question["question_id"] in completed_ids:
+                continue
             audit = manager.create_run()
             events = _events(audit)
             audit.mark_request_start()
@@ -143,7 +154,12 @@ def run(input_path: Path, output_path: Path) -> int:
                     answer = system._intent_terminal_response(bundle)
                     final_source = "compile_terminal"
                 else:
-                    answer = system.generation_module.generate_adaptive_answer(question["question"], bundle, audit_run=audit)
+                    answer = system.generation_module.generate_adaptive_answer(
+                        question["question"],
+                        bundle,
+                        audit_run=audit,
+                        timeout=GENERATION_TIMEOUT_SECONDS,
+                    )
                     final_source = "generation"
                 audit.finish_request(success=bool(answer.strip()), final_source=final_source)
             except Exception as error:
@@ -155,8 +171,7 @@ def run(input_path: Path, output_path: Path) -> int:
                 if original_driver is not None:
                     system.targeted_graph_retriever.driver = original_driver
             failures = _status_for(question, bundle, events, answer)
-            rows.append(
-                {
+            row = {
                     "runner_id": RUNNER_ID,
                     "position": position,
                     "question_id": question["question_id"],
@@ -178,17 +193,19 @@ def run(input_path: Path, output_path: Path) -> int:
                         for stage, status, fields in events
                         if stage in {"intent_planner", "intent_compile"}
                     ],
-                }
-            )
-            print(json.dumps({"position": position, "question_id": question["question_id"], "status": rows[-1]["status"]}, ensure_ascii=False), flush=True)
+            }
+            rows.append(row)
+            with output_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            print(json.dumps({"position": position, "question_id": question["question_id"], "status": row["status"]}, ensure_ascii=False), flush=True)
     finally:
         system._cleanup()
 
-    with output_path.open("x", encoding="utf-8") as handle:
-        for row in rows:
-            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-    failures = sum(row["status"] != "passed" for row in rows)
-    print(json.dumps({"runner_id": RUNNER_ID, "rows": len(rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
+    all_rows = [json.loads(line) for line in output_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(all_rows) != 300:
+        raise RuntimeError(f"验收结果不完整: {len(all_rows)}/300")
+    failures = sum(row["status"] != "passed" for row in all_rows)
+    print(json.dumps({"runner_id": RUNNER_ID, "rows": len(all_rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
     return 0 if failures == 0 else 2
 
 
