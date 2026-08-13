@@ -60,6 +60,7 @@ from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 
 
 _GENERIC_PREFERENCE_MENTIONS = frozenset({"蔬菜", "豆制品", "面食", "鱼", "海鲜", "肉菜", "素菜"})
+_MAX_FILTER_PARENTS_PER_SEARCH = 20
 
 
 class AdvancedGraphRAGSystem:
@@ -911,6 +912,11 @@ class AdvancedGraphRAGSystem:
                 )
             return None
         parent_ids = plan.parameters.get("parent_ids")
+        filter_batch_count = (
+            (len(parent_ids) + _MAX_FILTER_PARENTS_PER_SEARCH - 1) // _MAX_FILTER_PARENTS_PER_SEARCH
+            if parent_ids
+            else 0
+        )
         try:
             aggregates = retriever.retrieve(
                 query,
@@ -952,6 +958,7 @@ class AdvancedGraphRAGSystem:
                 parent_count=len(aggregates),
                 vector_scope=plan.parameters["scope"],
                 expected_parent_type=plan.entity_type,
+                filter_batch_count=filter_batch_count,
             )
         return bundle
 

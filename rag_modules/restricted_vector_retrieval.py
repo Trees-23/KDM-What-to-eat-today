@@ -35,6 +35,7 @@ class RestrictedVectorRetriever:
     """Milvus V2 查询适配器；空 parent scope 永远拒绝。"""
 
     _ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,150}$")
+    _MAX_FILTER_PARENTS_PER_SEARCH = 20
 
     def __init__(self, client: Any, *, parent_store: ParentDocumentStore, collection: str, build_id: str, database: str = "default", dimension: int = 512, embedder: Any = None):
         if client is None or parent_store is None:
@@ -76,7 +77,6 @@ class RestrictedVectorRetriever:
             query_vector = self.embedder.embed_query(query)
         if len(query_vector) != self.dimension:
             raise ValueError("query_vector 维度与 V2 schema 不一致")
-        filter_expr = self._filter(parent_ids)
         kwargs = {
             "collection_name": self.collection,
             "data": [list(query_vector)],
@@ -85,10 +85,24 @@ class RestrictedVectorRetriever:
             "output_fields": ["id", "parent_id", "chunk_index", "build_id", "text_hash", "section_title"],
             "search_params": {"metric_type": "COSINE", "params": {"ef": 64}},
         }
-        if filter_expr:
-            kwargs["filter"] = filter_expr
-        raw_hits = self.client.search(**kwargs)
-        hits = self._normalize_hits(raw_hits)
+        # Milvus 2.3 HNSW can return an empty result for a valid long ``in``
+        # expression. Split only the already verified local parent scope and
+        # aggregate it locally; this never expands the scope to the corpus.
+        scopes = (
+            tuple(
+                parent_ids[index:index + self._MAX_FILTER_PARENTS_PER_SEARCH]
+                for index in range(0, len(parent_ids), self._MAX_FILTER_PARENTS_PER_SEARCH)
+            )
+            if parent_ids is not None
+            else (None,)
+        )
+        hits: list[VectorHit] = []
+        for scope in scopes:
+            request = dict(kwargs)
+            filter_expr = self._filter(scope)
+            if filter_expr:
+                request["filter"] = filter_expr
+            hits.extend(self._normalize_hits(self.client.search(**request)))
         report = self.parent_store.validate_chunk_linkage([hit.__dict__ for hit in hits])
         if not report.valid:
             raise ArtifactMismatchError(f"Milvus/PDS linkage 不一致: {report}")

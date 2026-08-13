@@ -75,6 +75,24 @@ def test_empty_scope_is_never_a_full_collection_fallback(tmp_path):
     store.close()
 
 
+def test_long_verified_parent_scope_is_batched_without_full_corpus_fallback(tmp_path):
+    store, result = _store(tmp_path)
+    chunk = next(store.iter_chunks(result.manifest.build_id))
+    client = FakeMilvus(
+        [{"id": chunk.chunk_id, "distance": 0.9, "entity": {"chunk_id": chunk.chunk_id, "parent_id": chunk.parent_id, "chunk_index": chunk.chunk_index, "build_id": result.manifest.build_id, "text_hash": chunk.text_hash}}]
+    )
+    retriever = RestrictedVectorRetriever(client, parent_store=store, collection=f"cooking_knowledge_v2_{result.manifest.build_id[:12]}", build_id=result.manifest.build_id)
+    scope = [chunk.parent_id] + [f"parent-{number}" for number in range(1, 21)]
+
+    results = retriever.retrieve("测试", parent_ids=scope, top_k=1, query_vector=[0.1] * 512)
+
+    assert [item.parent_id for item in results] == [chunk.parent_id]
+    assert len(client.calls) == 2
+    assert all("filter" in call for call in client.calls)
+    assert all("parent_id in" in call["filter"] for call in client.calls)
+    store.close()
+
+
 def test_retriever_uses_explicit_embedder_for_query_text(tmp_path):
     store, result = _store(tmp_path)
     chunk = next(store.iter_chunks(result.manifest.build_id))
