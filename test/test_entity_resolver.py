@@ -75,6 +75,25 @@ def test_governed_alias_precedes_fulltext_and_tied_candidates_are_ambiguous():
     assert len(driver.session_instance.calls) == 2
 
 
+def test_governed_alias_query_matches_an_explicit_synonym_term_not_the_serialized_field_as_a_whole():
+    driver = FakeDriver(
+        {
+            "exact": [],
+            "alias": [{"node_id": "201003210", "display_name": "西红柿"}],
+        }
+    )
+    resolver = EntityResolver(driver)
+
+    candidates = resolver.resolve("番茄", expected_types=("Ingredient",))
+
+    assert [(candidate.node_id, candidate.display_name, candidate.match_kind) for candidate in candidates] == [
+        ("201003210", "西红柿", "governed_alias"),
+    ]
+    alias_query, parameters = driver.session_instance.calls[1]
+    assert "\"'term': '\" + toLower($query_text) + \"'\"" in alias_query
+    assert parameters["query_text"] == "番茄"
+
+
 def test_exact_name_keeps_all_parallel_ingredient_candidates_within_the_governed_limit():
     rows = [
         {"node_id": f"ingredient-{index}", "display_name": "牛肉"}
@@ -102,7 +121,7 @@ def test_exact_name_prefers_the_longest_name_in_the_query_over_its_prefix():
 
     candidates = resolver.resolve("请给出红烧鱼头的完整做法", expected_types=("Recipe",))
 
-    assert [candidate.node_id for candidate in candidates] == ["fish-head", "fish"]
+    assert [candidate.node_id for candidate in candidates] == ["fish-head"]
     assert not candidates[0].ambiguity
 
 

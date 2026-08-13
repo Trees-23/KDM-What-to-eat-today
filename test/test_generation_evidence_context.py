@@ -188,3 +188,26 @@ def test_generation_prompt_marks_soft_preference_as_non_nutrition_claim():
     assert "推荐证据等级" in prompt
     assert "soft_preference" in prompt
     assert "不能声称已验证低脂" in prompt
+
+
+def test_generation_replaces_forbidden_claim_with_pds_backed_safe_summary():
+    bundle = EvidenceBundle(
+        query_plan={"intent": "PREFERENCE_RECOMMEND", "template_id": "preference_recommend_v1"},
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(
+            TextEvidence("recipe-1", "build-test", ("recipe-1:chunk:0",), (), "# 清蒸鱼的做法\n正文", "parent_store"),
+        ),
+        limitations=(),
+        claim_policy={"forbidden_claims": ("低脂", "低热量", "低盐", "医疗适用")},
+    )
+    module = GenerationModuleForTest()
+    module.client.create = lambda **kwargs: types.SimpleNamespace(
+        choices=[types.SimpleNamespace(message=types.SimpleNamespace(content="这道菜低脂且低盐。"))]
+    )
+    module.client.chat.completions.create = module.client.create
+
+    answer = module.generate_adaptive_answer("推荐清淡菜", bundle)
+
+    assert "清蒸鱼" in answer
+    assert not any(term in answer for term in ("低脂", "低热量", "低盐", "医疗适用"))

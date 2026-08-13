@@ -1,0 +1,60 @@
+{
+  "bank_sha256": "e5edfbced75e84002bdd5b25054bf0906a022b4073e03ab31a4c85010f494f79",
+  "failed_count": 3,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-004/audits/20260813_215200_827_bf8b3fd1",
+      "audit_id": "20260813_215200_827_bf8b3fd1",
+      "difficulty_code": "C",
+      "failures": [
+        "entity_pds_evidence_required"
+      ],
+      "input": "我只要知识库能证明的牛奶燕麦做法；不要补充未引用的替代方案或营养结论。",
+      "limitations": [
+        "CLARIFY_OR_OUT_OF_SCOPE",
+        "INTENT_NON_EXECUTE",
+        "ENTITY_AMBIGUOUS"
+      ],
+      "query_plan": null,
+      "question_id": "S01-C-03",
+      "scenario_id": "S01"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-004/audits/20260813_221731_816_b2ebd680",
+      "audit_id": "20260813_221731_816_b2ebd680",
+      "difficulty_code": "A",
+      "failures": [
+        "verified_pair_graph_and_pds_required"
+      ],
+      "input": "茄子适合搭配什么蔬菜？",
+      "limitations": [
+        "ENTITY_NOT_FOUND",
+        "INTENT_NON_EXECUTE",
+        "ENTITY_NOT_FOUND"
+      ],
+      "query_plan": null,
+      "question_id": "S05-A-06",
+      "scenario_id": "S05"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-004/audits/20260813_223931_021_7953bffe",
+      "audit_id": "20260813_223931_021_7953bffe",
+      "difficulty_code": "C",
+      "failures": [
+        "restricted_preference_pds_required"
+      ],
+      "input": "想吃清新一点的川味番茄菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [
+        "NO_PREFERENCE_RESULTS",
+        "INTENT_NON_EXECUTE"
+      ],
+      "query_plan": null,
+      "question_id": "S07-C-04",
+      "scenario_id": "S07"
+    }
+  ],
+  "implementation_commit": "1f92faae49d954090dbd0d2a320058bd6b7795a5",
+  "question_count": 300,
+  "runner_id": "intent-planner-live-runner-v1"
+}

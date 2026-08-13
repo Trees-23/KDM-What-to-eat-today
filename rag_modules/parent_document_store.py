@@ -245,6 +245,11 @@ class ParentDocumentStore:
             db_path = Path(store_path)
             if not db_path.is_absolute():
                 db_path = pointer_path.parent / db_path
+            elif not db_path.exists():
+                # 指针可能由宿主机写入后被容器挂载读取；仅允许同目录同名的已存在 build。
+                portable_path = pointer_path.parent / db_path.name
+                if portable_path.exists():
+                    db_path = portable_path
             db_path = db_path.resolve()
         if not db_path.exists():
             raise FileNotFoundError(f"PDS build 不存在: {db_path}")
@@ -439,7 +444,7 @@ class ParentDocumentStore:
         pointer.parent.mkdir(parents=True, exist_ok=True)
         with NamedTemporaryFile(prefix=f".{pointer.name}.", dir=pointer.parent, mode="w", encoding="utf-8", delete=False) as temp_pointer:
             json.dump(
-                {"build_id": build_id, "store_path": str(store_path.resolve())},
+                {"build_id": build_id, "store_path": store_path.name},
                 temp_pointer,
                 ensure_ascii=False,
                 sort_keys=True,

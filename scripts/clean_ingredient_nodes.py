@@ -22,6 +22,9 @@ RELATIONSHIP_FILE = "relationships.csv"
 CANONICAL_MAP_FILE = "ingredient_canonical_map.csv"
 REPORT_FILE = "ingredient_cleaning_report.json"
 RELATIONSHIP_CONTEXT_FIELDS = ("ingredientCategory", "isMain")
+# 仅收录已确认的食材同义词。键和值均为图谱中的规范名称；不在这里
+# 依靠词面相似度猜测合并，避免把不同食材错误折叠到同一节点。
+GOVERNED_INGREDIENT_ALIASES = {"番茄": "西红柿"}
 
 
 class IngredientCleaningError(ValueError):
@@ -83,7 +86,8 @@ def clean_graph(input_directory: Path, output_directory: Path) -> dict[str, int]
         if not node.get("name", ""):
             raise IngredientCleaningError(f"Ingredient 存在空名称: {node_id}")
         ingredient_by_id[node_id] = node
-        ingredients_by_name[node["name"]].append(node)
+        canonical_name = GOVERNED_INGREDIENT_ALIASES.get(node["name"], node["name"])
+        ingredients_by_name[canonical_name].append(node)
 
     canonical_by_id: dict[str, str] = {}
     canonical_nodes: dict[str, dict[str, str]] = {}
@@ -93,14 +97,17 @@ def clean_graph(input_directory: Path, output_directory: Path) -> dict[str, int]
     category_conflicts = 0
     for name, group in sorted(ingredients_by_name.items()):
         ordered = sorted(group, key=lambda node: node["nodeId"])
-        canonical_id = ordered[0]["nodeId"]
+        preferred = [node for node in ordered if node["name"] == name]
+        if not preferred:
+            raise IngredientCleaningError(f"治理别名缺少规范 Ingredient 节点: {name}")
+        canonical_id = preferred[0]["nodeId"]
         if len(ordered) > 1:
             duplicate_groups += 1
             removed_nodes += len(ordered) - 1
         categories = {node.get("category", "") for node in ordered if node.get("category", "")}
         if len(categories) > 1:
             category_conflicts += 1
-        canonical = dict(ordered[0])
+        canonical = dict(preferred[0])
         canonical["category"] = _canonical_category(ordered)
         # 这三项来自单个菜谱实例，清洗后只属于 REQUIRES 关系。
         canonical["amount"] = ""

@@ -54,6 +54,14 @@ from rag_modules.milvus_v2_index import (
     pds_manifest_sha256,
 )
 from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
+from rag_modules.intent_candidate import IntentCandidate
+from rag_modules.intent_planner import IntentPlanner
+from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
+from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
+
+
+_GENERIC_PREFERENCE_MENTIONS = frozenset({"蔬菜", "豆制品", "面食", "鱼", "海鲜", "肉菜", "素菜"})
+_MAX_FILTER_PARENTS_PER_SEARCH = 20
 
 
 class AdvancedGraphRAGSystem:
@@ -97,6 +105,8 @@ class AdvancedGraphRAGSystem:
         # 阶段 4：V2 只读受限 child chunk 检索，必须绑定联合 artifact。
         self.restricted_vector_retriever = None
         self._restricted_vector_init_status = None
+        self.intent_planner = None
+        self.intent_plan_compiler = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -212,6 +222,15 @@ class AdvancedGraphRAGSystem:
 
             if self.config.retrieval_milvus_v2_enabled:
                 self._initialize_restricted_vector_retriever()
+
+            if getattr(self.config, "retrieval_intent_planner_enabled", False):
+                self.intent_planner = IntentPlanner(
+                    self.generation_module.client,
+                    model=self.config.llm_model,
+                    timeout_seconds=getattr(self.config, "retrieval_intent_planner_timeout_seconds", 30.0),
+                )
+                self.intent_plan_compiler = IntentPlanCompiler(self.query_plan_validator)
+                logger.info("意图规划器已启用：新路径失败将 fail-closed")
 
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
@@ -403,6 +422,24 @@ class AdvancedGraphRAGSystem:
                     print(f"    等 {len(relevant_docs)} 个结果...")
             else:
                 return "抱歉，没有找到相关的烹饪信息。请尝试其他问题。"
+
+            if (
+                bool(getattr(self.config, "retrieval_intent_planner_enabled", False))
+                and isinstance(relevant_docs, EvidenceBundle)
+                and "INTENT_NON_EXECUTE" in relevant_docs.limitations
+            ):
+                result = self._intent_terminal_response(relevant_docs)
+                audit_run.append_process(
+                    "Final Output",
+                    {
+                        "answer_chars": len(result),
+                        "answer_hash": hashlib.sha256(result.encode("utf-8")).hexdigest(),
+                        "success": True,
+                        "final_source": "compile_terminal",
+                    },
+                )
+                audit_run.finish_request(success=True, final_source="compile_terminal")
+                return result, analysis
             
             # 4. 生成回答
             print("🎯 智能生成回答...")
@@ -459,6 +496,15 @@ class AdvancedGraphRAGSystem:
         rollout_key: str | None = None,
     ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
+        planner_enabled = bool(getattr(getattr(self, "config", None), "retrieval_intent_planner_enabled", False))
+        if planner_enabled:
+            rollout_stage = self._new_path_rollout_stage(query, rollout_key=rollout_key)
+            if rollout_stage is None:
+                if audit_run is not None and hasattr(audit_run, "record_event"):
+                    audit_run.record_event("retrieval_rollout", status="legacy", reason="planner_not_selected")
+                return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+            return self._retrieve_with_intent_planner(query, top_k, audit_run=audit_run)
+
         nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
         if nutrition_bundle is not None:
             return nutrition_bundle, None
@@ -493,6 +539,254 @@ class AdvancedGraphRAGSystem:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
         return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+
+    def _retrieve_with_intent_planner(self, user_message: str, top_k: int, *, audit_run=None):
+        """planner 开启时唯一的新路径入口；所有失败均不触发旧 Router。"""
+        # 只使用可信用户文本进行高风险预检。否定表达和评测约束不会传到此处。
+        if self._is_strict_nutrition_or_medical_request(user_message):
+            result = CompileResult(
+                "TERMINAL",
+                "NUTRITION_EVIDENCE_INSUFFICIENT",
+                reason="NUTRITION_EVIDENCE_INSUFFICIENT",
+                limitations=("NUTRITION_EVIDENCE_INSUFFICIENT",),
+            )
+            self._audit_compile_result(audit_run, result)
+            return self._compile_result_bundle(result), None
+        planner = getattr(self, "intent_planner", None)
+        compiler = getattr(self, "intent_plan_compiler", None)
+        if planner is None or compiler is None:
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PLANNER_UNAVAILABLE", reason="PLANNER_NOT_INITIALIZED")), None
+        planner_result = planner.plan(user_message, audit_run=audit_run)
+        if not planner_result.executable:
+            status = "UNAVAILABLE" if planner_result.status == "PLANNER_UNAVAILABLE" else "CLARIFY"
+            return self._compile_result_bundle(CompileResult(status, planner_result.status, reason=planner_result.reason)), None
+        candidate = self._reconcile_explicit_recipe_detail(user_message, planner_result.candidate, audit_run=audit_run)
+        if candidate.intent == "PREFERENCE_RECOMMEND":
+            scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
+            if scope_result is not None:
+                self._audit_compile_result(audit_run, scope_result)
+                return self._compile_result_bundle(scope_result), None
+            result = compiler.compile(
+                candidate,
+                scoped_recipe_ids=scoped_recipe_ids,
+                dependencies_available=self._planner_dependencies_available(),
+            )
+            return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run)
+        resolved = self._resolve_candidate_entities(candidate, user_message=user_message)
+        result = compiler.compile(candidate, resolved_entities=resolved, dependencies_available=self._planner_dependencies_available())
+        return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, resolved_entities=resolved)
+
+    @staticmethod
+    def _is_strict_nutrition_or_medical_request(user_message: str) -> bool:
+        text = (user_message or "").strip()
+        negative = ("不要求低脂", "不要低脂", "不要说低脂", "不需低脂", "无需低脂")
+        if any(marker in text for marker in negative):
+            return False
+        decision = SOFT_PREFERENCE_POLICY.assess(text)
+        if decision is not None and decision.requires_evidence_insufficient:
+            return True
+        return "低脂" in text and any(marker in text for marker in ("推荐", "适合", "吃什么", "菜"))
+
+    def _planner_dependencies_available(self) -> bool:
+        return getattr(self, "query_plan_validator", None) is not None
+
+    def _reconcile_explicit_recipe_detail(self, user_message: str, candidate: IntentCandidate, *, audit_run=None) -> IntentCandidate:
+        """用唯一的本地菜谱命中纠正与明确菜名冲突的低权限意图。"""
+        if candidate.intent in {"RECIPE_DETAIL", "RECIPE_STEP", "TECHNIQUE_SECTION", "STRICT_NUTRITION", "CLARIFY_OR_OUT_OF_SCOPE"}:
+            return candidate
+        resolver = getattr(self, "entity_resolver", None)
+        if resolver is None:
+            return candidate
+        try:
+            recipes = tuple(resolver.resolve(user_message, expected_types=("Recipe",)))
+        except Exception:
+            return candidate
+        if len(recipes) != 1 or recipes[0].ambiguity:
+            return candidate
+        recipe = recipes[0]
+        if not recipe.display_name or recipe.display_name not in user_message:
+            return candidate
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "planner_local_reconciliation",
+                status="recipe_detail_exact_name",
+                previous_intent=candidate.intent,
+                entity_type="Recipe",
+                entity_id=recipe.node_id,
+            )
+        return IntentCandidate(
+            intent="RECIPE_DETAIL",
+            confidence=candidate.confidence,
+            entity_mentions=[{"text": recipe.display_name}],
+            slots=candidate.slots,
+        )
+
+    def _resolve_candidate_entities(self, candidate, *, user_message: str | None = None):
+        expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
+        if not expected or getattr(self, "entity_resolver", None) is None:
+            return ()
+        mentions = [mention.text for mention in candidate.entity_mentions]
+        if candidate.intent in {"INGREDIENT_RECIPES", "INGREDIENT_VEGETABLE_PAIRS"}:
+            mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        if candidate.intent == "INGREDIENT_VEGETABLE_PAIRS":
+            # 模板的第二端点是固定、已校验的“蔬菜”类别，不是待解析的命名实体。
+            mentions = [mention for mention in mentions if mention.strip() != "蔬菜"]
+            # 模型遗漏唯一食材时，最多以用户原句进行一次本地同类型解析；
+            # 多候选、缺失或任何解析异常仍然走澄清，绝不猜测实体。
+            if not mentions and user_message:
+                mentions = [user_message]
+        if not mentions:
+            return ()
+        try:
+            resolved = []
+            for mention in mentions:
+                candidates = tuple(self.entity_resolver.resolve(mention, expected_types=expected))
+                # 关系问题中的每一项都是必须核验的对象。缺少任何一项时，不能
+                # 忽略它并用其余对象发起一个不等价的图查询。
+                if not candidates:
+                    return ()
+                resolved.extend(candidates)
+            return tuple(resolved)
+        except Exception:
+            return ()
+
+    def _planner_preference_scope(self, candidate, *, audit_run=None):
+        """将菜系/食材转换为 verified Recipe 范围，绝不从软偏好猜测范围。"""
+        has_cuisine_scope = "SICHUAN_STYLE" in candidate.slots.cuisines
+        mentions = [mention.text for mention in candidate.entity_mentions]
+        mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        generic_mentions = tuple(mention for mention in mentions if mention.strip() in _GENERIC_PREFERENCE_MENTIONS)
+        mentions = [mention for mention in mentions if mention.strip() not in _GENERIC_PREFERENCE_MENTIONS]
+        if generic_mentions and audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "planner_preference_scope",
+                status="generic_mentions_soft_preference",
+                generic_mention_count=len(generic_mentions),
+                generic_mention_hash=hashlib.sha256("\n".join(generic_mentions).encode("utf-8")).hexdigest(),
+            )
+        if not has_cuisine_scope and not mentions:
+            return None, None
+        if getattr(self, "targeted_graph_retriever", None) is None or getattr(self, "entity_resolver", None) is None:
+            return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="GRAPH_UNAVAILABLE")
+        scopes: list[set[str]] = []
+        if has_cuisine_scope:
+            candidate_ids = self._all_pds_parent_ids_by_cuisine("川菜")
+            if not candidate_ids:
+                return None, CompileResult("TERMINAL", "CUISINE_SCOPE_NOT_FOUND", reason="CUISINE_SCOPE_NOT_FOUND")
+            if len(candidate_ids) > QueryPlanValidator.MAX_CANDIDATES:
+                return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="CUISINE_SCOPE_TOO_LARGE")
+            plan = self.query_plan_validator.validate(QueryPlan(
+                "RECIPE_CUISINE_FILTER", "recipe_cuisine_filter_v1", "Recipe",
+                {"recipe_ids": candidate_ids, "cuisine_type": "川菜", "limit": len(candidate_ids)},
+                max_candidates=len(candidate_ids), source="rule",
+            ))
+            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+            if fact.status == "unavailable":
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="CUISINE_GRAPH_UNAVAILABLE")
+            cuisine_ids = {str(row.get("recipe_id") or "") for row in fact.properties.get("rows", []) if row.get("recipe_id")}
+            if not cuisine_ids:
+                return None, CompileResult("TERMINAL", "CUISINE_SCOPE_NOT_FOUND", reason="CUISINE_SCOPE_NOT_FOUND")
+            scopes.append(cuisine_ids)
+        for mention in mentions:
+            try:
+                entities = tuple(self.entity_resolver.resolve(mention, expected_types=("Ingredient",)))
+            except Exception:
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="ENTITY_RESOLVER_UNAVAILABLE")
+            if not entities:
+                return None, CompileResult("TERMINAL", "ENTITY_NOT_FOUND", reason="INGREDIENT_NOT_FOUND")
+            if len(entities) != 1 or entities[0].ambiguity:
+                return None, CompileResult("CLARIFY", "ENTITY_AMBIGUOUS", reason="INGREDIENT_AMBIGUOUS")
+            plan = self.query_plan_validator.validate(QueryPlan(
+                "INGREDIENT_RECIPES", "ingredient_recipes_v1", "Ingredient",
+                {"ingredient_id": entities[0].node_id, "limit": QueryPlanValidator.MAX_CANDIDATES},
+                max_candidates=QueryPlanValidator.MAX_CANDIDATES, source="rule",
+            ))
+            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+            if fact.status == "unavailable":
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="INGREDIENT_GRAPH_UNAVAILABLE")
+            rows = fact.properties.get("rows", [])
+            if len(rows) >= QueryPlanValidator.MAX_CANDIDATES:
+                return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="INGREDIENT_SCOPE_TOO_LARGE")
+            ids = {str(row.get("recipe_id") or "") for row in rows if row.get("recipe_id")}
+            if not ids:
+                return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="INGREDIENT_SCOPE_EMPTY")
+            scopes.append(ids)
+        combined = set.intersection(*scopes) if scopes else set()
+        if not combined:
+            return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="HARD_SCOPE_EMPTY")
+        if len(combined) > QueryPlanValidator.MAX_CANDIDATES:
+            return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="HARD_SCOPE_TOO_LARGE")
+        return sorted(combined), None
+
+    def _all_pds_parent_ids_by_cuisine(self, cuisine_type: str) -> list[str]:
+        store = getattr(self, "parent_document_store", None)
+        build_id = getattr(store, "active_build_id", None)
+        if store is None or not build_id:
+            return []
+        ids: set[str] = set()
+        for chunk in store.iter_chunks(build_id):
+            parent = store.get_full_parent(chunk.parent_id)
+            if parent is not None and parent.build_id == build_id and str(parent.metadata.get("cuisine_type", "")) == cuisine_type:
+                ids.add(parent.parent_id)
+        return sorted(ids)
+
+    def _execute_compile_result(self, query: str, top_k: int, result: CompileResult, *, audit_run=None, resolved_entities=()):
+        self._audit_compile_result(audit_run, result)
+        if not result.can_execute:
+            return self._compile_result_bundle(result), None
+        if result.action == "PDS_ENTITY_DETAIL":
+            if not resolved_entities or getattr(self, "entity_direct_retriever", None) is None:
+                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PDS_UNAVAILABLE", reason="PDS_UNAVAILABLE")), None
+            bundle = self.entity_direct_retriever.retrieve(resolved_entities[0], self._direct_scope(query, resolved_entities[0]), audit_run=audit_run)
+            return self._with_claim_policy(bundle, result), None
+        plan = result.query_plan
+        if plan.intent == "PREFERENCE_RECOMMEND":
+            bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run, claim_policy=result.claim_policy.to_dict())
+            if bundle is None:
+                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "VECTOR_UNAVAILABLE", reason="VECTOR_UNAVAILABLE")), None
+            return bundle, None
+        retriever = getattr(self, "targeted_graph_retriever", None)
+        if retriever is None:
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="GRAPH_UNAVAILABLE")), None
+        fact = retriever.retrieve(plan, audit_run=audit_run)
+        if fact.status != "verified":
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE" if fact.status == "unavailable" else "TERMINAL", "GRAPH_UNAVAILABLE" if fact.status == "unavailable" else "GRAPH_RELATION_NOT_FOUND", reason=fact.status)), None
+        entity = resolved_entities[0] if resolved_entities else None
+        text_evidence, limitations = self._targeted_text_evidence(plan, entity, fact, audit_run)
+        return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=tuple(resolved_entities), graph_facts=(fact,), text_evidence=text_evidence, limitations=limitations, claim_policy=result.claim_policy.to_dict()), None
+
+    @staticmethod
+    def _with_claim_policy(bundle: EvidenceBundle, result: CompileResult) -> EvidenceBundle:
+        return EvidenceBundle(
+            query_plan=bundle.query_plan,
+            entity_candidates=bundle.entity_candidates,
+            graph_facts=bundle.graph_facts,
+            text_evidence=bundle.text_evidence,
+            limitations=bundle.limitations,
+            recommendation_evidence=bundle.recommendation_evidence,
+            claim_policy=result.claim_policy.to_dict(),
+        )
+
+    @staticmethod
+    def _compile_result_bundle(result: CompileResult) -> EvidenceBundle:
+        limitation = result.action if result.action else result.status
+        return EvidenceBundle(
+            query_plan=None,
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=(limitation, "INTENT_NON_EXECUTE") + tuple(result.limitations),
+        )
+
+    @staticmethod
+    def _intent_terminal_response(bundle: EvidenceBundle) -> str:
+        limitation = next((item for item in bundle.limitations if item != "INTENT_NON_EXECUTE"), "INTENT_UNRESOLVED")
+        return f"当前无法安全执行该请求：{limitation}。请补充可验证的菜名、食材或偏好条件。"
+
+    @staticmethod
+    def _audit_compile_result(audit_run, result: CompileResult) -> None:
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("intent_compile", status=result.status, compile_action=result.action, reason=result.reason, query_plan_hash=hashlib.sha256(str(result.query_plan.to_dict()).encode()).hexdigest() if result.query_plan else None, claim_policy=result.claim_policy.to_dict())
 
     def _new_path_rollout_stage(self, query: str, *, rollout_key: str | None = None) -> str | None:
         """按稳定 allowlist 或确定性比例决定单个请求是否可尝试新路径。"""
@@ -640,6 +934,7 @@ class AdvancedGraphRAGSystem:
         *,
         recommendation_evidence: RecommendationEvidence | None = None,
         extra_limitations: tuple[str, ...] = (),
+        claim_policy=None,
     ) -> EvidenceBundle | None:
         retriever = getattr(self, "restricted_vector_retriever", None)
         if retriever is None:
@@ -653,8 +948,18 @@ class AdvancedGraphRAGSystem:
                 )
             return None
         parent_ids = plan.parameters.get("parent_ids")
+        filter_batch_count = (
+            (len(parent_ids) + _MAX_FILTER_PARENTS_PER_SEARCH - 1) // _MAX_FILTER_PARENTS_PER_SEARCH
+            if parent_ids
+            else 0
+        )
         try:
-            aggregates = retriever.retrieve(query, parent_ids=parent_ids, top_k=top_k)
+            aggregates = retriever.retrieve(
+                query,
+                parent_ids=parent_ids,
+                expected_parent_type=plan.entity_type,
+                top_k=top_k,
+            )
         except ArtifactMismatchError as error:
             logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
             if audit_run is not None and hasattr(audit_run, "record_event"):
@@ -680,6 +985,7 @@ class AdvancedGraphRAGSystem:
             text_evidence=tuple(item.text_evidence for item in aggregates),
             limitations=tuple(extra_limitations) + limitations,
             recommendation_evidence=recommendation_evidence,
+            claim_policy=claim_policy,
         )
         if audit_run is not None and hasattr(audit_run, "record_event"):
             audit_run.record_event(
@@ -687,6 +993,8 @@ class AdvancedGraphRAGSystem:
                 status="selected" if aggregates else "unavailable",
                 parent_count=len(aggregates),
                 vector_scope=plan.parameters["scope"],
+                expected_parent_type=plan.entity_type,
+                filter_batch_count=filter_batch_count,
             )
         return bundle
 

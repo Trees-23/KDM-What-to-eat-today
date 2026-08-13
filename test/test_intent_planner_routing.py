@@ -1,0 +1,286 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from types import SimpleNamespace
+
+from rag_modules.intent_candidate import IntentCandidate
+from rag_modules.intent_plan_compiler import IntentPlanCompiler
+from rag_modules.intent_planner import PlannerResult
+from rag_modules.query_plan_validator import QueryPlanValidator
+from rag_modules.retrieval_contracts import EvidenceBundle
+
+
+class _Planner:
+    def __init__(self, result): self.result = result; self.calls = []
+    def plan(self, message, audit_run=None): self.calls.append(message); return self.result
+
+
+class _Router:
+    def __init__(self): self.calls = []
+    def route_query(self, *args, **kwargs): self.calls.append((args, kwargs)); return ["legacy"], object()
+
+
+class _Vector:
+    def __init__(self): self.calls = []
+    def retrieve(self, query, **kwargs): self.calls.append((query, kwargs)); return []
+
+
+class _PdsDirect:
+    def __init__(self): self.calls = []
+    def retrieve(self, entity, scope, audit_run=None):
+        self.calls.append((entity, scope, audit_run))
+        return EvidenceBundle(None, (), (), (), ())
+
+
+class _Audit:
+    def __init__(self): self.events = []
+    def record_event(self, stage, status="completed", **fields): self.events.append((stage, status, fields))
+
+
+class _CliAudit(_Audit):
+    def mark_request_start(self): return None
+    def append_process(self, stage, fields): self.events.append((stage, "completed", fields))
+    def finish_request(self, **fields): self.events.append(("request_complete", "completed", fields))
+
+
+class _Generation:
+    def __init__(self): self.calls = []
+    def generate_adaptive_answer(self, *args, **kwargs): self.calls.append((args, kwargs)); return "generated"
+
+
+@dataclass
+class _Config:
+    retrieval_intent_planner_enabled: bool = True
+    retrieval_new_path_allowlist: tuple[str, ...] = ()
+    retrieval_new_path_traffic_percent: float = 100.0
+    retrieval_legacy_fallback_enabled: bool = True
+    top_k: int = 3
+
+
+def _candidate():
+    return IntentCandidate(intent="PREFERENCE_RECOMMEND", confidence=.9, slots={"preferences": ["LIGHT_FEEL"], "meal_context": [], "cuisines": [], "ingredients": [], "tools": [], "methods": [], "servings": None, "time_budget_minutes": None, "step_number": None, "nutrition_constraint": None})
+
+
+def _system_type():
+    import main
+    return main.AdvancedGraphRAGSystem
+
+
+def _system(result):
+    system = _system_type().__new__(_system_type())
+    system.config = _Config()
+    system.intent_planner = _Planner(result)
+    system.intent_plan_compiler = IntentPlanCompiler(QueryPlanValidator(), max_candidates=3)
+    system.query_plan_validator = QueryPlanValidator()
+    system.restricted_vector_retriever = _Vector()
+    system.query_router = _Router()
+    system._restricted_vector_init_status = None
+    return system
+
+
+def test_invalid_planner_output_fail_closed_without_legacy_or_retrieval():
+    system = _system(PlannerResult("PLANNER_INVALID_OUTPUT", reason="JSONDecodeError"))
+    bundle, analysis = system.retrieve_for_generation("清淡晚餐", 3, audit_run=_Audit())
+    assert analysis is None and isinstance(bundle, EvidenceBundle)
+    assert "PLANNER_INVALID_OUTPUT" in bundle.limitations
+    assert system.query_router.calls == []
+    assert system.restricted_vector_retriever.calls == []
+
+
+def test_valid_preference_uses_restricted_vector_plan_and_never_legacy_router():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    bundle, _ = system.retrieve_for_generation("清淡晚餐", 3, audit_run=_Audit())
+    assert bundle.query_plan["template_id"] == "preference_recommend_v1"
+    assert system.restricted_vector_retriever.calls[0][1]["parent_ids"] is None
+    assert system.query_router.calls == []
+
+
+def test_unavailable_planner_is_not_legacy_fallback():
+    system = _system(PlannerResult("PLANNER_UNAVAILABLE", reason="TimeoutError"))
+    bundle, _ = system.retrieve_for_generation("清淡晚餐", 3)
+    assert "PLANNER_UNAVAILABLE" in bundle.limitations
+    assert system.query_router.calls == []
+
+
+def test_strict_nutrition_uses_only_user_message_hard_gate_without_llm_or_retrieval():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    bundle, _ = system.retrieve_for_generation("每份脂肪不超过 5 克的晚餐", 3)
+    assert "NUTRITION_EVIDENCE_INSUFFICIENT" in bundle.limitations
+    assert system.intent_planner.calls == []
+    assert system.restricted_vector_retriever.calls == []
+
+
+def test_negative_low_fat_phrase_is_not_a_strict_nutrition_request():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.retrieve_for_generation("清淡晚餐，我不要求低脂", 3)
+    assert system.intent_planner.calls == ["清淡晚餐，我不要求低脂"]
+
+
+def test_entity_candidate_is_resolved_by_local_expected_type_only():
+    resolved = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(resolve=lambda mention, expected_types: [resolved])
+    detail = IntentCandidate(intent="RECIPE_DETAIL", confidence=.9, entity_mentions=[{"text": "宫保鸡丁"}])
+
+    result = system._resolve_candidate_entities(detail)
+
+    assert result == (resolved,)
+
+
+def test_relation_candidate_requires_every_mentioned_entity_to_resolve_locally():
+    known = SimpleNamespace(node_id="ingredient-1", node_type="Ingredient", ambiguity=False)
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    calls = []
+
+    def resolve(mention, expected_types):
+        calls.append((mention, expected_types))
+        return [known] if mention == "牛肉" else []
+
+    system.entity_resolver = SimpleNamespace(resolve=resolve)
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "星雾紫萝01"}],
+    )
+
+    result = system._resolve_candidate_entities(relation)
+
+    assert result == ()
+    assert calls == [("牛肉", ("Ingredient",)), ("星雾紫萝01", ("Ingredient",))]
+
+
+def test_relation_candidate_with_multiple_resolved_entities_clarifies_instead_of_dropping_one():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: [
+            SimpleNamespace(node_id=f"ingredient-{mention}", node_type="Ingredient", ambiguity=False)
+        ]
+    )
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "胡萝卜"}],
+    )
+
+    resolved = system._resolve_candidate_entities(relation)
+    result = system.intent_plan_compiler.compile(relation, resolved_entities=resolved)
+
+    assert result.status == "CLARIFY"
+    assert result.action == "CLARIFY_OR_OUT_OF_SCOPE"
+
+
+def test_relation_candidate_uses_fixed_vegetable_category_without_resolving_it_as_an_entity():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    known = SimpleNamespace(node_id="ingredient-beef", node_type="Ingredient", ambiguity=False)
+    calls = []
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: calls.append(mention) or [known]
+    )
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "蔬菜"}],
+    )
+
+    result = system._resolve_candidate_entities(relation)
+
+    assert result == (known,)
+    assert calls == ["牛肉"]
+
+
+def test_relation_candidate_without_mentions_uses_only_a_unique_local_entity_from_user_message():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    eggplant = SimpleNamespace(node_id="ingredient-eggplant", node_type="Ingredient", ambiguity=False)
+    calls = []
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: calls.append((mention, expected_types)) or [eggplant]
+    )
+    relation = IntentCandidate(intent="INGREDIENT_VEGETABLE_PAIRS", confidence=.9)
+
+    result = system._resolve_candidate_entities(relation, user_message="茄子适合搭配什么蔬菜？")
+
+    assert result == (eggplant,)
+    assert calls == [("茄子适合搭配什么蔬菜？", ("Ingredient",))]
+
+
+def test_explicit_unique_recipe_reconciles_an_incorrect_ingredient_intent_locally():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    oatmeal = SimpleNamespace(node_id="recipe-oatmeal", node_type="Recipe", display_name="牛奶燕麦", ambiguity=False)
+    system.entity_resolver = SimpleNamespace(resolve=lambda _mention, expected_types: [oatmeal] if expected_types == ("Recipe",) else [])
+    audit = _Audit()
+    candidate = IntentCandidate(intent="INGREDIENT_RECIPES", confidence=.9)
+
+    result = system._reconcile_explicit_recipe_detail("我只要知识库能证明的牛奶燕麦做法", candidate, audit_run=audit)
+
+    assert result.intent == "RECIPE_DETAIL"
+    assert [mention.text for mention in result.entity_mentions] == ["牛奶燕麦"]
+    assert audit.events[0][:2] == ("planner_local_reconciliation", "recipe_detail_exact_name")
+
+
+def test_explicit_recipe_reconciliation_keeps_ambiguous_or_missing_entities_non_executable():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(resolve=lambda *_args, **_kwargs: [])
+    candidate = IntentCandidate(intent="INGREDIENT_RECIPES", confidence=.9)
+
+    result = system._reconcile_explicit_recipe_detail("牛奶燕麦做法", candidate)
+
+    assert result is candidate
+
+
+def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    entity = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)
+    system.entity_direct_retriever = _PdsDirect()
+    system.targeted_graph_retriever = SimpleNamespace(retrieve=lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("graph must not run")))
+    system._direct_scope = lambda _query, _entity: {"scope": "RECIPE_FULL"}
+    result = IntentPlanCompiler(QueryPlanValidator()).compile(
+        IntentCandidate(intent="RECIPE_DETAIL", confidence=.9, entity_mentions=[{"text": "宫保鸡丁"}]),
+        resolved_entities=[entity],
+    )
+
+    bundle, analysis = system._execute_compile_result("宫保鸡丁怎么做", 3, result, resolved_entities=(entity,))
+
+    assert isinstance(bundle, EvidenceBundle)
+    assert analysis is None
+    assert system.entity_direct_retriever.calls[0][1] == {"scope": "RECIPE_FULL"}
+    assert system.restricted_vector_retriever.calls == []
+
+
+def test_execute_bundle_keeps_compiled_claim_policy_for_generation():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    result = IntentPlanCompiler(QueryPlanValidator()).compile(_candidate())
+
+    bundle, _ = system._execute_compile_result("清淡晚餐", 3, result)
+
+    assert bundle.claim_policy["forbidden_claims"] == ("低脂", "低热量", "低盐", "医疗适用")
+
+
+def test_restricted_vector_audit_records_fixed_scope_batch_count():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.restricted_vector_retriever = _Vector()
+    audit = _Audit()
+    plan = IntentPlanCompiler(QueryPlanValidator()).compile(_candidate(), scoped_recipe_ids=[f"r-{number}" for number in range(21)]).query_plan
+
+    system._try_restricted_vector("清淡晚餐", 3, plan, audit_run=audit)
+
+    event = next(event for event in audit.events if event[0] == "restricted_vector")
+    assert event[2]["filter_batch_count"] == 2
+
+
+def test_cli_planner_non_execute_bundle_never_calls_generation():
+    system = _system(PlannerResult("PLANNER_INVALID_OUTPUT"))
+    system.system_ready = True
+    system.config.retrieval_intent_planner_enabled = True
+    system.generation_module = _Generation()
+    system.retrieve_for_generation = lambda *_args, **_kwargs: (
+        EvidenceBundle(None, (), (), (), ("PLANNER_LOW_CONFIDENCE", "INTENT_NON_EXECUTE")),
+        None,
+    )
+    audit = _CliAudit()
+
+    result, analysis = system.ask_question_with_routing("测试请求", audit_run=audit)
+
+    assert "PLANNER_LOW_CONFIDENCE" in result
+    assert analysis is None
+    assert system.generation_module.calls == []
+    assert audit.events[-1] == ("request_complete", "completed", {"success": True, "final_source": "compile_terminal"})

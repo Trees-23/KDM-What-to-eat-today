@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import json
 from pathlib import Path
 import threading
 
@@ -82,6 +83,22 @@ def test_create_open_read_and_anchor_windows(tmp_path: Path):
         )
         assert not report.valid
         assert report.mismatched_rows == ("recipe-1:chunk:0",)
+
+
+def test_active_pointer_uses_relative_build_path_and_recovers_portable_absolute_path(tmp_path: Path):
+    parents, manifest, chunks, anchors = _fixture_rows()
+    db_path = tmp_path / "parent_store.sqlite"
+    pointer = tmp_path / "active-build"
+    ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors, publish=True, active_pointer=pointer)
+
+    assert json.loads(pointer.read_text(encoding="utf-8"))["store_path"] == db_path.name
+    pointer.write_text(
+        json.dumps({"build_id": manifest.build_id, "store_path": f"/different-host/run/{db_path.name}"}),
+        encoding="utf-8",
+    )
+    with ParentDocumentStore.open(tmp_path, active_pointer=pointer) as store:
+        assert store.db_path == db_path.resolve()
+        assert store.active_build_id == manifest.build_id
 
 
 def test_open_store_reads_from_a_different_thread(tmp_path: Path):

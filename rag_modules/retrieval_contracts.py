@@ -190,6 +190,7 @@ class EvidenceBundle:
     text_evidence: tuple[TextEvidence, ...]
     limitations: tuple[str, ...]
     recommendation_evidence: RecommendationEvidence | None = None
+    claim_policy: Mapping[str, Sequence[str]] | None = None
 
     def __post_init__(self) -> None:
         if self.query_plan is not None and not isinstance(self.query_plan, Mapping):
@@ -209,6 +210,18 @@ class EvidenceBundle:
             self.recommendation_evidence, RecommendationEvidence
         ):
             raise ValueError("recommendation_evidence 必须是 RecommendationEvidence 或 None")
+        if self.claim_policy is not None:
+            if not isinstance(self.claim_policy, Mapping):
+                raise ValueError("claim_policy 必须是映射或 None")
+            allowed = {"hard_constraints", "soft_preferences", "display_requests", "forbidden_claims"}
+            if set(self.claim_policy) - allowed:
+                raise ValueError("claim_policy 包含未声明字段")
+            policy: dict[str, tuple[str, ...]] = {}
+            for key, value in self.claim_policy.items():
+                if key not in allowed:
+                    continue
+                policy[key] = _string_tuple(value, f"claim_policy.{key}")
+            object.__setattr__(self, "claim_policy", policy)
 
     @property
     def verified_graph_facts(self) -> tuple[GraphFact, ...]:
@@ -228,6 +241,11 @@ class EvidenceBundle:
             "recommendation_evidence": (
                 self.recommendation_evidence.to_dict() if self.recommendation_evidence is not None else None
             ),
+            "claim_policy": (
+                {key: list(values) for key, values in self.claim_policy.items()}
+                if self.claim_policy is not None
+                else None
+            ),
         }
 
     def to_json(self) -> str:
@@ -246,6 +264,7 @@ class EvidenceBundle:
                 if value.get("recommendation_evidence") is not None
                 else None
             ),
+            claim_policy=value.get("claim_policy"),
         )
 
     @classmethod

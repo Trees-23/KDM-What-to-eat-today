@@ -1,10 +1,10 @@
 {
-  "ingredient_category_conflicts": 38,
-  "ingredient_duplicate_groups": 268,
-  "ingredient_nodes_removed": 2147,
-  "input_node_count": 5760,
-  "input_relationship_count": 6055,
-  "output_node_count": 3613,
-  "output_relationship_count": 6055,
-  "relationship_endpoints_rewritten": 2147
+  "ingredient_category_conflicts": 0,
+  "ingredient_duplicate_groups": 0,
+  "ingredient_nodes_removed": 0,
+  "input_node_count": 3604,
+  "input_relationship_count": 6039,
+  "output_node_count": 3604,
+  "output_relationship_count": 6039,
+  "relationship_endpoints_rewritten": 0
 }

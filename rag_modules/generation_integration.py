@@ -6,6 +6,7 @@ import logging
 import os
 import json
 import time
+import re
 from types import SimpleNamespace
 from typing import List, Sequence
 
@@ -179,6 +180,7 @@ class GenerationIntegrationModule:
         - 必须明确说明“限制与不可证明项”中的缺失或不可用状态，不得补造事实。
         - 没有正文证据时，不要编造食材、步骤或营养结论。
         - “推荐证据等级”为 soft_preference 时，只能表述为少油/清爽偏好，不能声称已验证低脂或给出脂肪数值。
+        - 必须遵守“声明策略”的 forbidden_claims；其中的词不得出现在最终回答中。
 
         回答：
         """
@@ -200,11 +202,20 @@ class GenerationIntegrationModule:
         context = "\n\n".join(context_parts)
         return context, self._build_prompt(question, context), documents, None
 
-    def generate_adaptive_answer(self, question: str, documents: Sequence[Document] | EvidenceBundle, audit_run=None) -> str:
+    def generate_adaptive_answer(
+        self,
+        question: str,
+        documents: Sequence[Document] | EvidenceBundle,
+        audit_run=None,
+        timeout: float = 60.0,
+        max_attempts: int = 2,
+    ) -> str:
         """
         智能统一答案生成
         自动适应不同类型的查询，无需预先分类
         """
+        if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
+            raise ValueError("max_attempts 必须在 1 到 3 之间")
         context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
         self._record_generation_context(
             audit_run, audit_documents, context, stream=False, evidence_bundle=evidence_bundle
@@ -224,19 +235,35 @@ class GenerationIntegrationModule:
                         "temperature": self.temperature,
                         "max_tokens": self.max_tokens,
                         "stream": False,
-                        "timeout": "client_default",
-                        "max_retries": 0,
+                        "timeout": timeout,
+                        "max_retries": max_attempts - 1,
                     },
                 )
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
+            response = None
+            last_error = None
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=self.temperature,
+                        max_tokens=self.max_tokens,
+                        timeout=timeout,
+                    )
+                    break
+                except Exception as error:
+                    last_error = error
+                    if audit_run:
+                        audit_run.record_error("generation_non_stream", error, attempt=attempt)
+            if response is None:
+                assert last_error is not None
+                raise last_error
             answer = response.choices[0].message.content.strip()
+            if not answer:
+                raise RuntimeError("GENERATION_EMPTY_STREAM")
+            answer = self._enforce_claim_policy(answer, evidence_bundle, audit_run)
             if audit_run:
                 audit_run.append_process(
                     "Generation Non-Stream",
@@ -260,7 +287,8 @@ class GenerationIntegrationModule:
         except Exception as e:
             logger.error(f"LightRAG答案生成失败: {e}")
             if audit_run:
-                audit_run.record_error("generation_non_stream", e, attempt=1)
+                if isinstance(e, RuntimeError) and str(e) == "GENERATION_EMPTY_STREAM":
+                    audit_run.record_error("generation_non_stream", e, attempt=max_attempts)
                 audit_run.append_process(
                     "Final Output",
                     {
@@ -269,7 +297,7 @@ class GenerationIntegrationModule:
                         "success": False,
                     },
                 )
-            return f"抱歉，生成回答时出现错误：{str(e)}"
+            raise RuntimeError(f"GENERATION_NON_STREAM_FAILED: {e}") from e
     
     def generate_adaptive_answer_stream(self, question: str, documents: Sequence[Document] | EvidenceBundle, max_retries: int = 3, audit_run=None):
         """
@@ -334,6 +362,8 @@ class GenerationIntegrationModule:
                         full_response += content
                         yield content  # 使用yield返回流式内容
                 
+                if not full_response.strip():
+                    raise RuntimeError("GENERATION_EMPTY_STREAM")
                 if audit_run:
                     audit_run.append_process(
                         "Generation Stream",
@@ -372,6 +402,8 @@ class GenerationIntegrationModule:
                     
                     try:
                         fallback_response = self.generate_adaptive_answer(question, documents)
+                        if not isinstance(fallback_response, str) or not fallback_response.strip():
+                            raise RuntimeError("GENERATION_EMPTY_STREAM")
                         full_response += fallback_response
                         if first_token_latency_ms is None:
                             first_token_latency_ms = int((time.time() - generation_started_at) * 1000)
@@ -466,6 +498,36 @@ class GenerationIntegrationModule:
                 ),
             },
         )
+
+    @staticmethod
+    def _enforce_claim_policy(answer: str, evidence_bundle: EvidenceBundle | None, audit_run=None) -> str:
+        """本地执行编译器声明边界，不能只依赖模型遵守提示词。"""
+
+        if evidence_bundle is None or not evidence_bundle.claim_policy:
+            return answer
+        forbidden = tuple(evidence_bundle.claim_policy.get("forbidden_claims", ()))
+        matched = tuple(term for term in forbidden if term and term in answer)
+        if not matched:
+            return answer
+        titles = []
+        for evidence in evidence_bundle.text_evidence:
+            heading = re.search(r"^#\s+([^\n#]+)", evidence.text, flags=re.MULTILINE)
+            title = heading.group(1).replace("的做法", "").strip() if heading else ""
+            if title and title not in titles:
+                titles.append(title)
+            if len(titles) == 3:
+                break
+        candidates = "、".join(titles) if titles else "已检索到的菜谱"
+        safe_answer = f"可优先考虑：{candidates}。这些建议仅根据正文内容与您的口味或做法偏好匹配，未对具体营养数值或适用性作出判断。"
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "claim_policy",
+                status="blocked_and_replaced",
+                forbidden_claim_count=len(matched),
+                forbidden_claim_hash=query_hash("\n".join(matched)),
+                replacement_chars=len(safe_answer),
+            )
+        return safe_answer
 
     @staticmethod
     def _terminal_evidence_response(evidence_bundle: EvidenceBundle | None) -> str | None:

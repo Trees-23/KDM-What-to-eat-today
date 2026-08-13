@@ -29,6 +29,15 @@ PROJECT_ROOT = EXAM_ROOT.parents[1]
 GENERATOR_PATH = EXAM_ROOT / "工具" / "生成试卷.py"
 NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "nodes.csv"
 TIPS_NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "tips_nodes.csv"
+_NEW_PATH_PROBE_ENV = {
+    "RETRIEVAL_INTENT_PLANNER_ENABLED": "false",
+    "RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT": "100",
+    "RETRIEVAL_PARENT_STORE_ENABLED": "true",
+    "RETRIEVAL_ENTITY_DIRECT_ENABLED": "true",
+    "RETRIEVAL_QUERY_PLAN_ENABLED": "true",
+    "RETRIEVAL_TARGETED_GRAPH_ENABLED": "true",
+    "RETRIEVAL_MILVUS_V2_ENABLED": "true",
+}
 
 
 @dataclass(frozen=True)
@@ -225,9 +234,8 @@ def _verify_retrieval_artifact() -> dict[str, Any]:
     manifest_path = PROJECT_ROOT / "run" / "retrieval" / "retrieval_artifact_manifest.json"
     active_pointer = PROJECT_ROOT / "run" / "retrieval" / "parent_store.active"
     manifest = RetrievalArtifactManifest.read(manifest_path)
-    pointer = json.loads(active_pointer.read_text(encoding="utf-8"))
-    store_path = Path(pointer["store_path"])
-    store = ParentDocumentStore.open(store_path, active_pointer=active_pointer)
+    # 由 PDS 自己解释相对路径和容器可移植的绝对路径，预检不得另行拼接路径。
+    store = ParentDocumentStore.open(active_pointer.parent, active_pointer=active_pointer)
     try:
         manifest.validate_runtime(
             pds_build_id=store.active_build_id,
@@ -253,7 +261,24 @@ def _verify_retrieval_artifact() -> dict[str, Any]:
         store.close()
 
 
-def _probe_new_path(questions: list[dict[str, Any]]) -> list[str]:
+def _new_path_probe_environment(artifact: dict[str, Any]) -> dict[str, str]:
+    """将容器演练绑定到刚通过预检的活动联合工件。"""
+
+    manifest = artifact.get("manifest") if isinstance(artifact, dict) else None
+    if not isinstance(manifest, dict):
+        raise ValueError("活动 retrieval artifact 缺少 manifest")
+    database = manifest.get("milvus_database")
+    collection = manifest.get("milvus_collection")
+    if not isinstance(database, str) or not database or not isinstance(collection, str) or not collection:
+        raise ValueError("活动 retrieval artifact 缺少 Milvus 目标")
+    return {
+        **_NEW_PATH_PROBE_ENV,
+        "RETRIEVAL_MILVUS_DATABASE": database,
+        "RETRIEVAL_MILVUS_COLLECTION": collection,
+    }
+
+
+def _probe_new_path(questions: list[dict[str, Any]], artifact: dict[str, Any]) -> list[str]:
     """不调用聊天 API 或模型，只演练新路径的检索组件。"""
 
     selected_ids = ("S01-A-01", "S03-A-01", "S04-A-01", "S05-A-01", "S05-C-01")
@@ -300,8 +325,12 @@ finally:
     system._cleanup()
 '''
     try:
+        command = ["docker", "exec"]
+        for name, value in _new_path_probe_environment(artifact).items():
+            command.extend(["-e", f"{name}={value}"])
+        command.extend(["what-to-eat-backend", "python", "-c", probe_program])
         completed = subprocess.run(
-            ["docker", "exec", "what-to-eat-backend", "python", "-c", probe_program],
+            command,
             check=False,
             capture_output=True,
             text=True,
@@ -364,7 +393,7 @@ def run_preflight(*, health_url: str, probe_new_path: bool) -> dict[str, Any]:
         driver.close()
     artifact = _verify_retrieval_artifact()
     if probe_new_path:
-        failures.extend(_probe_new_path(questions))
+        failures.extend(_probe_new_path(questions, artifact))
     return {
         "status": "ready" if not failures else "blocked",
         "bank_sha256": _bank_sha256(),

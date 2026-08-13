@@ -59,6 +59,21 @@ def test_evidence_bundle_round_trips_without_mixing_evidence_columns():
     assert restored.text_evidence[0].origin == "parent_store"
 
 
+def test_evidence_bundle_round_trips_compiled_claim_policy():
+    bundle = EvidenceBundle(
+        query_plan=None,
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(),
+        limitations=(),
+        claim_policy={"soft_preferences": ("LIGHT_FEEL",), "forbidden_claims": ("低脂", "低盐")},
+    )
+
+    restored = EvidenceBundle.from_json(bundle.to_json())
+
+    assert restored.claim_policy == {"soft_preferences": ("LIGHT_FEEL",), "forbidden_claims": ("低脂", "低盐")}
+
+
 @pytest.mark.parametrize(
     "factory",
     [

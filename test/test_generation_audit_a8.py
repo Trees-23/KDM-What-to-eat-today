@@ -40,6 +40,18 @@ class TestGenerationModule(GenerationIntegrationModule):
         self.client = FakeClient(stream_error=stream_error)
 
 
+class _TransientFailureClient(FakeClient):
+    def __init__(self):
+        super().__init__()
+        self.calls = 0
+
+    def create(self, **kwargs):
+        self.calls += 1
+        if self.calls == 1:
+            raise ConnectionError("temporary reset")
+        return super().create(**kwargs)
+
+
 class GenerationAuditA8Test(unittest.TestCase):
     def docs(self):
         return [
@@ -67,9 +79,30 @@ class GenerationAuditA8Test(unittest.TestCase):
             self.assertIn("## Generation Non-Stream", process_text)
             self.assertIn("- response_chars: 5", process_text)
             self.assertIn("## Final Output", process_text)
+            self.assertIn("- timeout: 60.0", process_text)
             self.assertNotIn("非流式回答", process_text)
             self.assertIn("## Final Prompt Context", recall_text)
             self.assertIn("检索上下文A", recall_text)
+
+    def test_non_stream_failure_is_not_returned_as_a_successful_answer(self):
+        module = TestGenerationModule()
+
+        def failing_create(**_kwargs):
+            raise TimeoutError("upstream timeout")
+
+        module.client.chat.completions.create = failing_create
+        with self.assertRaisesRegex(RuntimeError, "GENERATION_NON_STREAM_FAILED"):
+            module.generate_adaptive_answer("问题", self.docs(), timeout=12)
+
+    def test_non_stream_retries_transient_connection_failure_without_marking_first_attempt_successful(self):
+        module = TestGenerationModule()
+        client = _TransientFailureClient()
+        module.client = client
+
+        answer = module.generate_adaptive_answer("问题", self.docs(), max_attempts=2)
+
+        self.assertEqual(answer, "非流式回答")
+        self.assertEqual(client.calls, 2)
 
     def test_stream_generation_records_chunk_metrics_without_answer_body(self):
         with tempfile.TemporaryDirectory() as tmp:

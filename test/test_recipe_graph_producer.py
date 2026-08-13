@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+from collections import defaultdict
 from pathlib import Path
 
 from scripts import build_recipe_graph_csv, validate_recipe_graph_csv
@@ -314,6 +315,19 @@ def test_real_recipe_sources_exclude_tools_and_calculation_formulae():
     assert not {"油量", "盐量"} & cucumber_pork
     assert not {"面类材料：单人一个方便面大小的量，可以在", "冷水： 加入能浸没面的量，一般在"} & noodles
     assert "水：没过食材的量，需要" not in lamb_ribs
+
+
+def test_real_recipe_sources_have_unique_parsed_titles():
+    dishes_root = REPOSITORY_ROOT / "data" / "dishes"
+    paths_by_title: dict[str, list[str]] = defaultdict(list)
+    for path in sorted(dishes_root.rglob("*.md")):
+        text = build_recipe_graph_csv._clean_markdown(path.read_text(encoding="utf-8"))
+        title = build_recipe_graph_csv._title_from_markdown(text, path.stem)
+        paths_by_title[title].append(path.relative_to(dishes_root).as_posix())
+
+    duplicates = {title: paths for title, paths in paths_by_title.items() if len(paths) > 1}
+    assert duplicates == {}
+    assert paths_by_title["陈皮排骨汤"] == ["soup/陈皮排骨汤.md"]
 
 
 def test_manifest_sha_is_bound_to_the_same_bytes_used_for_parsing(tmp_path: Path, monkeypatch):

@@ -488,7 +488,7 @@ def test_preference_query_plan_passes_cuisine_parent_scope_to_v2(tmp_path):
     assert bundle.query_plan["parameters"]["scope"] == "candidate_parents"
     assert bundle.query_plan["parameters"]["parent_ids"] == ["recipe-1"]
     assert system.restricted_vector_retriever.calls == [
-        ("推荐川菜清淡的菜", {"parent_ids": ["recipe-1"], "top_k": 3})
+        ("推荐川菜清淡的菜", {"parent_ids": ["recipe-1"], "expected_parent_type": "Recipe", "top_k": 3})
     ]
     assert system.query_router.calls == []
 
@@ -510,7 +510,7 @@ def test_preference_query_without_candidates_uses_explicit_full_child_scope():
     assert bundle.query_plan["parameters"]["scope"] == "all_child_chunks"
     assert "parent_ids" not in bundle.query_plan["parameters"]
     assert system.restricted_vector_retriever.calls == [
-        ("夏天吃什么清淡的？", {"parent_ids": None, "top_k": 3})
+        ("夏天吃什么清淡的？", {"parent_ids": None, "expected_parent_type": "Recipe", "top_k": 3})
     ]
 
 
@@ -600,7 +600,7 @@ def test_weather_hot_and_not_greasy_request_uses_restricted_vector():
     assert analysis is None
     assert bundle.query_plan["intent"] == "PREFERENCE_RECOMMEND"
     assert system.restricted_vector_retriever.calls == [
-        ("天气热，想做一道清爽不腻的晚饭", {"parent_ids": None, "top_k": 3})
+        ("天气热，想做一道清爽不腻的晚饭", {"parent_ids": None, "expected_parent_type": "Recipe", "top_k": 3})
     ]
     assert system.entity_resolver.calls == []
 
