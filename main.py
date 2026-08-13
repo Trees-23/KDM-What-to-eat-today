@@ -586,13 +586,24 @@ class AdvancedGraphRAGSystem:
         return getattr(self, "query_plan_validator", None) is not None
 
     def _resolve_candidate_entities(self, candidate):
-        if not candidate.entity_mentions:
-            return ()
         expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
         if not expected or getattr(self, "entity_resolver", None) is None:
             return ()
+        mentions = [mention.text for mention in candidate.entity_mentions]
+        if candidate.intent in {"INGREDIENT_RECIPES", "INGREDIENT_VEGETABLE_PAIRS"}:
+            mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        if not mentions:
+            return ()
         try:
-            return tuple(self.entity_resolver.resolve(candidate.entity_mentions[0].text, expected_types=expected))
+            resolved = []
+            for mention in mentions:
+                candidates = tuple(self.entity_resolver.resolve(mention, expected_types=expected))
+                # 关系问题中的每一项都是必须核验的对象。缺少任何一项时，不能
+                # 忽略它并用其余对象发起一个不等价的图查询。
+                if not candidates:
+                    return ()
+                resolved.extend(candidates)
+            return tuple(resolved)
         except Exception:
             return ()
 

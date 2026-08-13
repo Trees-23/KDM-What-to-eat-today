@@ -127,6 +127,48 @@ def test_entity_candidate_is_resolved_by_local_expected_type_only():
     assert result == (resolved,)
 
 
+def test_relation_candidate_requires_every_mentioned_entity_to_resolve_locally():
+    known = SimpleNamespace(node_id="ingredient-1", node_type="Ingredient", ambiguity=False)
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    calls = []
+
+    def resolve(mention, expected_types):
+        calls.append((mention, expected_types))
+        return [known] if mention == "牛肉" else []
+
+    system.entity_resolver = SimpleNamespace(resolve=resolve)
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "星雾紫萝01"}],
+    )
+
+    result = system._resolve_candidate_entities(relation)
+
+    assert result == ()
+    assert calls == [("牛肉", ("Ingredient",)), ("星雾紫萝01", ("Ingredient",))]
+
+
+def test_relation_candidate_with_multiple_resolved_entities_clarifies_instead_of_dropping_one():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: [
+            SimpleNamespace(node_id=f"ingredient-{mention}", node_type="Ingredient", ambiguity=False)
+        ]
+    )
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "蔬菜"}],
+    )
+
+    resolved = system._resolve_candidate_entities(relation)
+    result = system.intent_plan_compiler.compile(relation, resolved_entities=resolved)
+
+    assert result.status == "CLARIFY"
+    assert result.action == "CLARIFY_OR_OUT_OF_SCOPE"
+
+
 def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
     system = _system(PlannerResult("VALID", candidate=_candidate()))
     entity = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)
