@@ -653,16 +653,16 @@ class AdvancedGraphRAGSystem:
         self._audit_compile_result(audit_run, result)
         if not result.can_execute:
             return self._compile_result_bundle(result), None
+        if result.action == "PDS_ENTITY_DETAIL":
+            if not resolved_entities or getattr(self, "entity_direct_retriever", None) is None:
+                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PDS_UNAVAILABLE", reason="PDS_UNAVAILABLE")), None
+            bundle = self.entity_direct_retriever.retrieve(resolved_entities[0], self._direct_scope(query, resolved_entities[0]), audit_run=audit_run)
+            return bundle, None
         plan = result.query_plan
         if plan.intent == "PREFERENCE_RECOMMEND":
             bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run)
             if bundle is None:
                 return self._compile_result_bundle(CompileResult("UNAVAILABLE", "VECTOR_UNAVAILABLE", reason="VECTOR_UNAVAILABLE")), None
-            return bundle, None
-        if result.action == "PDS_ENTITY_DETAIL":
-            if not resolved_entities or getattr(self, "entity_direct_retriever", None) is None:
-                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PDS_UNAVAILABLE", reason="PDS_UNAVAILABLE")), None
-            bundle = self.entity_direct_retriever.retrieve(resolved_entities[0], self._direct_scope(query, resolved_entities[0]), audit_run=audit_run)
             return bundle, None
         retriever = getattr(self, "targeted_graph_retriever", None)
         if retriever is None:

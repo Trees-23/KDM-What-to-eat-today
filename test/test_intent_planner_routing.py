@@ -25,6 +25,13 @@ class _Vector:
     def retrieve(self, query, **kwargs): self.calls.append((query, kwargs)); return []
 
 
+class _PdsDirect:
+    def __init__(self): self.calls = []
+    def retrieve(self, entity, scope, audit_run=None):
+        self.calls.append((entity, scope, audit_run))
+        return EvidenceBundle(None, (), (), (), ())
+
+
 class _Audit:
     def __init__(self): self.events = []
     def record_event(self, stage, status="completed", **fields): self.events.append((stage, status, fields))
@@ -107,3 +114,22 @@ def test_entity_candidate_is_resolved_by_local_expected_type_only():
     result = system._resolve_candidate_entities(detail)
 
     assert result == (resolved,)
+
+
+def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    entity = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)
+    system.entity_direct_retriever = _PdsDirect()
+    system.targeted_graph_retriever = SimpleNamespace(retrieve=lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("graph must not run")))
+    system._direct_scope = lambda _query, _entity: {"scope": "RECIPE_FULL"}
+    result = IntentPlanCompiler(QueryPlanValidator()).compile(
+        IntentCandidate(intent="RECIPE_DETAIL", confidence=.9, entity_mentions=[{"text": "宫保鸡丁"}]),
+        resolved_entities=[entity],
+    )
+
+    bundle, analysis = system._execute_compile_result("宫保鸡丁怎么做", 3, result, resolved_entities=(entity,))
+
+    assert isinstance(bundle, EvidenceBundle)
+    assert analysis is None
+    assert system.entity_direct_retriever.calls[0][1] == {"scope": "RECIPE_FULL"}
+    assert system.restricted_vector_retriever.calls == []
