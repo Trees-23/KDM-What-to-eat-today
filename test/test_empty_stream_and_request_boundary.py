@@ -66,6 +66,26 @@ class _EmptyStreamModule(GenerationIntegrationModule):
     def generate_adaptive_answer(self, *_args, **_kwargs): return ""
 
 
+class _EmptyNonStreamModule(GenerationIntegrationModule):
+    def __init__(self):
+        self.model_name = "test"; self.temperature = 0; self.max_tokens = 10
+        self.base_url = "https://example.invalid"
+        response = types.SimpleNamespace(choices=[types.SimpleNamespace(message=types.SimpleNamespace(content="   "))])
+        self.client = type("Client", (), {"chat": type("Chat", (), {"completions": type("C", (), {"create": staticmethod(lambda **_: response)})()})()})()
+
+
+def test_empty_non_stream_is_a_failure_not_a_successful_answer():
+    with tempfile.TemporaryDirectory() as tmp:
+        audit = RAGAuditManager(enabled=True, root_dir=Path(tmp)).create_run()
+        answer = _EmptyNonStreamModule().generate_adaptive_answer("问题", [], audit_run=audit)
+
+        assert "生成回答" in answer
+        text = (audit.run_dir / "rag_process.md").read_text(encoding="utf-8")
+        assert "GENERATION_EMPTY_STREAM" in text
+        assert "## Generation Non-Stream" not in text
+        assert "- success: True" not in text
+
+
 def test_empty_stream_is_a_failure_not_a_successful_empty_answer():
     with tempfile.TemporaryDirectory() as tmp:
         audit = RAGAuditManager(enabled=True, root_dir=Path(tmp)).create_run()

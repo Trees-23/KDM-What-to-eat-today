@@ -237,6 +237,8 @@ class GenerationIntegrationModule:
                 max_tokens=self.max_tokens
             )
             answer = response.choices[0].message.content.strip()
+            if not answer:
+                raise RuntimeError("GENERATION_EMPTY_STREAM")
             if audit_run:
                 audit_run.append_process(
                     "Generation Non-Stream",
