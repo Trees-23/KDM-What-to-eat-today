@@ -54,6 +54,9 @@ from rag_modules.milvus_v2_index import (
     pds_manifest_sha256,
 )
 from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
+from rag_modules.intent_planner import IntentPlanner
+from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
+from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 
 
 class AdvancedGraphRAGSystem:
@@ -97,6 +100,8 @@ class AdvancedGraphRAGSystem:
         # 阶段 4：V2 只读受限 child chunk 检索，必须绑定联合 artifact。
         self.restricted_vector_retriever = None
         self._restricted_vector_init_status = None
+        self.intent_planner = None
+        self.intent_plan_compiler = None
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -212,6 +217,15 @@ class AdvancedGraphRAGSystem:
 
             if self.config.retrieval_milvus_v2_enabled:
                 self._initialize_restricted_vector_retriever()
+
+            if getattr(self.config, "retrieval_intent_planner_enabled", False):
+                self.intent_planner = IntentPlanner(
+                    self.generation_module.client,
+                    model=self.config.llm_model,
+                    timeout_seconds=getattr(self.config, "retrieval_intent_planner_timeout_seconds", 8.0),
+                )
+                self.intent_plan_compiler = IntentPlanCompiler(self.query_plan_validator)
+                logger.info("意图规划器已启用：新路径失败将 fail-closed")
 
             # 9. Web服务处理器
             print("初始化Web服务处理器...")
@@ -459,6 +473,15 @@ class AdvancedGraphRAGSystem:
         rollout_key: str | None = None,
     ):
         """优先尝试默认关闭的实体直达；任何不安全状态均保留旧 Router。"""
+        planner_enabled = bool(getattr(getattr(self, "config", None), "retrieval_intent_planner_enabled", False))
+        if planner_enabled:
+            rollout_stage = self._new_path_rollout_stage(query, rollout_key=rollout_key)
+            if rollout_stage is None:
+                if audit_run is not None and hasattr(audit_run, "record_event"):
+                    audit_run.record_event("retrieval_rollout", status="legacy", reason="planner_not_selected")
+                return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+            return self._retrieve_with_intent_planner(query, top_k, audit_run=audit_run)
+
         nutrition_bundle = self._try_nutrition_recommendation(query, top_k, audit_run=audit_run)
         if nutrition_bundle is not None:
             return nutrition_bundle, None
@@ -493,6 +516,94 @@ class AdvancedGraphRAGSystem:
                 self._audit_entity_direct(audit_run, "selected", bundle)
                 return bundle, None
         return self._legacy_fallback_or_decline(query, top_k, audit_run=audit_run)
+
+    def _retrieve_with_intent_planner(self, user_message: str, top_k: int, *, audit_run=None):
+        """planner 开启时唯一的新路径入口；所有失败均不触发旧 Router。"""
+        # 只使用可信用户文本进行高风险预检。否定表达和评测约束不会传到此处。
+        if self._is_strict_nutrition_or_medical_request(user_message):
+            result = CompileResult(
+                "TERMINAL",
+                "NUTRITION_EVIDENCE_INSUFFICIENT",
+                reason="NUTRITION_EVIDENCE_INSUFFICIENT",
+                limitations=("NUTRITION_EVIDENCE_INSUFFICIENT",),
+            )
+            self._audit_compile_result(audit_run, result)
+            return self._compile_result_bundle(result), None
+        planner = getattr(self, "intent_planner", None)
+        compiler = getattr(self, "intent_plan_compiler", None)
+        if planner is None or compiler is None:
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PLANNER_UNAVAILABLE", reason="PLANNER_NOT_INITIALIZED")), None
+        planner_result = planner.plan(user_message, audit_run=audit_run)
+        if not planner_result.executable:
+            status = "UNAVAILABLE" if planner_result.status == "PLANNER_UNAVAILABLE" else "CLARIFY"
+            return self._compile_result_bundle(CompileResult(status, planner_result.status, reason=planner_result.reason)), None
+        candidate = planner_result.candidate
+        if candidate.intent == "PREFERENCE_RECOMMEND":
+            result = compiler.compile(candidate, dependencies_available=self._planner_dependencies_available())
+            return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run)
+        resolved = self._resolve_candidate_entities(candidate)
+        result = compiler.compile(candidate, resolved_entities=resolved, dependencies_available=self._planner_dependencies_available())
+        return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, resolved_entities=resolved)
+
+    @staticmethod
+    def _is_strict_nutrition_or_medical_request(user_message: str) -> bool:
+        text = (user_message or "").strip()
+        negative = ("不要求低脂", "不要低脂", "不要说低脂", "不需低脂", "无需低脂")
+        if any(marker in text for marker in negative):
+            return False
+        decision = SOFT_PREFERENCE_POLICY.assess(text)
+        if decision is not None and decision.requires_evidence_insufficient:
+            return True
+        return "低脂" in text and any(marker in text for marker in ("推荐", "适合", "吃什么", "菜"))
+
+    def _planner_dependencies_available(self) -> bool:
+        return getattr(self, "query_plan_validator", None) is not None
+
+    def _resolve_candidate_entities(self, candidate):
+        if not candidate.entity_mentions:
+            return ()
+        expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
+        if not expected or getattr(self, "entity_resolver", None) is None:
+            return ()
+        try:
+            return tuple(self.entity_resolver.resolve(candidate.entity_mentions[0].text, expected_types=expected))
+        except Exception:
+            return ()
+
+    def _execute_compile_result(self, query: str, top_k: int, result: CompileResult, *, audit_run=None, resolved_entities=()):
+        self._audit_compile_result(audit_run, result)
+        if not result.can_execute:
+            return self._compile_result_bundle(result), None
+        plan = result.query_plan
+        if plan.intent == "PREFERENCE_RECOMMEND":
+            bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run)
+            if bundle is None:
+                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "VECTOR_UNAVAILABLE", reason="VECTOR_UNAVAILABLE")), None
+            return bundle, None
+        if result.action == "PDS_ENTITY_DETAIL":
+            if not resolved_entities or getattr(self, "entity_direct_retriever", None) is None:
+                return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PDS_UNAVAILABLE", reason="PDS_UNAVAILABLE")), None
+            bundle = self.entity_direct_retriever.retrieve(resolved_entities[0], self._direct_scope(query, resolved_entities[0]), audit_run=audit_run)
+            return bundle, None
+        retriever = getattr(self, "targeted_graph_retriever", None)
+        if retriever is None:
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="GRAPH_UNAVAILABLE")), None
+        fact = retriever.retrieve(plan, audit_run=audit_run)
+        if fact.status != "verified":
+            return self._compile_result_bundle(CompileResult("UNAVAILABLE" if fact.status == "unavailable" else "TERMINAL", "GRAPH_UNAVAILABLE" if fact.status == "unavailable" else "GRAPH_RELATION_NOT_FOUND", reason=fact.status)), None
+        entity = resolved_entities[0] if resolved_entities else None
+        text_evidence, limitations = self._targeted_text_evidence(plan, entity, fact, audit_run)
+        return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=tuple(resolved_entities), graph_facts=(fact,), text_evidence=text_evidence, limitations=limitations), None
+
+    @staticmethod
+    def _compile_result_bundle(result: CompileResult) -> EvidenceBundle:
+        limitation = result.action if result.action else result.status
+        return EvidenceBundle(query_plan=None, entity_candidates=(), graph_facts=(), text_evidence=(), limitations=(limitation,) + tuple(result.limitations))
+
+    @staticmethod
+    def _audit_compile_result(audit_run, result: CompileResult) -> None:
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("intent_compile", status=result.status, compile_action=result.action, reason=result.reason, query_plan_hash=hashlib.sha256(str(result.query_plan.to_dict()).encode()).hexdigest() if result.query_plan else None, claim_policy=result.claim_policy.to_dict())
 
     def _new_path_rollout_stage(self, query: str, *, rollout_key: str | None = None) -> str | None:
         """按稳定 allowlist 或确定性比例决定单个请求是否可尝试新路径。"""

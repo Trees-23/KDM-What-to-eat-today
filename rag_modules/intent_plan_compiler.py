@@ -37,7 +37,7 @@ class CompileResult:
 
     @property
     def can_execute(self) -> bool:
-        return self.status == "EXECUTE" and self.query_plan is not None
+        return self.status == "EXECUTE"
 
     @property
     def may_generate(self) -> bool:

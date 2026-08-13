@@ -46,6 +46,8 @@ def test_entity_plans_are_local_and_non_execute_states_have_no_plan():
     assert recipe_step.query_plan.parameters == {"recipe_id": "r1", "step_number": 1, "limit": 1}
     assert compiler.compile(candidate("RECIPE_DETAIL"), resolved_entities=[]).status == "TERMINAL"
     assert compiler.compile(candidate("RECIPE_DETAIL"), resolved_entities=[entity("r1", "Recipe", True)]).status == "CLARIFY"
+    detail = compiler.compile(candidate("RECIPE_DETAIL"), resolved_entities=[entity("r1", "Recipe")])
+    assert detail.can_execute and detail.query_plan is None
 
 
 def test_strict_nutrition_and_dependency_failure_are_terminal_and_unavailable():

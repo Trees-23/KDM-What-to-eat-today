@@ -105,6 +105,10 @@ class GraphRAGConfig:
     retrieval_new_path_traffic_percent: float = _env_rollout_percentage("RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT")
     # 阶段 6：新路径无法安全完成时，默认保留现有 Router 作为兼容回退。
     retrieval_legacy_fallback_enabled: bool = _env_bool("RETRIEVAL_LEGACY_FALLBACK_ENABLED", True)
+    # 意图规划独立开关。启用后 new 路径必须 fail-closed，不能回退旧 Router。
+    retrieval_intent_planner_enabled: bool = _env_bool("RETRIEVAL_INTENT_PLANNER_ENABLED", False)
+    retrieval_intent_planner_version: str = os.getenv("RETRIEVAL_INTENT_PLANNER_VERSION", "v1")
+    retrieval_intent_planner_timeout_seconds: float = float(os.getenv("RETRIEVAL_INTENT_PLANNER_TIMEOUT_SECONDS", "8"))
     retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
     retrieval_milvus_collection: str = os.getenv("RETRIEVAL_MILVUS_COLLECTION", "")
     retrieval_artifact_manifest_path: str = os.getenv(
@@ -163,6 +167,9 @@ class GraphRAGConfig:
             'retrieval_new_path_allowlist': self.retrieval_new_path_allowlist,
             'retrieval_new_path_traffic_percent': self.retrieval_new_path_traffic_percent,
             'retrieval_legacy_fallback_enabled': self.retrieval_legacy_fallback_enabled,
+            'retrieval_intent_planner_enabled': self.retrieval_intent_planner_enabled,
+            'retrieval_intent_planner_version': self.retrieval_intent_planner_version,
+            'retrieval_intent_planner_timeout_seconds': self.retrieval_intent_planner_timeout_seconds,
             'retrieval_milvus_database': self.retrieval_milvus_database,
             'retrieval_milvus_collection': self.retrieval_milvus_collection,
             'retrieval_artifact_manifest_path': self.retrieval_artifact_manifest_path,
@@ -192,6 +199,9 @@ class GraphRAGConfig:
             "retrieval_new_path_allowlist": self.retrieval_new_path_allowlist,
             "retrieval_new_path_traffic_percent": self.retrieval_new_path_traffic_percent,
             "retrieval_legacy_fallback_enabled": self.retrieval_legacy_fallback_enabled,
+            "retrieval_intent_planner_enabled": self.retrieval_intent_planner_enabled,
+            "retrieval_intent_planner_version": self.retrieval_intent_planner_version,
+            "retrieval_intent_planner_timeout_seconds": self.retrieval_intent_planner_timeout_seconds,
             "retrieval_milvus_database": self.retrieval_milvus_database,
             "retrieval_milvus_collection": self.retrieval_milvus_collection,
             "retrieval_artifact_manifest_path": self.retrieval_artifact_manifest_path,
