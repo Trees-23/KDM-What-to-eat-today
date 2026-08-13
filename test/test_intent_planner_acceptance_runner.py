@@ -137,6 +137,25 @@ def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_p
     assert report["valid"] is False
 
 
+def test_finalize_existing_failure_regression_writes_auditable_summary(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_finalize_existing")
+    bank = tmp_path / "bank.json"
+    bank.write_text(json.dumps({"questions": [{"question_id": f"q-{number}"} for number in range(300)]}), encoding="utf-8")
+    monkeypatch.setattr(runner, "BANK", bank)
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "new-results.jsonl").write_text(json.dumps({"question_id": "q-1", "status": "failed"}) + "\n", encoding="utf-8")
+    summary = source / "failure-summary.json"
+    summary.write_text(json.dumps({"bank_sha256": __import__("hashlib").sha256(bank.read_bytes()).hexdigest(), "implementation_commit": "a" * 40, "failure_result_file": "new-results.jsonl", "failed_count": 1, "failures": [{"question_id": "q-1"}]}), encoding="utf-8")
+    output = tmp_path / "output"
+    output.mkdir()
+    (output / "new-results.jsonl").write_text(json.dumps({"question_id": "q-1", "status": "passed", "answer_chars": 4, "audit_id": "audit-1"}) + "\n", encoding="utf-8")
+
+    assert runner.finalize_existing_failure_regression(output, summary) == 0
+    assert json.loads((output / "acceptance-report.json").read_text(encoding="utf-8"))["passed_count"] == 1
+    assert json.loads((output / "failure-summary.json").read_text(encoding="utf-8"))["failed_count"] == 0
+
+
 def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     source = RUNTIME_PATH.read_text(encoding="utf-8")
 

@@ -229,6 +229,22 @@ def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: 
     return 0 if process.returncode == 0 and report["valid"] else 2
 
 
+def finalize_existing_failure_regression(output: Path, failure_summary: Path) -> int:
+    """为已完成但由受控外部执行器运行的失败集补齐汇总工件。"""
+
+    output = output.resolve()
+    rows = output / "new-results.jsonl"
+    if not output.is_dir() or not rows.is_file():
+        raise FileNotFoundError("--finalize-existing 需要已有的 new-results.jsonl")
+    metadata, _ = _load_failure_regression_questions(failure_summary.resolve())
+    metadata["finalized_at"] = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+    _write_json_once(output / "frozen_questions.json", metadata)
+    report = _regression_report(rows, output / "acceptance-report.json", metadata)
+    _failure_summary(rows, output / "failure-summary.json", metadata)
+    print(json.dumps(report, ensure_ascii=False, sort_keys=True))
+    return 0 if report["valid"] else 2
+
+
 def run(output: Path, *, runtime_env: dict[str, str] | None = None) -> int:
     if output.exists():
         raise FileExistsError(f"拒绝覆盖已有运行目录: {output}")
@@ -280,7 +296,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True, help="未存在的结果目录")
     parser.add_argument("--failure-summary", type=Path, help="只回归该失败摘要中的冻结题目")
     parser.add_argument("--runtime-env", action="append", default=[], metavar="KEY=VALUE", help="仅覆盖本次验收容器进程环境")
+    parser.add_argument("--finalize-existing", action="store_true", help="仅为已有失败集 JSONL 生成汇总工件")
     arguments = parser.parse_args(argv)
+    if arguments.finalize_existing:
+        if not arguments.failure_summary or arguments.runtime_env:
+            raise ValueError("--finalize-existing 需要 --failure-summary，且不能同时提供 --runtime-env")
+        return finalize_existing_failure_regression(arguments.output, arguments.failure_summary)
     runtime_env = _runtime_environment(arguments.runtime_env)
     if arguments.failure_summary:
         return run_failure_regression(arguments.output.resolve(), arguments.failure_summary, runtime_env=runtime_env)
