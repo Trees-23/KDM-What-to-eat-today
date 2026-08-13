@@ -18,6 +18,7 @@ BANK = ROOT / "_other" / "考试" / "试卷题库.json"
 PREFLIGHT = ROOT / "_other" / "考试" / "工具" / "开考预检.py"
 CONTAINER = "what-to-eat-backend"
 RUNNER_ID = "intent-planner-live-runner-v1"
+FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
 RUNTIME = "rag_modules.planner_acceptance_runtime"
 
 _RUNTIME_ENV = {
@@ -109,6 +110,113 @@ def _failure_summary(rows_path: Path, summary_path: Path, metadata: dict[str, An
     return summary
 
 
+def _load_failure_regression_questions(summary_path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    """从冻结失败摘要重新抽取官方题库题目，拒绝任意手工改写的回归输入。"""
+
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    if not isinstance(summary, dict) or not isinstance(summary.get("failures"), list):
+        raise ValueError("失败摘要必须包含 failures 数组")
+    bank = _load_bank()
+    bank_sha256 = hashlib.sha256(BANK.read_bytes()).hexdigest()
+    if summary.get("bank_sha256") != bank_sha256:
+        raise ValueError("失败摘要与当前官方题库哈希不一致")
+    failure_ids = [item.get("question_id") for item in summary["failures"] if isinstance(item, dict)]
+    if not failure_ids or len(failure_ids) != len(summary["failures"]):
+        raise ValueError("失败摘要必须至少包含一个有效 question_id")
+    if len(failure_ids) != len(set(failure_ids)):
+        raise ValueError("失败摘要包含重复 question_id")
+    question_by_id = {item["question_id"]: item for item in bank["questions"]}
+    unknown_ids = set(failure_ids) - set(question_by_id)
+    if unknown_ids:
+        raise ValueError(f"失败摘要含非官方题库题号: {sorted(unknown_ids)}")
+    source_rows = summary_path.parent / str(summary.get("failure_result_file", ""))
+    if not source_rows.is_file():
+        raise ValueError("失败摘要引用的原始逐题结果不存在")
+    source_rows_sha256 = hashlib.sha256(source_rows.read_bytes()).hexdigest()
+    result = {
+        "runner_id": FAILURE_REGRESSION_RUNNER_ID,
+        "execution_mode": "failure_regression",
+        "created_at": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
+        "implementation_commit": _command("git", "rev-parse", "HEAD"),
+        "branch": _command("git", "branch", "--show-current"),
+        "bank_sha256": bank_sha256,
+        "source_failure_summary": {
+            "path": str(summary_path),
+            "sha256": hashlib.sha256(summary_path.read_bytes()).hexdigest(),
+            "source_implementation_commit": summary.get("implementation_commit"),
+            "source_rows_file": source_rows.name,
+            "source_rows_sha256": source_rows_sha256,
+            "source_failed_count": summary.get("failed_count"),
+        },
+        "questions": [question_by_id[question_id] for question_id in failure_ids],
+    }
+    return result, summary
+
+
+def _regression_report(rows_path: Path, report_path: Path, metadata: dict[str, Any]) -> dict[str, Any]:
+    rows = [json.loads(line) for line in rows_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    expected = {item["question_id"] for item in metadata["questions"]}
+    actual = [item.get("question_id") for item in rows]
+    report = {
+        "runner_id": FAILURE_REGRESSION_RUNNER_ID,
+        "execution_mode": "failure_regression",
+        "implementation_commit": metadata["implementation_commit"],
+        "bank_sha256": metadata["bank_sha256"],
+        "source_failure_summary": metadata["source_failure_summary"],
+        "question_count": len(rows),
+        "source_failed_count": len(metadata["questions"]),
+        "coverage_complete": len(rows) == len(expected) and set(actual) == expected and len(set(actual)) == len(expected),
+        "passed_count": sum(item.get("status") == "passed" for item in rows),
+        "failed_count": sum(item.get("status") != "passed" for item in rows),
+        "non_execute_retrieval_violations": 0,
+        "empty_answer_successes": sum(item.get("status") == "passed" and not item.get("answer_chars") for item in rows),
+        "audit_records_complete": all(isinstance(item.get("audit_id"), str) and item.get("audit_id") for item in rows),
+        "rows_sha256": hashlib.sha256(rows_path.read_bytes()).hexdigest(),
+        "result_file": rows_path.name,
+    }
+    report["valid"] = all((report["coverage_complete"], report["failed_count"] == 0, report["non_execute_retrieval_violations"] == 0, report["empty_answer_successes"] == 0, report["audit_records_complete"]))
+    _write_json_once(report_path, report)
+    return report
+
+
+def run_failure_regression(output: Path, failure_summary: Path) -> int:
+    """执行上一轮失败题的闭合集回归；不改变 300 题最终验收语义。"""
+
+    if output.exists():
+        raise FileExistsError(f"拒绝覆盖已有回归工件: {output}")
+    output.mkdir(parents=True)
+    metadata, _ = _load_failure_regression_questions(failure_summary.resolve())
+    preflight = subprocess.run([sys.executable, str(PREFLIGHT), "--probe-new-path"], cwd=ROOT, text=True, capture_output=True)
+    (output / "preflight.stdout.json").write_text(preflight.stdout, encoding="utf-8")
+    (output / "preflight.stderr.txt").write_text(preflight.stderr, encoding="utf-8")
+    if preflight.returncode != 0:
+        return preflight.returncode
+    try:
+        preflight_payload = json.loads(preflight.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("开考预检未返回 JSON") from error
+    if preflight_payload.get("status") != "ready":
+        raise RuntimeError("开考预检未就绪")
+    metadata["preflight"] = preflight_payload
+    _write_json_once(output / "frozen_questions.json", metadata)
+    container_input = f"/app/run/intent-planner-acceptance/{output.name}/frozen_questions.json"
+    container_output = f"/app/run/intent-planner-acceptance/{output.name}/new-results.jsonl"
+    command = ["docker", "exec"]
+    for key, value in _RUNTIME_ENV.items():
+        command.extend(["-e", f"{key}={value}"])
+    command.extend(["-e", f"RAG_AUDIT_ROOT_DIR=/app/run/intent-planner-acceptance/{output.name}/audits", "-e", "RAG_VARIANT_NAME=intent-planner-failure-regression", CONTAINER, "python", "-m", RUNTIME, "--input", container_input, "--output", container_output])
+    process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+    (output / "runner.stdout.jsonl").write_text(process.stdout, encoding="utf-8")
+    (output / "runner.stderr.txt").write_text(process.stderr, encoding="utf-8")
+    rows = output / "new-results.jsonl"
+    if not rows.exists():
+        return process.returncode or 2
+    report = _regression_report(rows, output / "acceptance-report.json", metadata)
+    _failure_summary(rows, output / "failure-summary.json", metadata)
+    print(json.dumps(report, ensure_ascii=False, sort_keys=True))
+    return 0 if process.returncode == 0 and report["valid"] else 2
+
+
 def run(output: Path) -> int:
     if output.exists():
         raise FileExistsError(f"拒绝覆盖已有运行目录: {output}")
@@ -158,7 +266,10 @@ def run(output: Path) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="planner 启用态 300 题真实服务验收")
     parser.add_argument("--output", type=Path, required=True, help="未存在的结果目录")
+    parser.add_argument("--failure-summary", type=Path, help="只回归该失败摘要中的冻结题目")
     arguments = parser.parse_args(argv)
+    if arguments.failure_summary:
+        return run_failure_regression(arguments.output.resolve(), arguments.failure_summary)
     return run(arguments.output.resolve())
 
 

@@ -66,6 +66,58 @@ def test_live_acceptance_failure_summary_collects_failed_questions_with_audit_re
     assert summary["failures"] == [{"question_id": "q-fail", "scenario_id": "S06", "difficulty_code": "B", "input": "失败题", "failures": ["empty_answer"], "limitations": ["VECTOR_UNAVAILABLE"], "query_plan": None, "audit_id": "audit-1", "audit_dir": "/audit-1"}]
 
 
+def test_failure_regression_freezes_only_source_failures_from_the_official_bank(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression")
+    monkeypatch.setattr(runner, "BANK", tmp_path / "bank.json")
+    bank = {
+        "questions": [
+            {"question_id": f"q-{number}", "question": f"题目 {number}"}
+            for number in range(300)
+        ]
+    }
+    runner.BANK.write_text(json.dumps(bank), encoding="utf-8")
+    source_rows = tmp_path / "new-results.jsonl"
+    source_rows.write_text(json.dumps({"question_id": "q-8", "status": "failed"}) + "\n", encoding="utf-8")
+    summary_path = tmp_path / "failure-summary.json"
+    summary_path.write_text(
+        json.dumps(
+            {
+                "bank_sha256": __import__("hashlib").sha256(runner.BANK.read_bytes()).hexdigest(),
+                "implementation_commit": "a" * 40,
+                "failure_result_file": source_rows.name,
+                "failed_count": 2,
+                "failures": [{"question_id": "q-8"}, {"question_id": "q-299"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    metadata, _ = runner._load_failure_regression_questions(summary_path)
+
+    assert metadata["execution_mode"] == "failure_regression"
+    assert [question["question_id"] for question in metadata["questions"]] == ["q-8", "q-299"]
+    assert metadata["source_failure_summary"]["source_rows_sha256"]
+
+
+def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_path):
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression_report")
+    metadata = {
+        "implementation_commit": "a" * 40,
+        "bank_sha256": "b" * 64,
+        "source_failure_summary": {"sha256": "c" * 64},
+        "questions": [{"question_id": "q-fail"}],
+    }
+    rows = tmp_path / "rows.jsonl"
+    rows.write_text(json.dumps({"question_id": "q-other", "status": "passed", "answer_chars": 1, "audit_id": "audit"}) + "\n", encoding="utf-8")
+
+    report = runner._regression_report(rows, tmp_path / "report.json", metadata)
+
+    assert report["execution_mode"] == "failure_regression"
+    assert report["source_failed_count"] == 1
+    assert report["coverage_complete"] is False
+    assert report["valid"] is False
+
+
 def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     source = RUNTIME_PATH.read_text(encoding="utf-8")
 
@@ -74,6 +126,7 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'system._cleanup()' in source
     assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
     assert 'with output_path.open("a", encoding="utf-8") as handle:' in source
+    assert 'execution_mode == "failure_regression"' in source
 
 
 def test_runtime_isolates_exam_constraints_before_planner_and_nutrition_input():

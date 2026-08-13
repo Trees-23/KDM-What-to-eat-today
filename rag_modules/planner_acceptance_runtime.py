@@ -22,6 +22,7 @@ from rag_modules.retrieval_contracts import EvidenceBundle
 
 
 RUNNER_ID = "intent-planner-live-runner-v1"
+FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
 GENERATION_TIMEOUT_SECONDS = 60.0
 
 
@@ -40,11 +41,16 @@ def _read_input(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict) or not isinstance(value.get("questions"), list):
         raise ValueError("验收输入必须含有 questions 数组")
     questions = value["questions"]
-    if len(questions) != 300:
-        raise ValueError(f"验收输入必须恰好包含 300 题，实际为 {len(questions)}")
+    execution_mode = value.get("execution_mode", "full")
+    if execution_mode not in {"full", "failure_regression"}:
+        raise ValueError("验收输入 execution_mode 不受支持")
+    if execution_mode == "full" and len(questions) != 300:
+        raise ValueError(f"全量验收输入必须恰好包含 300 题，实际为 {len(questions)}")
+    if execution_mode == "failure_regression" and not 1 <= len(questions) <= 300:
+        raise ValueError(f"失败集回归输入必须在 1 到 300 题之间，实际为 {len(questions)}")
     ids = [item.get("question_id") for item in questions if isinstance(item, dict)]
-    if len(ids) != 300 or len(set(ids)) != 300 or any(not isinstance(item, str) or not item for item in ids):
-        raise ValueError("验收输入的 question_id 必须恰好为 300 个唯一非空值")
+    if len(ids) != len(questions) or len(set(ids)) != len(questions) or any(not isinstance(item, str) or not item for item in ids):
+        raise ValueError("验收输入的 question_id 必须为唯一非空值")
     return value
 
 
@@ -156,6 +162,7 @@ def run(input_path: Path, output_path: Path) -> int:
     if os.getenv("RETRIEVAL_INTENT_PLANNER_ENABLED", "").lower() != "true":
         raise RuntimeError("必须显式启用 RETRIEVAL_INTENT_PLANNER_ENABLED=true")
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    expected_ids = {str(question["question_id"]) for question in source["questions"]}
     completed_ids: set[str] = set()
     if output_path.exists():
         for line in output_path.read_text(encoding="utf-8").splitlines():
@@ -163,7 +170,7 @@ def run(input_path: Path, output_path: Path) -> int:
                 continue
             row = json.loads(line)
             question_id = row.get("question_id")
-            if not isinstance(question_id, str) or question_id in completed_ids:
+            if not isinstance(question_id, str) or question_id not in expected_ids or question_id in completed_ids:
                 raise ValueError("已有验收结果含无效或重复 question_id")
             completed_ids.add(question_id)
 
@@ -252,10 +259,11 @@ def run(input_path: Path, output_path: Path) -> int:
         system._cleanup()
 
     all_rows = [json.loads(line) for line in output_path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    if len(all_rows) != 300:
-        raise RuntimeError(f"验收结果不完整: {len(all_rows)}/300")
+    actual_ids = [row.get("question_id") for row in all_rows]
+    if len(all_rows) != len(source["questions"]) or set(actual_ids) != expected_ids or len(set(actual_ids)) != len(actual_ids):
+        raise RuntimeError(f"验收结果不完整: {len(all_rows)}/{len(source['questions'])}")
     failures = sum(row["status"] != "passed" for row in all_rows)
-    print(json.dumps({"runner_id": RUNNER_ID, "rows": len(all_rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
+    print(json.dumps({"runner_id": source.get("runner_id", RUNNER_ID), "rows": len(all_rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
     return 0 if failures == 0 else 2
 
 
