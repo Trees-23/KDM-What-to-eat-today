@@ -15,6 +15,7 @@ class EvidencePromptSections:
     text_evidence: str
     limitations: str
     recommendation_evidence: str
+    claim_policy: str
 
 
 class EvidenceBuilder:
@@ -27,6 +28,7 @@ class EvidenceBuilder:
             text_evidence=EvidenceBuilder._render_text_evidence(bundle.text_evidence),
             limitations=EvidenceBuilder._render_limitations(bundle.limitations),
             recommendation_evidence=EvidenceBuilder._render_recommendation_evidence(bundle),
+            claim_policy=EvidenceBuilder._render_claim_policy(bundle),
         )
 
     @staticmethod
@@ -37,6 +39,7 @@ class EvidenceBuilder:
                 "## 已验证图事实\n" + sections.verified_graph_facts,
                 "## 正文证据\n" + sections.text_evidence,
                 "## 推荐证据等级\n" + sections.recommendation_evidence,
+                "## 声明策略\n" + sections.claim_policy,
                 "## 限制与不可证明项\n" + sections.limitations,
             )
         )
@@ -53,6 +56,8 @@ class EvidenceBuilder:
             graph_facts=bundle.graph_facts + facts,
             text_evidence=bundle.text_evidence,
             limitations=bundle.limitations,
+            recommendation_evidence=bundle.recommendation_evidence,
+            claim_policy=bundle.claim_policy,
         )
 
     @staticmethod
@@ -98,3 +103,13 @@ class EvidenceBuilder:
         if evidence is None:
             return "- 未使用营养或饮食推荐策略。"
         return "- " + json.dumps(evidence.to_dict(), ensure_ascii=False, sort_keys=True)
+
+    @staticmethod
+    def _render_claim_policy(bundle: EvidenceBundle) -> str:
+        if bundle.claim_policy is None:
+            return "- 未提供额外声明策略。"
+        return "- " + json.dumps(
+            {key: list(values) for key, values in bundle.claim_policy.items()},
+            ensure_ascii=False,
+            sort_keys=True,
+        )

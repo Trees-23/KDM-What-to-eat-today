@@ -207,6 +207,15 @@ def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
     assert system.restricted_vector_retriever.calls == []
 
 
+def test_execute_bundle_keeps_compiled_claim_policy_for_generation():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    result = IntentPlanCompiler(QueryPlanValidator()).compile(_candidate())
+
+    bundle, _ = system._execute_compile_result("清淡晚餐", 3, result)
+
+    assert bundle.claim_policy["forbidden_claims"] == ("低脂", "低热量", "低盐", "医疗适用")
+
+
 def test_cli_planner_non_execute_bundle_never_calls_generation():
     system = _system(PlannerResult("PLANNER_INVALID_OUTPUT"))
     system.system_ready = True

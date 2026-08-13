@@ -6,6 +6,7 @@ import logging
 import os
 import json
 import time
+import re
 from types import SimpleNamespace
 from typing import List, Sequence
 
@@ -179,6 +180,7 @@ class GenerationIntegrationModule:
         - 必须明确说明“限制与不可证明项”中的缺失或不可用状态，不得补造事实。
         - 没有正文证据时，不要编造食材、步骤或营养结论。
         - “推荐证据等级”为 soft_preference 时，只能表述为少油/清爽偏好，不能声称已验证低脂或给出脂肪数值。
+        - 必须遵守“声明策略”的 forbidden_claims；其中的词不得出现在最终回答中。
 
         回答：
         """
@@ -261,6 +263,7 @@ class GenerationIntegrationModule:
             answer = response.choices[0].message.content.strip()
             if not answer:
                 raise RuntimeError("GENERATION_EMPTY_STREAM")
+            answer = self._enforce_claim_policy(answer, evidence_bundle, audit_run)
             if audit_run:
                 audit_run.append_process(
                     "Generation Non-Stream",
@@ -495,6 +498,36 @@ class GenerationIntegrationModule:
                 ),
             },
         )
+
+    @staticmethod
+    def _enforce_claim_policy(answer: str, evidence_bundle: EvidenceBundle | None, audit_run=None) -> str:
+        """本地执行编译器声明边界，不能只依赖模型遵守提示词。"""
+
+        if evidence_bundle is None or not evidence_bundle.claim_policy:
+            return answer
+        forbidden = tuple(evidence_bundle.claim_policy.get("forbidden_claims", ()))
+        matched = tuple(term for term in forbidden if term and term in answer)
+        if not matched:
+            return answer
+        titles = []
+        for evidence in evidence_bundle.text_evidence:
+            heading = re.search(r"^#\s+([^\n#]+)", evidence.text, flags=re.MULTILINE)
+            title = heading.group(1).replace("的做法", "").strip() if heading else ""
+            if title and title not in titles:
+                titles.append(title)
+            if len(titles) == 3:
+                break
+        candidates = "、".join(titles) if titles else "已检索到的菜谱"
+        safe_answer = f"可优先考虑：{candidates}。这些建议仅根据正文内容与您的口味或做法偏好匹配，未对具体营养数值或适用性作出判断。"
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "claim_policy",
+                status="blocked_and_replaced",
+                forbidden_claim_count=len(matched),
+                forbidden_claim_hash=query_hash("\n".join(matched)),
+                replacement_chars=len(safe_answer),
+            )
+        return safe_answer
 
     @staticmethod
     def _terminal_evidence_response(evidence_bundle: EvidenceBundle | None) -> str | None:

@@ -689,10 +689,10 @@ class AdvancedGraphRAGSystem:
             if not resolved_entities or getattr(self, "entity_direct_retriever", None) is None:
                 return self._compile_result_bundle(CompileResult("UNAVAILABLE", "PDS_UNAVAILABLE", reason="PDS_UNAVAILABLE")), None
             bundle = self.entity_direct_retriever.retrieve(resolved_entities[0], self._direct_scope(query, resolved_entities[0]), audit_run=audit_run)
-            return bundle, None
+            return self._with_claim_policy(bundle, result), None
         plan = result.query_plan
         if plan.intent == "PREFERENCE_RECOMMEND":
-            bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run)
+            bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run, claim_policy=result.claim_policy.to_dict())
             if bundle is None:
                 return self._compile_result_bundle(CompileResult("UNAVAILABLE", "VECTOR_UNAVAILABLE", reason="VECTOR_UNAVAILABLE")), None
             return bundle, None
@@ -704,7 +704,19 @@ class AdvancedGraphRAGSystem:
             return self._compile_result_bundle(CompileResult("UNAVAILABLE" if fact.status == "unavailable" else "TERMINAL", "GRAPH_UNAVAILABLE" if fact.status == "unavailable" else "GRAPH_RELATION_NOT_FOUND", reason=fact.status)), None
         entity = resolved_entities[0] if resolved_entities else None
         text_evidence, limitations = self._targeted_text_evidence(plan, entity, fact, audit_run)
-        return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=tuple(resolved_entities), graph_facts=(fact,), text_evidence=text_evidence, limitations=limitations), None
+        return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=tuple(resolved_entities), graph_facts=(fact,), text_evidence=text_evidence, limitations=limitations, claim_policy=result.claim_policy.to_dict()), None
+
+    @staticmethod
+    def _with_claim_policy(bundle: EvidenceBundle, result: CompileResult) -> EvidenceBundle:
+        return EvidenceBundle(
+            query_plan=bundle.query_plan,
+            entity_candidates=bundle.entity_candidates,
+            graph_facts=bundle.graph_facts,
+            text_evidence=bundle.text_evidence,
+            limitations=bundle.limitations,
+            recommendation_evidence=bundle.recommendation_evidence,
+            claim_policy=result.claim_policy.to_dict(),
+        )
 
     @staticmethod
     def _compile_result_bundle(result: CompileResult) -> EvidenceBundle:
@@ -873,6 +885,7 @@ class AdvancedGraphRAGSystem:
         *,
         recommendation_evidence: RecommendationEvidence | None = None,
         extra_limitations: tuple[str, ...] = (),
+        claim_policy=None,
     ) -> EvidenceBundle | None:
         retriever = getattr(self, "restricted_vector_retriever", None)
         if retriever is None:
@@ -918,6 +931,7 @@ class AdvancedGraphRAGSystem:
             text_evidence=tuple(item.text_evidence for item in aggregates),
             limitations=tuple(extra_limitations) + limitations,
             recommendation_evidence=recommendation_evidence,
+            claim_policy=claim_policy,
         )
         if audit_run is not None and hasattr(audit_run, "record_event"):
             audit_run.record_event(

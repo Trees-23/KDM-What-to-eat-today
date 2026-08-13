@@ -86,7 +86,7 @@ class IntentPlanCompiler:
                 "NUTRITION_EVIDENCE_INSUFFICIENT",
                 reason="NUTRITION_EVIDENCE_INSUFFICIENT",
                 limitations=("NUTRITION_EVIDENCE_INSUFFICIENT", "当前没有受治理营养数据。"),
-                claim_policy=ClaimPolicy(forbidden_claims=("低脂", "低热量", "医疗适用")),
+                claim_policy=ClaimPolicy(forbidden_claims=("低脂", "低热量", "低盐", "医疗适用")),
             )
         if self._has_multiple_tasks(candidate):
             return self._clarify("MULTI_TASK")
@@ -169,7 +169,7 @@ class IntentPlanCompiler:
             hard_constraints=tuple(hard_constraints),
             soft_preferences=tuple(candidate.slots.preferences) + tuple(candidate.slots.meal_context) + tuple(candidate.slots.tools) + tuple(candidate.slots.methods),
             display_requests=tuple(display_requests),
-            forbidden_claims=("低脂", "低热量", "医疗适用"),
+            forbidden_claims=("低脂", "低热量", "低盐", "医疗适用"),
         )
 
     @staticmethod
