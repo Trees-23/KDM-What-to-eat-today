@@ -128,7 +128,14 @@ class IntentPlanCompiler:
         node_id = getattr(entity, "node_id", None)
         if node_type not in expected or not isinstance(node_id, str) or not node_id.strip():
             return self._clarify("ENTITY_TYPE_MISMATCH")
-        if candidate.intent in {"RECIPE_DETAIL", "ENTITY_LOOKUP"}:
+        if candidate.intent == "ENTITY_LOOKUP":
+            return CompileResult(
+                "TERMINAL",
+                "ENTITY_LOOKUP_RESOLVED",
+                reason="ENTITY_LOOKUP_RESOLVED",
+                limitations=("ENTITY_LOOKUP_RESOLVED",),
+            )
+        if candidate.intent == "RECIPE_DETAIL":
             return CompileResult(
                 "EXECUTE",
                 "PDS_ENTITY_DETAIL",

@@ -48,6 +48,9 @@ def test_entity_plans_are_local_and_non_execute_states_have_no_plan():
     assert compiler.compile(candidate("RECIPE_DETAIL"), resolved_entities=[entity("r1", "Recipe", True)]).status == "CLARIFY"
     detail = compiler.compile(candidate("RECIPE_DETAIL"), resolved_entities=[entity("r1", "Recipe")])
     assert detail.can_execute and detail.query_plan is None
+    lookup = compiler.compile(candidate("ENTITY_LOOKUP"), resolved_entities=[entity("r1", "Recipe")])
+    assert lookup.status == "TERMINAL"
+    assert lookup.action == "ENTITY_LOOKUP_RESOLVED"
 
 
 def test_strict_nutrition_and_dependency_failure_are_terminal_and_unavailable():
