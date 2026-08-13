@@ -1,0 +1,43 @@
+{
+  "bank_sha256": "e5edfbced75e84002bdd5b25054bf0906a022b4073e03ab31a4c85010f494f79",
+  "failed_count": 2,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-003/audits/20260813_202714_249_f93120e2",
+      "audit_id": "20260813_202714_249_f93120e2",
+      "difficulty_code": "C",
+      "failures": [
+        "entity_pds_evidence_required"
+      ],
+      "input": "只回答陈皮排骨汤的第 1 步，并说明它来自哪一条菜谱步骤；不要混入后续步骤。",
+      "limitations": [
+        "CLARIFY_OR_OUT_OF_SCOPE",
+        "INTENT_NON_EXECUTE",
+        "ENTITY_AMBIGUOUS"
+      ],
+      "query_plan": null,
+      "question_id": "S02-C-07",
+      "scenario_id": "S02"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-003/audits/20260813_210959_465_110790c0",
+      "audit_id": "20260813_210959_465_110790c0",
+      "difficulty_code": "C",
+      "failures": [
+        "restricted_preference_pds_required"
+      ],
+      "input": "想吃清新一点的川味番茄菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [
+        "NO_PREFERENCE_RESULTS",
+        "INTENT_NON_EXECUTE"
+      ],
+      "query_plan": null,
+      "question_id": "S07-C-04",
+      "scenario_id": "S07"
+    }
+  ],
+  "implementation_commit": "521fd9904b8959ccfe3f56dec5bc19322a23c434",
+  "question_count": 300,
+  "runner_id": "intent-planner-live-runner-v1"
+}

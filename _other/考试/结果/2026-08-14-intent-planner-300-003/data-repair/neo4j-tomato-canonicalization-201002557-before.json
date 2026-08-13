@@ -1,0 +1,121 @@
+{
+  "canonical_node_id": "201003210",
+  "canonical_requires_before": [],
+  "created_at": "2026-08-13T21:37:10+00:00",
+  "expected_recipe_ids": [
+    "201002555",
+    "201003726"
+  ],
+  "nodes": [
+    {
+      "labels": [
+        "Ingredient"
+      ],
+      "node_id": "201002557",
+      "properties": {
+        "category": "蔬菜",
+        "conceptType": "Ingredient",
+        "name": "番茄",
+        "nodeId": "201002557",
+        "originalLabels": "Ingredient",
+        "preferredTerm": "番茄"
+      }
+    },
+    {
+      "labels": [
+        "Ingredient"
+      ],
+      "node_id": "201003210",
+      "properties": {
+        "category": "蔬菜",
+        "conceptType": "Ingredient",
+        "hasSynonyms": true,
+        "name": "西红柿",
+        "nodeId": "201003210",
+        "originalLabels": "Ingredient",
+        "preferredTerm": "西红柿",
+        "synonyms": "[{'term': '番茄', 'language': 'zh', 'language_code': 'zh-CN'}, {'term': '洋柿子', 'language': 'zh', 'language_code': 'zh-CN'}]"
+      }
+    }
+  ],
+  "old_all_relations": [
+    {
+      "neighbor_id": null,
+      "neighbor_labels": [
+        "Category"
+      ],
+      "neighbor_name": "蔬菜",
+      "properties": {},
+      "type": "BELONGS_TO_CATEGORY"
+    },
+    {
+      "neighbor_id": null,
+      "neighbor_labels": [
+        "ConceptType"
+      ],
+      "neighbor_name": "Ingredient",
+      "properties": {},
+      "type": "HAS_CONCEPT_TYPE"
+    },
+    {
+      "neighbor_id": "201002555",
+      "neighbor_labels": [
+        "Recipe"
+      ],
+      "neighbor_name": "巴基斯坦牛肉咖喱",
+      "properties": {
+        "amount": "4",
+        "ingredientCategory": "蔬菜",
+        "isMain": false,
+        "originalType": "801000001",
+        "relationshipId": "R_000128",
+        "unit": "个"
+      },
+      "type": "REQUIRES"
+    },
+    {
+      "neighbor_id": "201003726",
+      "neighbor_labels": [
+        "Recipe"
+      ],
+      "neighbor_name": "番茄牛肉蛋花汤",
+      "properties": {
+        "amount": "1",
+        "ingredientCategory": "蔬菜",
+        "isMain": true,
+        "originalType": "801000001",
+        "relationshipId": "R_000048",
+        "unit": "个"
+      },
+      "type": "REQUIRES"
+    }
+  ],
+  "old_node_id": "201002557",
+  "old_requires": [
+    {
+      "properties": {
+        "amount": "4",
+        "ingredientCategory": "蔬菜",
+        "isMain": false,
+        "originalType": "801000001",
+        "relationshipId": "R_000128",
+        "unit": "个"
+      },
+      "recipe_id": "201002555",
+      "recipe_name": "巴基斯坦牛肉咖喱"
+    },
+    {
+      "properties": {
+        "amount": "1",
+        "ingredientCategory": "蔬菜",
+        "isMain": true,
+        "originalType": "801000001",
+        "relationshipId": "R_000048",
+        "unit": "个"
+      },
+      "recipe_id": "201003726",
+      "recipe_name": "番茄牛肉蛋花汤"
+    }
+  ],
+  "operation": "approved_tomato_canonicalization"
+}
