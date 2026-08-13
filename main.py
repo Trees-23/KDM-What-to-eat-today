@@ -59,6 +59,9 @@ from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
 from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 
 
+_GENERIC_PREFERENCE_MENTIONS = frozenset({"蔬菜", "豆制品", "面食", "鱼", "海鲜", "肉菜", "素菜"})
+
+
 class AdvancedGraphRAGSystem:
     """
     图RAG系统
@@ -615,6 +618,15 @@ class AdvancedGraphRAGSystem:
         has_cuisine_scope = "SICHUAN_STYLE" in candidate.slots.cuisines
         mentions = [mention.text for mention in candidate.entity_mentions]
         mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        generic_mentions = tuple(mention for mention in mentions if mention.strip() in _GENERIC_PREFERENCE_MENTIONS)
+        mentions = [mention for mention in mentions if mention.strip() not in _GENERIC_PREFERENCE_MENTIONS]
+        if generic_mentions and audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "planner_preference_scope",
+                status="generic_mentions_soft_preference",
+                generic_mention_count=len(generic_mentions),
+                generic_mention_hash=hashlib.sha256("\n".join(generic_mentions).encode("utf-8")).hexdigest(),
+            )
         if not has_cuisine_scope and not mentions:
             return None, None
         if getattr(self, "targeted_graph_retriever", None) is None or getattr(self, "entity_resolver", None) is None:

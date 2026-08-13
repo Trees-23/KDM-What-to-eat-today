@@ -77,3 +77,20 @@ def test_verified_cuisine_scope_below_global_bound_is_not_rejected_by_output_lim
 
     assert failure is None
     assert ids == sorted(parents)
+
+
+def test_generic_food_categories_remain_soft_preferences_and_do_not_require_entities():
+    parent = SimpleNamespace(parent_id="r1", build_id="build", metadata={"cuisine_type": "川菜"})
+    graph = _Graph({"recipe_cuisine_filter_v1": [{"recipe_id": "r1"}]})
+    system = _system(_Resolver({}), graph, _Pds({"r1": parent}))
+    candidate = IntentCandidate(
+        intent="PREFERENCE_RECOMMEND",
+        confidence=.9,
+        slots={"cuisines": ["SICHUAN_STYLE"], "ingredients": ["蔬菜", "豆制品", "面食"], "preferences": [], "meal_context": [], "tools": [], "methods": [], "servings": None, "time_budget_minutes": None, "step_number": None, "nutrition_constraint": None},
+    )
+
+    ids, failure = system._planner_preference_scope(candidate)
+
+    assert ids == ["r1"]
+    assert failure is None
+    assert [plan.template_id for plan in graph.calls] == ["recipe_cuisine_filter_v1"]

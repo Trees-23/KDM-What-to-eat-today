@@ -148,6 +148,7 @@ def test_planner_prompt_freezes_generalized_preference_relationship_and_constrai
     prompt = IntentPlanner._system_prompt()
 
     assert "泛类食材只是偏好" in prompt
+    assert "豆制品" in prompt
     assert "TECHNIQUE_SECTION" in prompt
     assert "保留 A、B 两个用户原话提及" in prompt
     assert "问句外壳" in prompt
