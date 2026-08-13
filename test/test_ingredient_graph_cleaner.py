@@ -97,3 +97,40 @@ def test_clean_graph_output_is_deterministic(tmp_path):
 
     for name in ("nodes.csv", "relationships.csv", "ingredient_canonical_map.csv", "ingredient_cleaning_report.json"):
         assert (first / name).read_bytes() == (second / name).read_bytes()
+
+
+def test_clean_graph_merges_governed_tomato_alias_and_rewrites_every_recipe_edge(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    _write_csv(
+        source / "nodes.csv",
+        NODE_FIELDS,
+        [
+            {"nodeId": "recipe-a", "labels": "Recipe", "name": "番茄汤", "category": "", "amount": "", "unit": "", "isMain": ""},
+            {"nodeId": "recipe-b", "labels": "Recipe", "name": "西红柿炒蛋", "category": "", "amount": "", "unit": "", "isMain": ""},
+            {"nodeId": "tomato", "labels": "Ingredient", "name": "番茄", "category": "蔬菜", "amount": "1", "unit": "个", "isMain": "True"},
+            {"nodeId": "tomato-cn", "labels": "Ingredient", "name": "西红柿", "category": "蔬菜", "amount": "2", "unit": "个", "isMain": "True"},
+        ],
+    )
+    _write_csv(
+        source / "relationships.csv",
+        RELATIONSHIP_FIELDS,
+        [
+            {"startNodeId": "recipe-a", "endNodeId": "tomato", "relationshipType": "801000001", "relationshipId": "requires-a", "amount": "1", "unit": "个", "step_order": ""},
+            {"startNodeId": "recipe-b", "endNodeId": "tomato-cn", "relationshipType": "801000001", "relationshipId": "requires-b", "amount": "2", "unit": "个", "step_order": ""},
+        ],
+    )
+
+    output = tmp_path / "cleaned"
+    report = clean_graph(source, output)
+
+    assert report["ingredient_nodes_removed"] == 1
+    assert report["relationship_endpoints_rewritten"] == 1
+    ingredients = [row for row in _rows(output / "nodes.csv") if row["labels"] == "Ingredient"]
+    assert [(row["nodeId"], row["name"]) for row in ingredients] == [("tomato-cn", "西红柿")]
+    assert {row["endNodeId"] for row in _rows(output / "relationships.csv")} == {"tomato-cn"}
+    canonical_map = _rows(output / "ingredient_canonical_map.csv")
+    assert ("tomato", "tomato-cn", "西红柿", "true") in {
+        (row["originalNodeId"], row["canonicalNodeId"], row["name"], row["merged"])
+        for row in canonical_map
+    }

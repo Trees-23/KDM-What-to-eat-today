@@ -121,8 +121,8 @@ LIMIT $limit""",
 MATCH (node:{label})
 WHERE (size(trim(toString(coalesce(node.preferredTerm, '')))) >= 2
        AND toLower($query_text) CONTAINS toLower(trim(toString(node.preferredTerm))))
-   OR (size(trim(toString(coalesce(node.synonyms, '')))) >= 2
-       AND toLower($query_text) CONTAINS toLower(trim(toString(node.synonyms))))
+   OR toLower(toString(coalesce(node.synonyms, ''))) CONTAINS
+      (\"'term': '\" + toLower($query_text) + \"'\")
 RETURN node.nodeId AS node_id, coalesce(node.name, node.title, node.nodeId) AS display_name
 ORDER BY node.nodeId
 LIMIT $limit""",

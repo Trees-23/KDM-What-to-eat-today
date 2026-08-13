@@ -1760,7 +1760,6 @@ nodeId,labels,name,preferredTerm,fsn,conceptType,synonyms,category,difficulty,cu
 201002553,CookingStep,步骤9,步骤9,,CookingStep,,,,,,,,,,,,,大火收汁30秒，加入青红辣椒圈再煮10秒,9.0,"炒,收汁",锅铲,40秒
 201002554,CookingStep,步骤10,步骤10,,CookingStep,,,,,,,,,,,,,出锅装盘，撒上葱花即可,10.0,装盘,盆,10秒
 201002555,Recipe,巴基斯坦牛肉咖喱,巴基斯坦牛肉咖喱,,Recipe,,荤菜,5.0,巴基斯坦菜,约15分钟,2-3小时,5人,"巴基斯坦风味,偏辣,慢炖,配烙饼/馕/米饭,正宗做法",dishes\meat_dish\巴基斯坦牛肉咖喱\巴基斯坦牛肉咖喱.md,,,,,,,,
-201002557,Ingredient,番茄,番茄,,Ingredient,,蔬菜,,,,,,,,,,,,,,,
 201002558,Ingredient,螺丝椒,螺丝椒,,Ingredient,,蔬菜,,,,,,,,,,,,,,,
 201002560,Ingredient,Masala粉,Masala粉,,Ingredient,,调料,,,,,,,,,,,,,,,
 201002565,CookingStep,步骤1,步骤1,,CookingStep,,,,,,,,,,,,,全部螺丝椒切成段状，备用,1.0,切,"刀,案板",约2分钟
