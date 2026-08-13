@@ -188,6 +188,45 @@ def test_relation_candidate_uses_fixed_vegetable_category_without_resolving_it_a
     assert calls == ["牛肉"]
 
 
+def test_relation_candidate_without_mentions_uses_only_a_unique_local_entity_from_user_message():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    eggplant = SimpleNamespace(node_id="ingredient-eggplant", node_type="Ingredient", ambiguity=False)
+    calls = []
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: calls.append((mention, expected_types)) or [eggplant]
+    )
+    relation = IntentCandidate(intent="INGREDIENT_VEGETABLE_PAIRS", confidence=.9)
+
+    result = system._resolve_candidate_entities(relation, user_message="茄子适合搭配什么蔬菜？")
+
+    assert result == (eggplant,)
+    assert calls == [("茄子适合搭配什么蔬菜？", ("Ingredient",))]
+
+
+def test_explicit_unique_recipe_reconciles_an_incorrect_ingredient_intent_locally():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    oatmeal = SimpleNamespace(node_id="recipe-oatmeal", node_type="Recipe", display_name="牛奶燕麦", ambiguity=False)
+    system.entity_resolver = SimpleNamespace(resolve=lambda _mention, expected_types: [oatmeal] if expected_types == ("Recipe",) else [])
+    audit = _Audit()
+    candidate = IntentCandidate(intent="INGREDIENT_RECIPES", confidence=.9)
+
+    result = system._reconcile_explicit_recipe_detail("我只要知识库能证明的牛奶燕麦做法", candidate, audit_run=audit)
+
+    assert result.intent == "RECIPE_DETAIL"
+    assert [mention.text for mention in result.entity_mentions] == ["牛奶燕麦"]
+    assert audit.events[0][:2] == ("planner_local_reconciliation", "recipe_detail_exact_name")
+
+
+def test_explicit_recipe_reconciliation_keeps_ambiguous_or_missing_entities_non_executable():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(resolve=lambda *_args, **_kwargs: [])
+    candidate = IntentCandidate(intent="INGREDIENT_RECIPES", confidence=.9)
+
+    result = system._reconcile_explicit_recipe_detail("牛奶燕麦做法", candidate)
+
+    assert result is candidate
+
+
 def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
     system = _system(PlannerResult("VALID", candidate=_candidate()))
     entity = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)

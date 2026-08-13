@@ -54,6 +54,7 @@ from rag_modules.milvus_v2_index import (
     pds_manifest_sha256,
 )
 from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
+from rag_modules.intent_candidate import IntentCandidate
 from rag_modules.intent_planner import IntentPlanner
 from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
 from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
@@ -559,7 +560,7 @@ class AdvancedGraphRAGSystem:
         if not planner_result.executable:
             status = "UNAVAILABLE" if planner_result.status == "PLANNER_UNAVAILABLE" else "CLARIFY"
             return self._compile_result_bundle(CompileResult(status, planner_result.status, reason=planner_result.reason)), None
-        candidate = planner_result.candidate
+        candidate = self._reconcile_explicit_recipe_detail(user_message, planner_result.candidate, audit_run=audit_run)
         if candidate.intent == "PREFERENCE_RECOMMEND":
             scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
             if scope_result is not None:
@@ -571,7 +572,7 @@ class AdvancedGraphRAGSystem:
                 dependencies_available=self._planner_dependencies_available(),
             )
             return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run)
-        resolved = self._resolve_candidate_entities(candidate)
+        resolved = self._resolve_candidate_entities(candidate, user_message=user_message)
         result = compiler.compile(candidate, resolved_entities=resolved, dependencies_available=self._planner_dependencies_available())
         return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, resolved_entities=resolved)
 
@@ -589,7 +590,38 @@ class AdvancedGraphRAGSystem:
     def _planner_dependencies_available(self) -> bool:
         return getattr(self, "query_plan_validator", None) is not None
 
-    def _resolve_candidate_entities(self, candidate):
+    def _reconcile_explicit_recipe_detail(self, user_message: str, candidate: IntentCandidate, *, audit_run=None) -> IntentCandidate:
+        """用唯一的本地菜谱命中纠正与明确菜名冲突的低权限意图。"""
+        if candidate.intent in {"RECIPE_DETAIL", "RECIPE_STEP", "TECHNIQUE_SECTION", "STRICT_NUTRITION", "CLARIFY_OR_OUT_OF_SCOPE"}:
+            return candidate
+        resolver = getattr(self, "entity_resolver", None)
+        if resolver is None:
+            return candidate
+        try:
+            recipes = tuple(resolver.resolve(user_message, expected_types=("Recipe",)))
+        except Exception:
+            return candidate
+        if len(recipes) != 1 or recipes[0].ambiguity:
+            return candidate
+        recipe = recipes[0]
+        if not recipe.display_name or recipe.display_name not in user_message:
+            return candidate
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "planner_local_reconciliation",
+                status="recipe_detail_exact_name",
+                previous_intent=candidate.intent,
+                entity_type="Recipe",
+                entity_id=recipe.node_id,
+            )
+        return IntentCandidate(
+            intent="RECIPE_DETAIL",
+            confidence=candidate.confidence,
+            entity_mentions=[{"text": recipe.display_name}],
+            slots=candidate.slots,
+        )
+
+    def _resolve_candidate_entities(self, candidate, *, user_message: str | None = None):
         expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
         if not expected or getattr(self, "entity_resolver", None) is None:
             return ()
@@ -599,6 +631,10 @@ class AdvancedGraphRAGSystem:
         if candidate.intent == "INGREDIENT_VEGETABLE_PAIRS":
             # 模板的第二端点是固定、已校验的“蔬菜”类别，不是待解析的命名实体。
             mentions = [mention for mention in mentions if mention.strip() != "蔬菜"]
+            # 模型遗漏唯一食材时，最多以用户原句进行一次本地同类型解析；
+            # 多候选、缺失或任何解析异常仍然走澄清，绝不猜测实体。
+            if not mentions and user_message:
+                mentions = [user_message]
         if not mentions:
             return ()
         try:
