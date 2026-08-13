@@ -16,7 +16,7 @@ def candidate(intent="PREFERENCE_RECOMMEND", *, mentions=None, slots=None):
     if intent == "RECIPE_STEP":
         default_slots["step_number"] = 1
     if intent == "STRICT_NUTRITION":
-        default_slots["nutrition_constraint"] = {"fat_g": {"max": 5}}
+        default_slots["nutrition_constraint"] = {"constraint_type": "FAT_GRAMS", "max_value": 5}
     return IntentCandidate(intent=intent, confidence=0.9, entity_mentions=mentions or [], slots=default_slots)
 
 

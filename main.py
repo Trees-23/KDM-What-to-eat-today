@@ -570,6 +570,13 @@ class AdvancedGraphRAGSystem:
     def _resolve_candidate_entities(self, candidate):
         if not candidate.entity_mentions:
             return ()
+        expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
+        if not expected or getattr(self, "entity_resolver", None) is None:
+            return ()
+        try:
+            return tuple(self.entity_resolver.resolve(candidate.entity_mentions[0].text, expected_types=expected))
+        except Exception:
+            return ()
 
     def _planner_preference_scope(self, candidate, *, audit_run=None):
         """将菜系/食材转换为 verified Recipe 范围，绝不从软偏好猜测范围。"""
@@ -641,13 +648,6 @@ class AdvancedGraphRAGSystem:
             if parent is not None and parent.build_id == build_id and str(parent.metadata.get("cuisine_type", "")) == cuisine_type:
                 ids.add(parent.parent_id)
         return sorted(ids)
-        expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
-        if not expected or getattr(self, "entity_resolver", None) is None:
-            return ()
-        try:
-            return tuple(self.entity_resolver.resolve(candidate.entity_mentions[0].text, expected_types=expected))
-        except Exception:
-            return ()
 
     def _execute_compile_result(self, query: str, top_k: int, result: CompileResult, *, audit_run=None, resolved_entities=()):
         self._audit_compile_result(audit_run, result)

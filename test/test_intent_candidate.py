@@ -55,6 +55,22 @@ def test_candidate_rejects_unknown_enum_and_invalid_step_combination():
         IntentCandidate.parse_untrusted(invalid_step)
 
 
+def test_strict_nutrition_constraint_is_closed_and_json_schema_safe():
+    strict = _candidate(intent="STRICT_NUTRITION")
+    strict["slots"]["nutrition_constraint"] = {"constraint_type": "FAT_GRAMS", "max_value": 5}
+    candidate = IntentCandidate.parse_untrusted(strict)
+
+    assert candidate.slots.nutrition_constraint.constraint_type == "FAT_GRAMS"
+    invalid = _candidate(intent="STRICT_NUTRITION")
+    invalid["slots"]["nutrition_constraint"] = {"constraint_type": "FAT_GRAMS", "max_value": 5, "filter": "forged"}
+    with pytest.raises(IntentCandidateValidationError):
+        IntentCandidate.parse_untrusted(invalid)
+
+    schema = IntentCandidate.json_schema()
+    assert schema["$defs"]["NutritionConstraint"]["additionalProperties"] is False
+    assert set(schema["$defs"]["IntentSlots"]["required"]) == set(schema["$defs"]["IntentSlots"]["properties"])
+
+
 def test_request_boundary_excludes_evaluation_constraints_from_planner_and_nutrition_input():
     request = RetrievalRequest(
         user_message="想喝一碗清淡些的川味汤。",

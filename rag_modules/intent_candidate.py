@@ -61,6 +61,32 @@ class EntityMention(BaseModel):
     text: str = Field(min_length=1, max_length=80)
 
 
+class NutritionConstraint(BaseModel):
+    """严格营养请求的封闭需求描述，不携带营养结论或检索字段。"""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    constraint_type: Literal["FAT_GRAMS", "CALORIES", "MEDICAL_DIET"]
+    max_value: float | None = Field(default=None, gt=0, le=100000)
+    medical_category: Literal[
+        "DIABETES",
+        "HYPERTENSION",
+        "HYPERLIPIDEMIA",
+        "KIDNEY_DISEASE",
+        "GOUT",
+        "PREGNANCY",
+    ] | None = None
+
+    @model_validator(mode="after")
+    def validate_constraint_shape(self) -> "NutritionConstraint":
+        if self.constraint_type == "MEDICAL_DIET":
+            if self.medical_category is None or self.max_value is not None:
+                raise ValueError("MEDICAL_DIET 必须且只能提供 medical_category")
+        elif self.max_value is None or self.medical_category is not None:
+            raise ValueError("营养阈值必须且只能提供 max_value")
+        return self
+
+
 class IntentSlots(BaseModel):
     """候选单只描述用户需求；所有枚举均由本地程序维护。"""
 
@@ -77,7 +103,7 @@ class IntentSlots(BaseModel):
     methods: list[Literal["STEAM", "BOIL", "FRY", "STEW"]] = Field(default_factory=list, max_length=5)
     servings: int | None = Field(default=None, ge=1, le=100)
     time_budget_minutes: int | None = Field(default=None, ge=1, le=1440)
-    nutrition_constraint: dict[str, object] | None = None
+    nutrition_constraint: NutritionConstraint | None = None
 
     @field_validator("ingredients")
     @classmethod
@@ -156,7 +182,23 @@ class IntentCandidate(BaseModel):
 
     @classmethod
     def json_schema(cls) -> dict[str, object]:
-        return cls.model_json_schema()
+        schema = cls.model_json_schema()
+        cls._require_all_object_properties(schema)
+        return schema
+
+    @classmethod
+    def _require_all_object_properties(cls, value: object) -> None:
+        """适配严格 JSON Schema：可选值通过 null 表示，字段本身必须出现。"""
+
+        if isinstance(value, dict):
+            properties = value.get("properties")
+            if isinstance(properties, dict):
+                value["required"] = list(properties)
+            for nested in value.values():
+                cls._require_all_object_properties(nested)
+        elif isinstance(value, list):
+            for nested in value:
+                cls._require_all_object_properties(nested)
 
     @classmethod
     def _reject_forbidden_keys(cls, value: object) -> None:

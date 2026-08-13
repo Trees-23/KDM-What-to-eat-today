@@ -96,3 +96,14 @@ def test_negative_low_fat_phrase_is_not_a_strict_nutrition_request():
     system = _system(PlannerResult("VALID", candidate=_candidate()))
     system.retrieve_for_generation("清淡晚餐，我不要求低脂", 3)
     assert system.intent_planner.calls == ["清淡晚餐，我不要求低脂"]
+
+
+def test_entity_candidate_is_resolved_by_local_expected_type_only():
+    resolved = SimpleNamespace(node_id="recipe-1", node_type="Recipe", ambiguity=False)
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    system.entity_resolver = SimpleNamespace(resolve=lambda mention, expected_types: [resolved])
+    detail = IntentCandidate(intent="RECIPE_DETAIL", confidence=.9, entity_mentions=[{"text": "宫保鸡丁"}])
+
+    result = system._resolve_candidate_entities(detail)
+
+    assert result == (resolved,)
