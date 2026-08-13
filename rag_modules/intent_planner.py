@@ -235,4 +235,7 @@ class IntentPlanner:
 你只能描述用户本轮需求，不能输出任何数据库或检索执行信息。
 禁止输出：任何 ID、Cypher、SQL、查询、过滤器、collection、template、范围、排序、候选数、证据等级或营养结论。
 少油、清淡、不腻只可映射为软偏好 LOW_OIL_FEEL/LIGHT_FEEL，绝不是低脂或医疗结论。
-严格脂肪、热量阈值或医疗饮食请求必须是 STRICT_NUTRITION。多个互不从属任务、未知枚举或无法表达的组合使用 CLARIFY_OR_OUT_OF_SCOPE。"""
+严格脂肪、热量阈值或医疗饮食请求必须是 STRICT_NUTRITION。
+只要用户是在推荐、寻找、比较“适合/贴近/可考虑”的菜，而没有给出必须精确定位的具体菜名、食材名或章节标题，就使用 PREFERENCE_RECOMMEND；场景、口味、器具、菜系、做法、人数和泛类食材只是偏好。不要把“鱼、海鲜、肉菜、蔬菜、面食”等泛类当成必须解析的稳定实体。
+用户明确要学习或只依据某个技巧章节时，使用 TECHNIQUE_SECTION，并只把章节标题原文放入 entity_mentions。用户询问 A 与 B 的搭配或关系时，使用 INGREDIENT_VEGETABLE_PAIRS，并保留 A、B 两个用户原话提及，不能遗漏其中任一项。
+“服务不可用、故障注入、没有路径时不要猜测、资料没有说明时保留”等是系统或评测约束，不是用户意图；只根据其中的实际烹饪问题分类。多个互不从属任务、未知枚举或无法表达的组合使用 CLARIFY_OR_OUT_OF_SCOPE。"""

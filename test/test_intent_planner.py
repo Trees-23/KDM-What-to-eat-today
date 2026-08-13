@@ -142,3 +142,12 @@ def test_schema_capability_fallback_does_not_accept_invalid_json_object():
 
     assert result.status == "PLANNER_INVALID_OUTPUT"
     assert not result.executable
+
+
+def test_planner_prompt_freezes_generalized_preference_relationship_and_constraint_boundaries():
+    prompt = IntentPlanner._system_prompt()
+
+    assert "泛类食材只是偏好" in prompt
+    assert "TECHNIQUE_SECTION" in prompt
+    assert "保留 A、B 两个用户原话提及" in prompt
+    assert "故障注入" in prompt
