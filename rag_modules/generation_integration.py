@@ -334,6 +334,8 @@ class GenerationIntegrationModule:
                         full_response += content
                         yield content  # 使用yield返回流式内容
                 
+                if not full_response.strip():
+                    raise RuntimeError("GENERATION_EMPTY_STREAM")
                 if audit_run:
                     audit_run.append_process(
                         "Generation Stream",
@@ -372,6 +374,8 @@ class GenerationIntegrationModule:
                     
                     try:
                         fallback_response = self.generate_adaptive_answer(question, documents)
+                        if not isinstance(fallback_response, str) or not fallback_response.strip():
+                            raise RuntimeError("GENERATION_EMPTY_STREAM")
                         full_response += fallback_response
                         if first_token_latency_ms is None:
                             first_token_latency_ms = int((time.time() - generation_started_at) * 1000)

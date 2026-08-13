@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 from rag_modules.rag_audit import RAGAuditManager, query_hash
+from rag_modules.request_boundary import RetrievalRequest
 
 logger = logging.getLogger(__name__)
 
@@ -130,6 +131,11 @@ class WebServiceHandler:
             
             if not query:
                 return jsonify({"error": "消息不能为空"}), 400
+            request_boundary = RetrievalRequest(
+                user_message=query,
+                evaluation_constraints=data.get("evaluation_constraints"),
+                system_instructions=data.get("system_instructions"),
+            )
 
             audit_run = self.audit_manager.create_run()
             request_start = audit_run.mark_request_start()
@@ -222,8 +228,9 @@ class WebServiceHandler:
             
             # 缓存未命中，执行完整的RAG流程
             if hasattr(self.rag_system, "retrieve_for_generation"):
+                retrieval_query = request_boundary.planner_input if self._planner_enabled() else enhanced_query
                 documents, analysis = self.rag_system.retrieve_for_generation(
-                    enhanced_query,
+                    retrieval_query,
                     self.rag_system.config.top_k,
                     audit_run=audit_run,
                     allow_generalized_advice=allow_generalized_advice,
@@ -234,6 +241,11 @@ class WebServiceHandler:
                     top_k=self.rag_system.config.top_k,
                     audit_run=audit_run,
                 )
+            if self._planner_enabled() and self._non_execute_bundle(documents):
+                response = self._fixed_terminal_response(documents)
+                audit_run.append_process("Final Output", {"answer_chars": len(response), "answer_hash": query_hash(response), "success": True, "final_source": "compile_terminal"})
+                audit_run.finish_request(success=True, final_source="compile_terminal")
+                return jsonify({"response": response, "query": query, "timestamp": str(datetime.now())})
             # 使用生成模块生成最终答案
             response = self.rag_system.generation_module.generate_adaptive_answer(
                 enhanced_query,
@@ -242,8 +254,9 @@ class WebServiceHandler:
             )
             
             # 将结果添加到会话缓存和上下文
-            self.rag_system.cache_manager.add_to_semantic_cache(query, response, session_id)
-            self.rag_system.cache_manager.add_to_context(session_id, query, response)
+            if isinstance(response, str) and response.strip():
+                self.rag_system.cache_manager.add_to_semantic_cache(query, response, session_id)
+                self.rag_system.cache_manager.add_to_context(session_id, query, response)
             audit_run.finish_request(success=True, final_source="generation")
             
             return jsonify({
@@ -271,6 +284,11 @@ class WebServiceHandler:
             
             if not query:
                 return jsonify({"error": "消息不能为空"}), 400
+            request_boundary = RetrievalRequest(
+                user_message=query,
+                evaluation_constraints=data.get("evaluation_constraints"),
+                system_instructions=data.get("system_instructions"),
+            )
 
             audit_run = self.audit_manager.create_run()
             request_start = audit_run.mark_request_start()
@@ -366,8 +384,9 @@ class WebServiceHandler:
                     
                     # 缓存未命中，执行完整的RAG流程
                     if hasattr(self.rag_system, "retrieve_for_generation"):
+                        retrieval_query = request_boundary.planner_input if self._planner_enabled() else enhanced_query
                         documents, analysis = self.rag_system.retrieve_for_generation(
-                            enhanced_query,
+                            retrieval_query,
                             self.rag_system.config.top_k,
                             audit_run=audit_run,
                             allow_generalized_advice=allow_generalized_advice,
@@ -379,6 +398,13 @@ class WebServiceHandler:
                             audit_run=audit_run,
                         )
                     
+                    if self._planner_enabled() and self._non_execute_bundle(documents):
+                        terminal_response = self._fixed_terminal_response(documents)
+                        audit_run.append_process("Final Output", {"answer_chars": len(terminal_response), "answer_hash": query_hash(terminal_response), "success": True, "final_source": "compile_terminal"})
+                        audit_run.finish_request(success=True, final_source="compile_terminal")
+                        yield f"data: {json.dumps({'chunk': terminal_response})}\n\n"
+                        yield "data: [DONE]\n\n"
+                        return
                     # 流式生成答案
                     full_response = ""
                     for chunk in self.rag_system.generation_module.generate_adaptive_answer_stream(
@@ -390,6 +416,8 @@ class WebServiceHandler:
                         data_obj = {"chunk": chunk}
                         yield f"data: {json.dumps(data_obj)}\n\n"
                     
+                    if not full_response.strip():
+                        raise RuntimeError("GENERATION_EMPTY_STREAM")
                     # 将完整结果添加到会话缓存和上下文
                     self.rag_system.cache_manager.add_to_semantic_cache(query, full_response, session_id)
                     self.rag_system.cache_manager.add_to_context(session_id, query, full_response)
@@ -435,6 +463,22 @@ class WebServiceHandler:
                 "config_hash": self.rag_system.config.config_hash() if hasattr(self.rag_system.config, "config_hash") else "",
             },
         )
+
+    def _planner_enabled(self) -> bool:
+        return bool(getattr(self.rag_system.config, "retrieval_intent_planner_enabled", False))
+
+    @staticmethod
+    def _non_execute_bundle(documents) -> bool:
+        from rag_modules.retrieval_contracts import EvidenceBundle
+        if not isinstance(documents, EvidenceBundle):
+            return False
+        terminal_markers = {"PLANNER_INVALID_OUTPUT", "PLANNER_UNAVAILABLE", "NUTRITION_EVIDENCE_INSUFFICIENT", "ENTITY_NOT_FOUND", "ENTITY_AMBIGUOUS", "NO_PREFERENCE_RESULTS", "SCOPE_TOO_LARGE", "GRAPH_RELATION_NOT_FOUND", "GRAPH_UNAVAILABLE", "VECTOR_UNAVAILABLE"}
+        return bool(terminal_markers.intersection(documents.limitations))
+
+    @staticmethod
+    def _fixed_terminal_response(bundle) -> str:
+        limitation = bundle.limitations[0] if bundle.limitations else "INTENT_UNRESOLVED"
+        return f"当前无法安全执行该请求：{limitation}。请补充可验证的菜名、食材或偏好条件。"
 
     def _record_cache_check(self, audit_run, cached_response, started_at, finished_at, error):
         if error is not None:
