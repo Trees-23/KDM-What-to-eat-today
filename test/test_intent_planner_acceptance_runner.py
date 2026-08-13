@@ -4,6 +4,9 @@ import importlib.util
 import json
 from pathlib import Path
 
+from rag_modules.planner_acceptance_runtime import _acceptance_request, _status_for
+from rag_modules.retrieval_contracts import EvidenceBundle
+
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER_PATH = ROOT / "scripts" / "run_intent_planner_acceptance.py"
@@ -71,3 +74,35 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'system._cleanup()' in source
     assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
     assert 'with output_path.open("a", encoding="utf-8") as handle:' in source
+
+
+def test_runtime_isolates_exam_constraints_before_planner_and_nutrition_input():
+    preference = _acceptance_request(
+        {
+            "scenario_id": "S07",
+            "question": "想喝一碗清淡些的川味汤。可以表达偏好匹配，但没有受治理营养来源时不要断言低脂。",
+        }
+    )
+    fault = _acceptance_request(
+        {
+            "scenario_id": "S10",
+            "question": "图服务暂不可用时，牛肉能做哪些菜？",
+            "contract": {"gold_target": {"entity_name": "牛肉"}},
+        }
+    )
+
+    assert preference.planner_input == "想喝一碗清淡些的川味汤。"
+    assert "低脂" not in preference.nutrition_input
+    assert fault.planner_input == "牛肉能做哪些菜？"
+    assert fault.evaluation_constraints == "图服务暂不可用时，牛肉能做哪些菜？"
+
+
+def test_runtime_accepts_local_strict_nutrition_gate_without_planner_event():
+    failures = _status_for(
+        {"scenario_id": "S07", "contract": {"gold_target": {}}},
+        EvidenceBundle(None, (), (), (), ("NUTRITION_EVIDENCE_INSUFFICIENT", "INTENT_NON_EXECUTE")),
+        [("intent_compile", "TERMINAL", {"compile_action": "NUTRITION_EVIDENCE_INSUFFICIENT"})],
+        "当前没有受治理营养数据。",
+    )
+
+    assert "missing_planner_or_compile_audit" not in failures

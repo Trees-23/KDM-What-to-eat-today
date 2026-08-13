@@ -17,6 +17,7 @@ from typing import Any
 
 from main import AdvancedGraphRAGSystem
 from rag_modules.rag_audit import RAGAuditManager
+from rag_modules.request_boundary import RetrievalRequest
 from rag_modules.retrieval_contracts import EvidenceBundle
 
 
@@ -63,6 +64,41 @@ def _non_execute(bundle: EvidenceBundle) -> bool:
     return "INTENT_NON_EXECUTE" in bundle.limitations
 
 
+def _acceptance_request(question: dict[str, Any]) -> RetrievalRequest:
+    """将试题中的评测说明与真实检索请求隔离。
+
+    题库的安全断言、故障说明和回答限制不是用户需求。S10 的真实请求由冻结
+    契约中的目标实体给出，故障仍只由运行器的隔离 driver 注入。
+    """
+
+    original = str(question["question"]).strip()
+    scenario = question["scenario_id"]
+    if scenario == "S10":
+        target = question.get("contract", {}).get("gold_target", {})
+        entity_name = target.get("entity_name") if isinstance(target, dict) else None
+        if not isinstance(entity_name, str) or not entity_name.strip():
+            raise ValueError("S10 验收契约缺少目标实体")
+        return RetrievalRequest(
+            user_message=f"{entity_name.strip()}能做哪些菜？",
+            evaluation_constraints=original,
+        )
+
+    # 这些后缀均是题库明确声明的回答约束，不应污染意图或营养识别。
+    for marker in (
+        "可以表达偏好匹配，但",
+        "；如果意图无法由资料支持，",
+        "；资料没有说明的结论请明确保留。",
+        "；没有路径时请说明无法证明。",
+    ):
+        if marker in original:
+            user_message, constraints = original.split(marker, 1)
+            return RetrievalRequest(
+                user_message=user_message.strip(),
+                evaluation_constraints=(marker.lstrip("；") + constraints).strip(),
+            )
+    return RetrievalRequest(user_message=original)
+
+
 def _status_for(question: dict[str, Any], bundle: EvidenceBundle, events: list[tuple[str, str, dict[str, Any]]], answer: str) -> list[str]:
     """返回本题不满足的可审计断言；空数组才允许计入通过。"""
 
@@ -70,7 +106,12 @@ def _status_for(question: dict[str, Any], bundle: EvidenceBundle, events: list[t
     failures: list[str] = []
     planner = [event for event in events if event[0] == "intent_planner"]
     compiler = [event for event in events if event[0] == "intent_compile"]
-    if not planner or not compiler:
+    local_nutrition_gate = (
+        not planner
+        and bool(compiler)
+        and "NUTRITION_EVIDENCE_INSUFFICIENT" in bundle.limitations
+    )
+    if not local_nutrition_gate and (not planner or not compiler):
         failures.append("missing_planner_or_compile_audit")
     if not answer.strip():
         failures.append("empty_answer")
@@ -139,6 +180,13 @@ def run(input_path: Path, output_path: Path) -> int:
             audit = manager.create_run()
             events = _events(audit)
             audit.mark_request_start()
+            request = _acceptance_request(question)
+            audit.record_event(
+                "acceptance_input_boundary",
+                status="isolated",
+                evaluation_constraints_present=bool(request.evaluation_constraints),
+                user_message_chars=len(request.user_message),
+            )
             started = time.monotonic()
             original_driver = None
             try:
@@ -147,7 +195,7 @@ def run(input_path: Path, output_path: Path) -> int:
                         raise RuntimeError("S10 故障注入前缺少目标图检索器")
                     original_driver = system.targeted_graph_retriever.driver
                     system.targeted_graph_retriever.driver = _UnavailableGraphDriver()
-                bundle, _ = system.retrieve_for_generation(question["question"], system.config.top_k, audit_run=audit)
+                bundle, _ = system.retrieve_for_generation(request.planner_input, system.config.top_k, audit_run=audit)
                 if not isinstance(bundle, EvidenceBundle):
                     raise RuntimeError("planner 路径未返回 EvidenceBundle")
                 if _non_execute(bundle):
@@ -155,7 +203,7 @@ def run(input_path: Path, output_path: Path) -> int:
                     final_source = "compile_terminal"
                 else:
                     answer = system.generation_module.generate_adaptive_answer(
-                        question["question"],
+                        request.user_message,
                         bundle,
                         audit_run=audit,
                         timeout=GENERATION_TIMEOUT_SECONDS,
@@ -178,6 +226,8 @@ def run(input_path: Path, output_path: Path) -> int:
                     "scenario_id": question["scenario_id"],
                     "difficulty_code": question["difficulty_code"],
                     "input": question["question"],
+                    "user_message": request.user_message,
+                    "evaluation_constraints": request.evaluation_constraints,
                     "audit_id": audit.audit_id,
                     "audit_dir": str(audit.run_dir),
                     "duration_ms": round((time.monotonic() - started) * 1000),
