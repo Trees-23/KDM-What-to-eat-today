@@ -21,6 +21,7 @@ class PlannerResult:
     candidate: IntentCandidate | None = None
     reason: str | None = None
     latency_ms: int = 0
+    attempt_count: int = 0
     response_hash: str | None = None
     response_format: str | None = None
 
@@ -38,6 +39,7 @@ class IntentPlanner:
         *,
         model: str,
         timeout_seconds: float = 8.0,
+        max_attempts: int = 2,
         min_confidence: float = PLANNER_MIN_CONFIDENCE,
     ) -> None:
         if client is None:
@@ -46,25 +48,29 @@ class IntentPlanner:
             raise ValueError("planner model 不能为空")
         if timeout_seconds <= 0:
             raise ValueError("timeout_seconds 必须为正数")
+        if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
+            raise ValueError("max_attempts 必须在 1 到 3 之间")
         if not 0 <= min_confidence <= 1:
             raise ValueError("min_confidence 必须在 0 到 1 之间")
         self.client = client
         self.model = model.strip()
         self.timeout_seconds = timeout_seconds
+        self.max_attempts = max_attempts
         self.min_confidence = min_confidence
 
     def plan(self, user_message: str, *, audit_run: Any = None) -> PlannerResult:
         if not isinstance(user_message, str) or not user_message.strip():
             return self._record(PlannerResult("PLANNER_INVALID_OUTPUT", reason="EMPTY_USER_MESSAGE"), audit_run)
         started_at = time.monotonic()
+        attempt_count = 0
         try:
-            response, response_format = self._request_candidate(user_message, "json_schema")
+            response, response_format, attempt_count = self._request_with_retries(user_message, "json_schema")
             raw = self._response_content(response)
         except Exception as error:
             if self._is_unsupported_json_schema_error(error):
                 try:
                     # 兼容只支持 JSON object 的 OpenAI 兼容端点；本地仍执行同一份严格 schema 校验。
-                    response, response_format = self._request_candidate(user_message, "json_object")
+                    response, response_format, attempt_count = self._request_with_retries(user_message, "json_object")
                     raw = self._response_content(response)
                 except Exception as fallback_error:
                     return self._record(
@@ -72,6 +78,7 @@ class IntentPlanner:
                             "PLANNER_UNAVAILABLE",
                             reason=type(fallback_error).__name__,
                             latency_ms=self._latency_ms(started_at),
+                            attempt_count=attempt_count or self.max_attempts,
                             response_format="json_object",
                         ),
                         audit_run,
@@ -82,6 +89,7 @@ class IntentPlanner:
                         "PLANNER_UNAVAILABLE",
                         reason=type(error).__name__,
                         latency_ms=self._latency_ms(started_at),
+                        attempt_count=attempt_count or self.max_attempts,
                         response_format="json_schema",
                     ),
                     audit_run,
@@ -92,6 +100,7 @@ class IntentPlanner:
                     "PLANNER_INVALID_OUTPUT",
                     reason="EMPTY_RESPONSE",
                     latency_ms=self._latency_ms(started_at),
+                    attempt_count=attempt_count,
                     response_format=response_format,
                 ),
                 audit_run,
@@ -106,6 +115,7 @@ class IntentPlanner:
                     "PLANNER_INVALID_OUTPUT",
                     reason=type(error).__name__,
                     latency_ms=self._latency_ms(started_at),
+                    attempt_count=attempt_count,
                     response_hash=response_hash,
                     response_format=response_format,
                 ),
@@ -118,6 +128,7 @@ class IntentPlanner:
                     candidate=candidate,
                     reason="LOW_CONFIDENCE",
                     latency_ms=self._latency_ms(started_at),
+                    attempt_count=attempt_count,
                     response_hash=response_hash,
                     response_format=response_format,
                 ),
@@ -128,11 +139,26 @@ class IntentPlanner:
                 "VALID",
                 candidate=candidate,
                 latency_ms=self._latency_ms(started_at),
+                attempt_count=attempt_count,
                 response_hash=response_hash,
                 response_format=response_format,
             ),
             audit_run,
         )
+
+    def _request_with_retries(self, user_message: str, response_format_type: str) -> tuple[Any, str, int]:
+        """只重试瞬时 planner 请求失败，绝不改变候选单或执行权限。"""
+        last_error: Exception | None = None
+        for attempt in range(1, self.max_attempts + 1):
+            try:
+                response, response_format = self._request_candidate(user_message, response_format_type)
+                return response, response_format, attempt
+            except Exception as error:
+                if self._is_unsupported_json_schema_error(error):
+                    raise
+                last_error = error
+        assert last_error is not None
+        raise last_error
 
     @staticmethod
     def _response_content(response: Any) -> str:
@@ -196,6 +222,7 @@ class IntentPlanner:
                 confidence=candidate.confidence if candidate else None,
                 normalized_slots=candidate.slots.model_dump(mode="json") if candidate else None,
                 latency_ms=result.latency_ms,
+                attempt_count=result.attempt_count,
                 response_hash=result.response_hash,
                 response_format=result.response_format,
                 reason=result.reason,
