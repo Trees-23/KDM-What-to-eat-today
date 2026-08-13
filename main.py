@@ -539,7 +539,15 @@ class AdvancedGraphRAGSystem:
             return self._compile_result_bundle(CompileResult(status, planner_result.status, reason=planner_result.reason)), None
         candidate = planner_result.candidate
         if candidate.intent == "PREFERENCE_RECOMMEND":
-            result = compiler.compile(candidate, dependencies_available=self._planner_dependencies_available())
+            scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
+            if scope_result is not None:
+                self._audit_compile_result(audit_run, scope_result)
+                return self._compile_result_bundle(scope_result), None
+            result = compiler.compile(
+                candidate,
+                scoped_recipe_ids=scoped_recipe_ids,
+                dependencies_available=self._planner_dependencies_available(),
+            )
             return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run)
         resolved = self._resolve_candidate_entities(candidate)
         result = compiler.compile(candidate, resolved_entities=resolved, dependencies_available=self._planner_dependencies_available())
@@ -562,6 +570,77 @@ class AdvancedGraphRAGSystem:
     def _resolve_candidate_entities(self, candidate):
         if not candidate.entity_mentions:
             return ()
+
+    def _planner_preference_scope(self, candidate, *, audit_run=None):
+        """将菜系/食材转换为 verified Recipe 范围，绝不从软偏好猜测范围。"""
+        has_cuisine_scope = "SICHUAN_STYLE" in candidate.slots.cuisines
+        mentions = [mention.text for mention in candidate.entity_mentions]
+        mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        if not has_cuisine_scope and not mentions:
+            return None, None
+        if getattr(self, "targeted_graph_retriever", None) is None or getattr(self, "entity_resolver", None) is None:
+            return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="GRAPH_UNAVAILABLE")
+        scopes: list[set[str]] = []
+        if has_cuisine_scope:
+            candidate_ids = self._all_pds_parent_ids_by_cuisine("川菜")
+            if not candidate_ids:
+                return None, CompileResult("TERMINAL", "CUISINE_SCOPE_NOT_FOUND", reason="CUISINE_SCOPE_NOT_FOUND")
+            if len(candidate_ids) > QueryPlanValidator.MAX_CANDIDATES:
+                return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="CUISINE_SCOPE_TOO_LARGE")
+            plan = self.query_plan_validator.validate(QueryPlan(
+                "RECIPE_CUISINE_FILTER", "recipe_cuisine_filter_v1", "Recipe",
+                {"recipe_ids": candidate_ids, "cuisine_type": "川菜", "limit": len(candidate_ids)},
+                max_candidates=len(candidate_ids), source="rule",
+            ))
+            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+            if fact.status == "unavailable":
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="CUISINE_GRAPH_UNAVAILABLE")
+            cuisine_ids = {str(row.get("recipe_id") or "") for row in fact.properties.get("rows", []) if row.get("recipe_id")}
+            if not cuisine_ids:
+                return None, CompileResult("TERMINAL", "CUISINE_SCOPE_NOT_FOUND", reason="CUISINE_SCOPE_NOT_FOUND")
+            scopes.append(cuisine_ids)
+        for mention in mentions:
+            try:
+                entities = tuple(self.entity_resolver.resolve(mention, expected_types=("Ingredient",)))
+            except Exception:
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="ENTITY_RESOLVER_UNAVAILABLE")
+            if not entities:
+                return None, CompileResult("TERMINAL", "ENTITY_NOT_FOUND", reason="INGREDIENT_NOT_FOUND")
+            if len(entities) != 1 or entities[0].ambiguity:
+                return None, CompileResult("CLARIFY", "ENTITY_AMBIGUOUS", reason="INGREDIENT_AMBIGUOUS")
+            plan = self.query_plan_validator.validate(QueryPlan(
+                "INGREDIENT_RECIPES", "ingredient_recipes_v1", "Ingredient",
+                {"ingredient_id": entities[0].node_id, "limit": QueryPlanValidator.MAX_CANDIDATES},
+                max_candidates=QueryPlanValidator.MAX_CANDIDATES, source="rule",
+            ))
+            fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
+            if fact.status == "unavailable":
+                return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="INGREDIENT_GRAPH_UNAVAILABLE")
+            rows = fact.properties.get("rows", [])
+            if len(rows) >= QueryPlanValidator.MAX_CANDIDATES:
+                return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="INGREDIENT_SCOPE_TOO_LARGE")
+            ids = {str(row.get("recipe_id") or "") for row in rows if row.get("recipe_id")}
+            if not ids:
+                return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="INGREDIENT_SCOPE_EMPTY")
+            scopes.append(ids)
+        combined = set.intersection(*scopes) if scopes else set()
+        if not combined:
+            return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="HARD_SCOPE_EMPTY")
+        if len(combined) > QueryPlanValidator.MAX_CANDIDATES:
+            return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="HARD_SCOPE_TOO_LARGE")
+        return sorted(combined), None
+
+    def _all_pds_parent_ids_by_cuisine(self, cuisine_type: str) -> list[str]:
+        store = getattr(self, "parent_document_store", None)
+        build_id = getattr(store, "active_build_id", None)
+        if store is None or not build_id:
+            return []
+        ids: set[str] = set()
+        for chunk in store.iter_chunks(build_id):
+            parent = store.get_full_parent(chunk.parent_id)
+            if parent is not None and parent.build_id == build_id and str(parent.metadata.get("cuisine_type", "")) == cuisine_type:
+                ids.add(parent.parent_id)
+        return sorted(ids)
         expected = IntentPlanCompiler._EXPECTED_TYPES.get(candidate.intent, ())
         if not expected or getattr(self, "entity_resolver", None) is None:
             return ()
