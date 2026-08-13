@@ -42,6 +42,19 @@ class _Client:
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=self.content))])
 
 
+class _SchemaFallbackClient(_Client):
+    def __init__(self, content):
+        super().__init__(content)
+        self._schema_rejected = False
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        if kwargs["response_format"]["type"] == "json_schema" and not self._schema_rejected:
+            self._schema_rejected = True
+            raise RuntimeError("response_format json_schema is unsupported")
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=self.content))])
+
+
 class _Audit:
     def __init__(self):
         self.events = []
@@ -85,3 +98,22 @@ def test_planner_uses_configured_timeout_without_expanding_execution_authority()
     client = _Client(_payload())
     IntentPlanner(client, model="test-model", timeout_seconds=30).plan("清淡晚餐")
     assert client.calls[0]["timeout"] == 30
+
+
+def test_schema_capability_fallback_keeps_local_candidate_validation_and_audit_format():
+    client = _SchemaFallbackClient(_payload())
+    audit = _Audit()
+
+    result = IntentPlanner(client, model="test-model").plan("清淡晚餐", audit_run=audit)
+
+    assert result.executable
+    assert result.response_format == "json_object"
+    assert [call["response_format"]["type"] for call in client.calls] == ["json_schema", "json_object"]
+    assert audit.events[0][2]["response_format"] == "json_object"
+
+
+def test_schema_capability_fallback_does_not_accept_invalid_json_object():
+    result = IntentPlanner(_SchemaFallbackClient('{"recipe_id":"forged"}'), model="test-model").plan("清淡晚餐")
+
+    assert result.status == "PLANNER_INVALID_OUTPUT"
+    assert not result.executable

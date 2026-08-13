@@ -222,7 +222,7 @@ class AdvancedGraphRAGSystem:
                 self.intent_planner = IntentPlanner(
                     self.generation_module.client,
                     model=self.config.llm_model,
-                    timeout_seconds=getattr(self.config, "retrieval_intent_planner_timeout_seconds", 8.0),
+                    timeout_seconds=getattr(self.config, "retrieval_intent_planner_timeout_seconds", 30.0),
                 )
                 self.intent_plan_compiler = IntentPlanCompiler(self.query_plan_validator)
                 logger.info("意图规划器已启用：新路径失败将 fail-closed")

@@ -22,6 +22,7 @@ class PlannerResult:
     reason: str | None = None
     latency_ms: int = 0
     response_hash: str | None = None
+    response_format: str | None = None
 
     @property
     def executable(self) -> bool:
@@ -57,37 +58,42 @@ class IntentPlanner:
             return self._record(PlannerResult("PLANNER_INVALID_OUTPUT", reason="EMPTY_USER_MESSAGE"), audit_run)
         started_at = time.monotonic()
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                temperature=0,
-                max_tokens=700,
-                timeout=self.timeout_seconds,
-                response_format={
-                    "type": "json_schema",
-                    "json_schema": {
-                        "name": "intent_candidate_v1",
-                        "strict": True,
-                        "schema": IntentCandidate.json_schema(),
-                    },
-                },
-                messages=[
-                    {"role": "system", "content": self._system_prompt()},
-                    {"role": "user", "content": user_message.strip()},
-                ],
-            )
+            response, response_format = self._request_candidate(user_message, "json_schema")
             raw = self._response_content(response)
         except Exception as error:
-            return self._record(
-                PlannerResult(
-                    "PLANNER_UNAVAILABLE",
-                    reason=type(error).__name__,
-                    latency_ms=self._latency_ms(started_at),
-                ),
-                audit_run,
-            )
+            if self._is_unsupported_json_schema_error(error):
+                try:
+                    # 兼容只支持 JSON object 的 OpenAI 兼容端点；本地仍执行同一份严格 schema 校验。
+                    response, response_format = self._request_candidate(user_message, "json_object")
+                    raw = self._response_content(response)
+                except Exception as fallback_error:
+                    return self._record(
+                        PlannerResult(
+                            "PLANNER_UNAVAILABLE",
+                            reason=type(fallback_error).__name__,
+                            latency_ms=self._latency_ms(started_at),
+                            response_format="json_object",
+                        ),
+                        audit_run,
+                    )
+            else:
+                return self._record(
+                    PlannerResult(
+                        "PLANNER_UNAVAILABLE",
+                        reason=type(error).__name__,
+                        latency_ms=self._latency_ms(started_at),
+                        response_format="json_schema",
+                    ),
+                    audit_run,
+                )
         if not raw or not raw.strip():
             return self._record(
-                PlannerResult("PLANNER_INVALID_OUTPUT", reason="EMPTY_RESPONSE", latency_ms=self._latency_ms(started_at)),
+                PlannerResult(
+                    "PLANNER_INVALID_OUTPUT",
+                    reason="EMPTY_RESPONSE",
+                    latency_ms=self._latency_ms(started_at),
+                    response_format=response_format,
+                ),
                 audit_run,
             )
         response_hash = hashlib.sha256(raw.encode("utf-8")).hexdigest()
@@ -101,6 +107,7 @@ class IntentPlanner:
                     reason=type(error).__name__,
                     latency_ms=self._latency_ms(started_at),
                     response_hash=response_hash,
+                    response_format=response_format,
                 ),
                 audit_run,
             )
@@ -112,6 +119,7 @@ class IntentPlanner:
                     reason="LOW_CONFIDENCE",
                     latency_ms=self._latency_ms(started_at),
                     response_hash=response_hash,
+                    response_format=response_format,
                 ),
                 audit_run,
             )
@@ -121,6 +129,7 @@ class IntentPlanner:
                 candidate=candidate,
                 latency_ms=self._latency_ms(started_at),
                 response_hash=response_hash,
+                response_format=response_format,
             ),
             audit_run,
         )
@@ -133,6 +142,42 @@ class IntentPlanner:
         message = getattr(choices[0], "message", None)
         content = getattr(message, "content", None)
         return content if isinstance(content, str) else ""
+
+    def _request_candidate(self, user_message: str, response_format_type: str) -> tuple[Any, str]:
+        if response_format_type == "json_schema":
+            response_format: dict[str, object] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "intent_candidate_v1",
+                    "strict": True,
+                    "schema": IntentCandidate.json_schema(),
+                },
+            }
+        elif response_format_type == "json_object":
+            response_format = {"type": "json_object"}
+        else:
+            raise ValueError("不支持的 planner 响应格式")
+        return (
+            self.client.chat.completions.create(
+                model=self.model,
+                temperature=0,
+                max_tokens=700,
+                timeout=self.timeout_seconds,
+                response_format=response_format,
+                messages=[
+                    {"role": "system", "content": self._system_prompt()},
+                    {"role": "user", "content": user_message.strip()},
+                ],
+            ),
+            response_format_type,
+        )
+
+    @staticmethod
+    def _is_unsupported_json_schema_error(error: Exception) -> bool:
+        message = str(error).casefold()
+        return "json_schema" in message and any(
+            marker in message for marker in ("unsupported", "not support", "invalid", "not allowed")
+        )
 
     @staticmethod
     def _latency_ms(started_at: float) -> int:
@@ -152,6 +197,7 @@ class IntentPlanner:
                 normalized_slots=candidate.slots.model_dump(mode="json") if candidate else None,
                 latency_ms=result.latency_ms,
                 response_hash=result.response_hash,
+                response_format=result.response_format,
                 reason=result.reason,
             )
         return result
