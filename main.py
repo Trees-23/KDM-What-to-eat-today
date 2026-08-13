@@ -844,7 +844,12 @@ class AdvancedGraphRAGSystem:
             return None
         parent_ids = plan.parameters.get("parent_ids")
         try:
-            aggregates = retriever.retrieve(query, parent_ids=parent_ids, top_k=top_k)
+            aggregates = retriever.retrieve(
+                query,
+                parent_ids=parent_ids,
+                expected_parent_type=plan.entity_type,
+                top_k=top_k,
+            )
         except ArtifactMismatchError as error:
             logger.warning("阶段 4 V2 artifact 不匹配: %s", error)
             if audit_run is not None and hasattr(audit_run, "record_event"):
@@ -877,6 +882,7 @@ class AdvancedGraphRAGSystem:
                 status="selected" if aggregates else "unavailable",
                 parent_count=len(aggregates),
                 vector_scope=plan.parameters["scope"],
+                expected_parent_type=plan.entity_type,
             )
         return bundle
 

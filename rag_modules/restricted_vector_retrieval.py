@@ -50,9 +50,19 @@ class RestrictedVectorRetriever:
         if self.parent_store.active_build_id != build_id:
             raise ArtifactMismatchError("受限向量检索 build_id 与 PDS active build 不一致")
 
-    def retrieve(self, query: str, *, parent_ids: Sequence[str] | None = None, top_k: int = 5, query_vector: Sequence[float] | None = None) -> list[ParentAggregate]:
+    def retrieve(
+        self,
+        query: str,
+        *,
+        parent_ids: Sequence[str] | None = None,
+        expected_parent_type: str | None = None,
+        top_k: int = 5,
+        query_vector: Sequence[float] | None = None,
+    ) -> list[ParentAggregate]:
         if top_k < 1 or top_k > 50:
             raise ValueError("top_k 超出范围")
+        if expected_parent_type is not None and expected_parent_type not in {"Recipe", "TechniqueDoc"}:
+            raise ValueError("expected_parent_type 不在受限向量检索白名单中")
         if parent_ids is not None:
             parent_ids = tuple(dict.fromkeys(str(item) for item in parent_ids))
             if not parent_ids:
@@ -82,7 +92,7 @@ class RestrictedVectorRetriever:
         report = self.parent_store.validate_chunk_linkage([hit.__dict__ for hit in hits])
         if not report.valid:
             raise ArtifactMismatchError(f"Milvus/PDS linkage 不一致: {report}")
-        return self._aggregate(hits, top_k)
+        return self._aggregate(hits, top_k, expected_parent_type=expected_parent_type)
 
     @classmethod
     def _normalize_hits(cls, result: Any) -> list[VectorHit]:
@@ -103,7 +113,13 @@ class RestrictedVectorRetriever:
             normalized.append(VectorHit(chunk_id, parent_id, score, chunk_index, text_hash_value, build_id, section_title))
         return normalized
 
-    def _aggregate(self, hits: Sequence[VectorHit], top_k: int) -> list[ParentAggregate]:
+    def _aggregate(
+        self,
+        hits: Sequence[VectorHit],
+        top_k: int,
+        *,
+        expected_parent_type: str | None = None,
+    ) -> list[ParentAggregate]:
         grouped: dict[str, list[VectorHit]] = {}
         for hit in hits:
             if hit.build_id != self.build_id:
@@ -126,6 +142,8 @@ class RestrictedVectorRetriever:
             parent = self.parent_store.get_full_parent(parent_id)
             if parent is None or parent.build_id != self.build_id:
                 raise ArtifactMismatchError(f"无法从 PDS 回补 parent: {parent_id}")
+            if expected_parent_type is not None and parent.node_type != expected_parent_type:
+                continue
             evidence = TextEvidence(
                 parent_id=parent.parent_id,
                 build_id=parent.build_id,

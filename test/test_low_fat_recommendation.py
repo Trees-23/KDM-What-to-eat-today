@@ -55,8 +55,8 @@ class _RestrictedRetriever:
     def __init__(self):
         self.calls = []
 
-    def retrieve(self, query, *, parent_ids=None, top_k=5):
-        self.calls.append((query, tuple(parent_ids or ()), top_k))
+    def retrieve(self, query, *, parent_ids=None, expected_parent_type=None, top_k=5):
+        self.calls.append((query, tuple(parent_ids or ()), expected_parent_type, top_k))
         return (
             SimpleNamespace(
                 text_evidence=TextEvidence(
@@ -117,7 +117,7 @@ def test_scoped_soft_preference_query_uses_verified_cuisine_scope_then_returns_s
         "limit": 1,
     }
     assert system.restricted_vector_retriever.calls == [
-        (query, ("recipe-sichuan",), 3)
+        (query, ("recipe-sichuan",), "Recipe", 3)
     ]
     assert bundle.recommendation_evidence.level == "soft_preference"
     assert "NUTRITION_SOFT_PREFERENCE_ONLY" in bundle.limitations
