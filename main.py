@@ -592,6 +592,9 @@ class AdvancedGraphRAGSystem:
         mentions = [mention.text for mention in candidate.entity_mentions]
         if candidate.intent in {"INGREDIENT_RECIPES", "INGREDIENT_VEGETABLE_PAIRS"}:
             mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        if candidate.intent == "INGREDIENT_VEGETABLE_PAIRS":
+            # 模板的第二端点是固定、已校验的“蔬菜”类别，不是待解析的命名实体。
+            mentions = [mention for mention in mentions if mention.strip() != "蔬菜"]
         if not mentions:
             return ()
         try:

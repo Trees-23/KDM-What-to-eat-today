@@ -159,7 +159,7 @@ def test_relation_candidate_with_multiple_resolved_entities_clarifies_instead_of
     relation = IntentCandidate(
         intent="INGREDIENT_VEGETABLE_PAIRS",
         confidence=.9,
-        entity_mentions=[{"text": "牛肉"}, {"text": "蔬菜"}],
+        entity_mentions=[{"text": "牛肉"}, {"text": "胡萝卜"}],
     )
 
     resolved = system._resolve_candidate_entities(relation)
@@ -167,6 +167,25 @@ def test_relation_candidate_with_multiple_resolved_entities_clarifies_instead_of
 
     assert result.status == "CLARIFY"
     assert result.action == "CLARIFY_OR_OUT_OF_SCOPE"
+
+
+def test_relation_candidate_uses_fixed_vegetable_category_without_resolving_it_as_an_entity():
+    system = _system(PlannerResult("VALID", candidate=_candidate()))
+    known = SimpleNamespace(node_id="ingredient-beef", node_type="Ingredient", ambiguity=False)
+    calls = []
+    system.entity_resolver = SimpleNamespace(
+        resolve=lambda mention, expected_types: calls.append(mention) or [known]
+    )
+    relation = IntentCandidate(
+        intent="INGREDIENT_VEGETABLE_PAIRS",
+        confidence=.9,
+        entity_mentions=[{"text": "牛肉"}, {"text": "蔬菜"}],
+    )
+
+    result = system._resolve_candidate_entities(relation)
+
+    assert result == (known,)
+    assert calls == ["牛肉"]
 
 
 def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
