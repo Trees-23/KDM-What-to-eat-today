@@ -36,9 +36,9 @@ class _Config:
 
 
 class _Cache:
-    def __init__(self): self.session_contexts = {}; self.added_cache = []; self.added_contexts = []
-    def check_semantic_cache(self, *_args): return None
-    def get_context_for_query(self, _session, query): return "history " + query
+    def __init__(self): self.session_contexts = {}; self.added_cache = []; self.added_contexts = []; self.cache_checks = []; self.context_reads = []
+    def check_semantic_cache(self, *args): self.cache_checks.append(args); return None
+    def get_context_for_query(self, session, query): self.context_reads.append((session, query)); return "history " + query
     def add_to_semantic_cache(self, *args): self.added_cache.append(args)
     def add_to_context(self, *args): self.added_contexts.append(args)
 
@@ -46,14 +46,16 @@ class _Cache:
 class _Generation:
     def __init__(self): self.calls = []
     def generate_adaptive_answer(self, *args, **kwargs): self.calls.append(args); return "generated"
+    def generate_adaptive_answer_stream(self, *args, **kwargs): self.calls.append(args); yield "generated"
 
 
 class _TerminalSystem:
-    def __init__(self, root):
+    def __init__(self, root, action="ENTITY_NOT_FOUND"):
         self.config = _Config(rag_audit_root_dir=str(root)); self.cache_manager = _Cache(); self.generation_module = _Generation(); self.retrieval_calls = []
+        self.action = action
     def retrieve_for_generation(self, query, top_k, audit_run=None, **_kwargs):
         self.retrieval_calls.append((query, top_k))
-        return EvidenceBundle(None, (), (), (), ("ENTITY_NOT_FOUND",)), None
+        return EvidenceBundle(None, (), (), (), (self.action, "INTENT_NON_EXECUTE")), None
 
 
 class _EmptyStreamModule(GenerationIntegrationModule):
@@ -84,3 +86,22 @@ def test_planner_terminal_uses_original_user_message_and_skips_generation_cache_
         assert system.generation_module.calls == []
         assert system.cache_manager.added_cache == []
         assert system.cache_manager.added_contexts == []
+        assert system.cache_manager.cache_checks == []
+        assert system.cache_manager.context_reads == []
+
+
+def test_every_non_execute_compile_action_skips_stream_generation_cache_and_session_writes():
+    for action in ("PLANNER_LOW_CONFIDENCE", "CLARIFY_OR_OUT_OF_SCOPE", "NUTRITION_EVIDENCE_INSUFFICIENT", "GRAPH_UNAVAILABLE"):
+        with tempfile.TemporaryDirectory() as tmp:
+            install_fake_flask({"message": "测试请求", "session_id": "s1"})
+            system = _TerminalSystem(Path(tmp), action=action)
+            response = WebServiceHandler(system)._handle_stream_request()
+            chunks = list(response.iterable)
+
+            assert any(action in chunk for chunk in chunks)
+            assert system.retrieval_calls == [("测试请求", 2)]
+            assert system.generation_module.calls == []
+            assert system.cache_manager.cache_checks == []
+            assert system.cache_manager.context_reads == []
+            assert system.cache_manager.added_cache == []
+            assert system.cache_manager.added_contexts == []

@@ -136,6 +136,7 @@ class WebServiceHandler:
                 evaluation_constraints=data.get("evaluation_constraints"),
                 system_instructions=data.get("system_instructions"),
             )
+            planner_enabled = self._planner_enabled()
 
             audit_run = self.audit_manager.create_run()
             request_start = audit_run.mark_request_start()
@@ -156,6 +157,8 @@ class WebServiceHandler:
                 nonlocal cached_response, cache_started_at, cache_finished_at, cache_error
                 cache_started_at = datetime.now()
                 try:
+                    if planner_enabled:
+                        return
                     cached_response = self.rag_system.cache_manager.check_semantic_cache(query, session_id)
                 except Exception as e:
                     cache_error = e
@@ -167,6 +170,9 @@ class WebServiceHandler:
                 nonlocal enhanced_query, context_started_at, context_finished_at, context_error
                 context_started_at = datetime.now()
                 try:
+                    if planner_enabled:
+                        enhanced_query = query
+                        return
                     enhanced_query = self.rag_system.cache_manager.get_context_for_query(session_id, query)
                 except Exception as e:
                     context_error = e
@@ -228,7 +234,7 @@ class WebServiceHandler:
             
             # 缓存未命中，执行完整的RAG流程
             if hasattr(self.rag_system, "retrieve_for_generation"):
-                retrieval_query = request_boundary.planner_input if self._planner_enabled() else enhanced_query
+                retrieval_query = request_boundary.planner_input if planner_enabled else enhanced_query
                 documents, analysis = self.rag_system.retrieve_for_generation(
                     retrieval_query,
                     self.rag_system.config.top_k,
@@ -241,7 +247,7 @@ class WebServiceHandler:
                     top_k=self.rag_system.config.top_k,
                     audit_run=audit_run,
                 )
-            if self._planner_enabled() and self._non_execute_bundle(documents):
+            if planner_enabled and self._non_execute_bundle(documents):
                 response = self._fixed_terminal_response(documents)
                 audit_run.append_process("Final Output", {"answer_chars": len(response), "answer_hash": query_hash(response), "success": True, "final_source": "compile_terminal"})
                 audit_run.finish_request(success=True, final_source="compile_terminal")
@@ -289,6 +295,7 @@ class WebServiceHandler:
                 evaluation_constraints=data.get("evaluation_constraints"),
                 system_instructions=data.get("system_instructions"),
             )
+            planner_enabled = self._planner_enabled()
 
             audit_run = self.audit_manager.create_run()
             request_start = audit_run.mark_request_start()
@@ -311,6 +318,8 @@ class WebServiceHandler:
                         nonlocal cached_response, cache_started_at, cache_finished_at, cache_error
                         cache_started_at = datetime.now()
                         try:
+                            if planner_enabled:
+                                return
                             cached_response = self.rag_system.cache_manager.check_semantic_cache(query, session_id)
                         except Exception as e:
                             cache_error = e
@@ -322,6 +331,9 @@ class WebServiceHandler:
                         nonlocal enhanced_query, context_started_at, context_finished_at, context_error
                         context_started_at = datetime.now()
                         try:
+                            if planner_enabled:
+                                enhanced_query = query
+                                return
                             enhanced_query = self.rag_system.cache_manager.get_context_for_query(session_id, query)
                         except Exception as e:
                             context_error = e
@@ -384,7 +396,7 @@ class WebServiceHandler:
                     
                     # 缓存未命中，执行完整的RAG流程
                     if hasattr(self.rag_system, "retrieve_for_generation"):
-                        retrieval_query = request_boundary.planner_input if self._planner_enabled() else enhanced_query
+                        retrieval_query = request_boundary.planner_input if planner_enabled else enhanced_query
                         documents, analysis = self.rag_system.retrieve_for_generation(
                             retrieval_query,
                             self.rag_system.config.top_k,
@@ -398,7 +410,7 @@ class WebServiceHandler:
                             audit_run=audit_run,
                         )
                     
-                    if self._planner_enabled() and self._non_execute_bundle(documents):
+                    if planner_enabled and self._non_execute_bundle(documents):
                         terminal_response = self._fixed_terminal_response(documents)
                         audit_run.append_process("Final Output", {"answer_chars": len(terminal_response), "answer_hash": query_hash(terminal_response), "success": True, "final_source": "compile_terminal"})
                         audit_run.finish_request(success=True, final_source="compile_terminal")
@@ -472,8 +484,7 @@ class WebServiceHandler:
         from rag_modules.retrieval_contracts import EvidenceBundle
         if not isinstance(documents, EvidenceBundle):
             return False
-        terminal_markers = {"PLANNER_INVALID_OUTPUT", "PLANNER_UNAVAILABLE", "NUTRITION_EVIDENCE_INSUFFICIENT", "ENTITY_NOT_FOUND", "ENTITY_AMBIGUOUS", "NO_PREFERENCE_RESULTS", "SCOPE_TOO_LARGE", "GRAPH_RELATION_NOT_FOUND", "GRAPH_UNAVAILABLE", "VECTOR_UNAVAILABLE"}
-        return bool(terminal_markers.intersection(documents.limitations))
+        return "INTENT_NON_EXECUTE" in documents.limitations
 
     @staticmethod
     def _fixed_terminal_response(bundle) -> str:

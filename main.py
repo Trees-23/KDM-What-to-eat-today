@@ -417,6 +417,24 @@ class AdvancedGraphRAGSystem:
                     print(f"    等 {len(relevant_docs)} 个结果...")
             else:
                 return "抱歉，没有找到相关的烹饪信息。请尝试其他问题。"
+
+            if (
+                bool(getattr(self.config, "retrieval_intent_planner_enabled", False))
+                and isinstance(relevant_docs, EvidenceBundle)
+                and "INTENT_NON_EXECUTE" in relevant_docs.limitations
+            ):
+                result = self._intent_terminal_response(relevant_docs)
+                audit_run.append_process(
+                    "Final Output",
+                    {
+                        "answer_chars": len(result),
+                        "answer_hash": hashlib.sha256(result.encode("utf-8")).hexdigest(),
+                        "success": True,
+                        "final_source": "compile_terminal",
+                    },
+                )
+                audit_run.finish_request(success=True, final_source="compile_terminal")
+                return result, analysis
             
             # 4. 生成回答
             print("🎯 智能生成回答...")
@@ -677,7 +695,18 @@ class AdvancedGraphRAGSystem:
     @staticmethod
     def _compile_result_bundle(result: CompileResult) -> EvidenceBundle:
         limitation = result.action if result.action else result.status
-        return EvidenceBundle(query_plan=None, entity_candidates=(), graph_facts=(), text_evidence=(), limitations=(limitation,) + tuple(result.limitations))
+        return EvidenceBundle(
+            query_plan=None,
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=(limitation, "INTENT_NON_EXECUTE") + tuple(result.limitations),
+        )
+
+    @staticmethod
+    def _intent_terminal_response(bundle: EvidenceBundle) -> str:
+        limitation = next((item for item in bundle.limitations if item != "INTENT_NON_EXECUTE"), "INTENT_UNRESOLVED")
+        return f"当前无法安全执行该请求：{limitation}。请补充可验证的菜名、食材或偏好条件。"
 
     @staticmethod
     def _audit_compile_result(audit_run, result: CompileResult) -> None:

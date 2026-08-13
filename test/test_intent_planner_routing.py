@@ -37,6 +37,17 @@ class _Audit:
     def record_event(self, stage, status="completed", **fields): self.events.append((stage, status, fields))
 
 
+class _CliAudit(_Audit):
+    def mark_request_start(self): return None
+    def append_process(self, stage, fields): self.events.append((stage, "completed", fields))
+    def finish_request(self, **fields): self.events.append(("request_complete", "completed", fields))
+
+
+class _Generation:
+    def __init__(self): self.calls = []
+    def generate_adaptive_answer(self, *args, **kwargs): self.calls.append((args, kwargs)); return "generated"
+
+
 @dataclass
 class _Config:
     retrieval_intent_planner_enabled: bool = True
@@ -133,3 +144,22 @@ def test_recipe_detail_executes_only_local_pds_direct_path_without_query_plan():
     assert analysis is None
     assert system.entity_direct_retriever.calls[0][1] == {"scope": "RECIPE_FULL"}
     assert system.restricted_vector_retriever.calls == []
+
+
+def test_cli_planner_non_execute_bundle_never_calls_generation():
+    system = _system(PlannerResult("PLANNER_INVALID_OUTPUT"))
+    system.system_ready = True
+    system.config.retrieval_intent_planner_enabled = True
+    system.generation_module = _Generation()
+    system.retrieve_for_generation = lambda *_args, **_kwargs: (
+        EvidenceBundle(None, (), (), (), ("PLANNER_LOW_CONFIDENCE", "INTENT_NON_EXECUTE")),
+        None,
+    )
+    audit = _CliAudit()
+
+    result, analysis = system.ask_question_with_routing("测试请求", audit_run=audit)
+
+    assert "PLANNER_LOW_CONFIDENCE" in result
+    assert analysis is None
+    assert system.generation_module.calls == []
+    assert audit.events[-1] == ("request_complete", "completed", {"success": True, "final_source": "compile_terminal"})
