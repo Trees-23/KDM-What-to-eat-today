@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import sys
 import time
 from contextlib import contextmanager
@@ -24,6 +25,7 @@ from rag_modules.retrieval_contracts import EvidenceBundle
 RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
 GENERATION_TIMEOUT_SECONDS = 60.0
+QUESTION_TIMEOUT_SECONDS = 90.0
 
 
 class _UnavailableGraphDriver:
@@ -34,6 +36,33 @@ class _UnavailableGraphDriver:
         del database
         raise OSError("INTENT_PLANNER_ACCEPTANCE_GRAPH_UNAVAILABLE")
         yield  # pragma: no cover - 让此函数保持 generator 形式。
+
+
+class _QuestionTimeoutError(TimeoutError):
+    """单题总时限耗尽，必须记录为失败后继续下一题。"""
+
+
+@contextmanager
+def _question_timeout(seconds: float):
+    """在 Linux 容器主线程中对单题施加硬超时。"""
+
+    if seconds <= 0 or not hasattr(signal, "setitimer"):
+        yield
+        return
+
+    def expire(_signum, _frame):
+        raise _QuestionTimeoutError(f"单题超过 {seconds:.0f} 秒硬时限")
+
+    previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_timer = signal.setitimer(signal.ITIMER_REAL, seconds)
+    signal.signal(signal.SIGALRM, expire)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+        if previous_timer[0] > 0:
+            signal.setitimer(signal.ITIMER_REAL, *previous_timer)
 
 
 def _read_input(path: Path) -> dict[str, Any]:
@@ -196,6 +225,8 @@ def run(input_path: Path, output_path: Path) -> int:
             )
             started = time.monotonic()
             original_driver = None
+            question_timeout = _question_timeout(QUESTION_TIMEOUT_SECONDS)
+            question_timeout.__enter__()
             try:
                 if question["scenario_id"] == "S10":
                     if system.targeted_graph_retriever is None:
@@ -225,6 +256,7 @@ def run(input_path: Path, output_path: Path) -> int:
             finally:
                 if original_driver is not None:
                     system.targeted_graph_retriever.driver = original_driver
+                question_timeout.__exit__(None, None, None)
             failures = _status_for(question, bundle, events, answer)
             row = {
                     "runner_id": RUNNER_ID,

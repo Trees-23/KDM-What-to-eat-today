@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import time
 from pathlib import Path
 
 import pytest
 
-from rag_modules.planner_acceptance_runtime import _acceptance_request, _status_for
+from rag_modules.planner_acceptance_runtime import (
+    QUESTION_TIMEOUT_SECONDS,
+    _QuestionTimeoutError,
+    _acceptance_request,
+    _question_timeout,
+    _status_for,
+)
 from rag_modules.retrieval_contracts import EvidenceBundle
 
 
@@ -197,3 +204,13 @@ def test_runtime_accepts_local_strict_nutrition_gate_without_planner_event():
     )
 
     assert "missing_planner_or_compile_audit" not in failures
+
+
+def test_runtime_question_timeout_interrupts_a_single_question():
+    started = time.monotonic()
+    with pytest.raises(_QuestionTimeoutError):
+        with _question_timeout(0.01):
+            time.sleep(0.1)
+
+    assert QUESTION_TIMEOUT_SECONDS >= 60
+    assert time.monotonic() - started < 0.08
