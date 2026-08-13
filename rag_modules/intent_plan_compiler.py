@@ -58,7 +58,7 @@ class IntentPlanCompiler:
         "PREFERENCE_RECOMMEND": ("Ingredient",),
     }
 
-    def __init__(self, validator: QueryPlanValidator | None = None, *, max_candidates: int = 20):
+    def __init__(self, validator: QueryPlanValidator | None = None, *, max_candidates: int = QueryPlanValidator.MAX_CANDIDATES):
         self.validator = validator or QueryPlanValidator()
         if not 1 <= max_candidates <= QueryPlanValidator.MAX_CANDIDATES:
             raise ValueError("max_candidates 超出范围")

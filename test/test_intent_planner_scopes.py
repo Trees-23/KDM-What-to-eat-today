@@ -63,3 +63,17 @@ def test_cuisine_scope_requires_verified_graph_not_unscoped_pds_metadata():
     ids, failure = system._planner_preference_scope(_candidate(cuisine=True))
     assert ids == ["r1"] and failure is None
     assert graph.calls[0].template_id == "recipe_cuisine_filter_v1"
+
+
+def test_verified_cuisine_scope_below_global_bound_is_not_rejected_by_output_limit():
+    parents = {
+        f"r{number}": SimpleNamespace(parent_id=f"r{number}", build_id="build", metadata={"cuisine_type": "川菜"})
+        for number in range(32)
+    }
+    graph = _Graph({"recipe_cuisine_filter_v1": [{"recipe_id": recipe_id} for recipe_id in parents]})
+    system = _system(_Resolver({}), graph, _Pds(parents))
+
+    ids, failure = system._planner_preference_scope(_candidate(cuisine=True))
+
+    assert failure is None
+    assert ids == sorted(parents)

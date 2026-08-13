@@ -40,6 +40,17 @@ def test_preference_with_scope_never_expands_empty_or_large_scope():
     assert scoped.query_plan.parameters["scope"] == "candidate_parents"
 
 
+def test_preference_accepts_complete_verified_parent_scope_up_to_validator_bound():
+    compiler = IntentPlanCompiler()
+    ids = [f"recipe-{number}" for number in range(32)]
+
+    result = compiler.compile(candidate(), scoped_recipe_ids=ids)
+
+    assert result.status == "EXECUTE"
+    assert result.query_plan.parameters["parent_ids"] == ids
+    assert result.query_plan.parameters["limit"] == 50
+
+
 def test_entity_plans_are_local_and_non_execute_states_have_no_plan():
     compiler = IntentPlanCompiler(max_candidates=3)
     recipe_step = compiler.compile(candidate("RECIPE_STEP", mentions=[{"text": "菜"}]), resolved_entities=[entity("r1", "Recipe")])
