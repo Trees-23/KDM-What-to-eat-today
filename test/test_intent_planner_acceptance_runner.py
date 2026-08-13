@@ -42,6 +42,27 @@ def test_live_acceptance_report_rejects_incomplete_or_failed_rows(tmp_path):
     assert report["valid"] is False
 
 
+def test_live_acceptance_failure_summary_collects_failed_questions_with_audit_references(tmp_path):
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_failure_summary")
+    metadata = {"implementation_commit": "a" * 40, "bank_sha256": "b" * 64}
+    rows = tmp_path / "rows.jsonl"
+    rows.write_text(
+        "\n".join(
+            (
+                json.dumps({"question_id": "q-pass", "status": "passed"}),
+                json.dumps({"question_id": "q-fail", "scenario_id": "S06", "difficulty_code": "B", "input": "失败题", "status": "failed", "failures": ["empty_answer"], "limitations": ["VECTOR_UNAVAILABLE"], "query_plan": None, "audit_id": "audit-1", "audit_dir": "/audit-1"}),
+            )
+        ) + "\n",
+        encoding="utf-8",
+    )
+
+    summary = runner._failure_summary(rows, tmp_path / "failure-summary.json", metadata)
+
+    assert summary["question_count"] == 2
+    assert summary["failed_count"] == 1
+    assert summary["failures"] == [{"question_id": "q-fail", "scenario_id": "S06", "difficulty_code": "B", "input": "失败题", "failures": ["empty_answer"], "limitations": ["VECTOR_UNAVAILABLE"], "query_plan": None, "audit_id": "audit-1", "audit_dir": "/audit-1"}]
+
+
 def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     source = RUNTIME_PATH.read_text(encoding="utf-8")
 

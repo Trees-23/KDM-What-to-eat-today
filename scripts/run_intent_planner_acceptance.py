@@ -78,6 +78,37 @@ def _report(rows_path: Path, report_path: Path, metadata: dict[str, Any]) -> dic
     return report
 
 
+def _failure_summary(rows_path: Path, summary_path: Path, metadata: dict[str, Any]) -> dict[str, Any]:
+    """在全量完成后集中输出失败集合，保留原始逐题结果与审计引用。"""
+    rows = [json.loads(line) for line in rows_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    failures = [
+        {
+            "question_id": row.get("question_id"),
+            "scenario_id": row.get("scenario_id"),
+            "difficulty_code": row.get("difficulty_code"),
+            "input": row.get("input"),
+            "failures": row.get("failures", []),
+            "limitations": row.get("limitations", []),
+            "query_plan": row.get("query_plan"),
+            "audit_id": row.get("audit_id"),
+            "audit_dir": row.get("audit_dir"),
+        }
+        for row in rows
+        if row.get("status") != "passed"
+    ]
+    summary = {
+        "runner_id": RUNNER_ID,
+        "implementation_commit": metadata["implementation_commit"],
+        "bank_sha256": metadata["bank_sha256"],
+        "question_count": len(rows),
+        "failed_count": len(failures),
+        "failure_result_file": rows_path.name,
+        "failures": failures,
+    }
+    _write_json_once(summary_path, summary)
+    return summary
+
+
 def run(output: Path) -> int:
     if output.exists():
         raise FileExistsError(f"拒绝覆盖已有运行目录: {output}")
@@ -119,6 +150,7 @@ def run(output: Path) -> int:
     if not rows.exists():
         return process.returncode or 2
     report = _report(rows, output / "acceptance-report.json", metadata)
+    _failure_summary(rows, output / "failure-summary.json", metadata)
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
     return 0 if process.returncode == 0 and report["valid"] else 2
 
