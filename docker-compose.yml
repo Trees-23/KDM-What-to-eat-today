@@ -151,7 +151,8 @@ services:
       - RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT=100
       - RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED=true
       - RETRIEVAL_MILVUS_DATABASE=default
-      - RETRIEVAL_MILVUS_COLLECTION=cooking_knowledge_v2_pds_aff3e33d
+      # 活动 collection 由 retrieval_artifact_manifest.json 原子发布；如显式设置，
+      # 仅用于和 manifest 交叉校验，避免 Compose 固化某个过期 build。
       # 统一API配置
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.moonshot.cn/v1}

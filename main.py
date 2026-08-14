@@ -995,6 +995,9 @@ class AdvancedGraphRAGSystem:
         """仅从已验证联合 manifest 初始化 V2，任何不一致都保持不可用。"""
         try:
             manifest = RetrievalArtifactManifest.read(self.config.retrieval_artifact_manifest_path)
+            configured_collection = str(self.config.retrieval_milvus_collection or "").strip()
+            if configured_collection and configured_collection != manifest.milvus_collection:
+                raise ArtifactMismatchError("RETRIEVAL_MILVUS_COLLECTION 与活动 artifact manifest 不一致")
             schema = MilvusV2Schema(
                 dimension=self.config.milvus_dimension,
             )
@@ -1004,7 +1007,7 @@ class AdvancedGraphRAGSystem:
                     self.parent_document_store, self.parent_document_store.active_build_id
                 ),
                 milvus_database=self.config.retrieval_milvus_database,
-                milvus_collection=self.config.retrieval_milvus_collection,
+                milvus_collection=manifest.milvus_collection,
                 schema_hash=schema.schema_hash,
             )
             host = getattr(self.index_module, "host", None) or self.config.milvus_host
@@ -1013,7 +1016,7 @@ class AdvancedGraphRAGSystem:
             self.restricted_vector_retriever = RestrictedVectorRetriever(
                 client,
                 parent_store=self.parent_document_store,
-                collection=self.config.retrieval_milvus_collection,
+                collection=manifest.milvus_collection,
                 build_id=manifest.milvus_build_id,
                 database=self.config.retrieval_milvus_database,
                 dimension=self.config.milvus_dimension,

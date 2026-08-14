@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import importlib.util
 from pathlib import Path
 import sys
@@ -28,6 +29,11 @@ from rag_modules.milvus_v2_index import (
 )
 from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 from rag_modules.recommendation_evidence import RecommendationEvidence
+from rag_modules.intent_candidate import IntentCandidate
+from rag_modules.intent_planner import IntentPlanner
+from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
+from rag_modules.preference_reranker import PreferenceReranker
+from rag_modules.recommendation_constraints import RecommendationConstraintCompiler, ResolvedCandidateScope
 from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
 
 
@@ -349,6 +355,14 @@ def _load_main_system_type(audit_manager=None):
             pds_manifest_sha256=pds_manifest_sha256,
         ),
         "rag_modules.restricted_vector_retrieval": module_with(RestrictedVectorRetriever=RestrictedVectorRetriever),
+        "rag_modules.intent_candidate": module_with(IntentCandidate=IntentCandidate),
+        "rag_modules.intent_planner": module_with(IntentPlanner=IntentPlanner),
+        "rag_modules.intent_plan_compiler": module_with(CompileResult=CompileResult, IntentPlanCompiler=IntentPlanCompiler),
+        "rag_modules.preference_reranker": module_with(PreferenceReranker=PreferenceReranker),
+        "rag_modules.recommendation_constraints": module_with(
+            RecommendationConstraintCompiler=RecommendationConstraintCompiler,
+            ResolvedCandidateScope=ResolvedCandidateScope,
+        ),
         "rag_modules.rag_audit": module_with(RAGAuditManager=audit_manager),
         "rag_modules.retrieval_contracts": sys.modules["rag_modules.retrieval_contracts"],
         "rag_modules.nutrition_policy": module_with(SOFT_PREFERENCE_POLICY=SOFT_PREFERENCE_POLICY),
@@ -561,6 +575,53 @@ def test_preference_initialization_artifact_mismatch_is_audited_before_legacy_fa
     assert analysis == "legacy-analysis"
     assert len(system.query_router.calls) == 1
     assert any(event[:2] == ("restricted_vector", "artifact-mismatch") for event in audit.events)
+
+
+def test_restricted_vector_initialization_uses_active_manifest_collection(tmp_path, monkeypatch):
+    import main as main_module
+
+    store = _build_store(tmp_path)
+    build_id = store.active_build_id
+    collection = f"cooking_knowledge_v2_{build_id[:12]}"
+    manifest = RetrievalArtifactManifest(
+        pds_build_id=build_id,
+        pds_manifest_sha256=pds_manifest_sha256(store, build_id),
+        milvus_database="default",
+        milvus_collection=collection,
+        milvus_schema_hash=MilvusV2Schema().schema_hash,
+        milvus_build_id=build_id,
+        created_at=datetime.now(timezone.utc).isoformat(),
+        rollback_database="default",
+        rollback_collection="cooking_knowledge",
+        rollback_pds_build="pds_previous",
+    )
+    manifest_path = manifest.write_atomic(tmp_path / "artifact.json")
+    configured = types.SimpleNamespace(
+        retrieval_artifact_manifest_path=str(manifest_path),
+        retrieval_milvus_collection="",
+        retrieval_milvus_database="default",
+        milvus_dimension=512,
+        milvus_host="milvus",
+        milvus_port=19530,
+    )
+    captured = {}
+
+    class _Retriever:
+        def __init__(self, _client, **kwargs):
+            captured.update(kwargs)
+
+    system = main_module.AdvancedGraphRAGSystem.__new__(main_module.AdvancedGraphRAGSystem)
+    system.config = configured
+    system.parent_document_store = store
+    system.index_module = types.SimpleNamespace(host="milvus", port=19530, embeddings=object())
+    monkeypatch.setattr(main_module, "create_milvus_client", lambda *_args: object())
+    monkeypatch.setattr(main_module, "RestrictedVectorRetriever", _Retriever)
+
+    system._initialize_restricted_vector_retriever()
+
+    assert system._restricted_vector_init_status is None
+    assert captured["collection"] == collection
+    store.close()
 
 
 def test_query_plan_prioritizes_step_graph_fact_and_hydrates_existing_pds_text(tmp_path):
