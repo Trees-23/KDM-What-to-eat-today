@@ -57,6 +57,8 @@ from rag_modules.restricted_vector_retrieval import RestrictedVectorRetriever
 from rag_modules.intent_candidate import IntentCandidate
 from rag_modules.intent_planner import IntentPlanner
 from rag_modules.intent_plan_compiler import CompileResult, IntentPlanCompiler
+from rag_modules.preference_reranker import PreferenceReranker
+from rag_modules.recommendation_constraints import RecommendationConstraintCompiler, ResolvedCandidateScope
 from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 
 
@@ -107,6 +109,8 @@ class AdvancedGraphRAGSystem:
         self._restricted_vector_init_status = None
         self.intent_planner = None
         self.intent_plan_compiler = None
+        self.recommendation_constraint_compiler = RecommendationConstraintCompiler()
+        self.preference_reranker = PreferenceReranker()
         
     def initialize_system(self):
         """初始化高级图RAG系统"""
@@ -229,7 +233,10 @@ class AdvancedGraphRAGSystem:
                     model=self.config.llm_model,
                     timeout_seconds=getattr(self.config, "retrieval_intent_planner_timeout_seconds", 30.0),
                 )
-                self.intent_plan_compiler = IntentPlanCompiler(self.query_plan_validator)
+                self.intent_plan_compiler = IntentPlanCompiler(
+                    self.query_plan_validator,
+                    recommendation_scope_max=self._recommendation_scope_limit(),
+                )
                 logger.info("意图规划器已启用：新路径失败将 fail-closed")
 
             # 9. Web服务处理器
@@ -562,6 +569,8 @@ class AdvancedGraphRAGSystem:
             return self._compile_result_bundle(CompileResult(status, planner_result.status, reason=planner_result.reason)), None
         candidate = self._reconcile_explicit_recipe_detail(user_message, planner_result.candidate, audit_run=audit_run)
         if candidate.intent == "PREFERENCE_RECOMMEND":
+            if getattr(self.config, "retrieval_recommendation_constraints_enabled", False):
+                return self._retrieve_with_recommendation_constraints(user_message, top_k, candidate, compiler, audit_run=audit_run)
             scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
             if scope_result is not None:
                 self._audit_compile_result(audit_run, scope_result)
@@ -575,6 +584,56 @@ class AdvancedGraphRAGSystem:
         resolved = self._resolve_candidate_entities(candidate, user_message=user_message)
         result = compiler.compile(candidate, resolved_entities=resolved, dependencies_available=self._planner_dependencies_available())
         return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, resolved_entities=resolved)
+
+    def _retrieve_with_recommendation_constraints(self, user_message, top_k, candidate, compiler, *, audit_run=None):
+        """新推荐路径：本地约束 -> metadata 硬范围 -> Top30 -> Top5 正文。"""
+        constraint_compiler = getattr(self, "recommendation_constraint_compiler", None) or RecommendationConstraintCompiler()
+        ingredient_ids, ingredient_result = self._verified_preference_ingredient_ids(candidate)
+        if ingredient_result is not None:
+            self._audit_compile_result(audit_run, ingredient_result)
+            return self._compile_result_bundle(ingredient_result), None
+        spec = constraint_compiler.compile(user_message, candidate, verified_ingredient_ids=ingredient_ids)
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("recommendation_constraints", status="clarify" if spec.clarification_reason else "compiled", decisions=list(spec.decisions), clarification_reason=spec.clarification_reason)
+        if spec.clarification_reason:
+            return self._compile_result_bundle(CompileResult("CLARIFY", "RECOMMENDATION_CONSTRAINT_CLARIFY", reason=spec.clarification_reason)), None
+        scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
+        if scope_result is not None:
+            self._audit_compile_result(audit_run, scope_result)
+            return self._compile_result_bundle(scope_result), None
+        scope, scope_result = self._resolve_recommendation_scope(spec, scoped_recipe_ids)
+        if scope_result is not None:
+            self._audit_compile_result(audit_run, scope_result)
+            return self._compile_result_bundle(scope_result), None
+        result = compiler.compile(
+            candidate,
+            scoped_recipe_ids=scope.parent_ids if scope is not None else scoped_recipe_ids,
+            dependencies_available=self._planner_dependencies_available(),
+        )
+        return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, constraint_spec=spec)
+
+    def _verified_preference_ingredient_ids(self, candidate):
+        """具名食材只有唯一 EntityResolver 结果才进入本地 ConstraintSpec。"""
+        mentions = [mention.text for mention in candidate.entity_mentions]
+        mentions.extend(value for value in candidate.slots.ingredients if value not in mentions)
+        mentions = [value for value in mentions if value.strip() not in _GENERIC_PREFERENCE_MENTIONS]
+        if not mentions:
+            return (), None
+        resolver = getattr(self, "entity_resolver", None)
+        if resolver is None:
+            return (), CompileResult("UNAVAILABLE", "ENTITY_RESOLVER_UNAVAILABLE", reason="ENTITY_RESOLVER_UNAVAILABLE")
+        ids: list[str] = []
+        for mention in mentions:
+            try:
+                entities = tuple(resolver.resolve(mention, expected_types=("Ingredient",)))
+            except Exception:
+                return (), CompileResult("UNAVAILABLE", "ENTITY_RESOLVER_UNAVAILABLE", reason="ENTITY_RESOLVER_UNAVAILABLE")
+            if not entities:
+                return (), CompileResult("TERMINAL", "ENTITY_NOT_FOUND", reason="INGREDIENT_NOT_FOUND")
+            if len(entities) != 1 or entities[0].ambiguity:
+                return (), CompileResult("CLARIFY", "ENTITY_AMBIGUOUS", reason="INGREDIENT_AMBIGUOUS")
+            ids.append(entities[0].node_id)
+        return tuple(dict.fromkeys(ids)), None
 
     @staticmethod
     def _is_strict_nutrition_or_medical_request(user_message: str) -> bool:
@@ -673,7 +732,8 @@ class AdvancedGraphRAGSystem:
             candidate_ids = self._all_pds_parent_ids_by_cuisine("川菜")
             if not candidate_ids:
                 return None, CompileResult("TERMINAL", "CUISINE_SCOPE_NOT_FOUND", reason="CUISINE_SCOPE_NOT_FOUND")
-            if len(candidate_ids) > QueryPlanValidator.MAX_CANDIDATES:
+            scope_limit = self._recommendation_scope_limit()
+            if len(candidate_ids) > scope_limit:
                 return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="CUISINE_SCOPE_TOO_LARGE")
             plan = self.query_plan_validator.validate(QueryPlan(
                 "RECIPE_CUISINE_FILTER", "recipe_cuisine_filter_v1", "Recipe",
@@ -698,14 +758,14 @@ class AdvancedGraphRAGSystem:
                 return None, CompileResult("CLARIFY", "ENTITY_AMBIGUOUS", reason="INGREDIENT_AMBIGUOUS")
             plan = self.query_plan_validator.validate(QueryPlan(
                 "INGREDIENT_RECIPES", "ingredient_recipes_v1", "Ingredient",
-                {"ingredient_id": entities[0].node_id, "limit": QueryPlanValidator.MAX_CANDIDATES},
-                max_candidates=QueryPlanValidator.MAX_CANDIDATES, source="rule",
+                {"ingredient_id": entities[0].node_id, "limit": self._recommendation_scope_limit()},
+                max_candidates=self._recommendation_scope_limit(), source="rule",
             ))
             fact = self.targeted_graph_retriever.retrieve(plan, audit_run=audit_run)
             if fact.status == "unavailable":
                 return None, CompileResult("UNAVAILABLE", "GRAPH_UNAVAILABLE", reason="INGREDIENT_GRAPH_UNAVAILABLE")
             rows = fact.properties.get("rows", [])
-            if len(rows) >= QueryPlanValidator.MAX_CANDIDATES:
+            if len(rows) >= self._recommendation_scope_limit():
                 return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="INGREDIENT_SCOPE_TOO_LARGE")
             ids = {str(row.get("recipe_id") or "") for row in rows if row.get("recipe_id")}
             if not ids:
@@ -714,15 +774,68 @@ class AdvancedGraphRAGSystem:
         combined = set.intersection(*scopes) if scopes else set()
         if not combined:
             return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="HARD_SCOPE_EMPTY")
-        if len(combined) > QueryPlanValidator.MAX_CANDIDATES:
+        if len(combined) > self._recommendation_scope_limit():
             return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="HARD_SCOPE_TOO_LARGE")
         return sorted(combined), None
+
+    def _recommendation_scope_limit(self) -> int:
+        configured = getattr(getattr(self, "config", None), "retrieval_recommendation_max_hard_scope", QueryPlanValidator.MAX_RECOMMENDATION_SCOPE)
+        try:
+            return max(1, min(int(configured), QueryPlanValidator.MAX_RECOMMENDATION_SCOPE))
+        except (TypeError, ValueError):
+            return QueryPlanValidator.MAX_RECOMMENDATION_SCOPE
+
+    def _resolve_recommendation_scope(self, spec, base_parent_ids, *, audit_run=None):
+        """在活动 PDS metadata 上计算硬条件交集，完全不读取 Markdown 正文。"""
+        hard = spec.hard_filters
+        requires_scope = bool(
+            base_parent_ids is not None or hard.methods or hard.excluded_methods
+            or hard.required_cooking_appliances or hard.excluded_cooking_appliances
+            or hard.exclusive_cooking_appliances or hard.max_total_minutes is not None
+        )
+        if not requires_scope:
+            return None, None
+        store = getattr(self, "parent_document_store", None)
+        build_id = getattr(store, "active_build_id", None)
+        if store is None or not build_id or not hasattr(store, "iter_recipe_metadata"):
+            return None, CompileResult("UNAVAILABLE", "PDS_METADATA_UNAVAILABLE", reason="PDS_METADATA_UNAVAILABLE")
+        rows = list(store.iter_recipe_metadata(build_id=build_id, parent_ids=base_parent_ids))
+        counts: dict[str, int] = {"initial": len(rows)}
+
+        def apply(name, predicate):
+            nonlocal rows
+            rows = [row for row in rows if predicate(row.metadata)]
+            counts[name] = len(rows)
+
+        if hard.methods:
+            apply("methods", lambda meta: set(hard.methods) <= set(meta.get("recipe_methods") or ()))
+        if hard.excluded_methods:
+            apply("excluded_methods", lambda meta: not (set(hard.excluded_methods) & set(meta.get("recipe_methods") or ())))
+        if hard.required_cooking_appliances:
+            apply("required_cooking_appliances", lambda meta: set(hard.required_cooking_appliances) <= set(meta.get("recipe_cooking_appliances") or ()))
+        if hard.excluded_cooking_appliances:
+            apply("excluded_cooking_appliances", lambda meta: not (set(hard.excluded_cooking_appliances) & set(meta.get("recipe_cooking_appliances") or ())))
+        if hard.exclusive_cooking_appliances:
+            allowed = set(hard.exclusive_cooking_appliances)
+            apply("exclusive_cooking_appliances", lambda meta: allowed <= set(meta.get("recipe_cooking_appliances") or ()) and set(meta.get("recipe_cooking_appliances") or ()) <= allowed and meta.get("unknown_cooking_appliance") is False)
+        if hard.max_total_minutes is not None:
+            apply("max_total_minutes", lambda meta: isinstance(meta.get("total_minutes"), int) and meta["total_minutes"] <= hard.max_total_minutes)
+        if not rows:
+            return None, CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="HARD_SCOPE_EMPTY", limitations=("没有已验证同时满足全部硬约束的菜谱。",))
+        if len(rows) > self._recommendation_scope_limit():
+            return None, CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="HARD_SCOPE_TOO_LARGE")
+        scope = ResolvedCandidateScope(build_id, tuple(row.parent_id for row in rows), counts)
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event("recommendation_scope", status="resolved", build_id=build_id, parent_count=len(scope.parent_ids), hard_filter_counts=counts)
+        return scope, None
 
     def _all_pds_parent_ids_by_cuisine(self, cuisine_type: str) -> list[str]:
         store = getattr(self, "parent_document_store", None)
         build_id = getattr(store, "active_build_id", None)
         if store is None or not build_id:
             return []
+        if hasattr(store, "iter_recipe_metadata"):
+            return [row.parent_id for row in store.iter_recipe_metadata(build_id=build_id) if str(row.metadata.get("cuisine_type", "")) == cuisine_type]
         ids: set[str] = set()
         for chunk in store.iter_chunks(build_id):
             parent = store.get_full_parent(chunk.parent_id)
@@ -730,7 +843,7 @@ class AdvancedGraphRAGSystem:
                 ids.add(parent.parent_id)
         return sorted(ids)
 
-    def _execute_compile_result(self, query: str, top_k: int, result: CompileResult, *, audit_run=None, resolved_entities=()):
+    def _execute_compile_result(self, query: str, top_k: int, result: CompileResult, *, audit_run=None, resolved_entities=(), constraint_spec=None):
         self._audit_compile_result(audit_run, result)
         if not result.can_execute:
             return self._compile_result_bundle(result), None
@@ -741,7 +854,10 @@ class AdvancedGraphRAGSystem:
             return self._with_claim_policy(bundle, result), None
         plan = result.query_plan
         if plan.intent == "PREFERENCE_RECOMMEND":
-            bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run, claim_policy=result.claim_policy.to_dict())
+            if constraint_spec is not None:
+                bundle = self._try_recommendation_vector(query, plan, constraint_spec, audit_run=audit_run, claim_policy=result.claim_policy.to_dict())
+            else:
+                bundle = self._try_restricted_vector(query, top_k, plan, audit_run=audit_run, claim_policy=result.claim_policy.to_dict())
             if bundle is None:
                 return self._compile_result_bundle(CompileResult("UNAVAILABLE", "VECTOR_UNAVAILABLE", reason="VECTOR_UNAVAILABLE")), None
             return bundle, None
@@ -754,6 +870,59 @@ class AdvancedGraphRAGSystem:
         entity = resolved_entities[0] if resolved_entities else None
         text_evidence, limitations = self._targeted_text_evidence(plan, entity, fact, audit_run)
         return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=tuple(resolved_entities), graph_facts=(fact,), text_evidence=text_evidence, limitations=limitations, claim_policy=result.claim_policy.to_dict()), None
+
+    def _try_recommendation_vector(self, query, plan, spec, *, audit_run=None, claim_policy=None):
+        """执行候选 metadata Top30、确定性重排和 Top5 PDS 回补。"""
+        retriever = getattr(self, "restricted_vector_retriever", None)
+        if retriever is None or not hasattr(retriever, "retrieve_candidates"):
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("recommendation_vector", status="artifact-unavailable", candidate_count=0)
+            return None
+        candidate_k = getattr(self.config, "retrieval_recommendation_candidate_k", 30)
+        answer_k = getattr(self.config, "retrieval_recommendation_answer_k", 5)
+        parent_ids = plan.parameters.get("parent_ids")
+        try:
+            candidates = retriever.retrieve_candidates(query, parent_ids=parent_ids, expected_parent_type="Recipe", top_k=candidate_k)
+        except ArtifactMismatchError as error:
+            logger.warning("推荐路径 artifact 不一致: %s", error)
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("recommendation_vector", status="artifact-mismatch", candidate_count=0, verifiable=False)
+            return None
+        except Exception as error:
+            logger.warning("推荐候选检索失败: %s", error)
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("recommendation_vector", status="vector-unavailable", candidate_count=0)
+            return None
+        try:
+            reranker = getattr(self, "preference_reranker", None) or PreferenceReranker()
+            ranked = reranker.rank(candidates, spec)
+            selected = [item.candidate for item in ranked[:answer_k]]
+            rerank_status = "selected"
+            rerank_audit = [item.audit_dict() for item in ranked]
+        except Exception as error:
+            # 仅本请求降级为已受限的原始向量排序，绝不放宽 hard scope。
+            logger.warning("推荐重排失败，保持受限向量顺序: %s", error)
+            selected = list(candidates[:answer_k])
+            rerank_status = "rerank-unavailable"
+            rerank_audit = []
+        try:
+            evidence = retriever.hydrate_candidates(selected, expected_parent_type="Recipe")
+        except ArtifactMismatchError as error:
+            logger.warning("推荐 Top5 PDS 回补不一致: %s", error)
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event("recommendation_vector", status="artifact-mismatch", candidate_count=len(candidates), verifiable=False)
+            return None
+        except Exception as error:
+            logger.warning("推荐 Top5 PDS 回补失败: %s", error)
+            return None
+        limitations = () if candidates else ("NO_PREFERENCE_RESULTS", "当前受限范围没有可用的向量候选。")
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "recommendation_vector", status=rerank_status, candidate_count=len(candidates), answer_count=len(evidence),
+                candidate_top30=[{"parent_id": item.parent_id, "title": item.title, "retrieval_score": item.retrieval_score, "metadata": dict(item.metadata)} for item in candidates],
+                final_top5=rerank_audit if rerank_audit else [{"parent_id": item.parent_id, "retrieval_score": item.retrieval_score} for item in selected],
+            )
+        return EvidenceBundle(query_plan=plan.to_dict(), entity_candidates=(), graph_facts=(), text_evidence=tuple(evidence), limitations=limitations, claim_policy=claim_policy)
 
     @staticmethod
     def _with_claim_policy(bundle: EvidenceBundle, result: CompileResult) -> EvidenceBundle:
