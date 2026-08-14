@@ -1,6 +1,6 @@
 {
   "title": "New 路径十题定向测试试卷",
-  "source_bank": "_other/考试/试卷题库.json",
+  "source_bank": "_other/考试/检索重构真实场景考试包/试卷题库.json",
   "source_exam_run": "2026-08-12-真实考试-001",
   "question_count": 10,
   "variant": "new",

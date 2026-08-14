@@ -12,7 +12,7 @@ from typing import Any, Callable
 
 
 EXAM_ROOT = Path(__file__).resolve().parents[1]
-PROJECT_ROOT = EXAM_ROOT.parents[1]
+PROJECT_ROOT = EXAM_ROOT.parents[2]
 BANK_PATH = EXAM_ROOT / "试卷题库.json"
 CATALOG_PATH = EXAM_ROOT / "试卷目录.md"
 VALIDATION_PATH = EXAM_ROOT / "题库校验报告.md"

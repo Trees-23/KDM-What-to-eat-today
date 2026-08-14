@@ -15,8 +15,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BANK = ROOT / "_other" / "考试" / "试卷题库.json"
-PREFLIGHT = ROOT / "_other" / "考试" / "工具" / "开考预检.py"
+BANK = ROOT / "_other" / "考试" / "检索重构真实场景考试包" / "试卷题库.json"
+PREFLIGHT = ROOT / "_other" / "考试" / "检索重构真实场景考试包" / "工具" / "开考预检.py"
 CONTAINER = "what-to-eat-backend"
 RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"

@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-GENERATOR_PATH = PROJECT_ROOT / "_other/考试/工具/生成试卷.py"
+GENERATOR_PATH = PROJECT_ROOT / "_other/考试/检索重构真实场景考试包/工具/生成试卷.py"
 
 
 def load_generator():

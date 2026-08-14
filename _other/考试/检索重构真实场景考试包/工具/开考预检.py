@@ -25,7 +25,7 @@ from neo4j import GraphDatabase
 
 
 EXAM_ROOT = Path(__file__).resolve().parents[1]
-PROJECT_ROOT = EXAM_ROOT.parents[1]
+PROJECT_ROOT = EXAM_ROOT.parents[2]
 GENERATOR_PATH = EXAM_ROOT / "工具" / "生成试卷.py"
 NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "nodes.csv"
 TIPS_NODES_PATH = PROJECT_ROOT / "data" / "cypher" / "tips_nodes.csv"

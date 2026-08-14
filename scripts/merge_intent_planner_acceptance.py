@@ -16,7 +16,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BANK = ROOT / "_other" / "考试" / "试卷题库.json"
+BANK = ROOT / "_other" / "考试" / "检索重构真实场景考试包" / "试卷题库.json"
 
 
 def _read_rows(directory: Path) -> tuple[list[dict[str, Any]], str]:

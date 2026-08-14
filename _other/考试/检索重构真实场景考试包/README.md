@@ -14,7 +14,7 @@
 | `监考/docker-compose.exam.yml` | 仅覆盖后端运行时变量的监考 Compose 配置，不改 `.env`。 |
 | `工具/生成试卷.py` | 可重复生成 `试卷题库.json`、目录和校验报告，并校验 S04/S05 的图路径契约。 |
 | `工具/汇总结果.py` | 把监考 AI 生成的 JSONL 转成总评与逐题路径报告。 |
-| `结果/` | 监考完成后存放冻结 gold、原始结果、审计副本、总评和逐题明细。 |
+| `_other/考试/结果/` | 共享历史运行档案，存放冻结 gold、原始结果、审计副本、总评和逐题明细。 |
 
 ## 考试范围
 
@@ -37,7 +37,7 @@ S09 与 S10 使用隔离的组件级调用或故障注入：它们不停止、�
 每一次监考使用独立目录，例如：
 
 ```text
-结果/2026-08-11-retrieval-exam/
+_other/考试/结果/2026-08-11-retrieval-exam/
   preflight.md
   gold_manifest.json
   old.jsonl
@@ -52,8 +52,8 @@ S09 与 S10 使用隔离的组件级调用或故障注入：它们不停止、�
 运行汇总器：
 
 ```bash
-python _other/考试/工具/汇总结果.py \
-  --bank _other/考试/试卷题库.json \
+python _other/考试/检索重构真实场景考试包/工具/汇总结果.py \
+  --bank _other/考试/检索重构真实场景考试包/试卷题库.json \
   --results _other/考试/结果/<运行编号>/old.jsonl _other/考试/结果/<运行编号>/new.jsonl \
   --output-dir _other/考试/结果/<运行编号>
 ```
