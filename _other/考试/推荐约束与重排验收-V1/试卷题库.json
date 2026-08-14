@@ -1,0 +1,25 @@
+{
+  "paper_id": "recommendation_constraints_rerank_v1",
+  "variant": "new",
+  "question_count": 18,
+  "questions": [
+    {"question_id": "RCR-01", "category": "工具硬约束", "question": "我家里只有微波炉，只能用微波炉做什么菜？", "must": ["最终候选均包含 MICROWAVE", "最终候选不依赖其他已知必需烹饪设备"], "may_be_empty": true},
+    {"question_id": "RCR-02", "category": "工具排除", "question": "推荐几个不能用微波炉完成的晚餐。", "must": ["最终候选不包含 MICROWAVE"], "may_be_empty": true},
+    {"question_id": "RCR-03", "category": "工具软偏好", "question": "优先推荐能用微波炉做的简单早餐。", "must": ["MICROWAVE 只作为软偏好", "无 MICROWAVE 的候选不得因此被错误过滤"], "may_be_empty": false},
+    {"question_id": "RCR-04", "category": "做法硬约束", "question": "我必须吃蒸制的菜，推荐几个。", "must": ["最终候选均包含 STEAM"], "may_be_empty": true},
+    {"question_id": "RCR-05", "category": "做法排他", "question": "我只要蒸菜，不要油炸也不要炒。", "must": ["最终候选均包含 STEAM", "最终候选不包含 FRY", "最终候选不包含 STIR_FRY"], "may_be_empty": true},
+    {"question_id": "RCR-06", "category": "新增做法", "question": "我必须吃炒菜，推荐几个。", "must": ["最终候选均包含 STIR_FRY"], "may_be_empty": true},
+    {"question_id": "RCR-07", "category": "新增做法排除", "question": "不要炒的菜，推荐几个清爽的。", "must": ["最终候选不包含 STIR_FRY"], "may_be_empty": true},
+    {"question_id": "RCR-08", "category": "多条件硬约束", "question": "推荐川菜，而且必须蒸制。", "must": ["最终候选属于川菜", "最终候选包含 STEAM"], "may_be_empty": true},
+    {"question_id": "RCR-09", "category": "时长硬约束", "question": "30 分钟内能完成的菜有哪些？", "must": ["最终候选 total_minutes 不大于 30"], "may_be_empty": true},
+    {"question_id": "RCR-10", "category": "条件冲突", "question": "我必须蒸制，但又完全不要蒸制。", "must": ["返回澄清，不发起不等价检索"], "may_be_empty": false},
+    {"question_id": "RCR-11", "category": "空交集", "question": "只能用微波炉，而且必须蒸制，30 分钟内完成。", "must": ["结果全部满足三项，或明确返回没有已验证完全匹配项", "不得扩大到全库"], "may_be_empty": true},
+    {"question_id": "RCR-12", "category": "metadata 未知", "question": "模拟候选缺少设备或时长 metadata。", "must": ["未知属性不被伪造", "涉及未知硬属性的候选不通过硬过滤", "软偏好未知不加分不扣分"], "test_level": "integration"},
+    {"question_id": "RCR-13", "category": "份量软偏好", "question": "两个人吃，推荐简单的晚餐。", "must": ["servings 仅影响排序，不作为硬过滤", "不承诺精确份量"], "may_be_empty": false},
+    {"question_id": "RCR-14", "category": "少步骤软偏好", "question": "想吃简单一点、少步骤的早餐。", "must": ["FEW_STEPS 触发确定性重排", "不满足者可保留但排序劣后"], "may_be_empty": false},
+    {"question_id": "RCR-15", "category": "清爽软偏好", "question": "想吃清爽一点的川味蒸菜。", "must": ["不得声称低脂或医疗适用", "重排审计包含 LIGHT_FEEL 解释"], "may_be_empty": false},
+    {"question_id": "RCR-16", "category": "候选与正文分离", "question": "推荐几道清爽、少步骤的菜。", "must": ["审计保留 Top30 metadata 与最终 Top5", "只有最终 Top5 回补完整 PDS 正文"], "may_be_empty": false},
+    {"question_id": "RCR-17", "category": "开关兼容", "question": "关闭推荐约束功能后的兼容行为。", "must": ["关闭 feature flag 时保留旧路径行为"], "test_level": "integration"},
+    {"question_id": "RCR-18", "category": "工件异常", "question": "模拟 PDS 与 Milvus build 不一致。", "must": ["当前请求明确不可验证", "不声称硬约束已经满足", "不关闭后续请求的全局功能"], "test_level": "integration"}
+  ]
+}
