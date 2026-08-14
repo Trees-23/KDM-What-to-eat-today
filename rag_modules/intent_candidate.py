@@ -100,7 +100,7 @@ class IntentSlots(BaseModel):
     ] = Field(default_factory=list, max_length=5)
     meal_context: list[Literal["BREAKFAST", "LUNCH", "DINNER"]] = Field(default_factory=list, max_length=5)
     tools: list[Literal["MICROWAVE", "RICE_COOKER"]] = Field(default_factory=list, max_length=5)
-    methods: list[Literal["STEAM", "BOIL", "FRY", "STEW"]] = Field(default_factory=list, max_length=5)
+    methods: list[Literal["STEAM", "BOIL", "FRY", "STEW", "STIR_FRY"]] = Field(default_factory=list, max_length=5)
     servings: int | None = Field(default=None, ge=1, le=100)
     time_budget_minutes: int | None = Field(default=None, ge=1, le=1440)
     nutrition_constraint: NutritionConstraint | None = None

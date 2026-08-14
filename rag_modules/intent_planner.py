@@ -236,7 +236,7 @@ class IntentPlanner:
 禁止输出：任何 ID、Cypher、SQL、查询、过滤器、collection、template、范围、排序、候选数、证据等级或营养结论。
 少油、清淡、不腻只可映射为软偏好 LOW_OIL_FEEL/LIGHT_FEEL，绝不是低脂或医疗结论。
 严格脂肪、热量阈值或医疗饮食请求必须是 STRICT_NUTRITION。
-只要用户是在推荐、寻找、比较“适合/贴近/可考虑”的菜，而没有给出必须精确定位的具体菜名、食材名或章节标题，就使用 PREFERENCE_RECOMMEND；场景、口味、器具、菜系、做法、人数和泛类食材只是偏好。不要把“鱼、海鲜、肉菜、蔬菜、豆制品、面食、素菜”等泛类当成必须解析的稳定实体。
+只要用户是在推荐、寻找、比较“适合/贴近/可考虑”的菜，而没有给出必须精确定位的具体菜名、食材名或章节标题，就使用 PREFERENCE_RECOMMEND；场景、口味、器具、菜系、做法、人数和泛类食材只是偏好。工具仅可填 MICROWAVE、RICE_COOKER；做法仅可填 STEAM、BOIL、FRY、STEW、STIR_FRY，其中“炒、煸炒、爆炒”均为 STIR_FRY。你只负责标出用户提到了什么，绝不能判断“必须、不要、只用”等条件的强弱；该判断由本地程序根据原话完成。不要把“鱼、海鲜、肉菜、蔬菜、豆制品、面食、素菜”等泛类当成必须解析的稳定实体。
 用户明确要学习或只依据某个技巧章节时，使用 TECHNIQUE_SECTION，并只把章节标题原文放入 entity_mentions。用户询问 A 与 B 的搭配或关系时，使用 INGREDIENT_VEGETABLE_PAIRS，并保留 A、B 两个用户原话提及，不能遗漏其中任一项。
 例如“我想学使用某种器具，它的关键要点是什么”中的“使用某种器具”是唯一的章节标题；“只根据‘某技巧’章节回答”中的引号内容是唯一的章节标题。不要把“我想学”“关键要点”“只根据”等问句外壳放入 entity_mentions。
 例如“某食材能做哪些菜”是 INGREDIENT_RECIPES，entity_mentions 只包含该食材；“只给出图中能验证的某食材与蔬菜搭配”是 INGREDIENT_VEGETABLE_PAIRS，entity_mentions 只包含该食材。没有已验证路径的要求不改变意图类型。
