@@ -14,13 +14,15 @@
 | `监考/docker-compose.exam.yml` | 仅覆盖后端运行时变量的监考 Compose 配置，不改 `.env`。 |
 | `工具/生成试卷.py` | 可重复生成 `试卷题库.json`、目录和校验报告，并校验 S04/S05 的图路径契约。 |
 | `工具/汇总结果.py` | 把监考 AI 生成的 JSONL 转成总评与逐题路径报告。 |
-| `_other/考试/结果/` | 共享历史运行档案，存放冻结 gold、原始结果、审计副本、总评和逐题明细。 |
+| `结果/` | 本考试包的运行档案，存放冻结 gold、原始结果、审计副本、总评和逐题明细。 |
 
 ## 考试范围
 
 排名场景（S01-S07，S05 C 除外）会同时运行 `old` 与 `new` 两个变体，统计 Recall、MRR、nDCG、Precision、Hit Rate、证据与延迟指标。安全场景（S05 C、S08-S10）不伪造“应召回文档”，以拒答、无关系幻觉和安全降级为评分依据。
 
 S05 A/B 的目标必须有真实 `Ingredient <- REQUIRES - Recipe - REQUIRES -> 蔬菜` 路径；S05 C 的目标则必须已解析且该路径数为零。后者的空候选是预期结果，不得阻断考试。
+
+S06/S07 使用当前推荐路径：真实用户原话先经本地约束编译，再在活动 PDS metadata 内计算硬范围，读取不含正文的 Top30 候选，确定性重排后仅回补最终 Top5 正文。若已验证硬范围为空，`NO_PREFERENCE_RESULTS` 是正确结果，不得退回全库或伪造三个 gold。
 
 S09 与 S10 使用隔离的组件级调用或故障注入：它们不停止、不清空、不重建实际 Neo4j/Milvus 数据库。其余场景通过已运行的后端 API 发起单题、无缓存污染的顺序请求。
 
@@ -29,7 +31,7 @@ S09 与 S10 使用隔离的组件级调用或故障注入：它们不停止、�
 1. 先读取 `题库校验报告.md`，核验题库 SHA-256。
 2. 在首次向任一变体发请求前，对每题冻结 `gold_manifest.json`。S05 C 冻结零路径查询证据，其他 S05 题冻结真实路径；不得根据检索或模型回答修改 gold。
 3. 每次 API 请求必须使用全新的 `session_id`，确保不会命中语义缓存或会话上下文。
-4. `new` 变体的 PDS、QueryPlan、目标图和 Milvus V2 artifact 任何一项不可用时，只能把该题标记为 `blocked` 或记录安全回退，不能伪装成新路径通过。
+4. `new` 变体的 PDS、QueryPlan、目标图和 Milvus V2 artifact 任何一项不可用时，只能把该题标记为 `blocked` 或记录安全回退，不能伪装成新路径通过。Milvus database、collection 与 PDS build 必须由活动联合 manifest 读取，不得固定历史 build ID。
 5. 结果必须保留审计目录、逐题 JSONL、路径与召回明细和总评；缺一项均不得宣布考试通过。
 
 ## 结果目录约定
@@ -37,7 +39,7 @@ S09 与 S10 使用隔离的组件级调用或故障注入：它们不停止、�
 每一次监考使用独立目录，例如：
 
 ```text
-_other/考试/结果/2026-08-11-retrieval-exam/
+_other/考试/检索重构真实场景考试包/结果/2026-08-11-retrieval-exam/
   preflight.md
   gold_manifest.json
   old.jsonl
@@ -54,6 +56,6 @@ _other/考试/结果/2026-08-11-retrieval-exam/
 ```bash
 python _other/考试/检索重构真实场景考试包/工具/汇总结果.py \
   --bank _other/考试/检索重构真实场景考试包/试卷题库.json \
-  --results _other/考试/结果/<运行编号>/old.jsonl _other/考试/结果/<运行编号>/new.jsonl \
-  --output-dir _other/考试/结果/<运行编号>
+  --results _other/考试/检索重构真实场景考试包/结果/<运行编号>/old.jsonl _other/考试/检索重构真实场景考试包/结果/<运行编号>/new.jsonl \
+  --output-dir _other/考试/检索重构真实场景考试包/结果/<运行编号>
 ```

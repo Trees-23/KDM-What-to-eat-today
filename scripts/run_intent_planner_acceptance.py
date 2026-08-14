@@ -22,6 +22,7 @@ RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
 RUNTIME = "rag_modules.planner_acceptance_runtime"
 RUNTIME_WORK_ROOT = ROOT / "run" / "intent-planner-acceptance"
+ACTIVE_ARTIFACT_MANIFEST = ROOT / "run" / "retrieval" / "retrieval_artifact_manifest.json"
 
 _RUNTIME_ENV = {
     "RETRIEVAL_INTENT_PLANNER_ENABLED": "true",
@@ -31,8 +32,7 @@ _RUNTIME_ENV = {
     "RETRIEVAL_QUERY_PLAN_ENABLED": "true",
     "RETRIEVAL_TARGETED_GRAPH_ENABLED": "true",
     "RETRIEVAL_MILVUS_V2_ENABLED": "true",
-    "RETRIEVAL_MILVUS_DATABASE": "default",
-    "RETRIEVAL_MILVUS_COLLECTION": "cooking_knowledge_v2_pds_2a8c0807",
+    "RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED": "true",
     "ENABLE_RAG_AUDIT": "true",
 }
 
@@ -42,7 +42,7 @@ def _command(*items: str) -> str:
 
 
 def _runtime_environment(overrides: list[str]) -> dict[str, str]:
-    environment = dict(_RUNTIME_ENV)
+    environment = {**_RUNTIME_ENV, **_active_artifact_environment()}
     for item in overrides:
         key, separator, value = item.partition("=")
         if not separator or not key or not value:
@@ -51,6 +51,20 @@ def _runtime_environment(overrides: list[str]) -> dict[str, str]:
             raise ValueError("--runtime-env 的 KEY 必须是大写环境变量名")
         environment[key] = value
     return environment
+
+
+def _active_artifact_environment() -> dict[str, str]:
+    """从已发布的联合 manifest 读取本次验收唯一允许使用的 Milvus 目标。"""
+
+    payload = json.loads(ACTIVE_ARTIFACT_MANIFEST.read_text(encoding="utf-8"))
+    database = payload.get("milvus_database") if isinstance(payload, dict) else None
+    collection = payload.get("milvus_collection") if isinstance(payload, dict) else None
+    if not isinstance(database, str) or not database or not isinstance(collection, str) or not collection:
+        raise ValueError("活动 retrieval artifact manifest 缺少 Milvus 目标")
+    return {
+        "RETRIEVAL_MILVUS_DATABASE": database,
+        "RETRIEVAL_MILVUS_COLLECTION": collection,
+    }
 
 
 def _load_bank() -> dict[str, Any]:

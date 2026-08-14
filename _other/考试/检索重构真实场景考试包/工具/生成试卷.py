@@ -234,18 +234,18 @@ SCENARIOS = [
     },
     {
         "id": "S06",
-        "title": "模糊语义推荐",
-        "route": "restricted_vector_or_legacy_hybrid",
+        "title": "推荐约束与语义偏好",
+        "route": "recommendation_constraints_top30_rerank",
         "evaluation_mode": "ranking",
-        "description": "验证模糊意图下的候选召回、排序、重排和父文档回补。",
+        "description": "验证本地约束、受限候选 Top30、确定性重排和最终 Top5 PDS 正文回补。",
         "forbidden": ["unhydrated_chunk"],
     },
     {
         "id": "S07",
         "title": "软偏好与营养边界",
-        "route": "soft_preference_restricted_vector",
+        "route": "recommendation_constraints_top30_rerank",
         "evaluation_mode": "ranking",
-        "description": "验证偏好推荐只表达偏好，不将缺乏来源的推断包装为严格营养结论。",
+        "description": "验证软偏好与局部硬约束共存时的确定性重排，且不伪造严格营养结论。",
         "forbidden": ["strict_low_fat_claim", "strict_nutrition_without_governed_source"],
     },
     {
@@ -327,6 +327,32 @@ def _graph_not_found_contract(scenario: dict[str, Any], target: dict[str, Any]) 
         "gold_target": target,
         "forbidden_assertions": scenario["forbidden"],
     }
+
+
+def _recommendation_contract(scenario: dict[str, Any], target: dict[str, Any], evidence_mode: str, request: str) -> dict[str, Any]:
+    """为 S06/S07 固定当前推荐路径的可审计验收边界。"""
+
+    expected_hard_filters: dict[str, list[str]] = {}
+    if "只有微波炉" in request:
+        expected_hard_filters = {
+            "required_cooking_appliances": ["MICROWAVE"],
+            "exclusive_cooking_appliances": ["MICROWAVE"],
+        }
+    elif "不想吃油炸" in request:
+        expected_hard_filters = {"excluded_methods": ["FRY"]}
+    contract = _ranking_contract(scenario, target, evidence_mode)
+    contract["recommendation_contract"] = {
+        "policy_version": "recommendation_constraints_v1",
+        "rerank_version": "recommendation_rerank_v1",
+        "candidate_k": 30,
+        "answer_k": 5,
+        "requires_candidate_metadata_only": True,
+        "requires_final_pds_hydration": True,
+        # 菜系和唯一解析食材会先在本地求交；无交集是受控结果，不得为了凑 gold 放宽到全库。
+        "allow_no_preference_results": True,
+        "expected_hard_filters": expected_hard_filters,
+    }
+    return contract
 
 
 def _question_text(scenario_id: str, difficulty: str, value: str) -> str:
@@ -460,8 +486,8 @@ def _build_questions() -> list[dict[str, Any]]:
                     "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
                     "minimum_gold_items": 3,
                 }
-                evidence_mode = "candidate_recall_rerank_pds" if scenario_id == "S06" else "soft_preference_candidate_recall_pds"
-                add(scenario_id, difficulty, ordinal, _question_text(scenario_id, difficulty, request), _ranking_contract(scenario, target, evidence_mode))
+                evidence_mode = "recommendation_constraints_top30_rerank_top5_pds"
+                add(scenario_id, difficulty, ordinal, _question_text(scenario_id, difficulty, request), _recommendation_contract(scenario, target, evidence_mode, request))
 
     scenario = scenario_by_id["S08"]
     for difficulty_index, (difficulty, _, _) in enumerate(DIFFICULTIES):
@@ -551,6 +577,8 @@ def _render_validation(payload: dict[str, Any], digest: str) -> str:
         "- 所有已命名实体是否在当前 Neo4j 实例可解析。",
         "- S04 与 S05 A/B 的最少图路径是否真实存在；S05 C 必须复核为零路径，不得改写为正向 gold。",
         "- S06/S07 的分级相关性标签是否在第一次请求前冻结。",
+        "- S06/S07 先冻结活动 PDS metadata 范围；若本地硬范围为空，冻结 `NO_PREFERENCE_RESULTS`，不得要求伪造三个 gold。",
+        "- S06/S07 的审计是否含 ConstraintSpec、硬范围、Top30 metadata、重排版本和仅 Top5 的 PDS 回补。",
         "- S08/S09 的虚构实体是否确实不存在。",
         "",
     ])
@@ -628,7 +656,7 @@ def main() -> None:
     _validate_static_sources(questions)
     _validate_graph_targets(questions)
     payload = {
-        "schema_version": "retrieval-real-exam-v1",
+        "schema_version": "retrieval-real-exam-v2",
         "title": "检索重构真实场景考试",
         "question_count": 300,
         "scenario_count": 10,

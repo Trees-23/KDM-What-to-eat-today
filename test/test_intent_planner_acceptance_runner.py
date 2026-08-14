@@ -14,7 +14,7 @@ from rag_modules.planner_acceptance_runtime import (
     _question_timeout,
     _status_for,
 )
-from rag_modules.retrieval_contracts import EvidenceBundle
+from rag_modules.retrieval_contracts import EvidenceBundle, TextEvidence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +39,23 @@ def test_live_acceptance_runner_freezes_exactly_the_official_300_questions():
     assert runner._RUNTIME_ENV["RETRIEVAL_INTENT_PLANNER_ENABLED"] == "true"
     assert runner._RUNTIME_ENV["ENABLE_RAG_AUDIT"] == "true"
     assert runner._RUNTIME_ENV["RETRIEVAL_MILVUS_V2_ENABLED"] == "true"
+    assert runner._RUNTIME_ENV["RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED"] == "true"
+    assert "RETRIEVAL_MILVUS_COLLECTION" not in runner._RUNTIME_ENV
+
+
+def test_live_acceptance_runner_reads_the_active_manifest_milvus_target(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_active_manifest")
+    manifest = tmp_path / "retrieval_artifact_manifest.json"
+    manifest.write_text(
+        json.dumps({"milvus_database": "fixture", "milvus_collection": "cooking_knowledge_v2_pds_fixture"}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(runner, "ACTIVE_ARTIFACT_MANIFEST", manifest)
+
+    environment = runner._runtime_environment([])
+
+    assert environment["RETRIEVAL_MILVUS_DATABASE"] == "fixture"
+    assert environment["RETRIEVAL_MILVUS_COLLECTION"] == "cooking_knowledge_v2_pds_fixture"
 
 
 def test_live_acceptance_runner_applies_isolated_runtime_overrides_without_dropping_required_flags():
@@ -225,6 +242,78 @@ def test_runtime_accepts_local_strict_nutrition_gate_without_planner_event():
     )
 
     assert "missing_planner_or_compile_audit" not in failures
+
+
+def test_runtime_requires_the_recommendation_constraint_and_two_stage_audits():
+    question = {
+        "scenario_id": "S06",
+        "contract": {
+            "recommendation_contract": {
+                "policy_version": "recommendation_constraints_v1",
+                "rerank_version": "recommendation_rerank_v1",
+                "candidate_k": 30,
+                "answer_k": 5,
+                "allow_no_preference_results": True,
+                "expected_hard_filters": {
+                    "required_cooking_appliances": ["MICROWAVE"],
+                    "exclusive_cooking_appliances": ["MICROWAVE"],
+                },
+            },
+        },
+    }
+    events = [
+        ("intent_planner", "VALID", {}),
+        ("intent_compile", "EXECUTE", {}),
+        ("recommendation_constraints", "compiled", {
+            "policy_version": "recommendation_constraints_v1",
+            "hard_filters": {
+                "required_cooking_appliances": ["MICROWAVE"],
+                "exclusive_cooking_appliances": ["MICROWAVE"],
+            },
+        }),
+        ("recommendation_scope", "resolved", {"parent_count": 3}),
+        ("recommendation_vector", "selected", {
+            "rerank_version": "recommendation_rerank_v1",
+            "candidate_top30": [{"parent_id": "r-1"}],
+            "final_top5": [{"parent_id": "r-1", "final_score": 42.0}],
+        }),
+    ]
+    bundle = EvidenceBundle(
+        {"intent": "PREFERENCE_RECOMMEND"},
+        (),
+        (),
+        (TextEvidence("r-1", "build-1", ("r-1:0",), (), "pds evidence", "parent_store"),),
+        (),
+    )
+
+    assert _status_for(question, bundle, events, "推荐结果") == []
+
+
+def test_runtime_accepts_a_declared_empty_recommendation_scope_but_not_a_missing_audit():
+    question = {
+        "scenario_id": "S07",
+        "contract": {
+            "recommendation_contract": {
+                "policy_version": "recommendation_constraints_v1",
+                "candidate_k": 30,
+                "answer_k": 5,
+                "allow_no_preference_results": True,
+                "expected_hard_filters": {},
+            },
+        },
+    }
+    bundle = EvidenceBundle(None, (), (), (), ("NO_PREFERENCE_RESULTS", "INTENT_NON_EXECUTE"))
+    events = [
+        ("intent_planner", "VALID", {}),
+        ("intent_compile", "TERMINAL", {}),
+        ("recommendation_constraints", "compiled", {
+            "policy_version": "recommendation_constraints_v1",
+            "hard_filters": {},
+        }),
+    ]
+
+    assert _status_for(question, bundle, events, "没有完全匹配项") == []
+    assert "missing_recommendation_constraint_audit" in _status_for(question, bundle, events[:2], "没有完全匹配项")
 
 
 def test_runtime_question_timeout_interrupts_a_single_question():

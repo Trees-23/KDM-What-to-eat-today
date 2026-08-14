@@ -76,4 +76,4 @@ def test_two_stage_pipeline_audits_top30_and_hydrates_only_top5():
     assert len(value.restricted_vector_retriever.hydrated) == 5
     event = audit.events[-1]
     assert len(event[2]["candidate_top30"]) == 30
-    assert len(event[2]["final_top5"]) == 30
+    assert len(event[2]["final_top5"]) == 5

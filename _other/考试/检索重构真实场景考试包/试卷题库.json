@@ -5802,8 +5802,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -5812,6 +5812,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "天气热，想做一道清爽不腻的晚饭",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -5840,8 +5850,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -5850,6 +5860,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "下班很晚，想找准备步骤少的家常菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -5878,8 +5898,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -5888,6 +5908,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "早餐想吃热乎又不复杂的",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -5916,8 +5946,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -5926,6 +5956,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "周末想做一道有仪式感的海鲜菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -5954,8 +5994,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -5964,6 +6004,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃带汤的家常菜，别太难",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -5992,8 +6042,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6002,6 +6052,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道下饭的素菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6030,8 +6090,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6040,6 +6100,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃辣一点的川味家常菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6068,8 +6138,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6078,6 +6148,23 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "只有微波炉时能做点什么",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {
+            "exclusive_cooking_appliances": [
+              "MICROWAVE"
+            ],
+            "required_cooking_appliances": [
+              "MICROWAVE"
+            ]
+          },
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6106,8 +6193,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6116,6 +6203,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "招待两个人，想做一道看起来体面的鱼",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6144,8 +6241,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6154,6 +6251,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做米饭搭配的一道菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6182,8 +6289,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6192,6 +6299,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "天气冷想喝一碗暖和的汤",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6220,8 +6337,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6230,6 +6347,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做不需要很多工具的早餐",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6258,8 +6385,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6268,6 +6395,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "家里人不太能吃辣，晚餐有什么选择",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6296,8 +6433,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6306,6 +6443,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做口感软糯的肉菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6334,8 +6481,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6344,6 +6491,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道清蒸类菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6372,8 +6529,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6382,6 +6539,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想带便当，做什么相对合适",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6410,8 +6577,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6420,6 +6587,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "今天想吃面食，想要有味道一点",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6448,8 +6625,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6458,6 +6635,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道有蔬菜的快手菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6486,8 +6673,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6496,6 +6683,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "朋友来家里，想做一道有地方特色的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6524,8 +6721,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6534,6 +6731,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃酸甜口的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6562,8 +6769,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6572,6 +6779,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一人份的简单晚餐",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6600,8 +6817,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6610,6 +6827,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道适合夏天的凉菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6638,8 +6865,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6648,6 +6875,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃豆腐类菜，又不想太寡淡",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6676,8 +6913,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6686,6 +6923,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做带番茄风味的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6714,8 +6961,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6724,6 +6971,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "冰箱食材不多，想先看看容易上手的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6752,8 +7009,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6762,6 +7019,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找一道适合电饭煲的主食",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6790,8 +7057,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6800,6 +7067,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道煎制的小菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6828,8 +7105,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6838,6 +7115,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做偏清淡的海鲜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6866,8 +7153,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6876,6 +7163,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做一道能配米饭的炖菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6904,8 +7201,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -6914,6 +7211,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃甜品但不想步骤太复杂",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6942,8 +7249,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -6953,6 +7260,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃川菜但口感清爽",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -6981,8 +7298,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -6992,6 +7309,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找少油感觉的川味晚餐",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7020,8 +7347,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7031,6 +7358,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "偏好清淡一些的川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7059,8 +7396,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7070,6 +7407,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "不想吃太腻，想吃川味配米饭的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7098,8 +7445,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7109,6 +7456,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想要有蔬菜的轻口味川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7137,8 +7494,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7148,6 +7505,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "今天想吃川味但口味温和些",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7176,8 +7543,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7187,6 +7554,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃辣但不希望太油重的川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7215,8 +7592,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7226,6 +7603,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "希望做法简单、吃起来不厚重的川味菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7254,8 +7641,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7265,6 +7652,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃豆腐类川菜又希望有味道",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7293,8 +7690,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7304,6 +7701,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "偏好蒸制或煮制风格的川味晚餐",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7332,8 +7739,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7343,6 +7750,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃口感清爽的川味凉菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7371,8 +7788,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7382,6 +7799,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "希望川菜里蔬菜多一点",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7410,8 +7837,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7421,6 +7848,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "晚餐想少一些油腻感，想吃川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7449,8 +7886,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7460,6 +7897,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找适合夏天的轻口味川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7488,8 +7935,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7499,6 +7946,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "口味偏清淡，但可以有一点川味酸辣",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7527,8 +7984,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7538,6 +7995,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃鱼但不想做得太重口的川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7566,8 +8033,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7577,6 +8044,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "希望是一道川味素菜或蔬菜占主的菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7605,8 +8082,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7616,6 +8093,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找适合午餐的轻负担川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7644,8 +8131,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7655,6 +8142,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃清爽一点的川味蒸菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7683,8 +8180,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7694,6 +8191,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "今天胃口一般，想吃清爽一点的川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7722,8 +8229,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7733,6 +8240,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想做少调料也能吃的川味菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7761,8 +8278,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7772,6 +8289,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想喝一碗清淡些的川味汤",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7800,8 +8327,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7811,6 +8338,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "希望推荐不太油的川味早餐做法",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7839,8 +8376,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7850,6 +8387,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃清新一点的川味番茄菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7878,8 +8425,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7889,6 +8436,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找一道柔和、适合全家的川味菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7917,8 +8474,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7928,6 +8485,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "偏好蔬菜和豆制品做成川菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7956,8 +8523,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -7967,6 +8534,20 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "不想吃油炸，推荐别的川味做法",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {
+            "excluded_methods": [
+              "FRY"
+            ]
+          },
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -7995,8 +8576,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -8006,6 +8587,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃不太刺激的川味面食",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -8034,8 +8625,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -8045,6 +8636,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "今天想吃轻一点的川味海鲜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -8073,8 +8674,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -8084,6 +8685,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想吃家常但不厚重的川味晚饭",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -11079,24 +11690,24 @@
       "title": "食材搭配多跳关系"
     },
     {
-      "description": "验证模糊意图下的候选召回、排序、重排和父文档回补。",
+      "description": "验证本地约束、受限候选 Top30、确定性重排和最终 Top5 PDS 正文回补。",
       "evaluation_mode": "ranking",
       "forbidden": [
         "unhydrated_chunk"
       ],
       "id": "S06",
-      "route": "restricted_vector_or_legacy_hybrid",
-      "title": "模糊语义推荐"
+      "route": "recommendation_constraints_top30_rerank",
+      "title": "推荐约束与语义偏好"
     },
     {
-      "description": "验证偏好推荐只表达偏好，不将缺乏来源的推断包装为严格营养结论。",
+      "description": "验证软偏好与局部硬约束共存时的确定性重排，且不伪造严格营养结论。",
       "evaluation_mode": "ranking",
       "forbidden": [
         "strict_low_fat_claim",
         "strict_nutrition_without_governed_source"
       ],
       "id": "S07",
-      "route": "soft_preference_restricted_vector",
+      "route": "recommendation_constraints_top30_rerank",
       "title": "软偏好与营养边界"
     },
     {
@@ -11134,6 +11745,6 @@
       "title": "图服务异常降级"
     }
   ],
-  "schema_version": "retrieval-real-exam-v1",
+  "schema_version": "retrieval-real-exam-v2",
   "title": "检索重构真实场景考试"
 }

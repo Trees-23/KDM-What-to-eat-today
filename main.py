@@ -594,7 +594,31 @@ class AdvancedGraphRAGSystem:
             return self._compile_result_bundle(ingredient_result), None
         spec = constraint_compiler.compile(user_message, candidate, verified_ingredient_ids=ingredient_ids)
         if audit_run is not None and hasattr(audit_run, "record_event"):
-            audit_run.record_event("recommendation_constraints", status="clarify" if spec.clarification_reason else "compiled", decisions=list(spec.decisions), clarification_reason=spec.clarification_reason)
+            audit_run.record_event(
+                "recommendation_constraints",
+                status="clarify" if spec.clarification_reason else "compiled",
+                policy_version=spec.policy_version,
+                hard_filters={
+                    "cuisines": list(spec.hard_filters.cuisines),
+                    "verified_ingredient_ids": list(spec.hard_filters.verified_ingredient_ids),
+                    "methods": list(spec.hard_filters.methods),
+                    "excluded_methods": list(spec.hard_filters.excluded_methods),
+                    "required_cooking_appliances": list(spec.hard_filters.required_cooking_appliances),
+                    "excluded_cooking_appliances": list(spec.hard_filters.excluded_cooking_appliances),
+                    "exclusive_cooking_appliances": list(spec.hard_filters.exclusive_cooking_appliances),
+                    "max_total_minutes": spec.hard_filters.max_total_minutes,
+                },
+                soft_preferences={
+                    "methods": list(spec.soft_preferences.methods),
+                    "tools": list(spec.soft_preferences.tools),
+                    "preferences": list(spec.soft_preferences.preferences),
+                    "meal_context": list(spec.soft_preferences.meal_context),
+                    "prefer_shorter_time": spec.soft_preferences.prefer_shorter_time,
+                    "target_servings": spec.soft_preferences.target_servings,
+                },
+                decisions=list(spec.decisions),
+                clarification_reason=spec.clarification_reason,
+            )
         if spec.clarification_reason:
             return self._compile_result_bundle(CompileResult("CLARIFY", "RECOMMENDATION_CONSTRAINT_CLARIFY", reason=spec.clarification_reason)), None
         scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
@@ -898,12 +922,14 @@ class AdvancedGraphRAGSystem:
             ranked = reranker.rank(candidates, spec)
             selected = [item.candidate for item in ranked[:answer_k]]
             rerank_status = "selected"
-            rerank_audit = [item.audit_dict() for item in ranked]
+            rerank_version = reranker.version
+            rerank_audit = [item.audit_dict() for item in ranked[:answer_k]]
         except Exception as error:
             # 仅本请求降级为已受限的原始向量排序，绝不放宽 hard scope。
             logger.warning("推荐重排失败，保持受限向量顺序: %s", error)
             selected = list(candidates[:answer_k])
             rerank_status = "rerank-unavailable"
+            rerank_version = None
             rerank_audit = []
         try:
             evidence = retriever.hydrate_candidates(selected, expected_parent_type="Recipe")
@@ -918,7 +944,8 @@ class AdvancedGraphRAGSystem:
         limitations = () if candidates else ("NO_PREFERENCE_RESULTS", "当前受限范围没有可用的向量候选。")
         if audit_run is not None and hasattr(audit_run, "record_event"):
             audit_run.record_event(
-                "recommendation_vector", status=rerank_status, candidate_count=len(candidates), answer_count=len(evidence),
+                "recommendation_vector", status=rerank_status, rerank_version=rerank_version,
+                candidate_count=len(candidates), answer_count=len(evidence),
                 candidate_top30=[{"parent_id": item.parent_id, "title": item.title, "retrieval_score": item.retrieval_score, "metadata": dict(item.metadata)} for item in candidates],
                 final_top5=rerank_audit if rerank_audit else [{"parent_id": item.parent_id, "retrieval_score": item.retrieval_score} for item in selected],
             )
