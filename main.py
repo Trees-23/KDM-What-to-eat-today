@@ -63,6 +63,7 @@ from rag_modules.nutrition_policy import SOFT_PREFERENCE_POLICY
 
 
 _GENERIC_PREFERENCE_MENTIONS = frozenset({"蔬菜", "豆制品", "面食", "鱼", "海鲜", "肉菜", "素菜"})
+_GENERIC_RECIPE_REFERENCE_TERMS = frozenset({"菜", "菜谱", "食谱", "做法"})
 _MAX_FILTER_PARENTS_PER_SEARCH = 20
 
 
@@ -625,7 +626,7 @@ class AdvancedGraphRAGSystem:
         if scope_result is not None:
             self._audit_compile_result(audit_run, scope_result)
             return self._compile_result_bundle(scope_result), None
-        scope, scope_result = self._resolve_recommendation_scope(spec, scoped_recipe_ids)
+        scope, scope_result = self._resolve_recommendation_scope(spec, scoped_recipe_ids, audit_run=audit_run)
         if scope_result is not None:
             self._audit_compile_result(audit_run, scope_result)
             return self._compile_result_bundle(scope_result), None
@@ -687,7 +688,11 @@ class AdvancedGraphRAGSystem:
         if len(recipes) != 1 or recipes[0].ambiguity:
             return candidate
         recipe = recipes[0]
-        if not recipe.display_name or recipe.display_name not in user_message:
+        if (
+            not recipe.display_name
+            or recipe.display_name in _GENERIC_RECIPE_REFERENCE_TERMS
+            or recipe.display_name not in user_message
+        ):
             return candidate
         if audit_run is not None and hasattr(audit_run, "record_event"):
             audit_run.record_event(
@@ -818,6 +823,17 @@ class AdvancedGraphRAGSystem:
             or hard.exclusive_cooking_appliances or hard.max_total_minutes is not None
         )
         if not requires_scope:
+            store = getattr(self, "parent_document_store", None)
+            build_id = getattr(store, "active_build_id", None)
+            if audit_run is not None and hasattr(audit_run, "record_event"):
+                audit_run.record_event(
+                    "recommendation_scope",
+                    status="resolved",
+                    scope_kind="unrestricted",
+                    build_id=build_id,
+                    parent_count=None,
+                    hard_filter_counts={},
+                )
             return None, None
         store = getattr(self, "parent_document_store", None)
         build_id = getattr(store, "active_build_id", None)

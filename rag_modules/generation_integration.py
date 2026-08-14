@@ -207,8 +207,8 @@ class GenerationIntegrationModule:
         question: str,
         documents: Sequence[Document] | EvidenceBundle,
         audit_run=None,
-        timeout: float = 60.0,
-        max_attempts: int = 2,
+        timeout: float = 45.0,
+        max_attempts: int = 1,
     ) -> str:
         """
         智能统一答案生成
@@ -286,18 +286,54 @@ class GenerationIntegrationModule:
             
         except Exception as e:
             logger.error(f"LightRAG答案生成失败: {e}")
-            if audit_run:
-                if isinstance(e, RuntimeError) and str(e) == "GENERATION_EMPTY_STREAM":
+            if isinstance(e, RuntimeError) and str(e) == "GENERATION_EMPTY_STREAM":
+                if audit_run:
                     audit_run.record_error("generation_non_stream", e, attempt=max_attempts)
+                    audit_run.append_process(
+                        "Final Output",
+                        {
+                            "answer_chars": 0,
+                            "answer_hash": query_hash(""),
+                            "success": False,
+                        },
+                    )
+                raise RuntimeError(f"GENERATION_NON_STREAM_FAILED: {e}") from e
+            fallback = self._evidence_only_fallback(evidence_bundle)
+            if audit_run:
+                audit_run.record_event(
+                    "generation_fallback",
+                    status="evidence_only",
+                    reason=type(e).__name__,
+                    answer_chars=len(fallback),
+                )
                 audit_run.append_process(
                     "Final Output",
                     {
-                        "answer_chars": 0,
-                        "answer_hash": query_hash(""),
-                        "success": False,
+                        "answer_chars": len(fallback),
+                        "answer_hash": query_hash(fallback),
+                        "success": True,
+                        "source": "generation_failed_fallback",
                     },
                 )
-            raise RuntimeError(f"GENERATION_NON_STREAM_FAILED: {e}") from e
+            return fallback
+
+    @staticmethod
+    def _evidence_only_fallback(evidence_bundle: EvidenceBundle | None) -> str:
+        """生成服务失败时只陈述已回补的正文标题，不扩展事实或偏好结论。"""
+
+        if evidence_bundle is None or not evidence_bundle.text_evidence:
+            return "当前生成服务暂时不可用，无法组织回答；请稍后重试。"
+        titles: list[str] = []
+        for evidence in evidence_bundle.text_evidence[:5]:
+            for line in evidence.text.splitlines():
+                title = line.strip()
+                if title.startswith("# ") and len(title) > 2:
+                    titles.append(title[2:].strip())
+                    break
+        titles = list(dict.fromkeys(title for title in titles if title))
+        if titles:
+            return "当前生成服务暂时不可用。以下仅列出已回补正文证据中的菜谱：" + "、".join(titles) + "。"
+        return "当前生成服务暂时不可用，但检索已回补可验证的正文证据；请稍后重试。"
     
     def generate_adaptive_answer_stream(self, question: str, documents: Sequence[Document] | EvidenceBundle, max_retries: int = 3, audit_run=None):
         """

@@ -211,3 +211,24 @@ def test_generation_replaces_forbidden_claim_with_pds_backed_safe_summary():
 
     assert "清蒸鱼" in answer
     assert not any(term in answer for term in ("低脂", "低热量", "低盐", "医疗适用"))
+
+
+def test_generation_timeout_returns_evidence_only_fallback():
+    bundle = EvidenceBundle(
+        query_plan={"intent": "PREFERENCE_RECOMMEND"},
+        entity_candidates=(),
+        graph_facts=(),
+        text_evidence=(
+            TextEvidence("recipe-1", "build-test", ("recipe-1:chunk:0",), (), "# 已验证菜谱\n正文", "parent_store"),
+        ),
+        limitations=(),
+    )
+    module = GenerationModuleForTest()
+
+    def fail(**_kwargs):
+        raise TimeoutError("provider timeout")
+
+    module.client.chat.completions.create = fail
+    answer = module.generate_adaptive_answer("推荐晚餐", bundle)
+
+    assert answer == "当前生成服务暂时不可用。以下仅列出已回补正文证据中的菜谱：已验证菜谱。"

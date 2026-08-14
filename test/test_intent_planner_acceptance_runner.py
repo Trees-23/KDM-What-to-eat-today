@@ -190,6 +190,36 @@ def test_failure_regression_freezes_only_source_failures_from_the_official_bank(
     assert metadata["source_failure_summary"]["source_rows_sha256"]
 
 
+def test_failure_regression_bank_rejects_altered_or_noncanonical_questions(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression_bank")
+    monkeypatch.setattr(runner, "BANK", tmp_path / "bank.json")
+    official_questions = [{"question_id": f"q-{number}", "question": f"题目 {number}"} for number in range(300)]
+    runner.BANK.write_text(json.dumps({"questions": official_questions}), encoding="utf-8")
+    bank_path = tmp_path / "failure-bank.json"
+    bank_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "intent-planner-failure-regression-bank-v1",
+                "execution_mode": "failure_regression",
+                "question_count": 1,
+                "source": {"source_bank_sha256": __import__("hashlib").sha256(runner.BANK.read_bytes()).hexdigest()},
+                "questions": [official_questions[8]],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    metadata = runner._load_failure_regression_bank(bank_path)
+
+    assert metadata["questions"] == [official_questions[8]]
+    assert metadata["source_question_bank"]["source_failed_count"] is None
+    altered = json.loads(bank_path.read_text(encoding="utf-8"))
+    altered["questions"][0]["question"] = "被改写的题目"
+    bank_path.write_text(json.dumps(altered), encoding="utf-8")
+    with pytest.raises(ValueError, match="被改写"):
+        runner._load_failure_regression_bank(bank_path)
+
+
 def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_path):
     runner = _load(RUNNER_PATH, "intent_planner_failure_regression_report")
     metadata = {
@@ -234,7 +264,7 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'RETRIEVAL_INTENT_PLANNER_ENABLED' in source
     assert 'system.targeted_graph_retriever.driver = _UnavailableGraphDriver()' in source
     assert 'system._cleanup()' in source
-    assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
+    assert 'GENERATION_TIMEOUT_SECONDS = 45.0' in source
     assert 'with output_path.open("a", encoding="utf-8") as handle:' in source
     assert 'execution_mode == "failure_regression"' in source
     assert '"event": "question_result"' in source

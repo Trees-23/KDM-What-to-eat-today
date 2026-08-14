@@ -24,7 +24,7 @@ from rag_modules.retrieval_contracts import EvidenceBundle
 
 RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
-GENERATION_TIMEOUT_SECONDS = 60.0
+GENERATION_TIMEOUT_SECONDS = 45.0
 QUESTION_TIMEOUT_SECONDS = 90.0
 
 

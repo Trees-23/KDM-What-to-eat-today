@@ -25,7 +25,7 @@ _TOOL_TERMS = {
     "RICE_COOKER": ("电饭煲",),
 }
 _POSITIVE_HARD = ("完全只能", "只能", "只有", "只用", "仅用", "必须", "仅", "只")
-_NEGATIVE_HARD = ("完全不要", "不使用", "不要", "不能", "不得")
+_NEGATIVE_HARD = ("完全不要", "不使用", "不想吃", "不想用", "不要", "不能", "不得")
 _SOFT = ("优先", "尽量", "也行", "最好", "想试试")
 
 
@@ -185,15 +185,19 @@ class RecommendationConstraintCompiler:
 
     @staticmethod
     def _strength_at(text: str, position: int) -> tuple[str, str]:
-        # 限制词必须修饰紧随其后的对象；不能让“不要油炸”反向影响同句前面的
+        # 限制词必须修饰紧随其后的对象；不能让“不想吃油炸”反向影响同句前面的
         # “只要蒸菜”。句尾的“蒸菜也行”仍允许作为软偏好识别。
         prefix = text[max(0, position - 8):position]
         suffix = text[position: min(len(text), position + 8)]
         for marker in _NEGATIVE_HARD:
-            if marker in prefix:
+            marker_position = prefix.rfind(marker)
+            connector = prefix[marker_position + len(marker):].strip(" \t，,、：:") if marker_position >= 0 else None
+            if connector in {"", "用", "吃", "做", "要"}:
                 return "negative_hard", marker
         for marker in _POSITIVE_HARD:
-            if marker in prefix:
+            marker_position = prefix.rfind(marker)
+            connector = prefix[marker_position + len(marker):].strip(" \t，,、：:") if marker_position >= 0 else None
+            if connector in {"", "用", "吃", "做", "要"}:
                 return "positive_hard", marker
         for marker in _SOFT:
             if marker in prefix or marker in suffix:

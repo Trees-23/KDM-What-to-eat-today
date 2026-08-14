@@ -34,6 +34,14 @@ def test_methods_support_stir_fry_and_conflicts_are_clarified():
     assert conflict.clarification_reason == "CONSTRAINT_CONFLICT_METHOD"
 
 
+def test_adjacent_do_not_want_phrase_is_a_hard_exclusion_only_for_its_object():
+    compiler = RecommendationConstraintCompiler()
+    spec = compiler.compile("不想吃油炸，蒸菜也行", candidate(methods=("FRY", "STEAM")))
+
+    assert spec.hard_filters.excluded_methods == ("FRY",)
+    assert spec.soft_preferences.methods == ("STEAM",)
+
+
 def test_time_is_local_hard_constraint_and_other_slots_remain_soft():
     spec = RecommendationConstraintCompiler().compile(
         "30 分钟内做两个人吃的简单晚餐", candidate(preferences=("FEW_STEPS",), servings=2)

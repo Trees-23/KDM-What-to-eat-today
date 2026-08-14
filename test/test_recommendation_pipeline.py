@@ -55,6 +55,26 @@ def test_hard_metadata_unknown_never_passes_time_filter_and_empty_scope_is_close
     assert failure.action == "NO_PREFERENCE_RESULTS"
 
 
+def test_unrestricted_recommendation_scope_is_explicitly_audited():
+    audit = Audit()
+    scope, failure = system([])._resolve_recommendation_scope(
+        RecommendationConstraintCompiler().compile("推荐几个家常菜", candidate()),
+        None,
+        audit_run=audit,
+    )
+
+    assert scope is None
+    assert failure is None
+    assert audit.events == [
+        ("recommendation_scope", "resolved", {
+            "scope_kind": "unrestricted",
+            "build_id": "build-1",
+            "parent_count": None,
+            "hard_filter_counts": {},
+        })
+    ]
+
+
 class Vector:
     def __init__(self): self.hydrated = []
     def retrieve_candidates(self, _query, **_kwargs):

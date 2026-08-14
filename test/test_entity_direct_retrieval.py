@@ -675,6 +675,27 @@ def test_targeted_intent_recognizes_exam_ingredient_recipe_wording():
     )
 
 
+def test_recipe_reconciliation_ignores_generic_recipe_references_but_keeps_explicit_names():
+    system_type = _load_main_system_type()
+    system = system_type.__new__(system_type)
+    candidate = IntentCandidate(intent="INGREDIENT_RECIPES", confidence=0.9, slots={
+        "step_number": None, "cuisines": [], "ingredients": ["鳜鱼"], "preferences": [],
+        "meal_context": [], "tools": [], "methods": [], "servings": None,
+        "time_budget_minutes": None, "nutrition_constraint": None,
+    })
+    system.entity_resolver = _SingleResolver(
+        EntityCandidate("generic-recipe", "Recipe", "菜谱", "exact_name", 1.0, False)
+    )
+
+    assert system._reconcile_explicit_recipe_detail("有鳜鱼可以做什么菜？哪些菜谱确实包含它？", candidate) is candidate
+
+    system.entity_resolver = _SingleResolver(_recipe_candidate())
+    reconciled = system._reconcile_explicit_recipe_detail("测试菜谱怎么做？", candidate)
+
+    assert reconciled.intent == "RECIPE_DETAIL"
+    assert reconciled.entity_mentions[0].text == "测试菜谱"
+
+
 def test_targeted_graph_aggregates_parallel_exact_name_ingredients_without_selecting_one():
     system_type = _load_main_system_type()
     system = system_type.__new__(system_type)
