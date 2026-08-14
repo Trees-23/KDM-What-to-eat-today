@@ -39,3 +39,18 @@ def test_materializer_rejects_invalid_overlap():
         assert "chunk_overlap" in str(exc)
     else:
         raise AssertionError("应拒绝 overlap >= size")
+
+
+def test_recipe_metadata_materializes_controlled_methods_appliances_and_unknown_state():
+    attributes = ParentDocumentMaterializer._recipe_attributes(
+        {"prepTime": "6分钟", "cookTime": "15分钟", "servings": "2人份"},
+        [
+            {"methods": "爆炒", "tools": "微波炉、碗"},
+            {"methods": "蒸制", "tools": "可选烤箱"},
+        ],
+    )
+    assert set(attributes["recipe_methods"]) == {"STIR_FRY", "STEAM"}
+    assert attributes["recipe_cooking_appliances"] == ["MICROWAVE"]
+    assert attributes["recipe_optional_cooking_appliances"] == ["OVEN"]
+    assert not attributes["unknown_cooking_appliance"]
+    assert (attributes["step_count"], attributes["prep_minutes"], attributes["cook_minutes"], attributes["total_minutes"], attributes["servings_count"]) == (2, 6, 15, 21, 2)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass, field, replace
 from typing import Any, Iterable, Mapping, Optional, Sequence
 
@@ -67,6 +68,17 @@ class ParentDocumentMaterializer:
     """把稳定图 ID、正文、child chunk 和锚点物化为一个不可变 build。"""
 
     BUILDER_VERSION = "parent_document_materializer_v1"
+
+    _METHODS = {
+        "STEAM": ("蒸",), "BOIL": ("水煮", "煮"), "FRY": ("油炸", "炸"),
+        "STEW": ("炖", "焖"), "STIR_FRY": ("煸炒", "爆炒", "炒"),
+    }
+    _APPLIANCES = {
+        "MICROWAVE": ("微波炉",), "RICE_COOKER": ("电饭煲",), "OVEN": ("烤箱",),
+        "AIR_FRYER": ("空气炸锅",), "STEAMER": ("蒸锅",), "PRESSURE_COOKER": ("高压锅",),
+        "STOVE": ("燃气灶", "煤气灶", "灶台"), "WOK": ("炒锅", "平底锅", "汤锅", "锅"),
+    }
+    _NON_COOKING_TOOLS = ("刀", "碗", "盘", "筷", "勺", "案板", "砧板", "盆", "杯", "叉")
 
     def __init__(
         self,
@@ -222,6 +234,7 @@ class ParentDocumentMaterializer:
             ingredients.append(text)
 
         steps: list[tuple[str, str, int]] = []
+        step_properties: list[Mapping[str, Any]] = []
         step_result = session.run(
             """
             MATCH (r:Recipe {nodeId: $recipe_id})-[c:CONTAINS_STEP]->(s:CookingStep)
@@ -243,6 +256,7 @@ class ParentDocumentMaterializer:
             if step_props.get("timeEstimate"):
                 step_text += f"\n时间: {step_props['timeEstimate']}"
             steps.append((step_id, step_text, ordinal))
+            step_properties.append(step_props)
 
         content_parts = [f"# {recipe_name}"]
         if props.get("description"):
@@ -287,7 +301,64 @@ class ParentDocumentMaterializer:
             "doc_type": "recipe",
             "source": "neo4j",
         }
+        metadata.update(self._recipe_attributes(props, step_properties))
         return SourceParent(recipe_id, "Recipe", recipe_name, "\n".join(content_parts), metadata, tuple(anchor_specs))
+
+    @classmethod
+    def _recipe_attributes(cls, props: Mapping[str, Any], steps: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+        """将图中可验证的 Recipe/Step 字段转成受控推荐 metadata。"""
+        raw_methods = [value for step in steps for value in cls._tokens(step.get("methods"))]
+        raw_tools = [value for step in steps for value in cls._tokens(step.get("tools"))]
+        methods = tuple(sorted({code for code, terms in cls._METHODS.items() if any(term in raw for raw in raw_methods for term in terms)}))
+        required: set[str] = set()
+        optional: set[str] = set()
+        unknown_required = False
+        for raw in raw_tools:
+            optional_tool = bool(re.search(r"可选|替代|备用|或者|或", raw))
+            appliance = next((code for code, terms in cls._APPLIANCES.items() if any(term in raw for term in terms)), None)
+            if appliance:
+                (optional if optional_tool else required).add(appliance)
+            elif not any(term in raw for term in cls._NON_COOKING_TOOLS) and re.search(r"炉|锅|煲|机|灶|烤", raw):
+                unknown_required = unknown_required or not optional_tool
+        prep = cls._minutes(props.get("prepTime"))
+        cook = cls._minutes(props.get("cookTime"))
+        total = prep + cook if prep is not None and cook is not None else None
+        return {
+            "recipe_methods": list(methods), "recipe_tools": list(dict.fromkeys(raw_tools)),
+            "recipe_cooking_appliances": sorted(required),
+            "recipe_optional_cooking_appliances": sorted(optional - required),
+            "unknown_cooking_appliance": unknown_required, "step_count": len(steps),
+            "prep_minutes": prep, "cook_minutes": cook, "total_minutes": total,
+            "servings_count": cls._servings(props.get("servings")),
+            "attribute_provenance": {
+                "recipe_methods": "graph_step.methods", "recipe_tools": "graph_step.tools",
+                "recipe_cooking_appliances": "graph_step.tools", "step_count": "graph_recipe.CONTAINS_STEP",
+                "prep_minutes": "graph_recipe.prepTime", "cook_minutes": "graph_recipe.cookTime",
+                "servings_count": "graph_recipe.servings",
+            },
+        }
+
+    @staticmethod
+    def _tokens(value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, (list, tuple, set)):
+            return [str(item).strip() for item in value if str(item).strip()]
+        return [token.strip() for token in re.split(r"[,，、；;\\n]", str(value)) if token.strip()]
+
+    @staticmethod
+    def _minutes(value: Any) -> int | None:
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+            return value
+        match = re.search(r"(?<!\d)(\d{1,4})\s*(?:分钟|分)?", str(value or ""))
+        return int(match.group(1)) if match else None
+
+    @staticmethod
+    def _servings(value: Any) -> int | None:
+        if isinstance(value, int) and not isinstance(value, bool) and value > 0:
+            return value
+        match = re.search(r"(?<!\d)(\d{1,3})\s*(?:人份|人|份)?", str(value or ""))
+        return int(match.group(1)) if match and int(match.group(1)) > 0 else None
 
     def _technique_parent(self, session: Any, row: Any) -> SourceParent:
         document_id = str(self._value(row, "node_id", ""))

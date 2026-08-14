@@ -85,6 +85,17 @@ def test_create_open_read_and_anchor_windows(tmp_path: Path):
         assert report.mismatched_rows == ("recipe-1:chunk:0",)
 
 
+def test_recipe_metadata_query_never_returns_full_content(tmp_path: Path):
+    parents, manifest, chunks, anchors = _fixture_rows()
+    db_path = tmp_path / "parent_store.sqlite"
+    ParentDocumentStore.create_build(db_path, manifest, parents, chunks, anchors)
+    with ParentDocumentStore.open(db_path, active_build_id=manifest.build_id) as store:
+        rows = list(store.iter_recipe_metadata())
+    assert len(rows) == 1
+    assert rows[0].parent_id == "recipe-1"
+    assert not hasattr(rows[0], "full_content")
+
+
 def test_active_pointer_uses_relative_build_path_and_recovers_portable_absolute_path(tmp_path: Path):
     parents, manifest, chunks, anchors = _fixture_rows()
     db_path = tmp_path / "parent_store.sqlite"
