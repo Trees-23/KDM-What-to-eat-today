@@ -351,7 +351,25 @@ def run(input_path: Path, output_path: Path) -> int:
             rows.append(row)
             with output_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-            print(json.dumps({"position": position, "question_id": question["question_id"], "status": row["status"]}, ensure_ascii=False), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "event": "question_result",
+                        "position": position,
+                        "total_questions": len(source["questions"]),
+                        "question_id": question["question_id"],
+                        "scenario_id": question["scenario_id"],
+                        "user_message": request.user_message,
+                        "answer": answer,
+                        "status": row["status"],
+                        "duration_ms": row["duration_ms"],
+                        "failures": failures,
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
     finally:
         system._cleanup()
 
@@ -360,7 +378,20 @@ def run(input_path: Path, output_path: Path) -> int:
     if len(all_rows) != len(source["questions"]) or set(actual_ids) != expected_ids or len(set(actual_ids)) != len(actual_ids):
         raise RuntimeError(f"验收结果不完整: {len(all_rows)}/{len(source['questions'])}")
     failures = sum(row["status"] != "passed" for row in all_rows)
-    print(json.dumps({"runner_id": source.get("runner_id", RUNNER_ID), "rows": len(all_rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
+    print(
+        json.dumps(
+            {
+                "event": "run_summary",
+                "runner_id": source.get("runner_id", RUNNER_ID),
+                "rows": len(all_rows),
+                "failures": failures,
+                "output": str(output_path),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+        flush=True,
+    )
     return 0 if failures == 0 else 2
 
 

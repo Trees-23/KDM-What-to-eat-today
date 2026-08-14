@@ -9,9 +9,10 @@ import json
 import shutil
 import subprocess
 import sys
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, TextIO
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +105,79 @@ def _collect_runtime_output(output: Path, runtime_directory: Path) -> None:
     source_audits = runtime_directory / "audits"
     if source_audits.is_dir():
         shutil.copytree(source_audits, output / "audits")
+
+
+def _render_runtime_event(line: str) -> str:
+    """将容器逐题 JSONL 事件转为终端可读输出，原始行仍完整落盘。"""
+
+    try:
+        event = json.loads(line)
+    except json.JSONDecodeError:
+        return line
+    if not isinstance(event, dict):
+        return line
+    if event.get("event") == "question_result":
+        position = event.get("position", "?")
+        total = event.get("total_questions", "?")
+        question_id = event.get("question_id", "unknown")
+        scenario_id = event.get("scenario_id", "unknown")
+        status = event.get("status", "unknown")
+        duration_ms = event.get("duration_ms", "?")
+        failures = event.get("failures") if isinstance(event.get("failures"), list) else []
+        answer = str(event.get("answer", "")).strip() or "<空回答>"
+        failure_text = "、".join(str(item) for item in failures) if failures else "无"
+        return (
+            f"\n[{position}/{total}] {question_id} ({scenario_id}) {status}，耗时 {duration_ms} ms\n"
+            f"用户输入：{event.get('user_message', '')}\n"
+            f"回答：\n{answer}\n"
+            f"失败原因：{failure_text}\n"
+        )
+    if event.get("event") == "run_summary":
+        return (
+            f"\n考试结束：完成 {event.get('rows', '?')} 题，失败 {event.get('failures', '?')} 题。\n"
+            f"逐题结果：{event.get('output', '')}\n"
+        )
+    return line
+
+
+def _pump_runtime_stream(stream: TextIO, log_path: Path, terminal: TextIO, *, render_events: bool) -> None:
+    with log_path.open("w", encoding="utf-8") as log:
+        for line in stream:
+            log.write(line)
+            log.flush()
+            terminal.write(_render_runtime_event(line) if render_events else line)
+            terminal.flush()
+
+
+def _run_runtime_command(command: list[str], output: Path) -> int:
+    """实时转发容器输出，且持续保留可审计的 stdout/stderr 文件。"""
+
+    process = subprocess.Popen(
+        command,
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        bufsize=1,
+    )
+    if process.stdout is None or process.stderr is None:  # pragma: no cover - Popen pipe contract
+        raise RuntimeError("无法建立验收运行器输出管道")
+    stdout_thread = threading.Thread(
+        target=_pump_runtime_stream,
+        args=(process.stdout, output / "runner.stdout.jsonl", sys.stdout),
+        kwargs={"render_events": True},
+    )
+    stderr_thread = threading.Thread(
+        target=_pump_runtime_stream,
+        args=(process.stderr, output / "runner.stderr.txt", sys.stderr),
+        kwargs={"render_events": False},
+    )
+    stdout_thread.start()
+    stderr_thread.start()
+    returncode = process.wait()
+    stdout_thread.join()
+    stderr_thread.join()
+    return returncode
 
 
 def _report(rows_path: Path, report_path: Path, metadata: dict[str, Any]) -> dict[str, Any]:
@@ -257,17 +331,15 @@ def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: 
     for key, value in (runtime_env or _RUNTIME_ENV).items():
         command.extend(["-e", f"{key}={value}"])
     command.extend(["-e", f"RAG_AUDIT_ROOT_DIR=/app/run/intent-planner-acceptance/{output.name}/audits", "-e", "RAG_VARIANT_NAME=intent-planner-failure-regression", CONTAINER, "python", "-m", RUNTIME, "--input", container_input, "--output", container_output])
-    process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
-    (output / "runner.stdout.jsonl").write_text(process.stdout, encoding="utf-8")
-    (output / "runner.stderr.txt").write_text(process.stderr, encoding="utf-8")
+    process_returncode = _run_runtime_command(command, output)
     _collect_runtime_output(output, runtime_directory)
     rows = output / "new-results.jsonl"
     if not rows.exists():
-        return process.returncode or 2
+        return process_returncode or 2
     report = _regression_report(rows, output / "acceptance-report.json", metadata)
     _failure_summary(rows, output / "failure-summary.json", metadata)
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
-    return 0 if process.returncode == 0 and report["valid"] else 2
+    return 0 if process_returncode == 0 and report["valid"] else 2
 
 
 def finalize_existing_failure_regression(output: Path, failure_summary: Path) -> int:
@@ -322,17 +394,15 @@ def run(output: Path, *, runtime_env: dict[str, str] | None = None) -> int:
     for key, value in (runtime_env or _RUNTIME_ENV).items():
         command.extend(["-e", f"{key}={value}"])
     command.extend(["-e", f"RAG_AUDIT_ROOT_DIR=/app/run/intent-planner-acceptance/{output.name}/audits", "-e", "RAG_VARIANT_NAME=intent-planner-enabled", CONTAINER, "python", "-m", RUNTIME, "--input", container_input, "--output", container_output])
-    process = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
-    (output / "runner.stdout.jsonl").write_text(process.stdout, encoding="utf-8")
-    (output / "runner.stderr.txt").write_text(process.stderr, encoding="utf-8")
+    process_returncode = _run_runtime_command(command, output)
     _collect_runtime_output(output, runtime_directory)
     rows = output / "new-results.jsonl"
     if not rows.exists():
-        return process.returncode or 2
+        return process_returncode or 2
     report = _report(rows, output / "acceptance-report.json", metadata)
     _failure_summary(rows, output / "failure-summary.json", metadata)
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
-    return 0 if process.returncode == 0 and report["valid"] else 2
+    return 0 if process_returncode == 0 and report["valid"] else 2
 
 
 def main(argv: list[str] | None = None) -> int:

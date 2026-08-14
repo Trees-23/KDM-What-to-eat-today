@@ -58,6 +58,33 @@ def test_live_acceptance_runner_reads_the_active_manifest_milvus_target(tmp_path
     assert environment["RETRIEVAL_MILVUS_COLLECTION"] == "cooking_knowledge_v2_pds_fixture"
 
 
+def test_live_acceptance_runner_renders_question_progress_with_input_and_answer():
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_progress")
+
+    rendered = runner._render_runtime_event(
+        json.dumps(
+            {
+                "event": "question_result",
+                "position": 7,
+                "total_questions": 300,
+                "question_id": "S06-A-01",
+                "scenario_id": "S06",
+                "user_message": "天气热，想吃清爽晚饭。",
+                "answer": "可以考虑凉拌鸡丝。",
+                "status": "passed",
+                "duration_ms": 1234,
+                "failures": [],
+            },
+            ensure_ascii=False,
+        )
+    )
+
+    assert "[7/300] S06-A-01 (S06) passed" in rendered
+    assert "用户输入：天气热，想吃清爽晚饭。" in rendered
+    assert "回答：\n可以考虑凉拌鸡丝。" in rendered
+    assert "失败原因：无" in rendered
+
+
 def test_live_acceptance_runner_applies_isolated_runtime_overrides_without_dropping_required_flags():
     runner = _load(RUNNER_PATH, "intent_planner_acceptance_runtime_env")
 
@@ -210,6 +237,7 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
     assert 'with output_path.open("a", encoding="utf-8") as handle:' in source
     assert 'execution_mode == "failure_regression"' in source
+    assert '"event": "question_result"' in source
 
 
 def test_runtime_isolates_exam_constraints_before_planner_and_nutrition_input():
