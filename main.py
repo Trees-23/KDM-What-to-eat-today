@@ -589,40 +589,24 @@ class AdvancedGraphRAGSystem:
     def _retrieve_with_recommendation_constraints(self, user_message, top_k, candidate, compiler, *, audit_run=None):
         """新推荐路径：本地约束 -> metadata 硬范围 -> Top30 -> Top5 正文。"""
         constraint_compiler = getattr(self, "recommendation_constraint_compiler", None) or RecommendationConstraintCompiler()
-        ingredient_ids, ingredient_result = self._verified_preference_ingredient_ids(candidate)
+        flavor = constraint_compiler.analyze_flavor(user_message, candidate)
+        execution_candidate = self._without_flavor_entities(candidate, flavor)
+        ingredient_ids, ingredient_result = self._verified_preference_ingredient_ids(execution_candidate)
+        spec = constraint_compiler.compile(
+            user_message,
+            execution_candidate,
+            verified_ingredient_ids=ingredient_ids,
+            flavor_terms=flavor.terms,
+        )
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            self._audit_flavor_semantics(audit_run, flavor)
+            self._audit_recommendation_constraints(audit_run, spec)
         if ingredient_result is not None:
             self._audit_compile_result(audit_run, ingredient_result)
             return self._compile_result_bundle(ingredient_result), None
-        spec = constraint_compiler.compile(user_message, candidate, verified_ingredient_ids=ingredient_ids)
-        if audit_run is not None and hasattr(audit_run, "record_event"):
-            audit_run.record_event(
-                "recommendation_constraints",
-                status="clarify" if spec.clarification_reason else "compiled",
-                policy_version=spec.policy_version,
-                hard_filters={
-                    "cuisines": list(spec.hard_filters.cuisines),
-                    "verified_ingredient_ids": list(spec.hard_filters.verified_ingredient_ids),
-                    "methods": list(spec.hard_filters.methods),
-                    "excluded_methods": list(spec.hard_filters.excluded_methods),
-                    "required_cooking_appliances": list(spec.hard_filters.required_cooking_appliances),
-                    "excluded_cooking_appliances": list(spec.hard_filters.excluded_cooking_appliances),
-                    "exclusive_cooking_appliances": list(spec.hard_filters.exclusive_cooking_appliances),
-                    "max_total_minutes": spec.hard_filters.max_total_minutes,
-                },
-                soft_preferences={
-                    "methods": list(spec.soft_preferences.methods),
-                    "tools": list(spec.soft_preferences.tools),
-                    "preferences": list(spec.soft_preferences.preferences),
-                    "meal_context": list(spec.soft_preferences.meal_context),
-                    "prefer_shorter_time": spec.soft_preferences.prefer_shorter_time,
-                    "target_servings": spec.soft_preferences.target_servings,
-                },
-                decisions=list(spec.decisions),
-                clarification_reason=spec.clarification_reason,
-            )
         if spec.clarification_reason:
             return self._compile_result_bundle(CompileResult("CLARIFY", "RECOMMENDATION_CONSTRAINT_CLARIFY", reason=spec.clarification_reason)), None
-        scoped_recipe_ids, scope_result = self._planner_preference_scope(candidate, audit_run=audit_run)
+        scoped_recipe_ids, scope_result = self._planner_preference_scope(execution_candidate, audit_run=audit_run)
         if scope_result is not None:
             self._audit_compile_result(audit_run, scope_result)
             return self._compile_result_bundle(scope_result), None
@@ -631,11 +615,81 @@ class AdvancedGraphRAGSystem:
             self._audit_compile_result(audit_run, scope_result)
             return self._compile_result_bundle(scope_result), None
         result = compiler.compile(
-            candidate,
+            execution_candidate,
             scoped_recipe_ids=scope.parent_ids if scope is not None else scoped_recipe_ids,
             dependencies_available=self._planner_dependencies_available(),
         )
         return self._execute_compile_result(user_message, top_k, result, audit_run=audit_run, constraint_spec=spec)
+
+    @staticmethod
+    def _without_flavor_entities(candidate, flavor):
+        """风味词仅作为语义偏好，不能误升级为具名食材硬范围。"""
+
+        if not flavor.terms and not flavor.component_candidates:
+            return candidate
+        mentions = [mention for mention in candidate.entity_mentions if not flavor.relates_to(mention.text)]
+        ingredients = [value for value in candidate.slots.ingredients if not flavor.relates_to(value)]
+        if len(mentions) == len(candidate.entity_mentions) and len(ingredients) == len(candidate.slots.ingredients):
+            return candidate
+        slots = candidate.slots.model_copy(update={"ingredients": ingredients})
+        return candidate.model_copy(update={"entity_mentions": mentions, "slots": slots})
+
+    def _audit_flavor_semantics(self, audit_run, flavor) -> None:
+        if not flavor.terms and not flavor.component_candidates:
+            return
+        resolver = getattr(self, "entity_resolver", None)
+        resolved: list[str] = []
+        unresolved: list[str] = []
+        for value in flavor.component_candidates:
+            if resolver is None:
+                unresolved.append(value)
+                continue
+            try:
+                entities = tuple(resolver.resolve(value, expected_types=("Ingredient",)))
+            except Exception:
+                unresolved.append(value)
+                continue
+            if len(entities) == 1 and not bool(getattr(entities[0], "ambiguity", False)):
+                resolved.append(value)
+            else:
+                unresolved.append(value)
+        audit_run.record_event(
+            "flavor_semantics",
+            status="semantic_fallback",
+            terms=list(flavor.terms),
+            component_candidates=list(flavor.component_candidates),
+            verified_components=resolved,
+            unverified_components=unresolved,
+        )
+
+    @staticmethod
+    def _audit_recommendation_constraints(audit_run, spec) -> None:
+        audit_run.record_event(
+            "recommendation_constraints",
+            status="clarify" if spec.clarification_reason else "compiled",
+            policy_version=spec.policy_version,
+            hard_filters={
+                "cuisines": list(spec.hard_filters.cuisines),
+                "verified_ingredient_ids": list(spec.hard_filters.verified_ingredient_ids),
+                "methods": list(spec.hard_filters.methods),
+                "excluded_methods": list(spec.hard_filters.excluded_methods),
+                "required_cooking_appliances": list(spec.hard_filters.required_cooking_appliances),
+                "excluded_cooking_appliances": list(spec.hard_filters.excluded_cooking_appliances),
+                "exclusive_cooking_appliances": list(spec.hard_filters.exclusive_cooking_appliances),
+                "max_total_minutes": spec.hard_filters.max_total_minutes,
+            },
+            soft_preferences={
+                "methods": list(spec.soft_preferences.methods),
+                "tools": list(spec.soft_preferences.tools),
+                "preferences": list(spec.soft_preferences.preferences),
+                "meal_context": list(spec.soft_preferences.meal_context),
+                "prefer_shorter_time": spec.soft_preferences.prefer_shorter_time,
+                "target_servings": spec.soft_preferences.target_servings,
+                "flavor_terms": list(spec.soft_preferences.flavor_terms),
+            },
+            decisions=list(spec.decisions),
+            clarification_reason=spec.clarification_reason,
+        )
 
     def _verified_preference_ingredient_ids(self, candidate):
         """具名食材只有唯一 EntityResolver 结果才进入本地 ConstraintSpec。"""

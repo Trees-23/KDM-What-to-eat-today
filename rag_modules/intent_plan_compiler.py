@@ -171,7 +171,7 @@ class IntentPlanCompiler:
     def _claim_policy(candidate: IntentCandidate, *, hard_constraints: Sequence[str] = (), display_requests: Sequence[str] = ()) -> ClaimPolicy:
         return ClaimPolicy(
             hard_constraints=tuple(hard_constraints),
-            soft_preferences=tuple(candidate.slots.preferences) + tuple(candidate.slots.meal_context) + tuple(candidate.slots.tools) + tuple(candidate.slots.methods),
+            soft_preferences=tuple(candidate.slots.preferences) + tuple(candidate.slots.meal_context) + tuple(candidate.slots.tools) + tuple(candidate.slots.methods) + tuple(candidate.slots.flavor_ingredients),
             display_requests=tuple(display_requests),
             forbidden_claims=("低脂", "低热量", "低盐", "医疗适用"),
         )

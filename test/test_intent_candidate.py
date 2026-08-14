@@ -15,6 +15,7 @@ def _candidate(**overrides):
             "step_number": None,
             "cuisines": ["SICHUAN_STYLE"],
             "ingredients": [],
+            "flavor_ingredients": [],
             "preferences": ["LIGHT_FEEL"],
             "meal_context": ["DINNER"],
             "tools": [],
@@ -33,6 +34,15 @@ def test_candidate_schema_accepts_only_low_privilege_user_demand_fields():
 
     assert candidate.intent == "PREFERENCE_RECOMMEND"
     assert "template_id" not in IntentCandidate.json_schema().get("properties", {})
+
+
+def test_candidate_accepts_flavor_components_without_execution_authority():
+    payload = _candidate()
+    payload["slots"]["flavor_ingredients"] = ["番茄", "大蒜"]
+
+    candidate = IntentCandidate.parse_untrusted(payload)
+
+    assert candidate.slots.flavor_ingredients == ["番茄", "大蒜"]
 
 
 @pytest.mark.parametrize("key", ["recipe_id", "template_id", "filter", "top_k", "evidence", "cypher"])

@@ -95,6 +95,7 @@ class IntentSlots(BaseModel):
     step_number: int | None = Field(default=None, ge=1, le=1000)
     cuisines: list[Literal["SICHUAN_STYLE"]] = Field(default_factory=list, max_length=5)
     ingredients: list[str] = Field(default_factory=list, max_length=5)
+    flavor_ingredients: list[str] = Field(default_factory=list, max_length=5)
     preferences: list[
         Literal["LIGHT_FEEL", "LOW_OIL_FEEL", "FEW_STEPS", "HOMESTYLE", "MILD_FLAVOR"]
     ] = Field(default_factory=list, max_length=5)
@@ -105,12 +106,12 @@ class IntentSlots(BaseModel):
     time_budget_minutes: int | None = Field(default=None, ge=1, le=1440)
     nutrition_constraint: NutritionConstraint | None = None
 
-    @field_validator("ingredients")
+    @field_validator("ingredients", "flavor_ingredients")
     @classmethod
     def validate_ingredients(cls, values: list[str]) -> list[str]:
         normalized = [value.strip() for value in values if isinstance(value, str) and value.strip()]
         if len(normalized) != len(values) or any(len(value) > 80 for value in normalized):
-            raise ValueError("ingredients 必须是最长 80 字符的非空用户原话")
+            raise ValueError("食材候选必须是最长 80 字符的非空用户原话")
         return list(dict.fromkeys(normalized))
 
     @field_validator("cuisines", "preferences", "meal_context", "tools", "methods")

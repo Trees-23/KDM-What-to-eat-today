@@ -324,6 +324,26 @@ def _load_failure_regression_bank(question_bank_path: Path) -> dict[str, Any]:
     }
 
 
+def _select_failure_regression_questions(metadata: dict[str, Any], question_ids: list[str]) -> dict[str, Any]:
+    """只从已校验的冻结回归题库筛选题号，不允许构造或改写题目。"""
+
+    if not question_ids:
+        return metadata
+    if len(question_ids) != len(set(question_ids)):
+        raise ValueError("--question-id 不能重复")
+    available = {item["question_id"] for item in metadata["questions"]}
+    missing = sorted(set(question_ids) - available)
+    if missing:
+        raise ValueError(f"--question-id 不属于已冻结回归题库: {missing}")
+    selected = [item for item in metadata["questions"] if item["question_id"] in set(question_ids)]
+    return {
+        **metadata,
+        "source_question_count": len(metadata["questions"]),
+        "selected_question_ids": list(question_ids),
+        "questions": selected,
+    }
+
+
 def _regression_report(rows_path: Path, report_path: Path, metadata: dict[str, Any]) -> dict[str, Any]:
     rows = [json.loads(line) for line in rows_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     expected = {item["question_id"] for item in metadata["questions"]}
@@ -396,10 +416,16 @@ def run_failure_regression(output: Path, failure_summary: Path, *, runtime_env: 
     return _run_failure_regression(output, metadata, runtime_env=runtime_env)
 
 
-def run_failure_regression_bank(output: Path, question_bank: Path, *, runtime_env: dict[str, str] | None = None) -> int:
+def run_failure_regression_bank(
+    output: Path,
+    question_bank: Path,
+    *,
+    question_ids: list[str] | None = None,
+    runtime_env: dict[str, str] | None = None,
+) -> int:
     """直接执行已校验的独立失败回归题库。"""
 
-    metadata = _load_failure_regression_bank(question_bank.resolve())
+    metadata = _select_failure_regression_questions(_load_failure_regression_bank(question_bank.resolve()), question_ids or [])
     return _run_failure_regression(output, metadata, runtime_env=runtime_env)
 
 
@@ -471,18 +497,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True, help="未存在的结果目录")
     parser.add_argument("--failure-summary", type=Path, help="只回归该失败摘要中的冻结题目")
     parser.add_argument("--question-bank", type=Path, help="直接运行已冻结的独立失败回归题库")
+    parser.add_argument("--question-id", action="append", default=[], help="仅运行已冻结回归题库中的指定题号，可重复")
     parser.add_argument("--runtime-env", action="append", default=[], metavar="KEY=VALUE", help="仅覆盖本次验收容器进程环境")
     parser.add_argument("--finalize-existing", action="store_true", help="仅为已有失败集 JSONL 生成汇总工件")
     arguments = parser.parse_args(argv)
     if arguments.finalize_existing:
-        if not arguments.failure_summary or arguments.question_bank or arguments.runtime_env:
+        if not arguments.failure_summary or arguments.question_bank or arguments.runtime_env or arguments.question_id:
             raise ValueError("--finalize-existing 需要 --failure-summary，且不能同时提供 --runtime-env")
         return finalize_existing_failure_regression(arguments.output, arguments.failure_summary)
     runtime_env = _runtime_environment(arguments.runtime_env)
     if arguments.failure_summary and arguments.question_bank:
         raise ValueError("--failure-summary 与 --question-bank 不能同时提供")
+    if arguments.question_id and not arguments.question_bank:
+        raise ValueError("--question-id 只能与 --question-bank 同时使用")
     if arguments.question_bank:
-        return run_failure_regression_bank(arguments.output.resolve(), arguments.question_bank, runtime_env=runtime_env)
+        return run_failure_regression_bank(
+            arguments.output.resolve(),
+            arguments.question_bank,
+            question_ids=arguments.question_id,
+            runtime_env=runtime_env,
+        )
     if arguments.failure_summary:
         return run_failure_regression(arguments.output.resolve(), arguments.failure_summary, runtime_env=runtime_env)
     return run(arguments.output.resolve(), runtime_env=runtime_env)

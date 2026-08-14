@@ -6,8 +6,11 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
+from pathlib import Path
 from typing import Mapping, Sequence
 
 from .intent_candidate import IntentCandidate
@@ -27,6 +30,9 @@ _TOOL_TERMS = {
 _POSITIVE_HARD = ("完全只能", "只能", "只有", "只用", "仅用", "必须", "仅", "只")
 _NEGATIVE_HARD = ("完全不要", "不使用", "不想吃", "不想用", "不要", "不能", "不得")
 _SOFT = ("优先", "尽量", "也行", "最好", "想试试")
+_FLAVOR_SUFFIX_PATTERN = re.compile(r"(?P<prefix>[\u4e00-\u9fff]{1,16}?)(?P<suffix>风味|口味|味道|味)")
+_FLAVOR_INTRODUCERS = ("带", "有", "用", "做", "吃", "要", "想", "喜欢", "偏好")
+_FLAVOR_PROFILES_PATH = Path(__file__).resolve().parents[1] / "data" / "governed_flavor_profiles_v1.json"
 
 
 @dataclass(frozen=True)
@@ -50,6 +56,7 @@ class SoftRecipePreferences:
     meal_context: tuple[str, ...] = ()
     prefer_shorter_time: bool = False
     target_servings: int | None = None
+    flavor_terms: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -73,6 +80,42 @@ class ResolvedCandidateScope:
     hard_filter_counts: Mapping[str, int]
 
 
+@dataclass(frozen=True)
+class FlavorSemantics:
+    """只描述风味偏好候选，不携带可执行实体 ID。"""
+
+    terms: tuple[str, ...] = ()
+    component_candidates: tuple[str, ...] = ()
+
+    def relates_to(self, value: str) -> bool:
+        normalized = str(value or "").strip()
+        return bool(normalized) and (
+            normalized in self.component_candidates
+            or any(normalized in term for term in self.terms)
+        )
+
+
+@lru_cache(maxsize=1)
+def _governed_flavor_profiles() -> Mapping[str, tuple[str, ...]]:
+    """加载可版本化扩展的风味组成词表，而非为单个菜名写分支。"""
+
+    try:
+        value = json.loads(_FLAVOR_PROFILES_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    profiles = value.get("profiles") if isinstance(value, dict) else None
+    if not isinstance(profiles, dict):
+        return {}
+    result: dict[str, tuple[str, ...]] = {}
+    for term, components in profiles.items():
+        if not isinstance(term, str) or not isinstance(components, list):
+            continue
+        normalized = tuple(dict.fromkeys(item.strip() for item in components if isinstance(item, str) and item.strip()))
+        if normalized:
+            result[term.strip()] = normalized
+    return result
+
+
 class RecommendationConstraintCompiler:
     """将已验证槽位与原始问题编译为低权限本地约束。"""
 
@@ -82,6 +125,7 @@ class RecommendationConstraintCompiler:
         candidate: IntentCandidate,
         *,
         verified_ingredient_ids: Sequence[str] = (),
+        flavor_terms: Sequence[str] = (),
     ) -> ConstraintSpec:
         if not isinstance(candidate, IntentCandidate) or candidate.intent != "PREFERENCE_RECOMMEND":
             return ConstraintSpec(intent=getattr(candidate, "intent", "INVALID"), clarification_reason="INTENT_NOT_PREFERENCE")
@@ -155,14 +199,48 @@ class RecommendationConstraintCompiler:
             meal_context=tuple(candidate.slots.meal_context),
             prefer_shorter_time="FEW_STEPS" in candidate.slots.preferences,
             target_servings=candidate.slots.servings,
+            flavor_terms=tuple(dict.fromkeys(str(value).strip() for value in flavor_terms if str(value).strip())),
         )
         reason = local_conflict_reason or self._conflict_reason(hard)
         return ConstraintSpec(candidate.intent, hard, soft, reason, decisions=tuple(decisions))
 
     @staticmethod
     def _mentioned_slots(text: str, slots: Sequence[str], vocabulary: Mapping[str, Sequence[str]]) -> tuple[str, ...]:
-        # 本地字典仅用于核对模型给出的受控值，不能把任意自由文本升格为执行字段。
-        return tuple(value for value in dict.fromkeys(slots) if value in vocabulary and any(term in text for term in vocabulary[value]))
+        """以本地受控词表补齐模型漏槽，绝不接受自由文本作为执行字段。"""
+
+        local_values = (value for value, terms in vocabulary.items() if any(term in text for term in terms))
+        return tuple(value for value in dict.fromkeys((*slots, *local_values)) if value in vocabulary and any(term in text for term in vocabulary[value]))
+
+    @staticmethod
+    def analyze_flavor(text: str, candidate: IntentCandidate) -> FlavorSemantics:
+        """从原话和低权限候选提取风味组成，供语义推荐而非硬实体范围使用。"""
+
+        source = str(text or "").strip()
+        if not source:
+            return FlavorSemantics()
+        profiles = _governed_flavor_profiles()
+        terms: list[str] = []
+        components: list[str] = list(candidate.slots.flavor_ingredients)
+        for match in _FLAVOR_SUFFIX_PATTERN.finditer(source):
+            prefix = RecommendationConstraintCompiler._flavor_base(match.group("prefix"))
+            if not prefix:
+                continue
+            phrase = prefix + match.group("suffix")
+            terms.append(phrase)
+            components.extend(profiles.get(prefix, (prefix,)))
+        for profile, values in profiles.items():
+            if profile in source:
+                terms.append(profile)
+                components.extend(values)
+        return FlavorSemantics(
+            terms=tuple(dict.fromkeys(term for term in terms if term)),
+            component_candidates=tuple(dict.fromkeys(value for value in components if value)),
+        )
+
+    @staticmethod
+    def _flavor_base(prefix: str) -> str:
+        position = max((prefix.rfind(marker) for marker in _FLAVOR_INTRODUCERS), default=-1)
+        return prefix[position + 1:].strip() if position >= 0 else prefix.strip()
 
     @staticmethod
     def _strength(text: str, terms: Sequence[str]) -> tuple[str, str]:

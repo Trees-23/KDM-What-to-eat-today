@@ -239,6 +239,23 @@ def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_p
     assert report["valid"] is False
 
 
+def test_failure_regression_question_selection_is_limited_to_the_verified_bank():
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression_selection")
+    metadata = {
+        "questions": [{"question_id": "S06-C-04"}, {"question_id": "S07-C-07"}, {"question_id": "S08-A-01"}],
+    }
+
+    selected = runner._select_failure_regression_questions(metadata, ["S07-C-07", "S06-C-04"])
+
+    assert [item["question_id"] for item in selected["questions"]] == ["S06-C-04", "S07-C-07"]
+    assert selected["selected_question_ids"] == ["S07-C-07", "S06-C-04"]
+    assert selected["source_question_count"] == 3
+    with pytest.raises(ValueError, match="不属于"):
+        runner._select_failure_regression_questions(metadata, ["S99-X-01"])
+    with pytest.raises(ValueError, match="重复"):
+        runner._select_failure_regression_questions(metadata, ["S06-C-04", "S06-C-04"])
+
+
 def test_finalize_existing_failure_regression_writes_auditable_summary(tmp_path, monkeypatch):
     runner = _load(RUNNER_PATH, "intent_planner_finalize_existing")
     bank = tmp_path / "bank.json"
