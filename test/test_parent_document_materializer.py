@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 from rag_modules.parent_document_materializer import AnchorSpec, ParentDocumentMaterializer, SourceParent
 from rag_modules.parent_document_store import ParentDocumentStore
@@ -70,3 +71,22 @@ def test_recipe_metadata_recognizes_catalogue_appliances_without_new_fields():
         "BREAD_MAKER", "ELECTRIC_COOKER", "ELECTRIC_GRIDDLE", "STEAM_OVEN",
     }
     assert not attributes["unknown_cooking_appliance"]
+
+
+def test_neo4j_materialization_excludes_recipe_hierarchy_without_source_path():
+    queries = []
+
+    class Session:
+        def run(self, query, *_args, **_kwargs):
+            queries.append(query)
+            return []
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+    materializer = ParentDocumentMaterializer(driver=SimpleNamespace(session=lambda **_kwargs: Session()))
+    materializer.materialize_from_neo4j()
+    assert "WHERE r.filePath IS NOT NULL AND trim(r.filePath) <> ''" in queries[0]

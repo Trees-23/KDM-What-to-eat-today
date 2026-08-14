@@ -177,6 +177,7 @@ class ParentDocumentMaterializer:
             recipe_rows = session.run(
                 """
                 MATCH (r:Recipe)
+                WHERE r.filePath IS NOT NULL AND trim(r.filePath) <> ''
                 RETURN r.nodeId AS node_id, properties(r) AS properties
                 ORDER BY r.nodeId
                 """
