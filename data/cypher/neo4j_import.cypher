@@ -67,6 +67,9 @@ WHERE row.labels = 'Recipe'
   AND row.nodeId >= '200000000'  // 只处理具体实例，不处理层次结构
   AND row.nodeId IS NOT NULL
   AND row.name IS NOT NULL
+  // Recipe 层级根节点没有 Markdown 来源，不是可检索菜谱。
+  AND row.filePath IS NOT NULL
+  AND trim(row.filePath) <> ''
     
     MERGE (r:Recipe {nodeId: row.nodeId})
     SET r.name = row.name,

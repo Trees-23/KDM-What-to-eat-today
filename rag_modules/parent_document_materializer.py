@@ -74,9 +74,18 @@ class ParentDocumentMaterializer:
         "STEW": ("炖", "焖"), "STIR_FRY": ("煸炒", "爆炒", "炒"),
     }
     _APPLIANCES = {
-        "MICROWAVE": ("微波炉",), "RICE_COOKER": ("电饭煲",), "OVEN": ("烤箱",),
-        "AIR_FRYER": ("空气炸锅",), "STEAMER": ("蒸锅",), "PRESSURE_COOKER": ("高压锅",),
-        "STOVE": ("燃气灶", "煤气灶", "灶台"), "WOK": ("炒锅", "平底锅", "汤锅", "锅"),
+        "MICROWAVE": ("微波炉",),
+        "RICE_COOKER": ("电饭煲", "电饭锅"),
+        "OVEN": ("烤箱",),
+        "AIR_FRYER": ("空气炸锅",),
+        "STEAMER": ("蒸锅",),
+        "STEAM_OVEN": ("蒸箱", "电蒸炉"),
+        "PRESSURE_COOKER": ("高压锅", "电压力锅", "压力锅"),
+        "ELECTRIC_GRIDDLE": ("电饼铛", "轻食机"),
+        "BREAD_MAKER": ("面包机",),
+        "ELECTRIC_COOKER": ("电锅", "电炖锅"),
+        "STOVE": ("燃气灶", "煤气灶", "灶台"),
+        "WOK": ("炒锅", "平底锅", "汤锅", "锅"),
     }
     _NON_COOKING_TOOLS = ("刀", "碗", "盘", "筷", "勺", "案板", "砧板", "盆", "杯", "叉")
 

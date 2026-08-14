@@ -54,3 +54,19 @@ def test_recipe_metadata_materializes_controlled_methods_appliances_and_unknown_
     assert attributes["recipe_optional_cooking_appliances"] == ["OVEN"]
     assert not attributes["unknown_cooking_appliance"]
     assert (attributes["step_count"], attributes["prep_minutes"], attributes["cook_minutes"], attributes["total_minutes"], attributes["servings_count"]) == (2, 6, 15, 21, 2)
+
+
+def test_recipe_metadata_recognizes_catalogue_appliances_without_new_fields():
+    attributes = ParentDocumentMaterializer._recipe_attributes(
+        {"prepTime": "5分钟", "cookTime": "10分钟", "servings": "1人份"},
+        [
+            {"methods": "烤", "tools": "面包机"},
+            {"methods": "烙", "tools": "电饼铛"},
+            {"methods": "蒸", "tools": "蒸箱"},
+            {"methods": "煮", "tools": "电锅"},
+        ],
+    )
+    assert set(attributes["recipe_cooking_appliances"]) == {
+        "BREAD_MAKER", "ELECTRIC_COOKER", "ELECTRIC_GRIDDLE", "STEAM_OVEN",
+    }
+    assert not attributes["unknown_cooking_appliance"]
