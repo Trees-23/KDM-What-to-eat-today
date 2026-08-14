@@ -8,7 +8,7 @@
 
 ```bash
 python scripts/run_intent_planner_acceptance.py \
-  --question-bank _other/推荐约束与重排失败回归题库-V1/试卷题库.json \
+  --question-bank _other/考试/推荐约束与重排失败回归题库-V1/试卷题库.json \
   --output _other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-failure-regression-006
 ```
 
