@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "_other/最终300测试/工具/answer_quality_evaluation"))
 
 from evaluator import ScoreValidationError, answer_type, canonical_sha256, load_jsonl, validate_and_score
-from run import provider_schema
+from run import provider_schema, source_rows
 
 
 RUBRIC = json.loads((ROOT / "_other/最终300测试/配置/answer-quality-rubric-v1.json").read_text())
@@ -66,6 +66,12 @@ class EvaluatorTests(unittest.TestCase):
         projected = provider_schema(SCHEMA)
         self.assertNotIn("uniqueItems", json.dumps(projected, ensure_ascii=False))
         self.assertIn("uniqueItems", json.dumps(SCHEMA, ensure_ascii=False))
+
+    def test_source_parser_finds_300_answer_events(self):
+        rows, events = source_rows()
+        self.assertEqual(len(rows), 300)
+        self.assertEqual(len(events), 300)
+        self.assertTrue(all(event["answer"].strip() for event in events.values()))
 
 if __name__ == "__main__":
     unittest.main()

@@ -134,6 +134,8 @@ def setup_package(run_dir: Path) -> None:
     cases = make_cases() if report["status"] == "SOURCE_INTEGRITY_PASSED" else []
     (inputs / "evaluation-cases.jsonl").write_text("".join(json.dumps(case, ensure_ascii=False, sort_keys=True) + "\n" for case in cases), encoding="utf-8")
     (inputs / "source-integrity-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    source_run = {"source_path": str(SOURCE.relative_to(ROOT)), "source_file_count": len(source_manifest), "source_manifest_sha256": canonical_sha256(source_manifest), "new_results_sha256": sha256_file(SOURCE / "new-results.jsonl"), "runner_stdout_sha256": sha256_file(SOURCE / "runner.stdout.jsonl")}
+    (inputs / "source-run.json").write_text(json.dumps(source_run, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     hard = [{"case_id": row["question_id"], "status": row["status"], "audit_id": row["audit_id"]} for row in source_rows()[0]]
     (inputs / "hard-scorecard-reference.json").write_text(json.dumps(hard, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     rag = run_dir / "03-RAG指标"
