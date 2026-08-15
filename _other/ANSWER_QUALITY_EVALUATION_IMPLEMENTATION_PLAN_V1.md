@@ -1,4 +1,4 @@
-# 最终 300 题两层评测实施方案 V1.2
+# 最终 300 题两层评测实施方案 V1.3
 
 ## 1. 当前执行范围（优先级最高）
 
@@ -101,11 +101,21 @@ _other/最终300测试/
 
 不得修改、继续使用或把新逻辑写入 `_other/考试/检索重构真实场景考试包/工具/three_layer_evaluation/`。该目录属于旧 RAG/A-B 评审设计，只作为历史阅读材料保留。所有正式运行的输入、checkpoint、日志和结果只能写入 `运行结果/<运行编号>/`。
 
+评分依据已经冻结为下列三个文件，运行器必须逐字读取，不得在代码中另写、拼接或临时改写评分 prompt：
+
+```text
+配置/answer-quality-judge-prompt-v1.md
+配置/answer-quality-rubric-v1.json
+配置/answer-quality-output-schema-v1.json
+```
+
+每次运行前计算三者 SHA-256，写入 `judge-config-manifest.json`；每次结果包都必须在 `04-回答效果评分/评分依据/` 保留原样副本。修改评分规则、prompt 或 schema 时必须新增版本文件，不能覆盖 V1，也不能混用不同版本的题目结果。
+
 ### 7.1 每题如何评分
 
 评审器只能读取该题的封闭材料：用户问题、最终回答、必要的最终证据摘要、限制说明、场景权重和 rubric。不得访问网络、数据库、其他题、完整候选池、原硬测试结论或提示材料中的指令。
 
-每题仅调用一个 LLM 评审。成功的评分必须是合法 JSON，评分器随后自行复算 100 分总分：
+每题仅调用一个 LLM 评审。成功的评分必须符合冻结 Schema；LLM 只返回原始维度分、标签和理由，评分器随后按冻结 rubric 自行复算 100 分总分：
 
 ```json
 {
@@ -114,7 +124,6 @@ _other/最终300测试/
   "evidence_expression_score": 1,
   "boundary_expression_score": null,
   "readability_score": 1,
-  "total_score_100": 0,
   "issue_tags": ["OFF_TOPIC"],
   "evidence_notes": [],
   "confidence": "high",
@@ -130,7 +139,7 @@ _other/最终300测试/
 | S06/S07 推荐 | 25 | 35 | 20 | 不适用 | 20 | 100 |
 | S05C、S08-S10 拒答或降级 | 30 | 不适用 | 不适用 | 45 | 25 | 100 |
 
-原始维度均为 1-5 分，单项折算为 `权重 x (原始分 - 1) / 4`。程序必须校验分数范围、适用维度、标签枚举、证据 ID 与权重公式；不接受 LLM 自报但无法复算的总分。
+原始维度均为 1-5 分，单项折算为 `权重 x (原始分 - 1) / 4`。程序必须校验分数范围、适用维度、标签枚举、证据 ID 与冻结 Schema；不得接受 LLM 自报的 `total_score_100`，总分只能由程序写入评分卡。
 
 ### 7.2 输入、重试和落盘
 
@@ -152,7 +161,7 @@ _other/最终300测试/
 2. 执行 P0、P1、P2；来源通过后才执行 P3/P4。
 3. 创建 `hard-scorecard-reference.json`，仅引用既有硬规则结论、题号和审计 ID。
 4. 运行前 3 个正式题；三题成功后续跑其余 297 题。中断后只读取 checkpoint 并处理 `PENDING` 或未记录的题，不重打 `SCORED` 题。
-5. 输出 `quality-scorecard.json`、`judge-input-manifest.json` 和运行日志。汇总必须按场景、难度、维度、问题标签和 `QUALITY_UNVERIFIED` 状态展示。
+5. 输出 `quality-scorecard.json`、`judge-input-manifest.json`、`judge-config-manifest.json` 和运行日志；将三份冻结评分依据原样复制到 `04-回答效果评分/评分依据/`。汇总必须按场景、难度、维度、问题标签和 `QUALITY_UNVERIFIED` 状态展示。
 
 ## 9. P5：自动验收和结论状态
 
@@ -162,6 +171,7 @@ _other/最终300测试/
 | 原结果保护 | 原始来源无写入；硬规则引用与原考试一致。 |
 | 输入完整性 | `evaluation-cases.jsonl` 恰 300 行，每题状态明确。 |
 | 单次原则 | 每题至多一次 `SCORED` 结果；技术失败没有伪造评分。 |
+| 评分依据冻结 | 三份配置文件存在、SHA-256 与 `judge-config-manifest.json` 一致，且结果包副本与运行前文件逐字一致。 |
 | 评分正确性 | JSON、适用维度、标签、证据 ID 和 100 分公式均通过程序校验。 |
 | 汇总正确性 | 有效题数、未验证题数、场景/难度分和问题标签可由逐题卡复算。 |
 | RAG 边界 | 存在暂缓说明；不存在 RAG 分数、gold 或其通过门槛。 |
@@ -185,6 +195,11 @@ _other/最终300测试/运行结果/<运行编号>/
   02-评测输入与硬指标/
   03-RAG指标/本期暂缓说明.md
   04-回答效果评分/
+    评分依据/
+      answer-quality-judge-prompt-v1.md
+      answer-quality-rubric-v1.json
+      answer-quality-output-schema-v1.json
+      judge-config-manifest.json
   05-自动验收与结论/
   final-conclusion.json
   package-manifest.json

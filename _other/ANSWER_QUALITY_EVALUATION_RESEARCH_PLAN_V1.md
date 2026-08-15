@@ -1,4 +1,4 @@
-# 硬指标、RAG 指标与回答效果补充评测调研方案 V1.2
+# 硬指标、RAG 指标与回答效果补充评测调研方案 V1.3
 
 > **V1.1 当前执行范围（优先级高于本文其余旧设计）**
 >
@@ -196,7 +196,6 @@ LLM 输入只包含用户问题、最终回答、必要最终证据摘要、限�
   "evidence_expression_score": 1,
   "boundary_expression_score": null,
   "readability_score": 1,
-  "total_score_100": 0,
   "issue_tags": ["OFF_TOPIC"],
   "evidence_notes": [
     {
@@ -266,7 +265,7 @@ _other/最终300测试/运行结果/<回答效果运行编号>/
   judge-input-manifest.json                # 评分输入证据与 rubric/judge 版本的哈希
 ```
 
-`quality-scorecard.json` 每题至少记录：来源运行、题号、场景、难度、原始通过状态、最终回答哈希、审计 ID、适用指标、1-5 原始分、场景权重、`total_score_100`、问题标签、置信度、`QUALITY_UNVERIFIED` 状态及原始错误、尝试次数、rubric/judge 版本。
+`quality-scorecard.json` 每题至少记录：来源运行、题号、场景、难度、原始通过状态、最终回答哈希、审计 ID、适用指标、1-5 原始分、场景权重、由程序计算的 `total_score_100`、问题标签、置信度、`QUALITY_UNVERIFIED` 状态及原始错误、尝试次数、rubric/judge/schema 版本与 SHA-256。
 
 `integrated-summary.md` 必须分别列出：
 

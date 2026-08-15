@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "answer-quality-output-schema-v1",
+  "title": "单次回答效果评分输出",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_score",
+    "preference_score",
+    "evidence_expression_score",
+    "boundary_expression_score",
+    "readability_score",
+    "issue_tags",
+    "evidence_notes",
+    "confidence",
+    "review_reason"
+  ],
+  "properties": {
+    "task_score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "preference_score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "evidence_expression_score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "boundary_expression_score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "readability_score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "issue_tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "OFF_TOPIC",
+          "PREFERENCE_MISSED",
+          "REASON_UNCLEAR",
+          "EVIDENCE_OVERSTATED",
+          "LIMITATION_UNCLEAR",
+          "TOO_VERBOSE",
+          "NOT_ACTIONABLE",
+          "REFUSAL_NOT_HELPFUL"
+        ]
+      }
+    },
+    "evidence_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["answer_excerpt", "verdict", "evidence_ids"],
+        "properties": {
+          "answer_excerpt": {"type": "string", "maxLength": 500},
+          "verdict": {"type": "string", "enum": ["clear", "overstated", "unclear", "not_applicable"]},
+          "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    },
+    "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
+    "review_reason": {"type": "string", "minLength": 1, "maxLength": 400}
+  }
+}
