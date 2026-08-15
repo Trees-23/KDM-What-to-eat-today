@@ -1,4 +1,4 @@
-# 最终 300 测试全程监督与执行提示词 V1.1
+# 最终 300 测试全程监督与执行提示词 V1.2
 
 将以下内容完整交给负责推进工作的 AI。该 AI 的任务不是给计划、不是做一部分后等待确认，而是持续完成实施、排障、验证、归档和最终检查。
 
@@ -8,25 +8,28 @@
 
 ## 一、分支就绪关卡（先完成，才可开始测试）
 
-本次测试必须从最新的 `origin/main` 单独开分支执行，不能沿用本提示词所在的文档分支，也不能在 `main` 上直接执行。以下步骤是 P0 之前的强制关卡：
+本次测试的独立执行分支已经准备完成：`codex/final-300-evaluation`。该分支从创建时最新的 `origin/main`（`b79fffea5504789b0fb51d0253d6c304a4eeb5a2`）起步，随后已提交既有硬规则考试、审计证据和历史运行结果。你必须接管这个分支执行，不得在 `main`、提示词维护分支或另一个临时分支运行测试。
+
+以下步骤是 P0 之前的强制关卡：
 
 ```bash
 git fetch origin --prune
-git switch -c codex/final-300-evaluation origin/main
-git push -u origin codex/final-300-evaluation
+git switch codex/final-300-evaluation
+git pull --ff-only
 ```
 
 执行时必须遵守以下规则：
 
 - 先检查 `git status --short`、当前分支和 `origin/main`；不得以本地旧 `main` 代替 `origin/main`；
-- 若 `codex/final-300-evaluation` 已存在，则新建一个唯一、ASCII 的替代名，例如 `codex/final-300-evaluation-20260815`，并在最终报告中写明实际分支名；
-- 新分支的起点必须等于开始时的 `origin/main` 提交。记录 `git rev-parse HEAD` 与 `git rev-parse origin/main`，并用 `test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"` 验证二者完全相等；
-- 分支创建后立即推送，并创建或维护一个以 `main` 为基线的草稿 PR；该 PR 用于持续保存本次测试的代码、脚本、结果清单和文档；
-- 不得在 `main`、本提示词的维护分支或用户既有分支运行 P0-P6、写入最终包或提交测试产物；
-- 若受保护的本地改动使切换/建分支不安全，不能 stash、reset、clean、覆盖改动或用 worktree 绕过。应在最终交付中如实报告 `NOT_READY` 及阻塞原因，不能在错误分支上继续；
+- 若本地还没有该分支，用 `git switch --track -c codex/final-300-evaluation origin/codex/final-300-evaluation` 接管远端分支；不得从 `origin/main` 再建第二个测试分支；
+- 用 `git merge-base --is-ancestor b79fffea5504789b0fb51d0253d6c304a4eeb5a2 HEAD` 验证该基线是当前分支祖先，并记录 `git rev-parse HEAD`、`git rev-parse origin/main` 与固定基线 SHA；当前 `HEAD` 不应等于 `origin/main`，因为它已经包含历史考试输入；
+- 维护既有的以 `main` 为基线的草稿 PR；该 PR 用于持续保存本次测试的代码、脚本、结果清单和文档；
+- 不得在 `main`、提示词维护分支或其他临时分支运行 P0-P6、写入最终包或提交测试产物；
+- 已归档的 `_other/考试/` 历史资料是受保护的测试输入，不是“脏工作区阻塞”。不得修改其来源内容、不得重跑旧 300 题、不得因历史 Markdown 格式提示而中止；
+- 若后续运行产生未提交文件，先确认其是否仅为本次测试的脚本、结果或归档；属于本任务则在同一分支按阶段提交并继续，不能用 `stash`、`reset`、`clean` 或覆盖方式消除；只有影响来源完整性、超出本任务范围或确实无法安全归类的改动，才按 `NOT_READY` 处理；
 - 未获得用户明确合并授权前，测试分支的 PR 不得合并 `main`。
 
-只有上述关卡通过后，才开始读取后续材料和执行 P0。最终包的 `05-自动验收与结论/` 中必须保留 `branch-baseline.json`，记录实际分支、`origin/main` 起点 SHA、创建时间、PR 链接和这项关卡的校验结果。
+只有上述关卡通过后，才开始读取后续材料和执行 P0。最终包的 `05-自动验收与结论/` 中必须保留 `branch-baseline.json`，记录实际分支、固定基线 SHA、开始时的 `origin/main` SHA、创建时间、PR 链接和这项关卡的校验结果。
 
 ## 二、唯一目标
 
