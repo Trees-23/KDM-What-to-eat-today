@@ -159,7 +159,9 @@ def judge_input(case: dict[str, Any], rubric: dict[str, Any]) -> dict[str, Any]:
 
 
 def request_score(client: OpenAI, model: str, prompt: str, schema: dict[str, Any], judge_payload: dict[str, Any], timeout: float) -> dict[str, Any]:
-    response = client.chat.completions.create(model=model, temperature=0, timeout=timeout, response_format={"type": "json_schema", "json_schema": {"name": "answer_quality_output", "strict": True, "schema": schema}}, messages=[{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(judge_payload, ensure_ascii=False)}])
+    # Some compatible endpoints reject valid JSON Schema keywords such as uniqueItems.
+    # The frozen schema remains the local acceptance authority for every reply.
+    response = client.chat.completions.create(model=model, temperature=0, timeout=timeout, response_format={"type": "json_object"}, messages=[{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(judge_payload, ensure_ascii=False)}])
     content = response.choices[0].message.content
     if not content:
         raise ScoreValidationError("empty model response")
@@ -184,7 +186,7 @@ def score_case(case: dict[str, Any], client: OpenAI, model: str, prompt: str, ru
     return record
 
 
-def run_scores(run_dir: Path, limit: int | None = None) -> None:
+def run_scores(run_dir: Path, limit: int | None = None, retry_unverified: bool = False) -> None:
     load_dotenv(ROOT / ".env")
     api_key, base_url, model = os.getenv("OPENAI_API_KEY"), os.getenv("OPENAI_BASE_URL"), os.getenv("LLM_MODEL")
     if not api_key or not base_url or not model:
@@ -192,7 +194,9 @@ def run_scores(run_dir: Path, limit: int | None = None) -> None:
     prompt, rubric, schema = PROMPT_PATH.read_text(encoding="utf-8"), json.loads(RUBRIC_PATH.read_text(encoding="utf-8")), json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     cases = load_jsonl(run_dir / "02-评测输入与硬指标" / "evaluation-cases.jsonl")
     scores_path = run_dir / "04-回答效果评分" / "checkpoints.jsonl"
-    existing = {item["case_id"]: item for item in load_jsonl(scores_path) if item["status"] in {"SCORED", "QUALITY_UNVERIFIED"}}
+    existing = {item["case_id"]: item for item in load_jsonl(scores_path) if item["status"] == "SCORED"}
+    if not retry_unverified:
+        existing.update({item["case_id"]: item for item in load_jsonl(scores_path) if item["status"] == "QUALITY_UNVERIFIED"})
     pending = [case for case in cases if case["case_id"] not in existing]
     if limit is not None:
         pending = pending[:limit]
@@ -262,10 +266,11 @@ def main() -> None:
     parser.add_argument("command", choices=("setup", "run", "finalize", "all"))
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--retry-unverified", action="store_true")
     args = parser.parse_args()
     run_dir = FINAL_ROOT / "运行结果" / args.run_id
     if args.command in {"setup", "all"}: setup_package(run_dir)
-    if args.command in {"run", "all"}: run_scores(run_dir, args.limit)
+    if args.command in {"run", "all"}: run_scores(run_dir, args.limit, args.retry_unverified)
     if args.command in {"finalize", "all"}: print(json.dumps(finalize(run_dir), ensure_ascii=False, indent=2))
 
 
