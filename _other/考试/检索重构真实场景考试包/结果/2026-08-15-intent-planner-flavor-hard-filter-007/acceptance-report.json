@@ -1,0 +1,25 @@
+{
+  "audit_records_complete": true,
+  "bank_sha256": "38bc73268b502d0e24e577510f095cd0538edb34ddf2ebe2664f9db5e0780c87",
+  "coverage_complete": true,
+  "empty_answer_successes": 0,
+  "execution_mode": "failure_regression",
+  "failed_count": 0,
+  "implementation_commit": "9bf5edc7c4df225398cf06695b04a7722ce3c6e1",
+  "non_execute_retrieval_violations": 0,
+  "passed_count": 2,
+  "question_count": 2,
+  "result_file": "new-results.jsonl",
+  "rows_sha256": "6f2ffd60638fb6b6eabb833696d1ed8487f44cda6bb33faad09679658eb880a4",
+  "runner_id": "intent-planner-failure-regression-v1",
+  "source_failed_count": 2,
+  "source_question_bank": {
+    "path": "/home/kdm/MyWorkSpace/AgentLearnSpace/AllProjects/What-to-eat-today-main/What-to-eat-today-main/_other/考试/推荐约束与重排失败回归题库-V1/试卷题库.json",
+    "sha256": "6fc531b8cf893ac4d5b5c2735213c04874c62758edaf4dfe6c2e00b443099c34",
+    "source_bank": "_other/考试/检索重构真实场景考试包/试卷题库.json",
+    "source_bank_sha256": "38bc73268b502d0e24e577510f095cd0538edb34ddf2ebe2664f9db5e0780c87",
+    "source_failed_count": 78,
+    "source_failure_summary": "_other/考试/检索重构真实场景考试包/结果/2026-08-14-intent-planner-300-manual-003/failure-summary.json"
+  },
+  "valid": true
+}

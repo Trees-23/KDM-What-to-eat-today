@@ -1,0 +1,6 @@
+{
+  "failures": [
+    "预检异常: ArtifactMismatchError: artifact manifest 不一致: pds_build_id"
+  ],
+  "status": "blocked"
+}

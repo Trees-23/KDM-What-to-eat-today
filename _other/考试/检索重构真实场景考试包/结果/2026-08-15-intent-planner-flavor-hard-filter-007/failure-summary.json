@@ -1,0 +1,9 @@
+{
+  "bank_sha256": "38bc73268b502d0e24e577510f095cd0538edb34ddf2ebe2664f9db5e0780c87",
+  "failed_count": 0,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [],
+  "implementation_commit": "9bf5edc7c4df225398cf06695b04a7722ce3c6e1",
+  "question_count": 2,
+  "runner_id": "intent-planner-failure-regression-v1"
+}

@@ -1,0 +1,28 @@
+{
+  "audit_records_complete": true,
+  "bank_sha256": "e5edfbced75e84002bdd5b25054bf0906a022b4073e03ab31a4c85010f494f79",
+  "coverage_complete": true,
+  "created_at": "2026-08-14T05:33:59+08:00",
+  "execution_mode": "aggregate_ledger",
+  "failed_count": 1,
+  "limitation": "聚合台账复用历史逐题结果；不是单次最终 300 题全量执行。",
+  "passed_count": 299,
+  "question_count": 300,
+  "rows_sha256": "b4c0004f0385cad057d3ceee15df5fba363db2d885be0651b398095905713f10",
+  "runner_id": "intent-planner-aggregate-ledger-v1",
+  "sources": [
+    {
+      "directory": "/home/kdm/MyWorkSpace/AgentLearnSpace/AllProjects/What-to-eat-today-main/What-to-eat-today-main/_other/考试/结果/2026-08-14-intent-planner-300-003",
+      "result_file": "new-results.jsonl",
+      "row_count": 300,
+      "rows_sha256": "68d5cf8408125c1343966c263749e49a19730d65dd7c4b477088ecbd0f38c671"
+    },
+    {
+      "directory": "/home/kdm/MyWorkSpace/AgentLearnSpace/AllProjects/What-to-eat-today-main/What-to-eat-today-main/_other/考试/结果/2026-08-14-intent-planner-failure-regression-002",
+      "result_file": "new-results.jsonl",
+      "row_count": 2,
+      "rows_sha256": "7972c7c1e9926a8d659c3331ef1f1121ad5904b95bcd7265dc27c2c6c9eac3d0"
+    }
+  ],
+  "valid_for_final_acceptance": false
+}

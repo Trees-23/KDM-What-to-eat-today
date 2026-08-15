@@ -1,0 +1,83 @@
+{
+  "bank_sha256": "38bc73268b502d0e24e577510f095cd0538edb34ddf2ebe2664f9db5e0780c87",
+  "failed_count": 2,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-15-intent-planner-failure-regression-006/audits/20260814_175228_478_53ef6f7f",
+      "audit_id": "20260814_175228_478_53ef6f7f",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_constraint_audit"
+      ],
+      "input": "想做带番茄风味的菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [
+        "ENTITY_NOT_FOUND",
+        "INTENT_NON_EXECUTE"
+      ],
+      "query_plan": null,
+      "question_id": "S06-C-04",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-15-intent-planner-failure-regression-006/audits/20260814_180714_199_8d602c18",
+      "audit_id": "20260814_180714_199_8d602c18",
+      "difficulty_code": "C",
+      "failures": [
+        "recommendation_hard_filter_mismatch:excluded_methods"
+      ],
+      "input": "不想吃油炸，推荐别的川味做法。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-07",
+      "scenario_id": "S07"
+    }
+  ],
+  "implementation_commit": "e437eaf72c835ad119be48f54f29f4620a49dbbc",
+  "question_count": 78,
+  "runner_id": "intent-planner-failure-regression-v1"
+}

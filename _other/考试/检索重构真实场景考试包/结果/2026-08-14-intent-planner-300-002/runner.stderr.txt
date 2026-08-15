@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/rag_modules/planner_acceptance_runtime.py", line 311, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/app/rag_modules/planner_acceptance_runtime.py", line 307, in main
+    return run(arguments.input, arguments.output)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/rag_modules/planner_acceptance_runtime.py", line 190, in run
+    source = _read_input(input_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/rag_modules/planner_acceptance_runtime.py", line 69, in _read_input
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-002/frozen_questions.json'
