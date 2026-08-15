@@ -35,13 +35,13 @@ RAG 指标：候选有没有找对、排序和证据链好不好
 | P3 | 实现离线计算与 AI 评审组件 | 可重复运行的脚本、配置和测试 | 单元测试、样例题和防错校验通过。 |
 | P4 | 实际跑三层评测 | 三张评分卡和汇总报告 | 300 题全部被处理，状态完整。 |
 | P5 | 自动验收结果是否可信 | 验收报告和稳定性报告 | 输入完整、指标正确、AI 结果稳定。 |
-| P6 | 发布基线和问题清单 | `integrated-summary.md` | 明确能否作为正式基线及限制。 |
+| P6 | 汇总、归档并发布最终测试包 | `_other/最终300测试/<运行编号>/` | 原硬规则考试、新三层结果、结论和总览都已可追溯地放入同一包。 |
 
 ## 3. P0：来源盘点与不可变快照
 
 ### 3.1 输入
 
-必须读取并计算 SHA-256 的文件：
+必须对整个来源运行目录递归枚举所有常规文件，按相对路径排序后计算 SHA-256，写入不可变的完整来源清单。下列文件是其中必须存在且还要做语义读取的关键文件：
 
 - `new-results.jsonl`：题号、场景、难度、原始通过状态、审计 ID、规划事件、推荐事件；
 - `runner.stdout.jsonl`：运行过程的补充事件；
@@ -56,7 +56,7 @@ RAG 指标：候选有没有找对、排序和证据链好不好
 2. 每题的 `audit_id` 必须能定位到一组审计文件；每题的最终回答、场景、难度和原始 `status` 必须可读。
 3. 核对现有运行中保存的字段。特别记录：S06/S07 的 60 题已应有 `candidate_top30` 和 `final_top5`；其他场景的候选和最终证据可能只在审计文件中。
 4. 不使用旧 `汇总结果.py` 直接处理本运行。该脚本面向旧的 `old/new + completed` 结果格式，而本运行使用 `new-results.jsonl + passed`；必须走本方案的新标准化读取层。
-5. 写入所有来源文件哈希、读取时间、解析器版本和每题来源位置。
+5. 写入来源目录内全部常规文件的相对路径、大小和 SHA-256，以及读取时间、解析器版本和每题来源位置。
 
 ### 3.3 输出
 
@@ -76,7 +76,7 @@ RAG 指标：候选有没有找对、排序和证据链好不好
 - 任一缺失项已经精确列出题号与原因；
 - 未发生任何对原始运行目录的写入。
 
-若 300 题映射失败，停止在 P0，先修解析映射，不进入评分。
+若 300 题映射失败或来源文件物理缺失，标记 `SOURCE_INTEGRITY_FAILED`，不进入 P1-P5 的评分；但仍必须走 P6 的异常归档路径，生成带缺失清单的 `NOT_READY` 最终包。该包只能称为“来源不完整的失败归档”，不得称为原硬规则考试完整副本。
 
 ## 4. P1：标准化评测输入
 
@@ -243,8 +243,8 @@ rag-data-coverage.md
 
 1. 创建新目录 `<三层评测运行编号>`，不在原始 300 题目录写入任何文件。
 2. 固定 `source-run.json`、解析器版本、配置哈希和 AI judge profile。
-3. 运行 P0/P1；未通过即停止。
-4. 运行 P2；先完成所有 `N/A` 判定和 gold 覆盖报告，再允许计算任何 RAG 平均分。
+3. 运行 P0。若为 `SOURCE_INTEGRITY_FAILED`，跳过 P1-P5，直接进入 P6 异常归档；若来源完整，才运行 P1。
+4. 正常路径运行 P2；先完成所有 `N/A` 判定和 gold 覆盖报告，再允许计算任何 RAG 平均分。
 
 ### 7.2 运行中
 
@@ -322,35 +322,91 @@ rag-data-coverage.md
 
 无论哪种结论，都不影响原有 300 题硬测试结论。
 
-## 9. P6：发布、复跑和用户查看方式
+## 9. P6：汇总、归档和用户查看方式
 
-### 9.1 最终目录
+### 9.1 最终归档原则
+
+`_other/最终300测试/` 是用户查看最终 300 题结果的唯一交付根目录。它不是临时日志目录，也不只放新增 RAG/回答效果结果。来源完整的正常最终交付必须同时包含：
+
+1. 本次三层评测所依据的既有 300 题硬规则考试完整快照；
+2. 新生成的硬指标引用、RAG 评分、回答效果评分和自动验收；
+3. 一份人可以直接阅读的总览和最终结论。
+
+来源不完整的异常归档不产生三层结果，只保留可读取的来源副本、缺失清单、`NOT_READY` 结论和总览，并显式标记未执行的阶段。
+
+既有硬规则考试的唯一来源是：
 
 ```text
-_other/考试/检索重构真实场景考试包/结果/<三层评测运行编号>/
-  source-run.json
-  source-integrity-report.json
-  evaluation-cases.jsonl
-  hard-scorecard-reference.json
-  rag-gold-registry.json
-  rag-scorecard.json
-  quality-scorecard.json
-  auto-judge-stability-report.json
-  validation-report.json
-  integrated-summary.md
+_other/考试/检索重构真实场景考试包/结果/
+  2026-08-15-intent-planner-300-005/
 ```
 
-### 9.2 人只看什么
+正常 P6 必须在 P0 已完成完整来源清单和哈希后才可复制。复制使用保留目录结构和文件内容的方式，不移动、不删除、不修改来源目录；复制完成后重新递归计算文件清单和哈希，逐项与 P0 的完整来源清单比对。任一文件缺失、额外、路径不一致或哈希不一致，则最终包为 `NOT_READY`，不得只放一个“300/300 passed”的摘要冒充完整硬规则结果。
 
-人不必逐题打分，只看 `integrated-summary.md` 中的：
+若 P0 已标记 `SOURCE_INTEGRITY_FAILED`，P6 不得伪装执行“完整副本”验证：只能复制仍可读取的来源文件，写入 `source-missing-manifest.json`、P0 缺失原因和 `NOT_READY` 结论，并在总览第一行明确“原硬规则考试来源不完整，未生成完整副本”。这个异常包仍放在 `_other/最终300测试/<最终测试运行编号>/`，用于保存已完成工作和阻塞证据。
+
+### 9.2 最终目录结构
+
+```text
+_other/最终300测试/
+  README.md                                      # 指向最新最终包和历次包目录
+  <最终测试运行编号>/                             # 每次新建，禁止覆盖历史最终包
+    00-最终总览.md                                # 用户优先阅读：三层结论、限制、低分归因
+    01-原始300硬规则考试/
+      source-run.json                             # 原始来源绝对路径、哈希和复制时间
+      source-copy-manifest.json                   # 原路径与复制路径的逐文件哈希对照
+      source-missing-manifest.json                # 仅 SOURCE_INTEGRITY_FAILED 时存在
+      2026-08-15-intent-planner-300-005/          # 原硬规则考试的完整只读副本
+        acceptance-report.json
+        failure-summary.json
+        frozen_questions.json
+        new-results.jsonl
+        runner.stdout.jsonl
+        audits/
+        ...
+    02-三层评测输入与硬指标/
+      source-integrity-report.json
+      evaluation-cases.jsonl
+      hard-scorecard-reference.json
+    03-RAG指标/
+      rag-gold-registry.json
+      rag-data-coverage.md
+      rag-scorecard.json
+    04-回答效果/
+      quality-scorecard.json
+      auto-judge-stability-set-v1.json
+      auto-judge-stability-report.json
+    05-自动验收与结论/
+      validation-report.json
+      integrated-summary.md
+      final-package-manifest.json
+      final-conclusion.json
+```
+
+`<最终测试运行编号>` 例如 `2026-08-15-three-layer-evaluation-001`。根目录 `README.md` 只列出各最终包、运行时间、来源硬规则运行编号和 `READY_FOR_AUTO_BASELINE` / `AUTO_BASELINE_WITH_LIMITATIONS` / `NOT_READY` 状态；它不覆盖或删除旧包。
+
+### 9.3 P6 的自动执行步骤
+
+1. 新建唯一最终测试运行目录，并写入本次运行编号、代码提交、配置哈希和来源路径。
+2. 正常路径：将原硬规则 300 题运行完整复制到 `01-原始300硬规则考试/`，生成递归逐文件复制清单并验证与 P0 完整来源清单逐项哈希一致；异常路径：仅复制仍可读取的文件并生成 `source-missing-manifest.json`，最终状态固定为 `NOT_READY`。
+3. 正常路径：将 P0-P5 产物按上述分区复制或生成到 `02` 至 `05`，保留每个文件的来源和生成版本；异常路径：不要求也不得伪造 P1-P5 产物，`02` 至 `04` 可以不存在。
+4. 生成 `00-最终总览.md`：正常路径先说明原硬规则考试的原始结论，再分别说明 RAG 和回答效果的有效范围、未验证项和限制；异常路径第一行说明来源不完整、未执行 P1-P5、最终状态为 `NOT_READY`。两种路径都严禁把三层写成一个总分。
+5. 生成 `final-conclusion.json`：正常路径至少含硬指标原结论、RAG 结论、回答效果结论、自动验收结论、最低场景、`RAG_UNVERIFIED` / `QUALITY_UNVERIFIED` 计数、来源与复制哈希状态；异常路径至少含 `SOURCE_INTEGRITY_FAILED`、缺失清单引用、已复制文件数、未执行阶段和 `NOT_READY`。
+6. 生成 `final-package-manifest.json`：枚举最终包内实际存在的必要文件、哈希、生成时间和验证状态；异常路径的必要文件为可读取来源副本、`source-missing-manifest.json`、`00-最终总览.md` 和 `final-conclusion.json`。
+7. 正常路径中，只有完整复制清单、三层评分卡、自动验收和总览全部存在且互相链接时，才更新根目录 `README.md` 的“最新最终包”条目；`SOURCE_INTEGRITY_FAILED` 异常路径中，只有缺失清单、`NOT_READY` 结论、总览和包清单全部存在时才追加“失败归档”条目。
+
+### 9.4 人只看什么
+
+人不必逐题打分，只需从 `_other/最终300测试/<最终测试运行编号>/00-最终总览.md` 开始看：
 
 - 三层是否均可用，还是哪一层存在限制；
+- 原始 300 题硬规则考试的完整副本是否已通过哈希核验；
 - 低于 70 的回答效果场景和代表题；
 - RAG 缺失、AI 大分歧和未验证题；
 - 最常见问题标签；
 - “应改检索 / 应改重排 / 应改回答生成”的归因列表。
 
-### 9.3 后续版本比较规则
+### 9.5 后续版本比较规则
 
 后续系统版本只能与“相同题库哈希、相同 gold 版本、相同 rubric、相同 AI judge profile、相同指标口径”的基线比较。任一版本变化时，报告必须新开一列并说明不可直接横比的原因。
 
@@ -364,6 +420,7 @@ _other/考试/检索重构真实场景考试包/结果/<三层评测运行编号
 4. 回答效果完全由规则校验和多 AI 自动评审产生，无人工逐题评分；
 5. 自动验收通过，或限制被明确标记为 `AUTO_BASELINE_WITH_LIMITATIONS`；
 6. 最终报告能明确告诉使用者：问题主要在硬规则、检索、重排还是回答表达；
-7. 原始 300 题运行和其 `passed/failed` 没有被修改。
+7. `_other/最终300测试/<最终测试运行编号>/` 中已包含原硬规则考试的完整可验证副本、三层结果、自动验收、结论和总览；
+8. 原始 300 题运行和其 `passed/failed` 没有被修改。
 
 达到这些条件后，下一步才是依据低分归因修改系统，并用同一套三层流程比较修改前后结果；不是直接用总分决定系统“好或不好”。
