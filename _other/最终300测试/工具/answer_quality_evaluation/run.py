@@ -158,10 +158,21 @@ def judge_input(case: dict[str, Any], rubric: dict[str, Any]) -> dict[str, Any]:
     return {"case_id": case["case_id"], "scenario_id": case["scenario_id"], "answer_type": kind, "user_question": case["user_question"], "final_answer": case["final_answer"], "evidence": case["final_evidence"], "limitations": case["limitations"], "applicable_dimensions": applicable_dimensions(kind, rubric), "rubric_version": rubric["version"], "output_schema_version": "answer-quality-output-schema-v1"}
 
 
+def provider_schema(frozen_schema: dict[str, Any]) -> dict[str, Any]:
+    """Create a transport-only projection for endpoints that reject uniqueItems."""
+    def project(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {key: project(item) for key, item in value.items() if key != "uniqueItems"}
+        if isinstance(value, list):
+            return [project(item) for item in value]
+        return value
+    return project(frozen_schema)
+
+
 def request_score(client: OpenAI, model: str, prompt: str, schema: dict[str, Any], judge_payload: dict[str, Any], timeout: float) -> dict[str, Any]:
-    # Some compatible endpoints reject valid JSON Schema keywords such as uniqueItems.
     # The frozen schema remains the local acceptance authority for every reply.
-    response = client.chat.completions.create(model=model, temperature=0, timeout=timeout, response_format={"type": "json_object"}, messages=[{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(judge_payload, ensure_ascii=False)}])
+    # This endpoint rejects uniqueItems, so only its transport projection omits it.
+    response = client.chat.completions.create(model=model, temperature=0, timeout=timeout, response_format={"type": "json_schema", "json_schema": {"name": "answer_quality_output", "strict": True, "schema": provider_schema(schema)}}, messages=[{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(judge_payload, ensure_ascii=False)}])
     content = response.choices[0].message.content
     if not content:
         raise ScoreValidationError("empty model response")

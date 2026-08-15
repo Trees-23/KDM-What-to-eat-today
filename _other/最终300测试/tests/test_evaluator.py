@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "_other/最终300测试/工具/answer_quality_evaluation"))
 
 from evaluator import ScoreValidationError, answer_type, canonical_sha256, load_jsonl, validate_and_score
+from run import provider_schema
 
 
 RUBRIC = json.loads((ROOT / "_other/最终300测试/配置/answer-quality-rubric-v1.json").read_text())
@@ -60,6 +61,11 @@ class EvaluatorTests(unittest.TestCase):
             self.assertEqual(load_jsonl(path, skip_invalid=True), [{"case_id": "S01-A-01"}])
             with self.assertRaises(json.JSONDecodeError):
                 load_jsonl(path)
+
+    def test_provider_projection_keeps_frozen_schema_unchanged(self):
+        projected = provider_schema(SCHEMA)
+        self.assertNotIn("uniqueItems", json.dumps(projected, ensure_ascii=False))
+        self.assertIn("uniqueItems", json.dumps(SCHEMA, ensure_ascii=False))
 
 if __name__ == "__main__":
     unittest.main()
