@@ -1,0 +1,91 @@
+{
+  "bank_sha256": "e5edfbced75e84002bdd5b25054bf0906a022b4073e03ab31a4c85010f494f79",
+  "failed_count": 1,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [
+    {
+      "aggregate_source": {
+        "directory": "/home/kdm/MyWorkSpace/AgentLearnSpace/AllProjects/What-to-eat-today-main/What-to-eat-today-main/_other/考试/结果/2026-08-14-intent-planner-failure-regression-004",
+        "result_file": "new-results.jsonl",
+        "row_count": 3,
+        "rows_sha256": "35d87ca784d80f191bd49ccd45f7abd6917b3fe2f10b34da01ef737660320fef"
+      },
+      "answer_chars": 52,
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-failure-regression-004/audits/20260813_225427_479_2898f005",
+      "audit_id": "20260813_225427_479_2898f005",
+      "difficulty_code": "C",
+      "duration_ms": 3791,
+      "evaluation_constraints": "可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "failures": [
+        "restricted_preference_pds_required"
+      ],
+      "graph_statuses": [],
+      "input": "想吃清新一点的川味番茄菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [
+        "NO_PREFERENCE_RESULTS",
+        "INTENT_NON_EXECUTE"
+      ],
+      "pds_text_evidence_count": 0,
+      "planner_events": [
+        {
+          "fields": {
+            "attempt_count": 1,
+            "candidate_intent": "PREFERENCE_RECOMMEND",
+            "candidate_version": "v1",
+            "confidence": 0.97,
+            "latency_ms": 3534,
+            "normalized_slots": {
+              "cuisines": [
+                "SICHUAN_STYLE"
+              ],
+              "ingredients": [
+                "番茄"
+              ],
+              "meal_context": [],
+              "methods": [],
+              "nutrition_constraint": null,
+              "preferences": [
+                "LIGHT_FEEL"
+              ],
+              "servings": null,
+              "step_number": null,
+              "time_budget_minutes": null,
+              "tools": []
+            },
+            "planner_model": "gpt-5.6-terra",
+            "planner_version": "v1",
+            "reason": null,
+            "response_format": "json_schema",
+            "response_hash": "957d2452d07197205931ffca78c61ae63e81695b4364bbb45503b9189ee04218"
+          },
+          "stage": "intent_planner",
+          "status": "VALID"
+        },
+        {
+          "fields": {
+            "claim_policy": {
+              "display_requests": [],
+              "forbidden_claims": [],
+              "hard_constraints": [],
+              "soft_preferences": []
+            },
+            "compile_action": "NO_PREFERENCE_RESULTS",
+            "query_plan_hash": null,
+            "reason": "HARD_SCOPE_EMPTY"
+          },
+          "stage": "intent_compile",
+          "status": "TERMINAL"
+        }
+      ],
+      "position": 3,
+      "query_plan": null,
+      "question_id": "S07-C-04",
+      "runner_id": "intent-planner-live-runner-v1",
+      "scenario_id": "S07",
+      "status": "failed",
+      "user_message": "想吃清新一点的川味番茄菜。"
+    }
+  ],
+  "question_count": 300,
+  "runner_id": "intent-planner-aggregate-ledger-v1"
+}

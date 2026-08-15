@@ -1,0 +1,2626 @@
+{
+  "bank_sha256": "38bc73268b502d0e24e577510f095cd0538edb34ddf2ebe2664f9db5e0780c87",
+  "failed_count": 78,
+  "failure_result_file": "new-results.jsonl",
+  "failures": [
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154018_556_b0e55bbc",
+      "audit_id": "20260814_154018_556_b0e55bbc",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有鳜鱼可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-01",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154027_398_25825ca2",
+      "audit_id": "20260814_154027_398_25825ca2",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有排骨可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-02",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154033_697_97fdec9b",
+      "audit_id": "20260814_154033_697_97fdec9b",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有羊肉可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-03",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154041_946_6d44578a",
+      "audit_id": "20260814_154041_946_6d44578a",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有鸭肉可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-04",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154047_474_f11e7905",
+      "audit_id": "20260814_154047_474_f11e7905",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有青蟹可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-05",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154059_112_6c402089",
+      "audit_id": "20260814_154059_112_6c402089",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有鲤鱼可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-06",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154105_446_f28f8b54",
+      "audit_id": "20260814_154105_446_f28f8b54",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有普通面条可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-07",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154110_745_094109b5",
+      "audit_id": "20260814_154110_745_094109b5",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有米饭可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-08",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154117_808_08f6047d",
+      "audit_id": "20260814_154117_808_08f6047d",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有玉米可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-09",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154122_864_0f620c49",
+      "audit_id": "20260814_154122_864_0f620c49",
+      "difficulty_code": "B",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "有大白菜可以做什么菜？哪些菜谱确实包含它？",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-B-10",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154129_954_ab5893c3",
+      "audit_id": "20260814_154129_954_ab5893c3",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "花菜能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-01",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154137_101_805d3b5d",
+      "audit_id": "20260814_154137_101_805d3b5d",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "西兰花能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-02",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154142_466_169c5d4e",
+      "audit_id": "20260814_154142_466_169c5d4e",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "黄瓜能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-03",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154150_031_5c82d1ec",
+      "audit_id": "20260814_154150_031_5c82d1ec",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "豆角能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-04",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154154_419_f4ffa6c9",
+      "audit_id": "20260814_154154_419_f4ffa6c9",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "蘑菇能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-05",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154205_915_9549b62f",
+      "audit_id": "20260814_154205_915_9549b62f",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "金针菇能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-06",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154210_711_eeea19f6",
+      "audit_id": "20260814_154210_711_eeea19f6",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "莲藕能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-07",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154219_490_2a344bb5",
+      "audit_id": "20260814_154219_490_2a344bb5",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "南瓜能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-08",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154224_972_62176fb3",
+      "audit_id": "20260814_154224_972_62176fb3",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "菠菜能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-09",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_154240_212_5fa33bb8",
+      "audit_id": "20260814_154240_212_5fa33bb8",
+      "difficulty_code": "C",
+      "failures": [
+        "verified_graph_and_pds_required"
+      ],
+      "input": "干豆腐能做什么菜？请只列出图关系能够证明使用了它的菜谱，不要按常识补菜名。",
+      "limitations": [
+        "PARENT_DOCUMENT_NOT_FOUND",
+        "已定位实体，但当前 PDS build 未包含对应正文。"
+      ],
+      "query_plan": null,
+      "question_id": "S04-C-10",
+      "scenario_id": "S04"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155034_547_2b3b66fb",
+      "audit_id": "20260814_155034_547_2b3b66fb",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "天气热，想做一道清爽不腻的晚饭。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-01",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155108_426_753c5cff",
+      "audit_id": "20260814_155108_426_753c5cff",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "下班很晚，想找准备步骤少的家常菜。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-02",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155143_864_87613a27",
+      "audit_id": "20260814_155143_864_87613a27",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "早餐想吃热乎又不复杂的。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-03",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155207_018_d68fe677",
+      "audit_id": "20260814_155207_018_d68fe677",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "周末想做一道有仪式感的海鲜菜。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-04",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155241_515_d095384b",
+      "audit_id": "20260814_155241_515_d095384b",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃带汤的家常菜，别太难。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-05",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155306_280_1a4a29d5",
+      "audit_id": "20260814_155306_280_1a4a29d5",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道下饭的素菜。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-06",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155339_195_a68e33f4",
+      "audit_id": "20260814_155339_195_a68e33f4",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃辣一点的川味家常菜。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-07",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155407_847_e48a4113",
+      "audit_id": "20260814_155407_847_e48a4113",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "只有微波炉时能做点什么。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000519",
+            "201000539",
+            "201000550",
+            "201003676",
+            "201004446",
+            "201005691"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-08",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155438_359_6b251dfb",
+      "audit_id": "20260814_155438_359_6b251dfb",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "招待两个人，想做一道看起来体面的鱼。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-09",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155506_727_cabd1ad0",
+      "audit_id": "20260814_155506_727_cabd1ad0",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做米饭搭配的一道菜。请推荐知识库中最合适的菜，并说明依据。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-A-10",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155530_441_1b6a6b4c",
+      "audit_id": "20260814_155530_441_1b6a6b4c",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "天气冷想喝一碗暖和的汤，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-01",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155603_315_705b91c8",
+      "audit_id": "20260814_155603_315_705b91c8",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做不需要很多工具的早餐，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-02",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155640_003_64341c00",
+      "audit_id": "20260814_155640_003_64341c00",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "家里人不太能吃辣，晚餐有什么选择，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-03",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155714_788_6c682dbc",
+      "audit_id": "20260814_155714_788_6c682dbc",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做口感软糯的肉菜，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-04",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155746_851_9e842745",
+      "audit_id": "20260814_155746_851_9e842745",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道清蒸类菜，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-05",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155823_398_e4247a8b",
+      "audit_id": "20260814_155823_398_e4247a8b",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想带便当，做什么相对合适，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-06",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155858_150_1ef70c78",
+      "audit_id": "20260814_155858_150_1ef70c78",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "今天想吃面食，想要有味道一点，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-07",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_155935_340_a849862e",
+      "audit_id": "20260814_155935_340_a849862e",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道有蔬菜的快手菜，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-08",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160005_724_09424734",
+      "audit_id": "20260814_160005_724_09424734",
+      "difficulty_code": "B",
+      "failures": [
+        "empty_answer",
+        "restricted_preference_pds_required"
+      ],
+      "input": "朋友来家里，想做一道有地方特色的菜，帮我找几个贴近这个需求的做法。",
+      "limitations": [
+        "ACCEPTANCE_RUNTIME_ERROR",
+        "INTENT_NON_EXECUTE"
+      ],
+      "query_plan": null,
+      "question_id": "S06-B-09",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160130_679_32cfb954",
+      "audit_id": "20260814_160130_679_32cfb954",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃酸甜口的菜，帮我找几个贴近这个需求的做法。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-B-10",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160202_147_1730882e",
+      "audit_id": "20260814_160202_147_1730882e",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一人份的简单晚餐。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-01",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160238_721_b534de8e",
+      "audit_id": "20260814_160238_721_b534de8e",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道适合夏天的凉菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-02",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160306_629_a363792c",
+      "audit_id": "20260814_160306_629_a363792c",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃豆腐类菜，又不想太寡淡。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-03",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160338_206_89633c43",
+      "audit_id": "20260814_160338_206_89633c43",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做带番茄风味的菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201002555",
+            "201003196",
+            "201003224",
+            "201003726",
+            "201003844",
+            "201004746",
+            "201005049",
+            "201005181",
+            "201005226",
+            "201005528",
+            "201005653",
+            "201005669"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-04",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160418_348_8fe9bc7b",
+      "audit_id": "20260814_160418_348_8fe9bc7b",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "冰箱食材不多，想先看看容易上手的菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-05",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160448_090_1de36924",
+      "audit_id": "20260814_160448_090_1de36924",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想找一道适合电饭煲的主食。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-06",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160511_172_1d65345c",
+      "audit_id": "20260814_160511_172_1d65345c",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道煎制的小菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-07",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160540_835_ab2c8eac",
+      "audit_id": "20260814_160540_835_ab2c8eac",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做偏清淡的海鲜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-08",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160610_489_53cbb8b0",
+      "audit_id": "20260814_160610_489_53cbb8b0",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做一道能配米饭的炖菜。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-09",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160642_573_20da7fc7",
+      "audit_id": "20260814_160642_573_20da7fc7",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃甜品但不想步骤太复杂。请展示推荐依据；如果意图无法由资料支持，不要把推测写成事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 50,
+        "parameters": {
+          "limit": 50,
+          "scope": "all_child_chunks"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S06-C-10",
+      "scenario_id": "S06"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160714_975_64472e6b",
+      "audit_id": "20260814_160714_975_64472e6b",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃川菜但口感清爽。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-01",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160743_384_ab239696",
+      "audit_id": "20260814_160743_384_ab239696",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想找少油感觉的川味晚餐。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-02",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160810_950_cbe6e9b6",
+      "audit_id": "20260814_160810_950_cbe6e9b6",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "偏好清淡一些的川菜。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-03",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160839_901_c1ecb8aa",
+      "audit_id": "20260814_160839_901_c1ecb8aa",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "不想吃太腻，想吃川味配米饭的菜。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-04",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160906_477_5de42a5b",
+      "audit_id": "20260814_160906_477_5de42a5b",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想要有蔬菜的轻口味川菜。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-05",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_160939_058_5bd84e43",
+      "audit_id": "20260814_160939_058_5bd84e43",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "今天想吃川味但口味温和些。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-06",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161007_977_27f6f206",
+      "audit_id": "20260814_161007_977_27f6f206",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃辣但不希望太油重的川菜。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-07",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161038_997_a416c4a8",
+      "audit_id": "20260814_161038_997_a416c4a8",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "希望做法简单、吃起来不厚重的川味菜。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-08",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161116_520_e537c3ad",
+      "audit_id": "20260814_161116_520_e537c3ad",
+      "difficulty_code": "A",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "偏好蒸制或煮制风格的川味晚餐。请推荐几个可考虑的菜。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-A-10",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161147_164_816c2c66",
+      "audit_id": "20260814_161147_164_816c2c66",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃口感清爽的川味凉菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-01",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161218_186_ab683cfa",
+      "audit_id": "20260814_161218_186_ab683cfa",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "希望川菜里蔬菜多一点，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-02",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161244_825_3530e52f",
+      "audit_id": "20260814_161244_825_3530e52f",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "晚餐想少一些油腻感，想吃川菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-03",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161317_300_6b2af7f5",
+      "audit_id": "20260814_161317_300_6b2af7f5",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想找适合夏天的轻口味川菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-04",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161347_387_a8ff3d11",
+      "audit_id": "20260814_161347_387_a8ff3d11",
+      "difficulty_code": "B",
+      "failures": [
+        "empty_answer",
+        "restricted_preference_pds_required"
+      ],
+      "input": "口味偏清淡，但可以有一点川味酸辣，有哪些做法比较贴近这种偏好？",
+      "limitations": [
+        "ACCEPTANCE_RUNTIME_ERROR",
+        "INTENT_NON_EXECUTE"
+      ],
+      "query_plan": null,
+      "question_id": "S07-B-05",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161514_488_0ba10716",
+      "audit_id": "20260814_161514_488_0ba10716",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃鱼但不想做得太重口的川菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-06",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161539_168_893b623e",
+      "audit_id": "20260814_161539_168_893b623e",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "希望是一道川味素菜或蔬菜占主的菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-07",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161607_639_fdcfd4fb",
+      "audit_id": "20260814_161607_639_fdcfd4fb",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想找适合午餐的轻负担川菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-08",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161647_128_6b4b439b",
+      "audit_id": "20260814_161647_128_6b4b439b",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃清爽一点的川味蒸菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-09",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161717_738_a886b684",
+      "audit_id": "20260814_161717_738_a886b684",
+      "difficulty_code": "B",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "今天胃口一般，想吃清爽一点的川菜，有哪些做法比较贴近这种偏好？",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-B-10",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161747_434_c6dd842d",
+      "audit_id": "20260814_161747_434_c6dd842d",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想做少调料也能吃的川味菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-01",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161815_810_b6ffd57d",
+      "audit_id": "20260814_161815_810_b6ffd57d",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想喝一碗清淡些的川味汤。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-02",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161845_765_e10701b8",
+      "audit_id": "20260814_161845_765_e10701b8",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "希望推荐不太油的川味早餐做法。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-03",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161919_088_2c5e86ff",
+      "audit_id": "20260814_161919_088_2c5e86ff",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想找一道柔和、适合全家的川味菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-05",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_161952_019_1ebdaa74",
+      "audit_id": "20260814_161952_019_1ebdaa74",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "偏好蔬菜和豆制品做成川菜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-06",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_162029_069_0481de10",
+      "audit_id": "20260814_162029_069_0481de10",
+      "difficulty_code": "C",
+      "failures": [
+        "recommendation_hard_filter_mismatch:excluded_methods"
+      ],
+      "input": "不想吃油炸，推荐别的川味做法。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-07",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_162105_683_c7fb905f",
+      "audit_id": "20260814_162105_683_c7fb905f",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃不太刺激的川味面食。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-08",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_162128_933_a43d77b6",
+      "audit_id": "20260814_162128_933_a43d77b6",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "今天想吃轻一点的川味海鲜。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-09",
+      "scenario_id": "S07"
+    },
+    {
+      "audit_dir": "/app/run/intent-planner-acceptance/2026-08-14-intent-planner-300-manual-003/audits/20260814_162208_990_84b9a4b3",
+      "audit_id": "20260814_162208_990_84b9a4b3",
+      "difficulty_code": "C",
+      "failures": [
+        "missing_recommendation_scope_audit"
+      ],
+      "input": "想吃家常但不厚重的川味晚饭。可以表达偏好匹配，但没有受治理营养来源时不要断言“低脂”或其他严格营养事实。",
+      "limitations": [],
+      "query_plan": {
+        "entity_type": "Recipe",
+        "intent": "PREFERENCE_RECOMMEND",
+        "max_candidates": 200,
+        "parameters": {
+          "limit": 200,
+          "parent_ids": [
+            "201000040",
+            "201000160",
+            "201000223",
+            "201000453",
+            "201000838",
+            "201001454",
+            "201001591",
+            "201001606",
+            "201001746",
+            "201001891",
+            "201002013",
+            "201002073",
+            "201002103",
+            "201002255",
+            "201002327",
+            "201002350",
+            "201002454",
+            "201002528",
+            "201002575",
+            "201002797",
+            "201003048",
+            "201003435",
+            "201003459",
+            "201003481",
+            "201003571",
+            "201004316",
+            "201004367",
+            "201004407",
+            "201005195",
+            "201005435",
+            "201005596",
+            "201005609"
+          ],
+          "scope": "candidate_parents"
+        },
+        "source": "rule",
+        "template_id": "preference_recommend_v1"
+      },
+      "question_id": "S07-C-10",
+      "scenario_id": "S07"
+    }
+  ],
+  "implementation_commit": "700d4b2a757bfb60454359c0c3226ac9d776a57e",
+  "question_count": 300,
+  "runner_id": "intent-planner-live-runner-v1"
+}
