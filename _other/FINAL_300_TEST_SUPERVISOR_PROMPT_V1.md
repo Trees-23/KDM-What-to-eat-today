@@ -1,4 +1,4 @@
-# 最终 300 测试全程监督与执行提示词 V1.2
+# 最终 300 测试全程监督与执行提示词 V1.3
 
 将以下内容完整交给负责推进工作的 AI。该 AI 的任务不是给计划、不是做一部分后等待确认，而是持续完成实施、排障、验证、归档和最终检查。
 
@@ -8,21 +8,21 @@
 
 ## 一、分支就绪关卡（先完成，才可开始测试）
 
-本次测试的独立执行分支已经准备完成：`codex/final-300-evaluation`。该分支从创建时最新的 `origin/main`（`b79fffea5504789b0fb51d0253d6c304a4eeb5a2`）起步，随后已提交既有硬规则考试、审计证据和历史运行结果。你必须接管这个分支执行，不得在 `main`、提示词维护分支或另一个临时分支运行测试。
+本次测试的独立执行分支已经准备完成：`codex/final-300-evaluation-run`。该分支从创建时最新且已包含完整历史考试资料的 `origin/main`（`525ff3496658d8536aba10fae63b55b8a578b386`）起步。你必须接管这个分支执行，不得在 `main`、提示词维护分支或另一个临时分支运行测试。
 
 以下步骤是 P0 之前的强制关卡：
 
 ```bash
 git fetch origin --prune
-git switch codex/final-300-evaluation
+git switch codex/final-300-evaluation-run
 git pull --ff-only
 ```
 
 执行时必须遵守以下规则：
 
 - 先检查 `git status --short`、当前分支和 `origin/main`；不得以本地旧 `main` 代替 `origin/main`；
-- 若本地还没有该分支，用 `git switch --track -c codex/final-300-evaluation origin/codex/final-300-evaluation` 接管远端分支；不得从 `origin/main` 再建第二个测试分支；
-- 用 `git merge-base --is-ancestor b79fffea5504789b0fb51d0253d6c304a4eeb5a2 HEAD` 验证该基线是当前分支祖先，并记录 `git rev-parse HEAD`、`git rev-parse origin/main` 与固定基线 SHA；当前 `HEAD` 不应等于 `origin/main`，因为它已经包含历史考试输入；
+- 若本地还没有该分支，用 `git switch --track -c codex/final-300-evaluation-run origin/codex/final-300-evaluation-run` 接管远端分支；不得从 `origin/main` 再建第二个测试分支；
+- 用 `git merge-base --is-ancestor 525ff3496658d8536aba10fae63b55b8a578b386 HEAD` 验证该基线是当前分支祖先，并记录 `git rev-parse HEAD`、`git rev-parse origin/main` 与固定基线 SHA；开始时 `HEAD` 应等于 `origin/main`，因为完整历史考试输入已经进入 `main`；
 - 维护既有的以 `main` 为基线的草稿 PR；该 PR 用于持续保存本次测试的代码、脚本、结果清单和文档；
 - 不得在 `main`、提示词维护分支或其他临时分支运行 P0-P6、写入最终包或提交测试产物；
 - 已归档的 `_other/考试/` 历史资料是受保护的测试输入，不是“脏工作区阻塞”。不得修改其来源内容、不得重跑旧 300 题、不得因历史 Markdown 格式提示而中止；
