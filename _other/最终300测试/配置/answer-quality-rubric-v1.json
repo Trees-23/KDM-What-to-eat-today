@@ -1,0 +1,74 @@
+{
+  "version": "answer-quality-rubric-v1",
+  "score_scale": {
+    "1": "明显不好用：没有完成该维度的核心要求，或存在严重反向问题。",
+    "2": "较差：提到了部分内容，但关键缺口明显，用户难以据此行动。",
+    "3": "基本可用：完成了基本要求，但有清晰、完整或贴合度不足。",
+    "4": "好用：直接且清楚地完成了要求，只有轻微可改善点。",
+    "5": "很好用：完整、准确地表达关键内容，贴合场景，用户可直接行动。"
+  },
+  "dimensions": {
+    "task_score": {
+      "question": "最终回答是否直接且完整地回应用户问题？",
+      "high_score_requires": ["回答核心请求", "没有明显偏题", "覆盖用户问题中的关键子任务"],
+      "low_score_signals": ["OFF_TOPIC", "遗漏核心请求", "只给空泛结论"]
+    },
+    "preference_score": {
+      "question": "推荐的内容、顺序或理由是否体现用户的口味、场景、便利性等软偏好？",
+      "applicable_to": ["recommendation"],
+      "high_score_requires": ["逐项体现关键软偏好", "推荐理由能对应偏好"],
+      "low_score_signals": ["PREFERENCE_MISSED", "推荐理由与偏好无关"]
+    },
+    "evidence_expression_score": {
+      "question": "关键理由是否能对应输入证据，且没有把证据范围说大？",
+      "applicable_to": ["normal", "recommendation"],
+      "high_score_requires": ["关键理由有本题证据支持", "措辞不超过证据边界"],
+      "low_score_signals": ["EVIDENCE_OVERSTATED", "REASON_UNCLEAR", "关键理由没有依据"]
+    },
+    "boundary_expression_score": {
+      "question": "拒答、降级或信息不足时，是否说清限制、原因和可行的下一步？",
+      "applicable_to": ["refusal_or_degraded"],
+      "high_score_requires": ["明确当前不能确认或不能执行什么", "给出安全且可操作的下一步"],
+      "low_score_signals": ["LIMITATION_UNCLEAR", "REFUSAL_NOT_HELPFUL"]
+    },
+    "readability_score": {
+      "question": "回答是否易扫描、重点明确，并能让用户直接采取行动？",
+      "high_score_requires": ["结构清楚", "重点明确", "步骤或建议可直接执行"],
+      "low_score_signals": ["TOO_VERBOSE", "NOT_ACTIONABLE", "关键步骤难以找到"]
+    }
+  },
+  "weights": {
+    "normal": {
+      "task_score": 40,
+      "preference_score": null,
+      "evidence_expression_score": 25,
+      "boundary_expression_score": null,
+      "readability_score": 35
+    },
+    "recommendation": {
+      "task_score": 25,
+      "preference_score": 35,
+      "evidence_expression_score": 20,
+      "boundary_expression_score": null,
+      "readability_score": 20
+    },
+    "refusal_or_degraded": {
+      "task_score": 30,
+      "preference_score": null,
+      "evidence_expression_score": null,
+      "boundary_expression_score": 45,
+      "readability_score": 25
+    }
+  },
+  "total_formula": "sum(weight * (score - 1) / 4 for each applicable dimension)",
+  "issue_tags": {
+    "OFF_TOPIC": "没有回应用户核心问题或明显答非所问。",
+    "PREFERENCE_MISSED": "没有体现用户明确的软偏好。",
+    "REASON_UNCLEAR": "给出结论但理由不清楚或无法理解。",
+    "EVIDENCE_OVERSTATED": "把证据范围说得超过输入材料支持的程度。",
+    "LIMITATION_UNCLEAR": "未清楚说明信息不足、不可用或不能确认的边界。",
+    "TOO_VERBOSE": "明显冗长，掩盖关键行动信息。",
+    "NOT_ACTIONABLE": "用户看完仍不知道下一步怎么做。",
+    "REFUSAL_NOT_HELPFUL": "拒答或降级没有给出安全、可行的替代方向。"
+  }
+}

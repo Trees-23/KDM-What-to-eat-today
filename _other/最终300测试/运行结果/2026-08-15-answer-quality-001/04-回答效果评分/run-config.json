@@ -1,0 +1,10 @@
+{
+  "model": "gpt-5.5",
+  "base_url": "https://downstream.jbbtoken.cn/v1",
+  "timeout_seconds": 90,
+  "max_attempts": 3,
+  "concurrency": 1,
+  "prompt_sha256": "0880ad3784859eba0dd6b39d06cd90c6eceb0ae3061af5ad763692855f8c90bc",
+  "rubric_sha256": "f783e6fa2da12e6f5cd45b3099cf3da02536188260003a49acf668c7c3d871da",
+  "schema_sha256": "9ffb56b2c5033e80d6b8a5aa9da390c31a6960606dfaf67cdfc4620b2e57c152"
+}

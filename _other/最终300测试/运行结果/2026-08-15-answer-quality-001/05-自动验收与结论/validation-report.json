@@ -1,0 +1,11 @@
+{
+  "status": "PASSED",
+  "checks": {
+    "source_integrity": "SOURCE_INTEGRITY_PASSED",
+    "case_count": 300,
+    "terminal_count": 300,
+    "single_success_per_case": true,
+    "rag_deferred_note_exists": true
+  },
+  "errors": []
+}

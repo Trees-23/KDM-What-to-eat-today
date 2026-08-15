@@ -1,0 +1,22 @@
+2026-08-14 20:04:56,065 - main - INFO - 启动高级图RAG系统...
+2026-08-14 20:04:56,065 - rag_modules.graph_data_preparation - INFO - 已连接到Neo4j数据库: bolt://neo4j:7687
+2026-08-14 20:04:56,075 - rag_modules.graph_data_preparation - INFO - Neo4j连接测试成功
+2026-08-14 20:04:56,151 - rag_modules.milvus_index_construction - INFO - 已连接到Milvus服务器: milvus-standalone:19530
+2026-08-14 20:04:56,152 - rag_modules.milvus_index_construction - INFO - 连接成功，当前集合: ['cooking_knowledge_v2_pds_f01044e5', 'cooking_knowledge', 'cooking_knowledge_v2_pds_2a8c0807', 'cooking_knowledge_v2_pds_39326c45', 'cooking_knowledge_v2_pds_8ed95d0e', 'cooking_knowledge_v2_pds_aff3e33d', 'cooking_knowledge_v2_pds_38677804', 'cooking_knowledge_v2_pds_51e5e228']
+2026-08-14 20:04:56,153 - rag_modules.milvus_index_construction - INFO - 正在初始化嵌入模型: /app/bge-small-zh-v1.5
+2026-08-14 20:05:01,389 - sentence_transformers.base.model - INFO - Loading SentenceTransformer model from /app/bge-small-zh-v1.5.
+
+Loading weights:   0%|          | 0/71 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 71/71 [00:00<00:00, 1320.40it/s]
+2026-08-14 20:05:01,585 - rag_modules.milvus_index_construction - INFO - 嵌入模型初始化完成
+2026-08-14 20:05:01,585 - rag_modules.generation_integration - INFO - 生成模块初始化完成，模型: gpt-5.5, API地址: https://downstream.jbbtoken.cn/v1
+2026-08-14 20:05:01,613 - main - INFO - ParentDocumentStore 健康检查: {'status': 'ok', 'build_id': 'pds_51e5e228cb4a935de64e2b7a', 'parent_count': 339, 'chunk_count': 1328, 'anchor_count': 2627}
+2026-08-14 20:05:01,614 - main - INFO - 阶段 2 实体直达已启用；旧 Router 仍作为 PDS 故障回退
+2026-08-14 20:05:01,614 - main - INFO - 阶段 3 QueryPlan 与目标化图查询已启用
+2026-08-14 20:05:01,631 - main - INFO - 意图规划器已启用：新路径失败将 fail-closed
+2026-08-14 20:07:22,244 - rag_modules.generation_integration - ERROR - LightRAG答案生成失败: HTTPSConnectionPool(host='downstream.jbbtoken.cn', port=443): Read timed out. (read timeout=45.0)
+2026-08-14 20:07:35,753 - rag_modules.generation_integration - ERROR - LightRAG答案生成失败: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2026-08-14 21:22:38,364 - rag_modules.graph_data_preparation - INFO - Neo4j连接已关闭
+2026-08-14 21:22:38,364 - rag_modules.milvus_index_construction - INFO - Milvus连接已关闭
+2026-08-14 21:22:38,638 - rag_modules.graph_data_preparation - INFO - Neo4j连接已关闭
+2026-08-14 21:22:38,639 - rag_modules.milvus_index_construction - INFO - Milvus连接已关闭

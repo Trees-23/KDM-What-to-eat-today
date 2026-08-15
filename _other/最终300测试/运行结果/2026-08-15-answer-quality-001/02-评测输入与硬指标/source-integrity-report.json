@@ -1,0 +1,18 @@
+{
+  "status": "SOURCE_INTEGRITY_PASSED",
+  "checks": {
+    "source_exists": true,
+    "source_file_count": 608,
+    "new_results_count": true,
+    "unique_question_ids": true,
+    "all_passed": true,
+    "answer_event_count": true,
+    "answer_event_mapping": true,
+    "all_answers_nonempty": true
+  },
+  "source": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005",
+  "copied_to": "01-原始300硬规则考试/2026-08-15-intent-planner-300-005",
+  "source_manifest_sha256": "54b34a35a27bc220b43d5a0e2c75436fdcdd80bbe3eb7ad9b4f0aa6ca9a9d32b",
+  "copy_manifest_sha256": "54b34a35a27bc220b43d5a0e2c75436fdcdd80bbe3eb7ad9b4f0aa6ca9a9d32b",
+  "copy_matches_source": true
+}
