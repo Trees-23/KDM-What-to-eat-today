@@ -211,21 +211,34 @@ def run_scores(run_dir: Path, limit: int | None = None, retry_unverified: bool =
     pending = [case for case in cases if case["case_id"] not in existing]
     if limit is not None:
         pending = pending[:limit]
-    client = OpenAI(api_key=api_key, base_url=base_url)
+    first_three_passed = all(any(record["status"] == "SCORED" and record["position"] == position for record in existing.values()) for position in (1, 2, 3))
+    concurrency = 2 if first_three_passed else 1
     for case in pending:
         json_line_append(scores_path, {"case_id": case["case_id"], "position": case["position"], "status": "PENDING", "recorded_at": now(), "judge_input_sha256": canonical_sha256(judge_input(case, rubric))})
+    def evaluate(case: dict[str, Any]) -> dict[str, Any]:
+        client = OpenAI(api_key=api_key, base_url=base_url)
         result = score_case(case, client, model, prompt, rubric, schema, attempts=3, timeout=90)
         result["completed_at"] = now()
-        json_line_append(scores_path, result)
-        if result["status"] != "SCORED" and case["position"] <= 3:
-            break
-    config = {"model": model, "base_url": redact_base_url(base_url), "timeout_seconds": 90, "max_attempts": 3, "concurrency": 1, "prompt_sha256": sha256_file(PROMPT_PATH), "rubric_sha256": sha256_file(RUBRIC_PATH), "schema_sha256": sha256_file(SCHEMA_PATH)}
+        return result
+    if concurrency == 1:
+        for case in pending:
+            result = evaluate(case)
+            json_line_append(scores_path, result)
+            if result["status"] != "SCORED" and case["position"] <= 3:
+                break
+    else:
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            futures = {executor.submit(evaluate, case): case for case in pending}
+            for future in as_completed(futures):
+                json_line_append(scores_path, future.result())
+    config = {"model": model, "base_url": redact_base_url(base_url), "timeout_seconds": 90, "max_attempts": 3, "concurrency": concurrency, "prompt_sha256": sha256_file(PROMPT_PATH), "rubric_sha256": sha256_file(RUBRIC_PATH), "schema_sha256": sha256_file(SCHEMA_PATH)}
     (run_dir / "04-回答效果评分" / "run-config.json").write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def finalize(run_dir: Path) -> dict[str, Any]:
     rubric, schema = json.loads(RUBRIC_PATH.read_text(encoding="utf-8")), json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     cases = load_jsonl(run_dir / "02-评测输入与硬指标" / "evaluation-cases.jsonl")
+    case_evidence = {case["case_id"]: {item["id"] for item in case["final_evidence"]} for case in cases}
     history = load_jsonl(run_dir / "04-回答效果评分" / "checkpoints.jsonl")
     terminal = {record["case_id"]: record for record in history if record["status"] in {"SCORED", "QUALITY_UNVERIFIED"}}
     errors: list[str] = []
@@ -239,7 +252,7 @@ def finalize(run_dir: Path) -> dict[str, Any]:
         if record["status"] == "SCORED":
             try:
                 judge_reply = {field: value for field, value in record["score"].items() if field != "total_score_100"}
-                validate_and_score(judge_reply, record["answer_type"], rubric, schema, set())
+                validate_and_score(judge_reply, record["answer_type"], rubric, schema, case_evidence[record["case_id"]])
             except ScoreValidationError as error: errors.append(f"{record['case_id']}: {error}")
     scored = [record for record in terminal.values() if record["status"] == "SCORED"]
     unverified = [record for record in terminal.values() if record["status"] == "QUALITY_UNVERIFIED"]
