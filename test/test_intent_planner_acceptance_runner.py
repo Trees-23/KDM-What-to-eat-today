@@ -14,7 +14,7 @@ from rag_modules.planner_acceptance_runtime import (
     _question_timeout,
     _status_for,
 )
-from rag_modules.retrieval_contracts import EvidenceBundle
+from rag_modules.retrieval_contracts import EvidenceBundle, TextEvidence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +39,50 @@ def test_live_acceptance_runner_freezes_exactly_the_official_300_questions():
     assert runner._RUNTIME_ENV["RETRIEVAL_INTENT_PLANNER_ENABLED"] == "true"
     assert runner._RUNTIME_ENV["ENABLE_RAG_AUDIT"] == "true"
     assert runner._RUNTIME_ENV["RETRIEVAL_MILVUS_V2_ENABLED"] == "true"
+    assert runner._RUNTIME_ENV["RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED"] == "true"
+    assert "RETRIEVAL_MILVUS_COLLECTION" not in runner._RUNTIME_ENV
+
+
+def test_live_acceptance_runner_reads_the_active_manifest_milvus_target(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_active_manifest")
+    manifest = tmp_path / "retrieval_artifact_manifest.json"
+    manifest.write_text(
+        json.dumps({"milvus_database": "fixture", "milvus_collection": "cooking_knowledge_v2_pds_fixture"}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(runner, "ACTIVE_ARTIFACT_MANIFEST", manifest)
+
+    environment = runner._runtime_environment([])
+
+    assert environment["RETRIEVAL_MILVUS_DATABASE"] == "fixture"
+    assert environment["RETRIEVAL_MILVUS_COLLECTION"] == "cooking_knowledge_v2_pds_fixture"
+
+
+def test_live_acceptance_runner_renders_question_progress_with_input_and_answer():
+    runner = _load(RUNNER_PATH, "intent_planner_acceptance_progress")
+
+    rendered = runner._render_runtime_event(
+        json.dumps(
+            {
+                "event": "question_result",
+                "position": 7,
+                "total_questions": 300,
+                "question_id": "S06-A-01",
+                "scenario_id": "S06",
+                "user_message": "天气热，想吃清爽晚饭。",
+                "answer": "可以考虑凉拌鸡丝。",
+                "status": "passed",
+                "duration_ms": 1234,
+                "failures": [],
+            },
+            ensure_ascii=False,
+        )
+    )
+
+    assert "[7/300] S06-A-01 (S06) passed" in rendered
+    assert "用户输入：天气热，想吃清爽晚饭。" in rendered
+    assert "回答：\n可以考虑凉拌鸡丝。" in rendered
+    assert "失败原因：无" in rendered
 
 
 def test_live_acceptance_runner_applies_isolated_runtime_overrides_without_dropping_required_flags():
@@ -146,6 +190,36 @@ def test_failure_regression_freezes_only_source_failures_from_the_official_bank(
     assert metadata["source_failure_summary"]["source_rows_sha256"]
 
 
+def test_failure_regression_bank_rejects_altered_or_noncanonical_questions(tmp_path, monkeypatch):
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression_bank")
+    monkeypatch.setattr(runner, "BANK", tmp_path / "bank.json")
+    official_questions = [{"question_id": f"q-{number}", "question": f"题目 {number}"} for number in range(300)]
+    runner.BANK.write_text(json.dumps({"questions": official_questions}), encoding="utf-8")
+    bank_path = tmp_path / "failure-bank.json"
+    bank_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "intent-planner-failure-regression-bank-v1",
+                "execution_mode": "failure_regression",
+                "question_count": 1,
+                "source": {"source_bank_sha256": __import__("hashlib").sha256(runner.BANK.read_bytes()).hexdigest()},
+                "questions": [official_questions[8]],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    metadata = runner._load_failure_regression_bank(bank_path)
+
+    assert metadata["questions"] == [official_questions[8]]
+    assert metadata["source_question_bank"]["source_failed_count"] is None
+    altered = json.loads(bank_path.read_text(encoding="utf-8"))
+    altered["questions"][0]["question"] = "被改写的题目"
+    bank_path.write_text(json.dumps(altered), encoding="utf-8")
+    with pytest.raises(ValueError, match="被改写"):
+        runner._load_failure_regression_bank(bank_path)
+
+
 def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_path):
     runner = _load(RUNNER_PATH, "intent_planner_failure_regression_report")
     metadata = {
@@ -163,6 +237,23 @@ def test_failure_regression_report_rejects_rows_outside_frozen_failure_set(tmp_p
     assert report["source_failed_count"] == 1
     assert report["coverage_complete"] is False
     assert report["valid"] is False
+
+
+def test_failure_regression_question_selection_is_limited_to_the_verified_bank():
+    runner = _load(RUNNER_PATH, "intent_planner_failure_regression_selection")
+    metadata = {
+        "questions": [{"question_id": "S06-C-04"}, {"question_id": "S07-C-07"}, {"question_id": "S08-A-01"}],
+    }
+
+    selected = runner._select_failure_regression_questions(metadata, ["S07-C-07", "S06-C-04"])
+
+    assert [item["question_id"] for item in selected["questions"]] == ["S06-C-04", "S07-C-07"]
+    assert selected["selected_question_ids"] == ["S07-C-07", "S06-C-04"]
+    assert selected["source_question_count"] == 3
+    with pytest.raises(ValueError, match="不属于"):
+        runner._select_failure_regression_questions(metadata, ["S99-X-01"])
+    with pytest.raises(ValueError, match="重复"):
+        runner._select_failure_regression_questions(metadata, ["S06-C-04", "S06-C-04"])
 
 
 def test_finalize_existing_failure_regression_writes_auditable_summary(tmp_path, monkeypatch):
@@ -190,9 +281,10 @@ def test_runtime_requires_planner_enabled_and_uses_isolated_s10_graph_fault():
     assert 'RETRIEVAL_INTENT_PLANNER_ENABLED' in source
     assert 'system.targeted_graph_retriever.driver = _UnavailableGraphDriver()' in source
     assert 'system._cleanup()' in source
-    assert 'GENERATION_TIMEOUT_SECONDS = 60.0' in source
+    assert 'GENERATION_TIMEOUT_SECONDS = 45.0' in source
     assert 'with output_path.open("a", encoding="utf-8") as handle:' in source
     assert 'execution_mode == "failure_regression"' in source
+    assert '"event": "question_result"' in source
 
 
 def test_runtime_isolates_exam_constraints_before_planner_and_nutrition_input():
@@ -225,6 +317,78 @@ def test_runtime_accepts_local_strict_nutrition_gate_without_planner_event():
     )
 
     assert "missing_planner_or_compile_audit" not in failures
+
+
+def test_runtime_requires_the_recommendation_constraint_and_two_stage_audits():
+    question = {
+        "scenario_id": "S06",
+        "contract": {
+            "recommendation_contract": {
+                "policy_version": "recommendation_constraints_v1",
+                "rerank_version": "recommendation_rerank_v1",
+                "candidate_k": 30,
+                "answer_k": 5,
+                "allow_no_preference_results": True,
+                "expected_hard_filters": {
+                    "required_cooking_appliances": ["MICROWAVE"],
+                    "exclusive_cooking_appliances": ["MICROWAVE"],
+                },
+            },
+        },
+    }
+    events = [
+        ("intent_planner", "VALID", {}),
+        ("intent_compile", "EXECUTE", {}),
+        ("recommendation_constraints", "compiled", {
+            "policy_version": "recommendation_constraints_v1",
+            "hard_filters": {
+                "required_cooking_appliances": ["MICROWAVE"],
+                "exclusive_cooking_appliances": ["MICROWAVE"],
+            },
+        }),
+        ("recommendation_scope", "resolved", {"parent_count": 3}),
+        ("recommendation_vector", "selected", {
+            "rerank_version": "recommendation_rerank_v1",
+            "candidate_top30": [{"parent_id": "r-1"}],
+            "final_top5": [{"parent_id": "r-1", "final_score": 42.0}],
+        }),
+    ]
+    bundle = EvidenceBundle(
+        {"intent": "PREFERENCE_RECOMMEND"},
+        (),
+        (),
+        (TextEvidence("r-1", "build-1", ("r-1:0",), (), "pds evidence", "parent_store"),),
+        (),
+    )
+
+    assert _status_for(question, bundle, events, "推荐结果") == []
+
+
+def test_runtime_accepts_a_declared_empty_recommendation_scope_but_not_a_missing_audit():
+    question = {
+        "scenario_id": "S07",
+        "contract": {
+            "recommendation_contract": {
+                "policy_version": "recommendation_constraints_v1",
+                "candidate_k": 30,
+                "answer_k": 5,
+                "allow_no_preference_results": True,
+                "expected_hard_filters": {},
+            },
+        },
+    }
+    bundle = EvidenceBundle(None, (), (), (), ("NO_PREFERENCE_RESULTS", "INTENT_NON_EXECUTE"))
+    events = [
+        ("intent_planner", "VALID", {}),
+        ("intent_compile", "TERMINAL", {}),
+        ("recommendation_constraints", "compiled", {
+            "policy_version": "recommendation_constraints_v1",
+            "hard_filters": {},
+        }),
+    ]
+
+    assert _status_for(question, bundle, events, "没有完全匹配项") == []
+    assert "missing_recommendation_constraint_audit" in _status_for(question, bundle, events[:2], "没有完全匹配项")
 
 
 def test_runtime_question_timeout_interrupts_a_single_question():

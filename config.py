@@ -110,6 +110,11 @@ class GraphRAGConfig:
     retrieval_intent_planner_version: str = os.getenv("RETRIEVAL_INTENT_PLANNER_VERSION", "v1")
     # 三次瞬时失败重试仍受约一分钟总预算约束，且每次网络调用都有明确上限。
     retrieval_intent_planner_timeout_seconds: float = float(os.getenv("RETRIEVAL_INTENT_PLANNER_TIMEOUT_SECONDS", "20"))
+    # 推荐约束新路径默认关闭；启用后固定两段式 Top30 候选与 Top5 正文证据。
+    retrieval_recommendation_constraints_enabled: bool = _env_bool("RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED", False)
+    retrieval_recommendation_max_hard_scope: int = int(os.getenv("RETRIEVAL_RECOMMENDATION_MAX_HARD_SCOPE", "200"))
+    retrieval_recommendation_candidate_k: int = 30
+    retrieval_recommendation_answer_k: int = 5
     retrieval_milvus_database: str = os.getenv("RETRIEVAL_MILVUS_DATABASE", "default")
     retrieval_milvus_collection: str = os.getenv("RETRIEVAL_MILVUS_COLLECTION", "")
     retrieval_artifact_manifest_path: str = os.getenv(
@@ -171,6 +176,10 @@ class GraphRAGConfig:
             'retrieval_intent_planner_enabled': self.retrieval_intent_planner_enabled,
             'retrieval_intent_planner_version': self.retrieval_intent_planner_version,
             'retrieval_intent_planner_timeout_seconds': self.retrieval_intent_planner_timeout_seconds,
+            'retrieval_recommendation_constraints_enabled': self.retrieval_recommendation_constraints_enabled,
+            'retrieval_recommendation_max_hard_scope': self.retrieval_recommendation_max_hard_scope,
+            'retrieval_recommendation_candidate_k': self.retrieval_recommendation_candidate_k,
+            'retrieval_recommendation_answer_k': self.retrieval_recommendation_answer_k,
             'retrieval_milvus_database': self.retrieval_milvus_database,
             'retrieval_milvus_collection': self.retrieval_milvus_collection,
             'retrieval_artifact_manifest_path': self.retrieval_artifact_manifest_path,
@@ -203,6 +212,10 @@ class GraphRAGConfig:
             "retrieval_intent_planner_enabled": self.retrieval_intent_planner_enabled,
             "retrieval_intent_planner_version": self.retrieval_intent_planner_version,
             "retrieval_intent_planner_timeout_seconds": self.retrieval_intent_planner_timeout_seconds,
+            "retrieval_recommendation_constraints_enabled": self.retrieval_recommendation_constraints_enabled,
+            "retrieval_recommendation_max_hard_scope": self.retrieval_recommendation_max_hard_scope,
+            "retrieval_recommendation_candidate_k": self.retrieval_recommendation_candidate_k,
+            "retrieval_recommendation_answer_k": self.retrieval_recommendation_answer_k,
             "retrieval_milvus_database": self.retrieval_milvus_database,
             "retrieval_milvus_collection": self.retrieval_milvus_collection,
             "retrieval_artifact_manifest_path": self.retrieval_artifact_manifest_path,

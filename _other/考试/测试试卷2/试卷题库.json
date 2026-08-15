@@ -1,6 +1,6 @@
 {
   "title": "New 路径第二套十题定向测试试卷",
-  "source": "_other/考试/试卷题库.json",
+  "source": "_other/考试/检索重构真实场景考试包/试卷题库.json",
   "variant": "new",
   "question_count": 10,
   "questions": [
@@ -273,8 +273,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "candidate_recall_rerank_pds",
-        "expected_route": "restricted_vector_or_legacy_hybrid",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "unhydrated_chunk"
         ],
@@ -283,6 +283,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "下班很晚，想找准备步骤少的家常菜",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",
@@ -311,8 +321,8 @@
     {
       "contract": {
         "evaluation_mode": "ranking",
-        "evidence_mode": "soft_preference_candidate_recall_pds",
-        "expected_route": "soft_preference_restricted_vector",
+        "evidence_mode": "recommendation_constraints_top30_rerank_top5_pds",
+        "expected_route": "recommendation_constraints_top30_rerank",
         "forbidden_assertions": [
           "strict_low_fat_claim",
           "strict_nutrition_without_governed_source"
@@ -322,6 +332,16 @@
           "gold_resolution": "preflight_freeze_graded_relevance_labels_from_source_markdown",
           "intent_text": "想找少油感觉的川味晚餐",
           "minimum_gold_items": 3
+        },
+        "recommendation_contract": {
+          "allow_no_preference_results": true,
+          "answer_k": 5,
+          "candidate_k": 30,
+          "expected_hard_filters": {},
+          "policy_version": "recommendation_constraints_v1",
+          "requires_candidate_metadata_only": true,
+          "requires_final_pds_hydration": true,
+          "rerank_version": "recommendation_rerank_v1"
         },
         "required_metrics": [
           "recall_at_1",

@@ -24,7 +24,7 @@ from rag_modules.retrieval_contracts import EvidenceBundle
 
 RUNNER_ID = "intent-planner-live-runner-v1"
 FAILURE_REGRESSION_RUNNER_ID = "intent-planner-failure-regression-v1"
-GENERATION_TIMEOUT_SECONDS = 60.0
+GENERATION_TIMEOUT_SECONDS = 45.0
 QUESTION_TIMEOUT_SECONDS = 90.0
 
 
@@ -134,6 +134,68 @@ def _acceptance_request(question: dict[str, Any]) -> RetrievalRequest:
     return RetrievalRequest(user_message=original)
 
 
+def _stage_events(events: list[tuple[str, str, dict[str, Any]]], stage: str) -> list[tuple[str, dict[str, Any]]]:
+    return [(status, fields) for event_stage, status, fields in events if event_stage == stage]
+
+
+def _recommendation_failures(question: dict[str, Any], bundle: EvidenceBundle, events: list[tuple[str, str, dict[str, Any]]]) -> list[str]:
+    """核验推荐题的本地约束、两段式证据和固定重排契约。"""
+
+    contract = question.get("contract", {}).get("recommendation_contract")
+    if not isinstance(contract, dict):
+        return ["missing_recommendation_contract"]
+    constraint_events = _stage_events(events, "recommendation_constraints")
+    if not constraint_events:
+        return ["missing_recommendation_constraint_audit"]
+    status, fields = constraint_events[-1]
+    if status != "compiled":
+        return ["recommendation_constraints_not_compiled"]
+    if fields.get("policy_version") != contract.get("policy_version"):
+        return ["recommendation_policy_version_mismatch"]
+    hard_filters = fields.get("hard_filters")
+    if not isinstance(hard_filters, dict):
+        return ["missing_recommendation_hard_filters"]
+    for name, expected in contract.get("expected_hard_filters", {}).items():
+        if hard_filters.get(name) != expected:
+            return [f"recommendation_hard_filter_mismatch:{name}"]
+
+    no_results = "NO_PREFERENCE_RESULTS" in bundle.limitations
+    if _non_execute(bundle):
+        if no_results and contract.get("allow_no_preference_results"):
+            return []
+        return ["restricted_preference_pds_required"]
+    plan = bundle.query_plan or {}
+    if plan.get("intent") != "PREFERENCE_RECOMMEND":
+        return ["recommendation_query_plan_required"]
+    if no_results:
+        return []
+    if not bundle.text_evidence:
+        return ["recommendation_top5_pds_required"]
+    if len(bundle.text_evidence) > int(contract["answer_k"]):
+        return ["recommendation_pds_hydration_exceeds_top5"]
+
+    scope_events = _stage_events(events, "recommendation_scope")
+    if not scope_events or scope_events[-1][0] != "resolved":
+        return ["missing_recommendation_scope_audit"]
+    vector_events = _stage_events(events, "recommendation_vector")
+    if not vector_events:
+        return ["missing_recommendation_vector_audit"]
+    vector_status, vector_fields = vector_events[-1]
+    if vector_status not in {"selected", "rerank-unavailable"}:
+        return ["recommendation_vector_not_selected"]
+    if vector_status == "selected" and vector_fields.get("rerank_version") != contract.get("rerank_version"):
+        return ["recommendation_rerank_version_mismatch"]
+    candidates = vector_fields.get("candidate_top30")
+    final = vector_fields.get("final_top5")
+    if not isinstance(candidates, list) or not 1 <= len(candidates) <= int(contract["candidate_k"]):
+        return ["recommendation_top30_metadata_invalid"]
+    if not isinstance(final, list) or not 1 <= len(final) <= int(contract["answer_k"]):
+        return ["recommendation_top5_audit_invalid"]
+    if vector_status == "selected" and any(not isinstance(item, dict) or "final_score" not in item for item in final):
+        return ["recommendation_rerank_audit_invalid"]
+    return []
+
+
 def _status_for(question: dict[str, Any], bundle: EvidenceBundle, events: list[tuple[str, str, dict[str, Any]]], answer: str) -> list[str]:
     """返回本题不满足的可审计断言；空数组才允许计入通过。"""
 
@@ -167,9 +229,7 @@ def _status_for(question: dict[str, Any], bundle: EvidenceBundle, events: list[t
         elif _non_execute(bundle) or "verified" not in graph_statuses or not has_text:
             failures.append("verified_pair_graph_and_pds_required")
     elif scenario in {"S06", "S07"}:
-        plan = bundle.query_plan or {}
-        if _non_execute(bundle) or plan.get("intent") != "PREFERENCE_RECOMMEND" or not has_text:
-            failures.append("restricted_preference_pds_required")
+        failures.extend(_recommendation_failures(question, bundle, events))
         if scenario == "S07" and any(term in answer for term in ("低脂", "低热量", "低盐", "医疗适用")):
             failures.append("soft_preference_strict_claim")
     elif scenario == "S08":
@@ -282,11 +342,34 @@ def run(input_path: Path, output_path: Path) -> int:
                         for stage, status, fields in events
                         if stage in {"intent_planner", "intent_compile"}
                     ],
+                    "recommendation_events": [
+                        {"stage": stage, "status": status, "fields": fields}
+                        for stage, status, fields in events
+                        if stage in {"recommendation_constraints", "recommendation_scope", "recommendation_vector"}
+                    ],
             }
             rows.append(row)
             with output_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-            print(json.dumps({"position": position, "question_id": question["question_id"], "status": row["status"]}, ensure_ascii=False), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "event": "question_result",
+                        "position": position,
+                        "total_questions": len(source["questions"]),
+                        "question_id": question["question_id"],
+                        "scenario_id": question["scenario_id"],
+                        "user_message": request.user_message,
+                        "answer": answer,
+                        "status": row["status"],
+                        "duration_ms": row["duration_ms"],
+                        "failures": failures,
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
     finally:
         system._cleanup()
 
@@ -295,7 +378,20 @@ def run(input_path: Path, output_path: Path) -> int:
     if len(all_rows) != len(source["questions"]) or set(actual_ids) != expected_ids or len(set(actual_ids)) != len(actual_ids):
         raise RuntimeError(f"验收结果不完整: {len(all_rows)}/{len(source['questions'])}")
     failures = sum(row["status"] != "passed" for row in all_rows)
-    print(json.dumps({"runner_id": source.get("runner_id", RUNNER_ID), "rows": len(all_rows), "failures": failures, "output": str(output_path)}, ensure_ascii=False), flush=True)
+    print(
+        json.dumps(
+            {
+                "event": "run_summary",
+                "runner_id": source.get("runner_id", RUNNER_ID),
+                "rows": len(all_rows),
+                "failures": failures,
+                "output": str(output_path),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+        flush=True,
+    )
     return 0 if failures == 0 else 2
 
 

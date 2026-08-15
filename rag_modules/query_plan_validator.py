@@ -15,6 +15,10 @@ class QueryPlanValidationError(ValueError):
 
 class QueryPlanValidator:
     MAX_CANDIDATES = 50
+    MAX_RECOMMENDATION_SCOPE = 200
+    _RECOMMENDATION_SCOPE_TEMPLATES = frozenset(
+        {"preference_recommend_v1", "recipe_cuisine_filter_v1", "ingredient_recipes_v1"}
+    )
     _ALLOWED_FIELDS = frozenset(
         {"intent", "template_id", "entity_type", "parameters", "max_candidates", "source"}
     )
@@ -59,7 +63,10 @@ class QueryPlanValidator:
         max_candidates = raw.get("max_candidates", 20)
         if isinstance(max_candidates, bool) or not isinstance(max_candidates, int):
             raise QueryPlanValidationError("max_candidates 必须是整数")
-        if not 1 <= max_candidates <= self.MAX_CANDIDATES:
+        allowed_max = self.MAX_CANDIDATES
+        if template_id in self._RECOMMENDATION_SCOPE_TEMPLATES and source == "rule":
+            allowed_max = self.MAX_RECOMMENDATION_SCOPE
+        if not 1 <= max_candidates <= allowed_max:
             raise QueryPlanValidationError("max_candidates 超出范围")
         parameters = raw.get("parameters")
         if not isinstance(parameters, Mapping):
@@ -71,7 +78,7 @@ class QueryPlanValidator:
         unknown_parameters = set(parameters) - self._PARAMETERS[template_id]
         if unknown_parameters:
             raise QueryPlanValidationError(f"template 参数不在白名单中: {sorted(unknown_parameters)}")
-        self._validate_parameters(template_id, parameters, max_candidates)
+        self._validate_parameters(template_id, parameters, max_candidates, allowed_max)
         return QueryPlan(intent, template_id, raw["entity_type"], parameters, max_candidates, source)
 
     def validate_or_conservative(
@@ -140,7 +147,7 @@ class QueryPlanValidator:
             raise QueryPlanValidationError(f"{key} 必须是非空短字符串")
         return value.strip()
 
-    def _validate_parameters(self, template_id: str, parameters: Mapping[str, Any], max_candidates: int) -> None:
+    def _validate_parameters(self, template_id: str, parameters: Mapping[str, Any], max_candidates: int, allowed_max: int) -> None:
         if "limit" in parameters:
             limit = parameters["limit"]
             if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= max_candidates:
@@ -171,7 +178,7 @@ class QueryPlanValidator:
             parameters["technique_doc_id"] = self._required_id(parameters, "technique_doc_id")
         elif template_id == "recipe_cuisine_filter_v1":
             recipe_ids = parameters.get("recipe_ids")
-            if not isinstance(recipe_ids, (list, tuple)) or not recipe_ids or len(recipe_ids) > self.MAX_CANDIDATES:
+            if not isinstance(recipe_ids, (list, tuple)) or not recipe_ids or len(recipe_ids) > allowed_max:
                 raise QueryPlanValidationError("recipe_ids 必须是有限非空序列")
             for recipe_id in recipe_ids:
                 if not isinstance(recipe_id, str) or not recipe_id.strip() or len(recipe_id) > 150:
@@ -187,7 +194,7 @@ class QueryPlanValidator:
                 if parent_ids is not None:
                     raise QueryPlanValidationError("全库 child chunk 检索不得携带 parent_ids")
                 return
-            if not isinstance(parent_ids, (list, tuple)) or not parent_ids or len(parent_ids) > self.MAX_CANDIDATES:
+            if not isinstance(parent_ids, (list, tuple)) or not parent_ids or len(parent_ids) > allowed_max:
                 raise QueryPlanValidationError("候选 parent_ids 必须是有限非空序列")
             normalized_ids = []
             for parent_id in parent_ids:

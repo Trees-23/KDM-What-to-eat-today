@@ -103,3 +103,12 @@ def test_validator_normalizes_technique_document_id():
 def test_preference_plan_rejects_implicit_or_invalid_vector_scope(parameters):
     with pytest.raises(QueryPlanValidationError):
         QueryPlanValidator().validate(_plan("PREFERENCE_RECOMMEND", "Recipe", parameters, max_candidates=1))
+
+
+def test_rule_recommendation_scope_allows_200_but_llm_source_cannot_escalate():
+    ids = [f"r{number}" for number in range(200)]
+    rule = QueryPlan("PREFERENCE_RECOMMEND", "preference_recommend_v1", "Recipe", {"scope": "candidate_parents", "parent_ids": ids, "limit": 200}, 200, source="rule")
+    assert QueryPlanValidator().validate(rule).parameters["parent_ids"] == ids
+    llm = QueryPlan("PREFERENCE_RECOMMEND", "preference_recommend_v1", "Recipe", {"scope": "candidate_parents", "parent_ids": ids, "limit": 200}, 200, source="llm_candidate")
+    with pytest.raises(QueryPlanValidationError):
+        QueryPlanValidator().validate(llm)

@@ -107,6 +107,16 @@ class ParentDocument:
 
 
 @dataclass(frozen=True)
+class RecipeMetadata:
+    """推荐候选阶段可读取的轻量 Recipe 行，故意不含正文。"""
+
+    parent_id: str
+    build_id: str
+    title: str
+    metadata: Mapping[str, Any]
+
+
+@dataclass(frozen=True)
 class TextEvidenceSource:
     parent_id: str
     build_id: str
@@ -594,6 +604,28 @@ class ParentDocumentStore:
             content_hash=row["content_hash"],
             metadata=json.loads(row["metadata_json"]),
         )
+
+    def iter_recipe_metadata(
+        self,
+        *,
+        build_id: Optional[str] = None,
+        parent_ids: Optional[Sequence[str]] = None,
+    ) -> Iterator[RecipeMetadata]:
+        """枚举活动 build 的 Recipe metadata，不选择或解析 ``full_content``。"""
+
+        selected_build = build_id or self.active_build_id
+        self._assert_build_exists(selected_build)
+        ids = tuple(dict.fromkeys(str(value).strip() for value in (parent_ids or ()) if str(value).strip()))
+        if parent_ids is not None and not ids:
+            return
+        query = "SELECT parent_id, build_id, title, metadata_json FROM parents WHERE build_id = ? AND node_type = 'Recipe'"
+        parameters: list[Any] = [selected_build]
+        if ids:
+            query += " AND parent_id IN (" + ",".join("?" for _ in ids) + ")"
+            parameters.extend(ids)
+        query += " ORDER BY parent_id"
+        for row in self._connection.execute(query, parameters):
+            yield RecipeMetadata(row["parent_id"], row["build_id"], row["title"], json.loads(row["metadata_json"]))
 
     def get_chunk_window(
         self, parent_id: str, anchor_chunk_id: str, before: int, after: int

@@ -31,6 +31,20 @@ class ParentAggregate:
     text_evidence: TextEvidence
 
 
+@dataclass(frozen=True)
+class CandidateMetadata:
+    """第一段候选，仅含检索审计字段和 PDS metadata，绝不含父正文。"""
+
+    parent_id: str
+    title: str
+    best_chunk_score: float
+    coverage_bonus: float
+    retrieval_score: float
+    coverage: int
+    chunk_ids: tuple[str, ...]
+    metadata: Mapping[str, Any]
+
+
 class RestrictedVectorRetriever:
     """Milvus V2 查询适配器；空 parent scope 永远拒绝。"""
 
@@ -60,6 +74,25 @@ class RestrictedVectorRetriever:
         top_k: int = 5,
         query_vector: Sequence[float] | None = None,
     ) -> list[ParentAggregate]:
+        candidates = self.retrieve_candidates(
+            query, parent_ids=parent_ids, expected_parent_type=expected_parent_type,
+            top_k=top_k, query_vector=query_vector,
+        )
+        evidence = self.hydrate_candidates(candidates, expected_parent_type=expected_parent_type)
+        return [
+            ParentAggregate(item.parent_id, item.retrieval_score, item.coverage, item.chunk_ids, source)
+            for item, source in zip(candidates, evidence)
+        ]
+
+    def retrieve_candidates(
+        self,
+        query: str,
+        *,
+        parent_ids: Sequence[str] | None = None,
+        expected_parent_type: str | None = None,
+        top_k: int = 30,
+        query_vector: Sequence[float] | None = None,
+    ) -> list[CandidateMetadata]:
         if top_k < 1 or top_k > 50:
             raise ValueError("top_k 超出范围")
         if expected_parent_type is not None and expected_parent_type not in {"Recipe", "TechniqueDoc"}:
@@ -106,7 +139,7 @@ class RestrictedVectorRetriever:
         report = self.parent_store.validate_chunk_linkage([hit.__dict__ for hit in hits])
         if not report.valid:
             raise ArtifactMismatchError(f"Milvus/PDS linkage 不一致: {report}")
-        return self._aggregate(hits, top_k, expected_parent_type=expected_parent_type)
+        return self._aggregate_metadata(hits, top_k, expected_parent_type=expected_parent_type)
 
     @classmethod
     def _normalize_hits(cls, result: Any) -> list[VectorHit]:
@@ -127,13 +160,13 @@ class RestrictedVectorRetriever:
             normalized.append(VectorHit(chunk_id, parent_id, score, chunk_index, text_hash_value, build_id, section_title))
         return normalized
 
-    def _aggregate(
+    def _aggregate_metadata(
         self,
         hits: Sequence[VectorHit],
         top_k: int,
         *,
         expected_parent_type: str | None = None,
-    ) -> list[ParentAggregate]:
+    ) -> list[CandidateMetadata]:
         grouped: dict[str, list[VectorHit]] = {}
         for hit in hits:
             if hit.build_id != self.build_id:
@@ -153,22 +186,52 @@ class RestrictedVectorRetriever:
                 if current.chunk_index - previous.chunk_index <= 1
             )
             score = ordered[0].score + min(section_coverage, 5) * 0.001 + min(adjacent_pairs, 5) * 0.0001
-            parent = self.parent_store.get_full_parent(parent_id)
-            if parent is None or parent.build_id != self.build_id:
-                raise ArtifactMismatchError(f"无法从 PDS 回补 parent: {parent_id}")
-            if expected_parent_type is not None and parent.node_type != expected_parent_type:
+            rows = list(self.parent_store.iter_recipe_metadata(build_id=self.build_id, parent_ids=(parent_id,))) if expected_parent_type == "Recipe" else []
+            if expected_parent_type == "Recipe":
+                if len(rows) != 1:
+                    # Milvus 中可能有其他父类型的合法 chunk；在不读取正文的前提下
+                    # 本地跳过它们，不能把类型不匹配误报为 PDS/Milvus 断链。
+                    continue
+                parent_type = "Recipe"
+                title = rows[0].title
+                metadata = rows[0].metadata
+            else:
+                # 兼容旧路径的 TechniqueDoc 检索；新推荐路径固定 Recipe，不会走这里。
+                parent = self.parent_store.get_full_parent(parent_id)
+                if parent is None or parent.build_id != self.build_id:
+                    raise ArtifactMismatchError(f"无法从 PDS 回补 parent: {parent_id}")
+                parent_type = parent.node_type
+                title = parent.title
+                metadata = parent.metadata
+            if expected_parent_type is not None and parent_type != expected_parent_type:
                 continue
-            evidence = TextEvidence(
-                parent_id=parent.parent_id,
-                build_id=parent.build_id,
+            coverage_bonus = min(section_coverage, 5) * 0.001 + min(adjacent_pairs, 5) * 0.0001
+            ranked.append(CandidateMetadata(
+                parent_id=parent_id, title=title, best_chunk_score=ordered[0].score,
+                coverage_bonus=coverage_bonus, retrieval_score=score, coverage=section_coverage,
                 chunk_ids=tuple(hit.chunk_id for hit in sorted(unique.values(), key=lambda hit: hit.chunk_index)),
-                anchor_ids=(),
-                text=parent.full_content,
-                origin="parent_store",
-            )
-            ranked.append(ParentAggregate(parent_id, score, section_coverage, evidence.chunk_ids, evidence))
-        ranked.sort(key=lambda item: (-item.score, -item.coverage, item.parent_id))
+                metadata=metadata,
+            ))
+        ranked.sort(key=lambda item: (-item.retrieval_score, -item.coverage, item.parent_id))
         return ranked[:top_k]
+
+    def hydrate_candidates(
+        self,
+        candidates: Sequence[CandidateMetadata],
+        *,
+        expected_parent_type: str | None = "Recipe",
+    ) -> list[TextEvidence]:
+        """第二段仅回补已选候选的 PDS 正文。"""
+        evidence: list[TextEvidence] = []
+        for candidate in candidates:
+            parent = self.parent_store.get_full_parent(candidate.parent_id, expected_node_type=expected_parent_type)
+            if parent is None or parent.build_id != self.build_id:
+                raise ArtifactMismatchError(f"无法从 PDS 回补 parent: {candidate.parent_id}")
+            evidence.append(TextEvidence(
+                parent_id=parent.parent_id, build_id=parent.build_id, chunk_ids=candidate.chunk_ids,
+                anchor_ids=(), text=parent.full_content, origin="parent_store",
+            ))
+        return evidence
 
     @staticmethod
     def _filter(parent_ids: Sequence[str] | None) -> str:

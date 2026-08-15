@@ -15,6 +15,7 @@ def _payload(*, confidence=0.9, extra=None):
             "step_number": None,
             "cuisines": [],
             "ingredients": [],
+            "flavor_ingredients": [],
             "preferences": ["FEW_STEPS", "HOMESTYLE"],
             "meal_context": ["DINNER"],
             "tools": [],
@@ -154,3 +155,5 @@ def test_planner_prompt_freezes_generalized_preference_relationship_and_constrai
     assert "问句外壳" in prompt
     assert "没有已验证路径的要求不改变意图类型" in prompt
     assert "故障注入" in prompt
+    assert "flavor_ingredients" in prompt
+    assert "番茄风味" in prompt

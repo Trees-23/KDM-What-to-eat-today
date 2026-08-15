@@ -31,6 +31,25 @@ def _candidate(*, cuisine=False, mentions=()):
     return IntentCandidate(intent="PREFERENCE_RECOMMEND", confidence=.9, entity_mentions=[{"text": value} for value in mentions], slots={"cuisines": ["SICHUAN_STYLE"] if cuisine else [], "ingredients": [], "preferences": ["LIGHT_FEEL"], "meal_context": [], "tools": [], "methods": [], "servings": None, "time_budget_minutes": None, "step_number": None, "nutrition_constraint": None})
 
 
+def test_flavor_mentions_are_removed_before_ingredient_hard_scope_resolution():
+    import main
+    from rag_modules.recommendation_constraints import RecommendationConstraintCompiler
+
+    original = IntentCandidate(
+        intent="PREFERENCE_RECOMMEND",
+        confidence=.9,
+        entity_mentions=[{"text": "番茄风味"}],
+        slots={"cuisines": [], "ingredients": ["番茄"], "flavor_ingredients": ["番茄"], "preferences": [], "meal_context": [], "tools": [], "methods": [], "servings": None, "time_budget_minutes": None, "step_number": None, "nutrition_constraint": None},
+    )
+    flavor = RecommendationConstraintCompiler().analyze_flavor("想做带番茄风味的菜", original)
+
+    execution = main.AdvancedGraphRAGSystem._without_flavor_entities(original, flavor)
+
+    assert not execution.entity_mentions
+    assert execution.slots.ingredients == []
+    assert execution.slots.flavor_ingredients == ["番茄"]
+
+
 def _system(resolver, graph, pds=None):
     import main
     system = main.AdvancedGraphRAGSystem.__new__(main.AdvancedGraphRAGSystem)

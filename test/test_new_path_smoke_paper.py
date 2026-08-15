@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-FULL_BANK = PROJECT_ROOT / "_other" / "考试" / "试卷题库.json"
+FULL_BANK = PROJECT_ROOT / "_other" / "考试" / "检索重构真实场景考试包" / "试卷题库.json"
 SMOKE_BANK = PROJECT_ROOT / "_other" / "考试" / "测试试卷" / "试卷题库.json"
 
 

@@ -58,11 +58,15 @@ class IntentPlanCompiler:
         "PREFERENCE_RECOMMEND": ("Ingredient",),
     }
 
-    def __init__(self, validator: QueryPlanValidator | None = None, *, max_candidates: int = QueryPlanValidator.MAX_CANDIDATES):
+    def __init__(self, validator: QueryPlanValidator | None = None, *, max_candidates: int = QueryPlanValidator.MAX_CANDIDATES, recommendation_scope_max: int | None = None):
         self.validator = validator or QueryPlanValidator()
         if not 1 <= max_candidates <= QueryPlanValidator.MAX_CANDIDATES:
             raise ValueError("max_candidates 超出范围")
+        recommendation_scope_max = max_candidates if recommendation_scope_max is None else recommendation_scope_max
+        if not 1 <= recommendation_scope_max <= QueryPlanValidator.MAX_RECOMMENDATION_SCOPE:
+            raise ValueError("recommendation_scope_max 超出范围")
         self.max_candidates = max_candidates
+        self.recommendation_scope_max = recommendation_scope_max
 
     def compile(
         self,
@@ -99,10 +103,10 @@ class IntentPlanCompiler:
             ids = tuple(dict.fromkeys(str(item).strip() for item in scoped_recipe_ids if str(item).strip()))
             if not ids:
                 return CompileResult("TERMINAL", "NO_PREFERENCE_RESULTS", reason="HARD_SCOPE_EMPTY")
-            if len(ids) > self.max_candidates:
+            if len(ids) > self.recommendation_scope_max:
                 return CompileResult("TERMINAL", "SCOPE_TOO_LARGE", reason="HARD_SCOPE_TOO_LARGE")
-            parameters = {"scope": "candidate_parents", "parent_ids": list(ids), "limit": self.max_candidates}
-            plan = self._plan("PREFERENCE_RECOMMEND", "Recipe", parameters)
+            parameters = {"scope": "candidate_parents", "parent_ids": list(ids), "limit": self.recommendation_scope_max}
+            plan = self._plan("PREFERENCE_RECOMMEND", "Recipe", parameters, max_candidates=self.recommendation_scope_max)
             hard = ("validated_recipe_scope",)
         else:
             plan = self._plan(
@@ -167,7 +171,7 @@ class IntentPlanCompiler:
     def _claim_policy(candidate: IntentCandidate, *, hard_constraints: Sequence[str] = (), display_requests: Sequence[str] = ()) -> ClaimPolicy:
         return ClaimPolicy(
             hard_constraints=tuple(hard_constraints),
-            soft_preferences=tuple(candidate.slots.preferences) + tuple(candidate.slots.meal_context) + tuple(candidate.slots.tools) + tuple(candidate.slots.methods),
+            soft_preferences=tuple(candidate.slots.preferences) + tuple(candidate.slots.meal_context) + tuple(candidate.slots.tools) + tuple(candidate.slots.methods) + tuple(candidate.slots.flavor_ingredients),
             display_requests=tuple(display_requests),
             forbidden_claims=("低脂", "低热量", "低盐", "医疗适用"),
         )

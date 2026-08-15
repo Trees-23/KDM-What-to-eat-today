@@ -78,3 +78,10 @@ def test_apply_never_reports_success_without_a_real_executor(monkeypatch, tmp_pa
     monkeypatch.setattr(neo4j_graph_import, "validate_import", lambda **_kwargs: {"status": "guarded_apply_ready"})
     with pytest.raises(Neo4jImportGuardError, match="尚未实现"):
         neo4j_graph_import.main(["--database", "staging-db", "--allowed-database", "staging-db", "--csv-dir", str(tmp_path), "--allowed-csv-root", str(tmp_path), "--apply", "--neo4j-uri", "bolt://staging"])
+
+
+def test_recipe_import_uses_source_path_to_exclude_hierarchy_nodes():
+    cypher = (Path(__file__).resolve().parents[1] / "data" / "cypher" / "neo4j_import.cypher").read_text(encoding="utf-8")
+    recipe_block = cypher.split("// 创建食材节点", 1)[0]
+    assert "row.filePath IS NOT NULL" in recipe_block
+    assert "trim(row.filePath) <> ''" in recipe_block

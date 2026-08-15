@@ -142,6 +142,17 @@ services:
       - RAG_AUDIT_MAX_CONTENT_CHARS=${RAG_AUDIT_MAX_CONTENT_CHARS:-4000}
       - RAG_EXPERIMENT_ID=${RAG_EXPERIMENT_ID:-baseline}
       - RAG_VARIANT_NAME=${RAG_VARIANT_NAME:-default}
+      # 推荐约束与重排：只使用已切换的 PDS/Milvus 联合工件。
+      - RETRIEVAL_PARENT_STORE_ENABLED=true
+      - RETRIEVAL_QUERY_PLAN_ENABLED=true
+      - RETRIEVAL_TARGETED_GRAPH_ENABLED=true
+      - RETRIEVAL_MILVUS_V2_ENABLED=true
+      - RETRIEVAL_INTENT_PLANNER_ENABLED=true
+      - RETRIEVAL_NEW_PATH_TRAFFIC_PERCENT=100
+      - RETRIEVAL_RECOMMENDATION_CONSTRAINTS_ENABLED=true
+      - RETRIEVAL_MILVUS_DATABASE=default
+      # 活动 collection 由 retrieval_artifact_manifest.json 原子发布；如显式设置，
+      # 仅用于和 manifest 交叉校验，避免 Compose 固化某个过期 build。
       # 统一API配置
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.moonshot.cn/v1}
