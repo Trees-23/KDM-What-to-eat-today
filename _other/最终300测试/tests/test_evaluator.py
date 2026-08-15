@@ -52,5 +52,14 @@ class EvaluatorTests(unittest.TestCase):
     def test_input_hash_is_stable(self):
         self.assertEqual(canonical_sha256({"b": 2, "a": 1}), canonical_sha256({"a": 1, "b": 2}))
 
+    def test_mixed_log_ignores_non_json_only_when_requested(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "mixed.jsonl"
+            path.write_text("log line\n{\"case_id\": \"S01-A-01\"}\n", encoding="utf-8")
+            self.assertEqual(load_jsonl(path, skip_invalid=True), [{"case_id": "S01-A-01"}])
+            with self.assertRaises(json.JSONDecodeError):
+                load_jsonl(path)
+
 if __name__ == "__main__":
     unittest.main()

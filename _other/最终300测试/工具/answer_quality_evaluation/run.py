@@ -65,7 +65,7 @@ def regular_manifest(root: Path) -> list[dict[str, Any]]:
 
 def source_rows() -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
     rows = load_jsonl(SOURCE / "new-results.jsonl")
-    events = [entry for entry in load_jsonl(SOURCE / "runner.stdout.jsonl") if entry.get("event") == "question_result"]
+    events = [entry for entry in load_jsonl(SOURCE / "runner.stdout.jsonl", skip_invalid=True) if entry.get("event") == "question_result"]
     return rows, {entry["question_id"]: entry for entry in events}
 
 
