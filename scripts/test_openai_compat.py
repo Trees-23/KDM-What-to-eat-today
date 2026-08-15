@@ -18,6 +18,15 @@ def mask_secret(value: str) -> str:
     return f"{value[:6]}...{value[-4:]}"
 
 
+def stream_delta_content(chunk) -> str | None:
+    """忽略 OpenAI 兼容服务可能发送的无 choices 流事件。"""
+    choices = getattr(chunk, "choices", None) or ()
+    if not choices:
+        return None
+    delta = getattr(choices[0], "delta", None)
+    return getattr(delta, "content", None) if delta is not None else None
+
+
 def main() -> int:
     load_dotenv()
 
@@ -80,7 +89,7 @@ def main() -> int:
                 stream=True,
             )
             for chunk in stream:
-                delta = chunk.choices[0].delta.content
+                delta = stream_delta_content(chunk)
                 if delta:
                     chunks.append(delta)
             elapsed = time.time() - start

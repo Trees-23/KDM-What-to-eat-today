@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "New 路径第二套十题定向测试逐题结果",
+  "type": "object",
+  "required": ["question_id", "scenario_id", "difficulty_code", "variant", "evaluation_mode", "status", "route", "ranking", "gold_items", "path", "checks", "timing", "answer"],
+  "properties": {
+    "question_id": {"type": "string"},
+    "scenario_id": {"type": "string"},
+    "difficulty_code": {"enum": ["A", "B", "C"]},
+    "variant": {"const": "new"},
+    "evaluation_mode": {"enum": ["ranking", "safety"]},
+    "status": {"enum": ["completed", "blocked", "error"]},
+    "audit_id": {"type": ["string", "null"]},
+    "route": {"type": "object"},
+    "ranking": {"type": "array"},
+    "gold_items": {"type": "array"},
+    "path": {"type": "object"},
+    "checks": {"type": "object"},
+    "timing": {"type": "object"},
+    "answer": {"type": "string"}
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "ingredient_category_conflicts": 0,
+  "ingredient_duplicate_groups": 0,
+  "ingredient_nodes_removed": 0,
+  "input_node_count": 3604,
+  "input_relationship_count": 6039,
+  "output_node_count": 3604,
+  "output_relationship_count": 6039,
+  "relationship_endpoints_rewritten": 0
+}

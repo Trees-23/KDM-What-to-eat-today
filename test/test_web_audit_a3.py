@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from rag_modules.web_service_handler import WebServiceHandler
+from rag_modules.retrieval_contracts import EvidenceBundle
 
 
 class FakeRequest:
@@ -92,6 +93,22 @@ class FakeRAGSystem:
         self.generation_module = FakeGenerationModule()
 
 
+class FakeEntityDirectRAGSystem(FakeRAGSystem):
+    def __init__(self, audit_root):
+        super().__init__(audit_root)
+        self.retrieval_calls = []
+
+    def retrieve_for_generation(self, query, top_k, audit_run=None, *, allow_generalized_advice=False):
+        self.retrieval_calls.append((query, top_k, audit_run, allow_generalized_advice))
+        return EvidenceBundle(
+            query_plan=None,
+            entity_candidates=(),
+            graph_facts=(),
+            text_evidence=(),
+            limitations=("ENTITY_NOT_FOUND",),
+        ), None
+
+
 class WebAuditA3Test(unittest.TestCase):
     def latest_process_text(self, root):
         dirs = sorted(Path(root).iterdir())
@@ -163,6 +180,46 @@ class WebAuditA3Test(unittest.TestCase):
             self.assertIn("- request_mode: stream", process_text)
             self.assertIn("- cache_hit: False", process_text)
             self.assertIn("- final_source: generation", process_text)
+
+    def test_web_paths_pass_only_explicit_generalized_advice_authorization(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            audit_root = Path(tmp)
+            install_fake_flask(
+                {
+                    "message": "有蓝莓红烧肉这道菜吗？",
+                    "session_id": "s1",
+                    "allow_generalized_advice": True,
+                }
+            )
+            non_stream_system = FakeEntityDirectRAGSystem(audit_root)
+            response = WebServiceHandler(non_stream_system)._handle_chat_request()
+
+            self.assertEqual(response["response"], "generated answer")
+            self.assertTrue(non_stream_system.retrieval_calls[0][3])
+
+            install_fake_flask(
+                {
+                    "message": "有蓝莓红烧肉这道菜吗？",
+                    "session_id": "s1",
+                    "allow_generalized_advice": "true",
+                }
+            )
+            stream_system = FakeEntityDirectRAGSystem(audit_root)
+            response = WebServiceHandler(stream_system)._handle_stream_request()
+            list(response.iterable)
+
+            self.assertFalse(stream_system.retrieval_calls[0][3])
+
+    def test_web_request_works_when_audit_is_disabled(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            install_fake_flask({"message": "推荐低脂菜", "session_id": "s1"})
+            rag_system = FakeRAGSystem(Path(tmp))
+            rag_system.config.enable_rag_audit = False
+
+            response = WebServiceHandler(rag_system)._handle_chat_request()
+
+            self.assertEqual(response["response"], "generated answer")
+            self.assertEqual(rag_system.query_router.calls, [("推荐低脂菜", 2)])
 
 
 if __name__ == "__main__":

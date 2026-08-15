@@ -6,8 +6,9 @@ import logging
 import os
 import json
 import time
+import re
 from types import SimpleNamespace
-from typing import List
+from typing import List, Sequence
 
 import requests
 try:
@@ -19,6 +20,8 @@ except ImportError:
             self.metadata = metadata or {}
 
 from rag_modules.rag_audit import query_hash, safe_base_url_host
+from rag_modules.evidence_builder import EvidenceBuilder
+from rag_modules.retrieval_contracts import EvidenceBundle
 
 logger = logging.getLogger(__name__)
 
@@ -159,29 +162,67 @@ class GenerationIntegrationModule:
         回答：
         """
 
-    def generate_adaptive_answer(self, question: str, documents: List[Document], audit_run=None) -> str:
+    def _build_evidence_prompt(self, question: str, context: str) -> str:
+        """构建阶段 2 的分层证据提示词。
+
+        GraphFact、正文和限制以独立标题传入，避免把正文相似性表达为图关系事实。
+        """
+        return f"""
+        作为一位专业的烹饪助手，请严格基于下列分层证据回答问题。
+
+        {context}
+
+        用户问题：{question}
+
+        回答规则：
+        - 只有“已验证图事实”中的内容可以用来断言图关系或结构化事实。
+        - “正文证据”只能作为烹饪说明，不得证明未在图事实中验证的关系。
+        - 必须明确说明“限制与不可证明项”中的缺失或不可用状态，不得补造事实。
+        - 没有正文证据时，不要编造食材、步骤或营养结论。
+        - “推荐证据等级”为 soft_preference 时，只能表述为少油/清爽偏好，不能声称已验证低脂或给出脂肪数值。
+        - 必须遵守“声明策略”的 forbidden_claims；其中的词不得出现在最终回答中。
+
+        回答：
+        """
+
+    def _prepare_generation_input(self, question: str, evidence_or_documents):
+        """兼容旧 Document 输入，并为 EvidenceBundle 选择独立提示模板。"""
+        if isinstance(evidence_or_documents, EvidenceBundle):
+            context = EvidenceBuilder.context(evidence_or_documents)
+            return context, self._build_evidence_prompt(question, context), [], evidence_or_documents
+
+        documents = list(evidence_or_documents or [])
+        context_parts = []
+        for doc in documents:
+            content = doc.page_content.strip()
+            if not content:
+                continue
+            level = doc.metadata.get('retrieval_level', '')
+            context_parts.append(f"[{level.upper()}] {content}" if level else content)
+        context = "\n\n".join(context_parts)
+        return context, self._build_prompt(question, context), documents, None
+
+    def generate_adaptive_answer(
+        self,
+        question: str,
+        documents: Sequence[Document] | EvidenceBundle,
+        audit_run=None,
+        timeout: float = 45.0,
+        max_attempts: int = 1,
+    ) -> str:
         """
         智能统一答案生成
         自动适应不同类型的查询，无需预先分类
         """
-        # 构建上下文
-        context_parts = []
-        
-        for doc in documents:
-            content = doc.page_content.strip()
-            if content:
-                # 添加检索层级信息（如果有的话）
-                level = doc.metadata.get('retrieval_level', '')
-                if level:
-                    context_parts.append(f"[{level.upper()}] {content}")
-                else:
-                    context_parts.append(content)
-        
-        context = "\n\n".join(context_parts)
-
-        # 使用统一的提示词构建方法
-        prompt = self._build_prompt(question, context)
-        self._record_generation_context(audit_run, documents, context, stream=False)
+        if not isinstance(max_attempts, int) or not 1 <= max_attempts <= 3:
+            raise ValueError("max_attempts 必须在 1 到 3 之间")
+        context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
+        self._record_generation_context(
+            audit_run, audit_documents, context, stream=False, evidence_bundle=evidence_bundle
+        )
+        terminal_response = self._terminal_evidence_response(evidence_bundle)
+        if terminal_response:
+            return terminal_response
         generation_started_at = time.time()
         
         try:
@@ -194,19 +235,35 @@ class GenerationIntegrationModule:
                         "temperature": self.temperature,
                         "max_tokens": self.max_tokens,
                         "stream": False,
-                        "timeout": "client_default",
-                        "max_retries": 0,
+                        "timeout": timeout,
+                        "max_retries": max_attempts - 1,
                     },
                 )
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
+            response = None
+            last_error = None
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=self.temperature,
+                        max_tokens=self.max_tokens,
+                        timeout=timeout,
+                    )
+                    break
+                except Exception as error:
+                    last_error = error
+                    if audit_run:
+                        audit_run.record_error("generation_non_stream", error, attempt=attempt)
+            if response is None:
+                assert last_error is not None
+                raise last_error
             answer = response.choices[0].message.content.strip()
+            if not answer:
+                raise RuntimeError("GENERATION_EMPTY_STREAM")
+            answer = self._enforce_claim_policy(answer, evidence_bundle, audit_run)
             if audit_run:
                 audit_run.append_process(
                     "Generation Non-Stream",
@@ -229,39 +286,72 @@ class GenerationIntegrationModule:
             
         except Exception as e:
             logger.error(f"LightRAG答案生成失败: {e}")
+            if isinstance(e, RuntimeError) and str(e) == "GENERATION_EMPTY_STREAM":
+                if audit_run:
+                    audit_run.record_error("generation_non_stream", e, attempt=max_attempts)
+                    audit_run.append_process(
+                        "Final Output",
+                        {
+                            "answer_chars": 0,
+                            "answer_hash": query_hash(""),
+                            "success": False,
+                        },
+                    )
+                raise RuntimeError(f"GENERATION_NON_STREAM_FAILED: {e}") from e
+            fallback = self._evidence_only_fallback(evidence_bundle)
             if audit_run:
-                audit_run.record_error("generation_non_stream", e, attempt=1)
+                audit_run.record_event(
+                    "generation_fallback",
+                    status="evidence_only",
+                    reason=type(e).__name__,
+                    answer_chars=len(fallback),
+                )
                 audit_run.append_process(
                     "Final Output",
                     {
-                        "answer_chars": 0,
-                        "answer_hash": query_hash(""),
-                        "success": False,
+                        "answer_chars": len(fallback),
+                        "answer_hash": query_hash(fallback),
+                        "success": True,
+                        "source": "generation_failed_fallback",
                     },
                 )
-            return f"抱歉，生成回答时出现错误：{str(e)}"
+            return fallback
+
+    @staticmethod
+    def _evidence_only_fallback(evidence_bundle: EvidenceBundle | None) -> str:
+        """生成服务失败时只陈述已回补的正文标题，不扩展事实或偏好结论。"""
+
+        if evidence_bundle is None or not evidence_bundle.text_evidence:
+            return "当前生成服务暂时不可用，无法组织回答；请稍后重试。"
+        titles: list[str] = []
+        for evidence in evidence_bundle.text_evidence[:5]:
+            for line in evidence.text.splitlines():
+                title = line.strip()
+                if title.startswith("# ") and len(title) > 2:
+                    titles.append(title[2:].strip())
+                    break
+        titles = list(dict.fromkeys(title for title in titles if title))
+        if titles:
+            return "当前生成服务暂时不可用。以下仅列出已回补正文证据中的菜谱：" + "、".join(titles) + "。"
+        return "当前生成服务暂时不可用，但检索已回补可验证的正文证据；请稍后重试。"
     
-    def generate_adaptive_answer_stream(self, question: str, documents: List[Document], max_retries: int = 3, audit_run=None):
+    def generate_adaptive_answer_stream(self, question: str, documents: Sequence[Document] | EvidenceBundle, max_retries: int = 3, audit_run=None):
         """
         LightRAG风格的流式答案生成（带重试机制）
         """
-        # 构建上下文
-        context_parts = []
-        
-        for doc in documents:
-            content = doc.page_content.strip()
-            if content:
-                level = doc.metadata.get('retrieval_level', '')
-                if level:
-                    context_parts.append(f"[{level.upper()}] {content}")
-                else:
-                    context_parts.append(content)
-        
-        context = "\n\n".join(context_parts)
-
-        # 使用统一的提示词构建方法
-        prompt = self._build_prompt(question, context)
-        self._record_generation_context(audit_run, documents, context, stream=True, max_retries=max_retries)
+        context, prompt, audit_documents, evidence_bundle = self._prepare_generation_input(question, documents)
+        self._record_generation_context(
+            audit_run,
+            audit_documents,
+            context,
+            stream=True,
+            max_retries=max_retries,
+            evidence_bundle=evidence_bundle,
+        )
+        terminal_response = self._terminal_evidence_response(evidence_bundle)
+        if terminal_response:
+            yield terminal_response
+            return
         generation_started_at = time.time()
         first_token_latency_ms = None
         chunk_count = 0
@@ -308,6 +398,8 @@ class GenerationIntegrationModule:
                         full_response += content
                         yield content  # 使用yield返回流式内容
                 
+                if not full_response.strip():
+                    raise RuntimeError("GENERATION_EMPTY_STREAM")
                 if audit_run:
                     audit_run.append_process(
                         "Generation Stream",
@@ -346,6 +438,8 @@ class GenerationIntegrationModule:
                     
                     try:
                         fallback_response = self.generate_adaptive_answer(question, documents)
+                        if not isinstance(fallback_response, str) or not fallback_response.strip():
+                            raise RuntimeError("GENERATION_EMPTY_STREAM")
                         full_response += fallback_response
                         if first_token_latency_ms is None:
                             first_token_latency_ms = int((time.time() - generation_started_at) * 1000)
@@ -389,25 +483,123 @@ class GenerationIntegrationModule:
                         yield error_msg
                         return 
 
-    def _record_generation_context(self, audit_run, documents: List[Document], context: str, stream: bool, max_retries: int = 0):
+    def _record_generation_context(
+        self,
+        audit_run,
+        documents: List[Document],
+        context: str,
+        stream: bool,
+        max_retries: int = 0,
+        evidence_bundle: EvidenceBundle | None = None,
+    ):
         if not audit_run:
             return
-        audit_run.write_documents(
-            "Final Prompt Context",
-            documents,
-            "generation_context",
-        )
+        if evidence_bundle is None:
+            audit_run.write_documents(
+                "Final Prompt Context",
+                documents,
+                "generation_context",
+            )
+        else:
+            sections = EvidenceBuilder.sections(evidence_bundle)
+            audit_run.append_recall("Evidence / 已验证图事实", sections.verified_graph_facts)
+            audit_run.append_recall("Evidence / 正文证据", sections.text_evidence)
+            audit_run.append_recall("Evidence / 推荐证据等级", sections.recommendation_evidence)
+            audit_run.append_recall("Evidence / 限制与不可证明项", sections.limitations)
         audit_run.append_process(
             "Prompt Assembly",
             {
-                "prompt_template_name": "cooking_assistant_default",
-                "prompt_template_version": "v1",
-                "prompt_template_hash": query_hash("cooking_assistant_default_v1"),
+                "prompt_template_name": "cooking_assistant_evidence" if evidence_bundle else "cooking_assistant_default",
+                "prompt_template_version": "evidence_v1" if evidence_bundle else "v1",
+                "prompt_template_hash": query_hash("cooking_assistant_evidence_v1" if evidence_bundle else "cooking_assistant_default_v1"),
                 "context_doc_count": len(documents),
                 "context_chars": len(context),
                 "retrieval_levels": sorted({str((doc.metadata or {}).get("retrieval_level", "")) for doc in documents if getattr(doc, "metadata", None)}),
                 "search_types": sorted({str((doc.metadata or {}).get("search_type", "")) for doc in documents if getattr(doc, "metadata", None)}),
                 "stream": stream,
                 "max_retries": max_retries,
+                "evidence_bundle": evidence_bundle is not None,
+                "verified_graph_fact_count": len(evidence_bundle.verified_graph_facts) if evidence_bundle else 0,
+                "text_evidence_count": len(evidence_bundle.text_evidence) if evidence_bundle else 0,
+                "limitation_count": len(evidence_bundle.limitations) if evidence_bundle else 0,
+                "recommendation_evidence_level": (
+                    evidence_bundle.recommendation_evidence.level
+                    if evidence_bundle and evidence_bundle.recommendation_evidence
+                    else None
+                ),
+                "recommendation_policy_version": (
+                    evidence_bundle.recommendation_evidence.policy_version
+                    if evidence_bundle and evidence_bundle.recommendation_evidence
+                    else None
+                ),
             },
         )
+
+    @staticmethod
+    def _enforce_claim_policy(answer: str, evidence_bundle: EvidenceBundle | None, audit_run=None) -> str:
+        """本地执行编译器声明边界，不能只依赖模型遵守提示词。"""
+
+        if evidence_bundle is None or not evidence_bundle.claim_policy:
+            return answer
+        forbidden = tuple(evidence_bundle.claim_policy.get("forbidden_claims", ()))
+        matched = tuple(term for term in forbidden if term and term in answer)
+        if not matched:
+            return answer
+        titles = []
+        for evidence in evidence_bundle.text_evidence:
+            heading = re.search(r"^#\s+([^\n#]+)", evidence.text, flags=re.MULTILINE)
+            title = heading.group(1).replace("的做法", "").strip() if heading else ""
+            if title and title not in titles:
+                titles.append(title)
+            if len(titles) == 3:
+                break
+        candidates = "、".join(titles) if titles else "已检索到的菜谱"
+        safe_answer = f"可优先考虑：{candidates}。这些建议仅根据正文内容与您的口味或做法偏好匹配，未对具体营养数值或适用性作出判断。"
+        if audit_run is not None and hasattr(audit_run, "record_event"):
+            audit_run.record_event(
+                "claim_policy",
+                status="blocked_and_replaced",
+                forbidden_claim_count=len(matched),
+                forbidden_claim_hash=query_hash("\n".join(matched)),
+                replacement_chars=len(safe_answer),
+            )
+        return safe_answer
+
+    @staticmethod
+    def _terminal_evidence_response(evidence_bundle: EvidenceBundle | None) -> str | None:
+        """对不能安全交给 LLM 的实体状态返回确定性提示。"""
+        if evidence_bundle is None:
+            return None
+        limitations = set(evidence_bundle.limitations)
+        if "NUTRITION_EVIDENCE_INSUFFICIENT" in limitations:
+            return "当前没有可信营养数值或治理标签，无法验证严格低脂、脂肪克数或医疗饮食条件，因此不能给出满足该条件的推荐。"
+        if "NUTRITION_CUISINE_EVIDENCE_UNAVAILABLE" in limitations:
+            return "营养或菜系硬证据当前不可用，不能把未受限的向量结果称为低脂川菜。"
+        if "NUTRITION_CUISINE_SCOPE_NOT_FOUND" in limitations:
+            return "当前图谱没有可验证的川菜候选范围，不能把向量结果称为低脂川菜。"
+        if "NUTRITION_PREFERENCE_RETRIEVAL_UNAVAILABLE" in limitations:
+            return "当前少油/清爽偏好检索不可用，不能用旧路径补造低脂推荐。"
+        if "ENTITY_NOT_FOUND" in limitations:
+            return "知识库未收录该实体，无法在知识库中找到对应菜谱；因此不猜测或生成做法、食材和步骤。"
+        if "ENTITY_AMBIGUOUS" in limitations:
+            names = "、".join(candidate.display_name for candidate in evidence_bundle.entity_candidates[:3])
+            suffix = f"候选包括：{names}。" if names else ""
+            return f"找到多个并列实体候选，未自动选择。{suffix}请提供更具体的名称或补充描述。"
+        if "PARENT_DOCUMENT_NOT_FOUND" in limitations or "PDS_ANCHOR_NOT_FOUND" in limitations:
+            return "已定位实体，但当前父文档库没有可验证的正文证据，无法安全补全做法。"
+        if "STEP_NOT_FOUND" in limitations or "TECHNIQUE_CHUNK_NOT_FOUND" in limitations:
+            return "图谱未找到请求的目标步骤或技巧章节，无法用正文补造该定位结果。"
+        if "GRAPH_RELATION_NOT_FOUND" in limitations:
+            return "当前图谱未找到该关系，无法证明该关系存在；不能用文本证据把该关系表述为已成立。"
+        if "GRAPH_UNAVAILABLE" in limitations:
+            return "图证据当前不可用，无法验证请求的关系是否成立。"
+        if "PDS_TEXT_UNAVAILABLE" in limitations or (
+            "parent-store-unavailable" in limitations
+            and evidence_bundle.query_plan
+            and evidence_bundle.query_plan.get("intent") in {"RECIPE_STEP", "TECHNIQUE_CHUNKS"}
+            and not evidence_bundle.text_evidence
+        ):
+            return "图谱已定位目标，但父文档正文当前不可用，不能据此补写步骤或技巧内容。"
+        if "graph-unavailable" in limitations and not evidence_bundle.text_evidence:
+            return "图证据当前不可用，无法验证请求的步骤或章节定位。"
+        return None

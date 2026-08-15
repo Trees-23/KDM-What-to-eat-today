@@ -250,7 +250,16 @@ class MilvusIndexConstructionModule:
                     data=batch
                 )
                 logger.info(f"已插入 {min(i + batch_size, len(entities))}/{len(entities)} 条数据")
-            
+
+            # Milvus 的 insert 是异步持久化的。未 flush 时即使后续索引/加载调用成功，
+            # collection stats 仍可能为 0，导致运行时把空知识库误判为可用。
+            logger.info("正在持久化向量数据...")
+            self.client.flush(collection_name=self.collection_name)
+            row_count = int(self.client.get_collection_stats(self.collection_name).get("row_count", -1))
+            if row_count != len(entities):
+                raise ValueError(f"Milvus 持久化行数不一致: expected={len(entities)}, actual={row_count}")
+            logger.info(f"向量数据已持久化: {row_count} 条")
+
             # 5. 创建索引
             if not self.create_index():
                 return False
@@ -500,4 +509,4 @@ class MilvusIndexConstructionModule:
     
     def __del__(self):
         """析构函数"""
-        self.close() 
+        self.close()

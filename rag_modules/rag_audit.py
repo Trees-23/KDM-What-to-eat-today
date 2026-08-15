@@ -144,6 +144,9 @@ class NullAuditRun:
     audit_id = ""
     run_dir = None
 
+    def mark_request_start(self):
+        return datetime.now()
+
     def append_process(self, *_args, **_kwargs) -> None:
         return
 

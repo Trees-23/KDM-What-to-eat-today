@@ -1,0 +1,26 @@
+{
+  "schema_version": "retrieval-release-thresholds-v2",
+  "deployment_profile": "personal-local",
+  "online_rollout_required": false,
+  "min_case_count": 50,
+  "result_coverage_min": 1.0,
+  "latency_coverage_min": 1.0,
+  "evidence_completeness_min": 1.0,
+  "relation_path_correctness_min": 1.0,
+  "answer_faithfulness_min": 1.0,
+  "evidence_linkage_min": 1.0,
+  "entity_resolution_min": 1.0,
+  "forbidden_assertion_count_max": 0,
+  "strict_nutrition_misclaim_count_max": 0,
+  "fault_injection_violation_count_max": 0,
+  "new_vs_old": {
+    "baseline_variant": "old",
+    "recall_at_5_max_regression": 0.02,
+    "mrr_at_5_max_regression": 0.02,
+    "p95_latency_ratio_max": 1.2
+  },
+  "rollout": {
+    "error_rate_delta_max": 0.01,
+    "p95_latency_ratio_max": 1.2
+  }
+}

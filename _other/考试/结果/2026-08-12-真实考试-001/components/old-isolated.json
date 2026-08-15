@@ -1,0 +1,1772 @@
+[
+  {
+    "question_id": "S09-A-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝01",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝02",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝03",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝04",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝05",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝06",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝07",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝08",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝09",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-A-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝10",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝11",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝12",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝13",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.308+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.308+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝14",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝15",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝16",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝17",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝18",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝19",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-B-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝20",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝21",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝22",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝23",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝24",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝25",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝26",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝27",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝28",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝29",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S09-C-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "missing:星雾紫萝30",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20
+      },
+      "status": "not_found"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001631",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001782",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004679",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201000006",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003918",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001901",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003460",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003210",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201000273",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-A-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201000258",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201002822",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001701",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003960",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001429",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201000002",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201000128",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004138",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201002295",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003941",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-B-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201001872",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-01",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004975",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.309+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.309+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-02",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201005130",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-03",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201002147",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-04",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004769",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-05",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004806",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-06",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201003863",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-07",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201005369",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-08",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201004992",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-09",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201005584",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  },
+  {
+    "question_id": "S10-C-10",
+    "query_plan": {
+      "intent": "INGREDIENT_RECIPES",
+      "template_id": "ingredient_recipes_v1",
+      "entity_type": "Ingredient",
+      "parameters": {
+        "ingredient_id": "201002106",
+        "limit": 20
+      },
+      "max_candidates": 20,
+      "source": "rule"
+    },
+    "graph_fact": {
+      "fact_id": "ingredient_recipes_v1:2026-08-11T19:25:01.310+00:00",
+      "template_id": "ingredient_recipes_v1",
+      "node_ids": [],
+      "edges": [],
+      "properties": {
+        "direction": "Ingredient <- REQUIRES - Recipe",
+        "relationship_type": "REQUIRES",
+        "database_timestamp": "2026-08-11T19:25:01.310+00:00",
+        "rows": [],
+        "max_candidates": 20,
+        "error_type": "OSError"
+      },
+      "status": "unavailable"
+    },
+    "assertion": "passed"
+  }
+]

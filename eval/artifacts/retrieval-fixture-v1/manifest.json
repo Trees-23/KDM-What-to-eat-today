@@ -1,0 +1,96 @@
+{
+  "schema_version": "retrieval-fixture-evidence-manifest-v1",
+  "evidence_mode": "fixture_component_contract",
+  "generated_by": "scripts/run_retrieval_fixture_eval.py",
+  "runner_id": "retrieval-fixture-runner-v1",
+  "generated_on": "2026-08-10",
+  "live_services": false,
+  "inputs": {
+    "fixture": {
+      "path": "eval/retrieval_component_fixture_v1.json",
+      "sha256": "1d3ff89ce20e3d5f72e5eba0852ccb1d76a35498d5c380239540512e89345c52"
+    },
+    "cases": {
+      "path": "eval/retrieval_refactor_cases.yaml",
+      "sha256": "06dc70eeb5aac6e897af3db9d12b41e3a6dababb32636c24dd7eb6b30d465043"
+    },
+    "thresholds": {
+      "path": "eval/retrieval_release_thresholds.yaml",
+      "sha256": "57dee48bc44a62b11f8a9eb8a2a37d47a8a3eaebc2718345c03e97b463f6fb6f"
+    }
+  },
+  "artifacts": {
+    "old_results": {
+      "path": "old-results.jsonl",
+      "sha256": "a3a257af818a741ecb7761d557954ce26170a19c8e4aba5778ed12d7b58b1d97"
+    },
+    "old_report": {
+      "path": "old-report.json",
+      "sha256": "47e09e2ef13eef9aa899c133f73e5773fee535eafc96bd59710aab2c6ee02960"
+    },
+    "new_results": {
+      "path": "new-results.jsonl",
+      "sha256": "d577cb1a9ab979bceb8267e92f5fbd04dde8eea69b3a6c07b364593c14849ebb"
+    },
+    "new_report": {
+      "path": "new-report.json",
+      "sha256": "ef7e4b56f8454029d3d5d40e956cf23a6c3fafbc1d73f3824a20f9a1a0fc5710"
+    }
+  },
+  "components": {
+    "old": ["HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter", "ParentDocumentStore"],
+    "new": ["QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore", "RestrictedVectorRetriever"]
+  },
+  "component_requirements": {
+    "old": {
+      "recipe_full": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "recipe_step": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "ingredient_recipes": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
+      "ingredient_pairing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
+      "soft_preference": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "semantic": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "technique": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "entity_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore"],
+      "relation_missing": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "ParentDocumentStore", "LegacyGraphFixtureAdapter"],
+      "graph_unavailable": ["FixtureEntityResolver", "HybridRetrievalModule.hybrid_search", "LegacyGraphFixtureAdapter"]
+    },
+    "new": {
+      "recipe_full": ["FixtureEntityResolver", "ParentDocumentStore"],
+      "recipe_step": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore"],
+      "ingredient_recipes": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore"],
+      "ingredient_pairing": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore"],
+      "soft_preference": ["FixtureEntityResolver", "QueryPlanValidator", "FixtureMilvusClient", "RestrictedVectorRetriever", "ParentDocumentStore"],
+      "semantic": ["FixtureEntityResolver", "QueryPlanValidator", "FixtureMilvusClient", "RestrictedVectorRetriever", "ParentDocumentStore"],
+      "technique": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever", "ParentDocumentStore"],
+      "entity_missing": ["FixtureEntityResolver"],
+      "relation_missing": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever"],
+      "graph_unavailable": ["FixtureEntityResolver", "QueryPlanValidator", "TargetedGraphRetriever"]
+    }
+  },
+  "metrics": {
+    "case_count": 50,
+    "recall_at_5": {"old": 1.0, "new": 1.0},
+    "mrr_at_5": {"old": 0.7, "new": 0.7},
+    "p95_latency_ms": {"old": 8.0, "new": 5.0},
+    "latency_measurement": "fixture_component_budget_ms",
+    "p95_latency_gate": "not_applicable_fixture_component_budget",
+    "evidence_completeness": {"old": 1.0, "new": 1.0},
+    "evidence_linkage": {"old": 1.0, "new": 1.0},
+    "entity_resolution_correctness": {"old": 1.0, "new": 1.0},
+    "forbidden_assertion_count": {"old": 0, "new": 0},
+    "strict_nutrition_misclaim_count": {"old": 0, "new": 0},
+    "fault_injection_violation_count": {"old": 0, "new": 0}
+  },
+  "valid": true,
+  "limitations": [
+    "这是 personal-local 的组件契约夹具；不连接真实 Neo4j、Milvus、staging 或线上流量。",
+    "latency_measurement 是确定性组件预算，不是墙钟延迟、真实服务延迟或线上性能证明。",
+    "protected profile 仍需独立的真实服务、受控导入、staging 验收和 rollout 观察证据。"
+  ],
+  "reproduction": [
+    "python scripts/run_retrieval_fixture_eval.py --cases eval/retrieval_refactor_cases.yaml --fixture eval/retrieval_component_fixture_v1.json --variant old --results eval/artifacts/retrieval-fixture-v1/old-results.jsonl",
+    "python scripts/run_retrieval_fixture_eval.py --cases eval/retrieval_refactor_cases.yaml --fixture eval/retrieval_component_fixture_v1.json --variant new --results eval/artifacts/retrieval-fixture-v1/new-results.jsonl",
+    "python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml --thresholds eval/retrieval_release_thresholds.yaml --results eval/artifacts/retrieval-fixture-v1/old-results.jsonl --report eval/artifacts/retrieval-fixture-v1/old-report.json --variant old --require-evidence-mode fixture_component_contract --evidence-manifest eval/artifacts/retrieval-fixture-v1/manifest.json --fixture eval/retrieval_component_fixture_v1.json",
+    "python scripts/run_retrieval_eval.py --cases eval/retrieval_refactor_cases.yaml --thresholds eval/retrieval_release_thresholds.yaml --results eval/artifacts/retrieval-fixture-v1/new-results.jsonl --report eval/artifacts/retrieval-fixture-v1/new-report.json --variant new --baseline-report eval/artifacts/retrieval-fixture-v1/old-report.json --baseline-results eval/artifacts/retrieval-fixture-v1/old-results.jsonl --require-evidence-mode fixture_component_contract --evidence-manifest eval/artifacts/retrieval-fixture-v1/manifest.json --fixture eval/retrieval_component_fixture_v1.json"
+  ]
+}

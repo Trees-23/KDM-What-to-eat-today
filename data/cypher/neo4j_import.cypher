@@ -67,6 +67,9 @@ WHERE row.labels = 'Recipe'
   AND row.nodeId >= '200000000'  // 只处理具体实例，不处理层次结构
   AND row.nodeId IS NOT NULL
   AND row.name IS NOT NULL
+  // Recipe 层级根节点没有 Markdown 来源，不是可检索菜谱。
+  AND row.filePath IS NOT NULL
+  AND trim(row.filePath) <> ''
     
     MERGE (r:Recipe {nodeId: row.nodeId})
     SET r.name = row.name,
@@ -168,10 +171,18 @@ WHERE row.relationshipType = '801000001'
   AND row.endNodeId IS NOT NULL
 MATCH (source:Recipe {nodeId: row.startNodeId})
 MATCH (target:Ingredient {nodeId: row.endNodeId})
-MERGE (source)-[r:REQUIRES]->(target)
+MERGE (source)-[r:REQUIRES {relationshipId: row.relationshipId}]->(target)
 SET r.relationshipId = row.relationshipId,
     r.amount = row.amount,
     r.unit = row.unit,
+    r.ingredientCategory = CASE
+        WHEN row.ingredientCategory IS NOT NULL AND trim(row.ingredientCategory) <> '' THEN row.ingredientCategory
+        ELSE target.category
+    END,
+    r.isMain = CASE
+        WHEN row.isMain IS NOT NULL AND trim(row.isMain) <> '' THEN toBoolean(row.isMain)
+        ELSE null
+    END,
     r.originalType = row.relationshipType;
 
 // 创建包含步骤关系 (801000003)

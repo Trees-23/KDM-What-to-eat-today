@@ -1,0 +1,328 @@
+{
+  "graph": {
+    "s04": {
+      "S04-A-01": 8,
+      "S04-A-02": 3,
+      "S04-A-03": 1,
+      "S04-A-04": 72,
+      "S04-A-05": 3,
+      "S04-A-06": 16,
+      "S04-A-07": 7,
+      "S04-A-08": 10,
+      "S04-A-09": 1,
+      "S04-A-10": 1,
+      "S04-B-01": 1,
+      "S04-B-02": 8,
+      "S04-B-03": 1,
+      "S04-B-04": 2,
+      "S04-B-05": 1,
+      "S04-B-06": 3,
+      "S04-B-07": 1,
+      "S04-B-08": 5,
+      "S04-B-09": 2,
+      "S04-B-10": 1,
+      "S04-C-01": 2,
+      "S04-C-02": 1,
+      "S04-C-03": 7,
+      "S04-C-04": 3,
+      "S04-C-05": 1,
+      "S04-C-06": 4,
+      "S04-C-07": 1,
+      "S04-C-08": 1,
+      "S04-C-09": 1,
+      "S04-C-10": 1
+    },
+    "s05": {
+      "S05-A-01": 26,
+      "S05-A-02": 7,
+      "S05-A-03": 95,
+      "S05-A-04": 6,
+      "S05-A-05": 36,
+      "S05-A-06": 14,
+      "S05-A-07": 18,
+      "S05-A-08": 4,
+      "S05-A-09": 2,
+      "S05-A-10": 3,
+      "S05-B-01": 12,
+      "S05-B-02": 2,
+      "S05-B-03": 6,
+      "S05-B-04": 2,
+      "S05-B-05": 7,
+      "S05-B-06": 3,
+      "S05-B-07": 13,
+      "S05-B-08": 5,
+      "S05-B-09": 2,
+      "S05-B-10": 7,
+      "S05-C-01": 0,
+      "S05-C-02": 0,
+      "S05-C-03": 0,
+      "S05-C-04": 0,
+      "S05-C-05": 0,
+      "S05-C-06": 0,
+      "S05-C-07": 0,
+      "S05-C-08": 0,
+      "S05-C-09": 0,
+      "S05-C-10": 0
+    },
+    "nodes": 3802,
+    "relationships": 16350
+  },
+  "s03_resolution_issues": [
+    {
+      "question_id": "S03-A-01",
+      "expected_name": "如何选择现在吃什么",
+      "source_path": "data/tips/如何选择现在吃什么.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_820d789ff48e",
+          "name": "如何决策吃什么"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-02",
+      "expected_name": "高级专业术语",
+      "source_path": "data/tips/advanced/高级专业术语.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_fdb80333cd59",
+          "name": "做菜专业术语"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-04",
+      "expected_name": "油温判断技巧",
+      "source_path": "data/tips/advanced/油温判断技巧.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_b43f2b437984",
+          "name": "油温判断技巧及常见温度和单位换算表"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-07",
+      "expected_name": "高压力锅",
+      "source_path": "data/tips/learn/高压力锅.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_4ba80da791e4",
+          "name": "蒸（米）/炖（使用电饭煲/高压锅/电压力锅）"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-08",
+      "expected_name": "学习炒与煎",
+      "source_path": "data/tips/learn/学习炒与煎.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_29af79a321e3",
+          "name": "炒/煎"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-09",
+      "expected_name": "微波炉",
+      "source_path": "data/tips/learn/微波炉.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_5e4d6d67fc39",
+          "name": "使用微波炉"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-A-10",
+      "expected_name": "学习蒸",
+      "source_path": "data/tips/learn/学习蒸.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_9e62e8f43239",
+          "name": "蒸"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-01",
+      "expected_name": "学习凉拌",
+      "source_path": "data/tips/learn/学习凉拌.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_fd7f557c37a7",
+          "name": "凉拌"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-02",
+      "expected_name": "学习焯水",
+      "source_path": "data/tips/learn/学习焯水.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_897acc483178",
+          "name": "焯水"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-04",
+      "expected_name": "空气炸锅",
+      "source_path": "data/tips/learn/空气炸锅.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_0899584efc31",
+          "name": "使用空气炸锅"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-05",
+      "expected_name": "学习煮",
+      "source_path": "data/tips/learn/学习煮.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_beafa0e516d2",
+          "name": "煮"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-06",
+      "expected_name": "学习腌",
+      "source_path": "data/tips/learn/学习腌.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_e5959b9d0464",
+          "name": "腌（肉）"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-08",
+      "expected_name": "食材相克与禁忌",
+      "source_path": "data/tips/食材相克与禁忌.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_7e937e95d07f",
+          "name": "揭秘食材搭配的智慧：这些食物不宜同食"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-B-09",
+      "expected_name": "油温判断技巧",
+      "source_path": "data/tips/advanced/油温判断技巧.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_b43f2b437984",
+          "name": "油温判断技巧及常见温度和单位换算表"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-02",
+      "expected_name": "学习腌",
+      "source_path": "data/tips/learn/学习腌.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_e5959b9d0464",
+          "name": "腌（肉）"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-03",
+      "expected_name": "学习焯水",
+      "source_path": "data/tips/learn/学习焯水.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_897acc483178",
+          "name": "焯水"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-04",
+      "expected_name": "学习蒸",
+      "source_path": "data/tips/learn/学习蒸.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_9e62e8f43239",
+          "name": "蒸"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-05",
+      "expected_name": "学习炒与煎",
+      "source_path": "data/tips/learn/学习炒与煎.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_29af79a321e3",
+          "name": "炒/煎"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-06",
+      "expected_name": "空气炸锅",
+      "source_path": "data/tips/learn/空气炸锅.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_0899584efc31",
+          "name": "使用空气炸锅"
+        }
+      ]
+    },
+    {
+      "question_id": "S03-C-07",
+      "expected_name": "高压力锅",
+      "source_path": "data/tips/learn/高压力锅.md",
+      "exact_matches": 0,
+      "source_path_nodes": [
+        {
+          "nodeId": "tipdoc_4ba80da791e4",
+          "name": "蒸（米）/炖（使用电饭煲/高压锅/电压力锅）"
+        }
+      ]
+    }
+  ],
+  "artifact": {
+    "created_at": "2026-08-08T17:01:51.054813+00:00",
+    "milvus_build_id": "pds_f01044e524ef43b413f76b02",
+    "milvus_collection": "cooking_knowledge_v2_pds_f01044e5",
+    "milvus_database": "default",
+    "milvus_schema_hash": "bb34a179dcd8c4646cc0b2c416e1c6dfbbf8746f302f2161f896160987084e04",
+    "pds_build_id": "pds_f01044e524ef43b413f76b02",
+    "pds_manifest_sha256": "b5402762cfd0b0ba695c420c2fe3fa1c100f1e1314bd70a204e4bfb22daa59ca",
+    "rollback_collection": "cooking_knowledge",
+    "rollback_database": "default",
+    "rollback_pds_build": "pds_08acc0285387840bee1f059c"
+  },
+  "pds_counts": {
+    "parents": 341,
+    "chunks": 1333
+  }
+}

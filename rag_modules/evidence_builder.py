@@ -1,0 +1,115 @@
+"""将阶段 2 证据契约渲染为生成层需要的物理分栏上下文。"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from typing import Iterable, Sequence
+
+from .retrieval_contracts import EvidenceBundle, GraphFact, TextEvidence
+
+
+@dataclass(frozen=True)
+class EvidencePromptSections:
+    verified_graph_facts: str
+    text_evidence: str
+    limitations: str
+    recommendation_evidence: str
+    claim_policy: str
+
+
+class EvidenceBuilder:
+    """唯一允许把 EvidenceBundle 交给生成提示词的适配器。"""
+
+    @staticmethod
+    def sections(bundle: EvidenceBundle) -> EvidencePromptSections:
+        return EvidencePromptSections(
+            verified_graph_facts=EvidenceBuilder._render_graph_facts(bundle.verified_graph_facts),
+            text_evidence=EvidenceBuilder._render_text_evidence(bundle.text_evidence),
+            limitations=EvidenceBuilder._render_limitations(bundle.limitations),
+            recommendation_evidence=EvidenceBuilder._render_recommendation_evidence(bundle),
+            claim_policy=EvidenceBuilder._render_claim_policy(bundle),
+        )
+
+    @staticmethod
+    def context(bundle: EvidenceBundle) -> str:
+        sections = EvidenceBuilder.sections(bundle)
+        return "\n\n".join(
+            (
+                "## 已验证图事实\n" + sections.verified_graph_facts,
+                "## 正文证据\n" + sections.text_evidence,
+                "## 推荐证据等级\n" + sections.recommendation_evidence,
+                "## 声明策略\n" + sections.claim_policy,
+                "## 限制与不可证明项\n" + sections.limitations,
+            )
+        )
+
+    @staticmethod
+    def merge_graph_facts(bundle: EvidenceBundle, graph_facts: Sequence[GraphFact]) -> EvidenceBundle:
+        """追加固定目标图事实，不改变正文证据与限制的分栏。"""
+        facts = tuple(graph_facts)
+        if not all(isinstance(fact, GraphFact) for fact in facts):
+            raise ValueError("graph_facts 只能包含 GraphFact")
+        return EvidenceBundle(
+            query_plan=bundle.query_plan,
+            entity_candidates=bundle.entity_candidates,
+            graph_facts=bundle.graph_facts + facts,
+            text_evidence=bundle.text_evidence,
+            limitations=bundle.limitations,
+            recommendation_evidence=bundle.recommendation_evidence,
+            claim_policy=bundle.claim_policy,
+        )
+
+    @staticmethod
+    def _render_graph_facts(facts: Iterable[GraphFact]) -> str:
+        rows = []
+        for fact in facts:
+            rows.append(
+                "- "
+                + json.dumps(
+                    {
+                        "template_id": fact.template_id,
+                        "node_ids": list(fact.node_ids),
+                        "edges": [dict(edge) for edge in fact.edges],
+                        "properties": dict(fact.properties),
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
+            )
+        return "\n".join(rows) if rows else "- 无已验证图事实。"
+
+    @staticmethod
+    def _render_text_evidence(evidences: Iterable[TextEvidence]) -> str:
+        rows = []
+        for evidence in evidences:
+            rows.extend(
+                (
+                    f"### parent_id={evidence.parent_id} build_id={evidence.build_id}",
+                    f"来源：{evidence.origin}；chunk_ids={','.join(evidence.chunk_ids)}；anchor_ids={','.join(evidence.anchor_ids) or '无'}",
+                    evidence.text,
+                )
+            )
+        return "\n\n".join(rows) if rows else "- 无可用正文证据。"
+
+    @staticmethod
+    def _render_limitations(limitations: Iterable[str]) -> str:
+        rows = [f"- {item}" for item in limitations]
+        return "\n".join(rows) if rows else "- 无额外限制。"
+
+    @staticmethod
+    def _render_recommendation_evidence(bundle: EvidenceBundle) -> str:
+        evidence = bundle.recommendation_evidence
+        if evidence is None:
+            return "- 未使用营养或饮食推荐策略。"
+        return "- " + json.dumps(evidence.to_dict(), ensure_ascii=False, sort_keys=True)
+
+    @staticmethod
+    def _render_claim_policy(bundle: EvidenceBundle) -> str:
+        if bundle.claim_policy is None:
+            return "- 未提供额外声明策略。"
+        return "- " + json.dumps(
+            {key: list(values) for key, values in bundle.claim_policy.items()},
+            ensure_ascii=False,
+            sort_keys=True,
+        )
