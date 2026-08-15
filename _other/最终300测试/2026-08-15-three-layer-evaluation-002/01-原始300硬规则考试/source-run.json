@@ -1,0 +1,3046 @@
+{
+  "source_run_id": "2026-08-15-intent-planner-300-005",
+  "source_path": "/home/kdm/MyWorkSpace/AgentLearnSpace/AllProjects/What-to-eat-today-main/What-to-eat-today-main/_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005",
+  "files": [
+    {
+      "relative_path": "acceptance-report.json",
+      "size_bytes": 551,
+      "sha256": "cf1494b4c4226f382f70901ffee2cdf26a402a87d0060ae7e7c196be8f7b6c9c"
+    },
+    {
+      "relative_path": "audits/20260814_200501_632_f765e362/rag_process.md",
+      "size_bytes": 2867,
+      "sha256": "f713b44683d692c41ed56d2198f46a1762a517276dec9c845bc0fef848b859c8"
+    },
+    {
+      "relative_path": "audits/20260814_200501_632_f765e362/recall_content.md",
+      "size_bytes": 2384,
+      "sha256": "8b315f18580913686ebfc82a2527493dc1a41efa52a0a3ff5590606664e43522"
+    },
+    {
+      "relative_path": "audits/20260814_200523_058_33dcc260/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "b80825be7b0681c09717df97ab9ac9b6ea06f7d25604c27ac3a813139727dd12"
+    },
+    {
+      "relative_path": "audits/20260814_200523_058_33dcc260/recall_content.md",
+      "size_bytes": 2375,
+      "sha256": "8621a3369cff52defec857b52a8ca5c4fd46d3dd36c531aefbc960cffe236bb5"
+    },
+    {
+      "relative_path": "audits/20260814_200541_830_44515439/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "a50f8ac68eb201f9f92c510db294baf55374db9d21c9859ca99fdb49e2ae88fd"
+    },
+    {
+      "relative_path": "audits/20260814_200541_830_44515439/recall_content.md",
+      "size_bytes": 2543,
+      "sha256": "956a70c03c968dadb40dd78cd66fdcca3e368dbd257bfc987874210785366819"
+    },
+    {
+      "relative_path": "audits/20260814_200604_316_940b0711/rag_process.md",
+      "size_bytes": 2855,
+      "sha256": "af225424fa1db275bd463c82cda25ea45c2ee5c5a7f102e3af3d6a924f1ae745"
+    },
+    {
+      "relative_path": "audits/20260814_200604_316_940b0711/recall_content.md",
+      "size_bytes": 3405,
+      "sha256": "2c4375d34ee4d44748189f47e8d29c6e5518c54ed70ab6955c3474b3a858812d"
+    },
+    {
+      "relative_path": "audits/20260814_200631_459_f41881ee/rag_process.md",
+      "size_bytes": 3199,
+      "sha256": "8b2ee491a830c8c71bb8be3c5f24ebc9a5b6553a702128be14661c773b997687"
+    },
+    {
+      "relative_path": "audits/20260814_200631_459_f41881ee/recall_content.md",
+      "size_bytes": 2316,
+      "sha256": "a7b91bf8033d562ce37d16d55682c7112ce9e388e1f0df9c8e032426af09f0be"
+    },
+    {
+      "relative_path": "audits/20260814_200722_245_8965f579/rag_process.md",
+      "size_bytes": 3175,
+      "sha256": "683226f8b8ae8d18569ef45e4fe17d70efe3a0eb721c9291e71e5e4d634b0b49"
+    },
+    {
+      "relative_path": "audits/20260814_200722_245_8965f579/recall_content.md",
+      "size_bytes": 1322,
+      "sha256": "e6d1d4db13f6106b1b269d86d3f8a18d3abce6b3e7306196b9ad7f20c02dda4f"
+    },
+    {
+      "relative_path": "audits/20260814_200735_754_56c1a145/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "5aca634d9486d4391782dffc67d337663bad324c4024dd081dab90670cfa8bbe"
+    },
+    {
+      "relative_path": "audits/20260814_200735_754_56c1a145/recall_content.md",
+      "size_bytes": 2118,
+      "sha256": "b9219ac358f7a24c28319b3ed3b7ff7956382a39cfe065b38da5a7bdc5a8e6e7"
+    },
+    {
+      "relative_path": "audits/20260814_200752_737_e744fe81/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "c5d756786c049dd07dfb3522a0a6ff2234c6009efd04cb07c31db60a1df3e048"
+    },
+    {
+      "relative_path": "audits/20260814_200752_737_e744fe81/recall_content.md",
+      "size_bytes": 2736,
+      "sha256": "8d25ff15096c2b7828765e5c39594d2935f5493d4f900adeeed1965f5071a3bf"
+    },
+    {
+      "relative_path": "audits/20260814_200816_511_15cc3bbf/rag_process.md",
+      "size_bytes": 2912,
+      "sha256": "b4801325fa578edb7f22c4d3bf249b54f617ecb8405241e78997b2a45a987a6f"
+    },
+    {
+      "relative_path": "audits/20260814_200816_511_15cc3bbf/recall_content.md",
+      "size_bytes": 2332,
+      "sha256": "41b671f900099c8a50cc3cd291353db7b705dd8cba5c2b6befddea49f4433b5b"
+    },
+    {
+      "relative_path": "audits/20260814_200841_499_ec673e6c/rag_process.md",
+      "size_bytes": 2855,
+      "sha256": "c7df0737a66f7be8b15e3dadffcdb8af017cfd998e5b203fd06627b1bb292643"
+    },
+    {
+      "relative_path": "audits/20260814_200841_499_ec673e6c/recall_content.md",
+      "size_bytes": 3068,
+      "sha256": "59a25ce7d3c2b8ec04a6051fbd905157e499cc4fc4c3f80f105972d60577fdac"
+    },
+    {
+      "relative_path": "audits/20260814_200907_693_45735075/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "b1b7d10eafc781252a614870e1b36792a70317381004256e27c0c10f6383324e"
+    },
+    {
+      "relative_path": "audits/20260814_200907_693_45735075/recall_content.md",
+      "size_bytes": 2240,
+      "sha256": "c81971a758734d50fd8cfc53495910778bb14879964869085ee6cbf9f76353d4"
+    },
+    {
+      "relative_path": "audits/20260814_200926_107_b9f52f16/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "e898c247b77782fb8fef0b60b5fd1c24443f3011fd7b1a4fef36187472dc0b7c"
+    },
+    {
+      "relative_path": "audits/20260814_200926_107_b9f52f16/recall_content.md",
+      "size_bytes": 2804,
+      "sha256": "40d6a67df3bfe93ba8a46d4bb7273af47e891707ca1b7e4c86554139d21a649f"
+    },
+    {
+      "relative_path": "audits/20260814_200945_318_a5894b8e/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "bdee922156d7d31b6e5845af09c1a6fac05d6d903806cdb1efbff8b16efa5838"
+    },
+    {
+      "relative_path": "audits/20260814_200945_318_a5894b8e/recall_content.md",
+      "size_bytes": 2266,
+      "sha256": "396dbefba29a9b2fa2ef8c0e8a62f458464363436b3dbda9614a4752d67cc673"
+    },
+    {
+      "relative_path": "audits/20260814_201002_762_383ba96e/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "427b5327cea8b049b40918d5a10639caa7f38c30d3c30b63176b4cb8048018b1"
+    },
+    {
+      "relative_path": "audits/20260814_201002_762_383ba96e/recall_content.md",
+      "size_bytes": 1919,
+      "sha256": "53d70eea3e3157d03c94d22cf8230a9a804b39c97fe8e9494a72120e93f8fb78"
+    },
+    {
+      "relative_path": "audits/20260814_201019_609_6adffba3/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "efb9eeafed6b3b6631949a3c99c9603b436a105b894871b0094aa1ab1ecfbcc7"
+    },
+    {
+      "relative_path": "audits/20260814_201019_609_6adffba3/recall_content.md",
+      "size_bytes": 2218,
+      "sha256": "9a9accdcb3494ef513cfb31c9669b59b79eb620c2ded0a3bc09e3ef5b028e8dc"
+    },
+    {
+      "relative_path": "audits/20260814_201041_429_5cf0857a/rag_process.md",
+      "size_bytes": 2855,
+      "sha256": "65845bc309764cbde0f02623a6129e07e548c654603f4748718275cd5def0125"
+    },
+    {
+      "relative_path": "audits/20260814_201041_429_5cf0857a/recall_content.md",
+      "size_bytes": 3283,
+      "sha256": "a26695d3f2f02bb482cbbb2c7b8e4f4d7f03367765f9b222e15e5ea91a378b53"
+    },
+    {
+      "relative_path": "audits/20260814_201111_271_40f383db/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "4a53b001afbe6d3ae54c7fea635b3a5c829fde9b99285c17f9d9a708bf8e901b"
+    },
+    {
+      "relative_path": "audits/20260814_201111_271_40f383db/recall_content.md",
+      "size_bytes": 2314,
+      "sha256": "d56359192d662c615962a118109e79bc380ed049f043b2cbeb4350c92692fa44"
+    },
+    {
+      "relative_path": "audits/20260814_201132_583_1e909d5f/rag_process.md",
+      "size_bytes": 2852,
+      "sha256": "2ccd3ebe0fba65e9d504514c8fc7690f91ff58438bea57f7e812a86ef80ecbb8"
+    },
+    {
+      "relative_path": "audits/20260814_201132_583_1e909d5f/recall_content.md",
+      "size_bytes": 1563,
+      "sha256": "e740cb5f95ae5494d63c66bd2ecf12bc9c24663aa647979be3a2e4e594bc7973"
+    },
+    {
+      "relative_path": "audits/20260814_201148_988_0652ca5a/rag_process.md",
+      "size_bytes": 2875,
+      "sha256": "34524094ae42a0f50d7000aae0be9c828cc0c3b6ee9b85630a5b8337ee5bbe84"
+    },
+    {
+      "relative_path": "audits/20260814_201148_988_0652ca5a/recall_content.md",
+      "size_bytes": 3575,
+      "sha256": "285f57a3c1232987913bd159f268d69e037278084e49d4682f49d39c073b8305"
+    },
+    {
+      "relative_path": "audits/20260814_201214_191_a9cc4bfa/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "2ffb0f2cd7bdea8eae227c5523be2dd941ec17d89a1d9446df8aea8ce89c2da9"
+    },
+    {
+      "relative_path": "audits/20260814_201214_191_a9cc4bfa/recall_content.md",
+      "size_bytes": 2430,
+      "sha256": "bc9781449b93f31005f74f42ebc12f1cd382f400d69b024563b6ff9f38d08ad5"
+    },
+    {
+      "relative_path": "audits/20260814_201236_845_6fb28d0c/rag_process.md",
+      "size_bytes": 2855,
+      "sha256": "4337da5c1ef70f03ea71730e98265600698878367a1dbfe571ae32c77dadc2ae"
+    },
+    {
+      "relative_path": "audits/20260814_201236_845_6fb28d0c/recall_content.md",
+      "size_bytes": 2686,
+      "sha256": "c81421fab1006b2227cd49ff482507079826427e46557d66d770a137155a71ec"
+    },
+    {
+      "relative_path": "audits/20260814_201305_426_7e1150fe/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "675768587f29e5c17c17e71080b354508f239c7a9e7ce0b9b2ad8aed29a09b02"
+    },
+    {
+      "relative_path": "audits/20260814_201305_426_7e1150fe/recall_content.md",
+      "size_bytes": 2128,
+      "sha256": "5eb5f86831bd459c9193518b2dbdb371a4b39fb62bc96d29e70ff66f26f89055"
+    },
+    {
+      "relative_path": "audits/20260814_201330_200_38a37bc6/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "d607476b61eb0e7939297881fce880b1291957fdb8cfe4ff4f28e02433517781"
+    },
+    {
+      "relative_path": "audits/20260814_201330_200_38a37bc6/recall_content.md",
+      "size_bytes": 1824,
+      "sha256": "b3dda3139174e68542154d1db95333e2dc04deb4bbb58a5471846dda7ace7ff6"
+    },
+    {
+      "relative_path": "audits/20260814_201354_475_63dba679/rag_process.md",
+      "size_bytes": 2852,
+      "sha256": "b5656f77f7cbc1aab6a3c64b08f9adf23926f8e46fd2e180b4f1a3da9bb82ef3"
+    },
+    {
+      "relative_path": "audits/20260814_201354_475_63dba679/recall_content.md",
+      "size_bytes": 1681,
+      "sha256": "ea95076a8497bd58dc5e803592156aef9dde9b02bf2b92d3878887a54623aae9"
+    },
+    {
+      "relative_path": "audits/20260814_201415_193_d163d21a/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "5bff02881df29a24e77a57459ec3ef463c90517fd78ca5cecd2071a2548d1641"
+    },
+    {
+      "relative_path": "audits/20260814_201415_193_d163d21a/recall_content.md",
+      "size_bytes": 2109,
+      "sha256": "be6eafd922146c75f56f096331f28abf4e9aa8d043586bd78cdbc7d9c1ac9acf"
+    },
+    {
+      "relative_path": "audits/20260814_201434_798_3f5722aa/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "232cb90b59f411ecde5c9aa17062928c98726fb55abb8acc183c2afbc71fa3c2"
+    },
+    {
+      "relative_path": "audits/20260814_201434_798_3f5722aa/recall_content.md",
+      "size_bytes": 2271,
+      "sha256": "5d2bd7376e276cf98630303b14f1eedf4a57e43f8f7ebb9f4a7b8b713ee4b184"
+    },
+    {
+      "relative_path": "audits/20260814_201456_758_44af1ef9/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "3e3bd4b5a342a9ca6abfd93e2919929c76cdc175b22a2ffe472ffb3c1e1714df"
+    },
+    {
+      "relative_path": "audits/20260814_201456_758_44af1ef9/recall_content.md",
+      "size_bytes": 2251,
+      "sha256": "e64d759275766d7a3e7b45c8103041b0cfdfa3f0c8fc6d64a00b1a1bae6720bc"
+    },
+    {
+      "relative_path": "audits/20260814_201518_338_673be427/rag_process.md",
+      "size_bytes": 2852,
+      "sha256": "d978edc71f49d1c27518c512025a1bf42c476e7bf98a6ebe18b427c42c400e4f"
+    },
+    {
+      "relative_path": "audits/20260814_201518_338_673be427/recall_content.md",
+      "size_bytes": 1523,
+      "sha256": "f8f9e521fe3da7386566ed6441642e96f38fee5e68ba9ce87dcb815c4fb63be0"
+    },
+    {
+      "relative_path": "audits/20260814_201535_737_e0621c6e/rag_process.md",
+      "size_bytes": 2853,
+      "sha256": "802ee3d42ade56dbdb667a5e5bea500cb3d48334ee16a2f98116a353c663fbc4"
+    },
+    {
+      "relative_path": "audits/20260814_201535_737_e0621c6e/recall_content.md",
+      "size_bytes": 3018,
+      "sha256": "5e19ea1e4f824a0f45d002cc7d5dde4a087462381fcc8890f1775f67a10f08ad"
+    },
+    {
+      "relative_path": "audits/20260814_201603_736_d7af5d5e/rag_process.md",
+      "size_bytes": 2855,
+      "sha256": "6b23e517ac55f84711e22299faef651b6e5fa46b10ffe77ae900cfd490a8896e"
+    },
+    {
+      "relative_path": "audits/20260814_201603_736_d7af5d5e/recall_content.md",
+      "size_bytes": 3082,
+      "sha256": "0b0edcb6dc315bd71968aeb999eba68541da98727ad4267f5a90d7d2531796f4"
+    },
+    {
+      "relative_path": "audits/20260814_201629_951_677554c7/rag_process.md",
+      "size_bytes": 3684,
+      "sha256": "150c2a5ab04933bb3729ed702f60ae62cd5e19968c53e4dc6cef781931ef4f2b"
+    },
+    {
+      "relative_path": "audits/20260814_201629_951_677554c7/recall_content.md",
+      "size_bytes": 2853,
+      "sha256": "247ce1677289c47833a6457dae77baf9e0c64cd1c8fafb81160df048c9d8056d"
+    },
+    {
+      "relative_path": "audits/20260814_201639_829_ae9f0806/rag_process.md",
+      "size_bytes": 3699,
+      "sha256": "12bc80c68831fcb27fac0f3a51a5fd27217ae33bf5269f0f20a80b98627bc1ce"
+    },
+    {
+      "relative_path": "audits/20260814_201639_829_ae9f0806/recall_content.md",
+      "size_bytes": 2407,
+      "sha256": "890fdab83cf512532c080b51fc45dd9c05c5b51e12d20f06a34e6d6f7e8cc34e"
+    },
+    {
+      "relative_path": "audits/20260814_201651_525_d9e4a2ee/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "121928fbd44f3fcda799239dbea957121b20d967b8d975238205fc110a09b568"
+    },
+    {
+      "relative_path": "audits/20260814_201651_525_d9e4a2ee/recall_content.md",
+      "size_bytes": 2676,
+      "sha256": "660c25711b688775697eb446258227481c89d63553f5a6e2b7470f17a2bf6e07"
+    },
+    {
+      "relative_path": "audits/20260814_201702_576_aa4f73a7/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "237553d00674a3404dd4ace7182ef08fbbddc3baca957522d908ad366f3b345f"
+    },
+    {
+      "relative_path": "audits/20260814_201702_576_aa4f73a7/recall_content.md",
+      "size_bytes": 3221,
+      "sha256": "f00a57f2f22799f25c886563d6a3788abe034a625f24725dcc5fef81e8712c5f"
+    },
+    {
+      "relative_path": "audits/20260814_201713_447_97d5ef8d/rag_process.md",
+      "size_bytes": 3684,
+      "sha256": "18ba80f8dc2fabf3e16ff5d2b43fde0d769b1b0b2fcf0e0584ba6c3b8c8ad41e"
+    },
+    {
+      "relative_path": "audits/20260814_201713_447_97d5ef8d/recall_content.md",
+      "size_bytes": 2449,
+      "sha256": "325c7b7d9d5399ed07b336aed09c4ba6fdd6603370106a4db7b478ac4a251dbf"
+    },
+    {
+      "relative_path": "audits/20260814_201723_219_4ca09bbd/rag_process.md",
+      "size_bytes": 3682,
+      "sha256": "25292e8f90cb456aa06cee4f9a3d2adaa0caa60ca9e2fd6e14424e68f7caa4eb"
+    },
+    {
+      "relative_path": "audits/20260814_201723_219_4ca09bbd/recall_content.md",
+      "size_bytes": 2520,
+      "sha256": "8683e50a5271800fa35c07452153f37789d4b0d99bfb28c1eada7aaffb48e03b"
+    },
+    {
+      "relative_path": "audits/20260814_201732_447_55745d9e/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "2f4a0a14f58b00ad5a2f52851cb9bb9ede014204adb4b7d1f0d308f38b775991"
+    },
+    {
+      "relative_path": "audits/20260814_201732_447_55745d9e/recall_content.md",
+      "size_bytes": 2791,
+      "sha256": "d12d1672479dc320d227b30c677aa5e02e3d4778ee54c6ebc102e00c27264316"
+    },
+    {
+      "relative_path": "audits/20260814_201745_368_75f36ac3/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "fe95de742b07ec6de154f404a7a9befc4ab9df9e069ae8d5371dcd2ec1cc3a76"
+    },
+    {
+      "relative_path": "audits/20260814_201745_368_75f36ac3/recall_content.md",
+      "size_bytes": 2358,
+      "sha256": "9c15c6fc39c114749be6e6daf8586180d813ad0704166117f7041a5d7f40b872"
+    },
+    {
+      "relative_path": "audits/20260814_201756_384_dbf72d6a/rag_process.md",
+      "size_bytes": 3684,
+      "sha256": "5ae7c399f764d2bcfac6d74f9c68d2ebdc7fbe5e18e7134eecaf8a047171703f"
+    },
+    {
+      "relative_path": "audits/20260814_201756_384_dbf72d6a/recall_content.md",
+      "size_bytes": 3228,
+      "sha256": "4263dc80dc44d16654b05ade55bfec71ed66542f000a57b7d85b85ea74f0b12a"
+    },
+    {
+      "relative_path": "audits/20260814_201806_247_5ae41242/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "20ce172ea62ff42410d3d05c2f3a8b59540a077f306fb1c1c1fa0abacb0df659"
+    },
+    {
+      "relative_path": "audits/20260814_201806_247_5ae41242/recall_content.md",
+      "size_bytes": 2566,
+      "sha256": "dee45531774cf6e7899ec3939d21ac1b926884c3bb59676f49e7f4cd7f9e4c6e"
+    },
+    {
+      "relative_path": "audits/20260814_201817_767_de3a9870/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "ad12d993f9b79c2e6486d2ad3f333a617f201f445ce9c1b3ae87b4ddc2eef21d"
+    },
+    {
+      "relative_path": "audits/20260814_201817_767_de3a9870/recall_content.md",
+      "size_bytes": 3082,
+      "sha256": "44bbd25e346bf221b8feac168a96392cbd86e694eb04af72ae280c3c114ba8d1"
+    },
+    {
+      "relative_path": "audits/20260814_201828_744_b38734d0/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "70920bea060e114980a2598892d47c6824ecf4392074fb1b7481074033df4c85"
+    },
+    {
+      "relative_path": "audits/20260814_201828_744_b38734d0/recall_content.md",
+      "size_bytes": 3110,
+      "sha256": "2b9be55a07392a75ce7646693205e9f066d7bf05d13e54f42db6aa183e6724d7"
+    },
+    {
+      "relative_path": "audits/20260814_201840_421_6f5f2cef/rag_process.md",
+      "size_bytes": 3684,
+      "sha256": "960d2eb2a6544e1eb940879af6ee988fccedc4009bb812e5e17d514cb0e765e9"
+    },
+    {
+      "relative_path": "audits/20260814_201840_421_6f5f2cef/recall_content.md",
+      "size_bytes": 3341,
+      "sha256": "a07d5cb727caa0a2e0b949e64fba686ba130dba0af63ecfc59a123a300304b7f"
+    },
+    {
+      "relative_path": "audits/20260814_201849_725_e36603a5/rag_process.md",
+      "size_bytes": 3705,
+      "sha256": "ef3dc0f794b78a10f99af4df5978e28acf35fbf33b10b30a664a1f3ced41fe92"
+    },
+    {
+      "relative_path": "audits/20260814_201849_725_e36603a5/recall_content.md",
+      "size_bytes": 2838,
+      "sha256": "fec6c995ae10f3dae64f2f177a7cba364c8bc26434b8cb197662ac6a32e8c604"
+    },
+    {
+      "relative_path": "audits/20260814_201904_530_0f4d480c/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "219a4287b1c8e1fbb243c3730f37a8924916443e66507ffed282e73469d49e5c"
+    },
+    {
+      "relative_path": "audits/20260814_201904_530_0f4d480c/recall_content.md",
+      "size_bytes": 3963,
+      "sha256": "02260ddf652f09e87f7ec96e5047a014128618b1c5ef6badce62eecf5ef5cc73"
+    },
+    {
+      "relative_path": "audits/20260814_201917_988_2e5ad6c7/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "ef5398d95ca3637b684979d5b6aeb0c8e8fda88f785aa1843fc9961c3a49771b"
+    },
+    {
+      "relative_path": "audits/20260814_201917_988_2e5ad6c7/recall_content.md",
+      "size_bytes": 3191,
+      "sha256": "caffd4122cbd2de55d9bfd750b148bd9138c7b2a3bc7a374851a63a35204313e"
+    },
+    {
+      "relative_path": "audits/20260814_201931_868_45fa28fc/rag_process.md",
+      "size_bytes": 3699,
+      "sha256": "3a821d6caa00569f2a80b77f7b428ad1e5f9a4f3a711f9e0d8db8dc173af7a36"
+    },
+    {
+      "relative_path": "audits/20260814_201931_868_45fa28fc/recall_content.md",
+      "size_bytes": 2513,
+      "sha256": "b9e823ef7e9afbb92e635118c08aeb5e079d3377e097595160c8bb41d547c243"
+    },
+    {
+      "relative_path": "audits/20260814_201944_129_dccb866a/rag_process.md",
+      "size_bytes": 3684,
+      "sha256": "71a8c3af71ae8a031fb5bbfbc2db5cc1f3b544d24d1e917b12c1d2f454266795"
+    },
+    {
+      "relative_path": "audits/20260814_201944_129_dccb866a/recall_content.md",
+      "size_bytes": 2317,
+      "sha256": "51cd6c7e4812f5e47b693d090eae446e6f64c8d5f9b4f99e5d0a6c3931be6c22"
+    },
+    {
+      "relative_path": "audits/20260814_201959_785_d3d6a5f7/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "38b3e58b0474addf240aaa5496929cb1432e5f33e442b9316b43e1bb5a3703ad"
+    },
+    {
+      "relative_path": "audits/20260814_201959_785_d3d6a5f7/recall_content.md",
+      "size_bytes": 3684,
+      "sha256": "9378b1d71c3f77ec1ead3c7a98ea7ffb7082338e706933edc06b70d21ec61786"
+    },
+    {
+      "relative_path": "audits/20260814_202010_395_7b0e99ff/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "30f8513fd05729a6599848a757b69e52155d9c5a67ea8c6a605c77a2ca703284"
+    },
+    {
+      "relative_path": "audits/20260814_202010_395_7b0e99ff/recall_content.md",
+      "size_bytes": 3032,
+      "sha256": "38ab587a2710538b3dbaccc89df54587a8edc88978c2ad6e28bedd91112ee6c8"
+    },
+    {
+      "relative_path": "audits/20260814_202022_396_f77e1c74/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "510993af7938772d2f6e59f135199d2fc062a34db883fad559b7d910555d79eb"
+    },
+    {
+      "relative_path": "audits/20260814_202022_396_f77e1c74/recall_content.md",
+      "size_bytes": 2831,
+      "sha256": "08748275e8638a1139e6c766921e050a99db1ff5bb33e12f6f42654103e01389"
+    },
+    {
+      "relative_path": "audits/20260814_202033_852_8f9280a8/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "c6674e8d803cf20804554dceadf3240b034d5deff7a006a5cb338eab74bdd304"
+    },
+    {
+      "relative_path": "audits/20260814_202033_852_8f9280a8/recall_content.md",
+      "size_bytes": 1793,
+      "sha256": "7bbc4f4ec30825a2e52682fa6487f70331993d2ce7916e5040c57a0343f1ad77"
+    },
+    {
+      "relative_path": "audits/20260814_202046_984_865e2b10/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "2f8a1797bfe166c2303b1850fb37182aa0af215a44cee41e44488effac002dad"
+    },
+    {
+      "relative_path": "audits/20260814_202046_984_865e2b10/recall_content.md",
+      "size_bytes": 2207,
+      "sha256": "efbba25866b5043f7305eaab193f80df6b112f2da643fdda4198c6440ec84115"
+    },
+    {
+      "relative_path": "audits/20260814_202100_309_ab9d2153/rag_process.md",
+      "size_bytes": 3699,
+      "sha256": "d1dac4c22b05c8b20a20f191a0bf150dc3366d129e8a8333ec4a309fd26a66c9"
+    },
+    {
+      "relative_path": "audits/20260814_202100_309_ab9d2153/recall_content.md",
+      "size_bytes": 2023,
+      "sha256": "c79aec86638cd2a8df290b04b23b53f6b8a547b054cac267860ebfd7d0e74e60"
+    },
+    {
+      "relative_path": "audits/20260814_202111_985_582181d8/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "c82f24586726c51bdde056153e3d6fdda7ef562cecbe933945c7bde8ee07e0ed"
+    },
+    {
+      "relative_path": "audits/20260814_202111_985_582181d8/recall_content.md",
+      "size_bytes": 2625,
+      "sha256": "88efde2e8d812c340f6d1f4d9aa48e18b111103ae531971208c34ffd337d0728"
+    },
+    {
+      "relative_path": "audits/20260814_202124_177_a6353c2d/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "90c15f423a5257055290c5f7a0397e92058ae49e82467aa6739c5f886ec25ae7"
+    },
+    {
+      "relative_path": "audits/20260814_202124_177_a6353c2d/recall_content.md",
+      "size_bytes": 2784,
+      "sha256": "aac50b428d62e2c6e710b9b33be862d64a1453ca42832170a6333a0367d2f32b"
+    },
+    {
+      "relative_path": "audits/20260814_202136_799_9af7fcb4/rag_process.md",
+      "size_bytes": 3686,
+      "sha256": "0794bba52bde82fbf8173a7bad6e7a8d9102cc5eb2ad5c0a28149cca231cbcd8"
+    },
+    {
+      "relative_path": "audits/20260814_202136_799_9af7fcb4/recall_content.md",
+      "size_bytes": 1965,
+      "sha256": "eee65c3c8d217b23fba54884edc63081ff87699886f92fbe93b0a763b77cb474"
+    },
+    {
+      "relative_path": "audits/20260814_202150_976_800a89c4/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "a8fe6e893b415d4a4e3761d0881e65b7dcba1e7e072470dd35f33685e8a0a8f2"
+    },
+    {
+      "relative_path": "audits/20260814_202150_976_800a89c4/recall_content.md",
+      "size_bytes": 2769,
+      "sha256": "54060212e5b0ac66e2c07860938e814fdf642f3123842f15ae99f4246ebad950"
+    },
+    {
+      "relative_path": "audits/20260814_202206_535_fa894686/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "e90e086fef8422eeac776b858cff589e69b736b41f3acabd64628f45ffa72298"
+    },
+    {
+      "relative_path": "audits/20260814_202206_535_fa894686/recall_content.md",
+      "size_bytes": 2779,
+      "sha256": "6d913a4b970b402cbfaef1ca60bea15af150f8250fa140d449f9e7709cdbcb68"
+    },
+    {
+      "relative_path": "audits/20260814_202217_176_105a6fa7/rag_process.md",
+      "size_bytes": 3685,
+      "sha256": "efb76fa9c4c246cece2e41e8a716d9098ae2c71f524b8b76fdbf3ba8cdba3c03"
+    },
+    {
+      "relative_path": "audits/20260814_202217_176_105a6fa7/recall_content.md",
+      "size_bytes": 2457,
+      "sha256": "6d0b42b3f700adeb691e4774ca7448b69dea7766eb8807d1d580d36abd59cc29"
+    },
+    {
+      "relative_path": "audits/20260814_202229_652_ef57fd13/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "cc8e38cc2820f54e9a4ca94e049793be0eb4b614776aa6335d50bc285953d576"
+    },
+    {
+      "relative_path": "audits/20260814_202229_652_ef57fd13/recall_content.md",
+      "size_bytes": 4381,
+      "sha256": "dfd3547c54482558944fa6355b6274023907fe496d21b829fb0c3945b6831208"
+    },
+    {
+      "relative_path": "audits/20260814_202251_167_464839af/rag_process.md",
+      "size_bytes": 3506,
+      "sha256": "ae842de5fdecc28cdbe42a128892d063eb6655656f1a9db7f65bf7e145ff66a1"
+    },
+    {
+      "relative_path": "audits/20260814_202251_167_464839af/recall_content.md",
+      "size_bytes": 15398,
+      "sha256": "f142aa0703357155185dbac18712512287187d9c53663aeef3815a21b53e5f97"
+    },
+    {
+      "relative_path": "audits/20260814_202316_265_39f7df32/rag_process.md",
+      "size_bytes": 3506,
+      "sha256": "37ed38524a2387648909e437eba643ee9f23a3fae9ce703dfedf61be1eb02558"
+    },
+    {
+      "relative_path": "audits/20260814_202316_265_39f7df32/recall_content.md",
+      "size_bytes": 4432,
+      "sha256": "37aa1ad96555fb37f70a1a220c4922bac3e261562623640f7b55e164541558ff"
+    },
+    {
+      "relative_path": "audits/20260814_202344_839_8b68171c/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "a6fe99a43b7af264bfd42df2ac7729bc3973058b1fb4779ec3496a18daa682d9"
+    },
+    {
+      "relative_path": "audits/20260814_202344_839_8b68171c/recall_content.md",
+      "size_bytes": 4265,
+      "sha256": "fc017c41ccf3bcdc984ed13cbb19a47227f920e129f3bb419857d3cbcf301bf2"
+    },
+    {
+      "relative_path": "audits/20260814_202407_358_f829a954/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "093dc9beede5564a552e8709db40c5b8e3fd23ad53f8c42be895261c19bec3b6"
+    },
+    {
+      "relative_path": "audits/20260814_202407_358_f829a954/recall_content.md",
+      "size_bytes": 6244,
+      "sha256": "d6555d8658c557c6daf2c5401d894a01fb74e338bbcb54d01b758b4e39c696ba"
+    },
+    {
+      "relative_path": "audits/20260814_202437_037_0d2be321/rag_process.md",
+      "size_bytes": 3508,
+      "sha256": "37f849981c4d736940b5c077b2f31db2dd9746da1d5999e99eb050331fe6da0a"
+    },
+    {
+      "relative_path": "audits/20260814_202437_037_0d2be321/recall_content.md",
+      "size_bytes": 12692,
+      "sha256": "bc626263c9c64d77172e22846c2bc7a2e264c3b3265a5a07f8e636e6dcbf8c13"
+    },
+    {
+      "relative_path": "audits/20260814_202505_696_b87b8d5e/rag_process.md",
+      "size_bytes": 3565,
+      "sha256": "855011295a52e2b5b0f3f84eb55af73dec84f8eb2ff31fae18ed89acda9bdd55"
+    },
+    {
+      "relative_path": "audits/20260814_202505_696_b87b8d5e/recall_content.md",
+      "size_bytes": 7539,
+      "sha256": "1871911f2ea5ff13b4073ac1e11a825b551567c34664ed47280c6f10a953c645"
+    },
+    {
+      "relative_path": "audits/20260814_202534_350_16caf948/rag_process.md",
+      "size_bytes": 3505,
+      "sha256": "24d9bfafbb62d79ef0b9e6f3ce95547db02e0865a2ff24c617f44fd0301d0147"
+    },
+    {
+      "relative_path": "audits/20260814_202534_350_16caf948/recall_content.md",
+      "size_bytes": 6956,
+      "sha256": "738c2124a02849ca82dd218129b591434923087b909698a569f8e62d1778b555"
+    },
+    {
+      "relative_path": "audits/20260814_202555_059_62ac75f6/rag_process.md",
+      "size_bytes": 3505,
+      "sha256": "2d9118fa50f6e5f280647c8779bb30826866c79e743f8308fd0d8ddaddd55727"
+    },
+    {
+      "relative_path": "audits/20260814_202555_059_62ac75f6/recall_content.md",
+      "size_bytes": 6098,
+      "sha256": "5e201fbf2ff57167d44922ba09ac1cf02762df9c13ec87d24c7aab80616028e6"
+    },
+    {
+      "relative_path": "audits/20260814_202619_629_2e5c9fcf/rag_process.md",
+      "size_bytes": 3518,
+      "sha256": "fb5a9f8fa9b5265c27193816005eadb19077466f0084b489a8d2ebee2bfd4345"
+    },
+    {
+      "relative_path": "audits/20260814_202619_629_2e5c9fcf/recall_content.md",
+      "size_bytes": 4411,
+      "sha256": "b0547563904f78de79be27db8d4b75f296f83a2223ae3c904f2d2397f1d4ceab"
+    },
+    {
+      "relative_path": "audits/20260814_202639_174_4c321b8e/rag_process.md",
+      "size_bytes": 3509,
+      "sha256": "e3a18b109eadb29effdecefa8688fe60013791d0dc23746466d0bb5be87941f3"
+    },
+    {
+      "relative_path": "audits/20260814_202639_174_4c321b8e/recall_content.md",
+      "size_bytes": 16724,
+      "sha256": "5eefc05f6c3cca1fbb30fad25bb339641753c2ae60df7c7f2711e25ff5080c83"
+    },
+    {
+      "relative_path": "audits/20260814_202711_287_08082178/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "76d1145d32f0fe2fe35f91ac209a8442abf049bba6acdcd1c10759af5c981895"
+    },
+    {
+      "relative_path": "audits/20260814_202711_287_08082178/recall_content.md",
+      "size_bytes": 7351,
+      "sha256": "983dee1da73c5477e36f9853e442c4a3ab3bae61d2068bbb3e1bc3e6af33eefa"
+    },
+    {
+      "relative_path": "audits/20260814_202746_054_4fcd1807/rag_process.md",
+      "size_bytes": 3505,
+      "sha256": "3965b78ead0ee25601185b57a5b134c52fb97befdb0fa8d5979feb5b146714d6"
+    },
+    {
+      "relative_path": "audits/20260814_202746_054_4fcd1807/recall_content.md",
+      "size_bytes": 6584,
+      "sha256": "9365f96d278fa81223cccbe859a0b61b4fd9ac4561bdc8b9e39eef902890d550"
+    },
+    {
+      "relative_path": "audits/20260814_202808_103_93191a95/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "c5413614520632011a0863ac2385f869881d64a296fbf395e6eaf6b1a737716d"
+    },
+    {
+      "relative_path": "audits/20260814_202808_103_93191a95/recall_content.md",
+      "size_bytes": 9816,
+      "sha256": "f88b72b9c459a66f1e0e5eca8abfeb2cc2525c8c04a63b15522ef4aef5c1dd45"
+    },
+    {
+      "relative_path": "audits/20260814_202842_102_aee91aa4/rag_process.md",
+      "size_bytes": 3516,
+      "sha256": "0a44b02c7567d1c1dac200e9dc191a62410d8292bad261399b111ac5d5eed2d5"
+    },
+    {
+      "relative_path": "audits/20260814_202842_102_aee91aa4/recall_content.md",
+      "size_bytes": 2777,
+      "sha256": "0b9a276db4a8fdba168619d9bc3eccbe19cbebcc27d8bb7191cf225064309196"
+    },
+    {
+      "relative_path": "audits/20260814_202900_886_51b7b291/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "5ed93737c9d6d1ca90e2258dab736791b4ac99d3bb50e0f48075ac686c3b33d0"
+    },
+    {
+      "relative_path": "audits/20260814_202900_886_51b7b291/recall_content.md",
+      "size_bytes": 15260,
+      "sha256": "b2c232e1c9dc3811d2030d88a11350f80a7d78b01e8771b1ff0af470569c7691"
+    },
+    {
+      "relative_path": "audits/20260814_202936_776_41ae6f99/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "9521de03ea43a9f62185d995bf9e9ccefe6fc27a329dda79df7b7020e2a44b09"
+    },
+    {
+      "relative_path": "audits/20260814_202936_776_41ae6f99/recall_content.md",
+      "size_bytes": 8849,
+      "sha256": "5641fa7c9f7676f2b6437df3a8ad979b3bf6ee9cd4311bfb4ed2d18d8d187654"
+    },
+    {
+      "relative_path": "audits/20260814_203008_061_537ad12d/rag_process.md",
+      "size_bytes": 3506,
+      "sha256": "bbca24bc62978adcde587ce4eecffd46ec9836622b0b98834125590eae30a720"
+    },
+    {
+      "relative_path": "audits/20260814_203008_061_537ad12d/recall_content.md",
+      "size_bytes": 9831,
+      "sha256": "3f0cb9a6b07d664794c69b3da822d2c3c1283389d559b611ff0fc4e1310eb390"
+    },
+    {
+      "relative_path": "audits/20260814_203044_135_aa999bc7/rag_process.md",
+      "size_bytes": 3506,
+      "sha256": "1a0b6451d392f6ca34f874bf8b1d26c43b8f40ef6c5b38de50e815a772d22b2e"
+    },
+    {
+      "relative_path": "audits/20260814_203044_135_aa999bc7/recall_content.md",
+      "size_bytes": 4265,
+      "sha256": "5dd7ab925032b5aa679ca88119c931b9f09bc262ec39d71296656f52642af5b3"
+    },
+    {
+      "relative_path": "audits/20260814_203109_799_f23fd838/rag_process.md",
+      "size_bytes": 3507,
+      "sha256": "9f06f59cbbfab5c9f65cfbbf7e7901b2be1b73036fa8eea17511e64ad9d09070"
+    },
+    {
+      "relative_path": "audits/20260814_203109_799_f23fd838/recall_content.md",
+      "size_bytes": 6244,
+      "sha256": "e85ec71ad2af7f49984a191b569d4832c14db7ebb72e27f668529a1ddd3d7966"
+    },
+    {
+      "relative_path": "audits/20260814_203137_958_ba4022f3/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "6034d42ec09d1d741fac0567b9364ef6cf053781d167f2ccc3f0bb2b17cd3fdc"
+    },
+    {
+      "relative_path": "audits/20260814_203137_958_ba4022f3/recall_content.md",
+      "size_bytes": 6584,
+      "sha256": "b4d88736508ade67306953181e7b7298ef31ad893720862e3fad553b1c865549"
+    },
+    {
+      "relative_path": "audits/20260814_203158_600_74388db0/rag_process.md",
+      "size_bytes": 3506,
+      "sha256": "d23df87b535d3d7eb9689310728eb760e3f5d7c629a87298dc7828eb2f4b7b08"
+    },
+    {
+      "relative_path": "audits/20260814_203158_600_74388db0/recall_content.md",
+      "size_bytes": 15260,
+      "sha256": "be94ea7e8281fb4f209b5bc39e94d1426c5075bf2e2f21b08bb3bd29934a317a"
+    },
+    {
+      "relative_path": "audits/20260814_203225_444_6cf2c894/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "718262f1836daf4a2d558ffe3729c3c191c58d8ae15e87368221e0ece46ecb18"
+    },
+    {
+      "relative_path": "audits/20260814_203225_444_6cf2c894/recall_content.md",
+      "size_bytes": 7351,
+      "sha256": "dc53cd2e6a3dfd6eaf0678c29247b6db667af4bac1c67a41db3e691afb9bc775"
+    },
+    {
+      "relative_path": "audits/20260814_203249_175_9e8028dc/rag_process.md",
+      "size_bytes": 3503,
+      "sha256": "73e99282ba12f6f43b3cacf139c5cfdc3cf78873edcaf47817374ae1224dd951"
+    },
+    {
+      "relative_path": "audits/20260814_203249_175_9e8028dc/recall_content.md",
+      "size_bytes": 4411,
+      "sha256": "197b58d34fb9cb95683b97425f7bfcb40cbcf937bbfcb74cb8a79d8f61c61dbc"
+    },
+    {
+      "relative_path": "audits/20260814_203304_911_7d6cadf2/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "cd20b0b20012ec9042aeeb00116289f0d00c3ad52a6dde7a6688b392666ca114"
+    },
+    {
+      "relative_path": "audits/20260814_203304_911_7d6cadf2/recall_content.md",
+      "size_bytes": 6956,
+      "sha256": "60ddc9073f026b284da79a4a0978de4bdfe073c11258698490634b29dbd6c349"
+    },
+    {
+      "relative_path": "audits/20260814_203323_407_96d685b5/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "a6d70ee0ef3159122d796b6b7335c9af71fdab09165aeaa4169a8278b3ef1803"
+    },
+    {
+      "relative_path": "audits/20260814_203323_407_96d685b5/recall_content.md",
+      "size_bytes": 9816,
+      "sha256": "d9d72ddd08b980f3c2252deb65c78c317b451497cb615a4894f1c43ea4d2be97"
+    },
+    {
+      "relative_path": "audits/20260814_203347_046_dc8dd281/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "52921cbbea078eaa056b3eca9e7c435ea46f6c1acd7c559095f7a31a8cac1887"
+    },
+    {
+      "relative_path": "audits/20260814_203347_046_dc8dd281/recall_content.md",
+      "size_bytes": 7539,
+      "sha256": "a37f130e596d374881201714e06559786df4ed772633aea02cce083f72d97c58"
+    },
+    {
+      "relative_path": "audits/20260814_203407_020_de38e2a3/rag_process.md",
+      "size_bytes": 3505,
+      "sha256": "205b021e77e0bfd80a978ea1a284fe64c7dd6fd29b1f4803a3b6f04c60cbe413"
+    },
+    {
+      "relative_path": "audits/20260814_203407_020_de38e2a3/recall_content.md",
+      "size_bytes": 12692,
+      "sha256": "ca1a1161c58ce6618cfa52d8401441f3c6937d6b59d107df02ed56bc284dd132"
+    },
+    {
+      "relative_path": "audits/20260814_203430_858_5fe30486/rag_process.md",
+      "size_bytes": 3503,
+      "sha256": "18d7de0f0a5f5de2d335f780889b016e525346c8876e4f665c34a3cd88fbc87f"
+    },
+    {
+      "relative_path": "audits/20260814_203430_858_5fe30486/recall_content.md",
+      "size_bytes": 4432,
+      "sha256": "3c505422ff67da7716fe915b16fe22496a171cebbd7423c0663be54514727514"
+    },
+    {
+      "relative_path": "audits/20260814_203454_785_cadc08a7/rag_process.md",
+      "size_bytes": 3504,
+      "sha256": "9811ab5d65a90c841b636d7afcf5a4ceebedf9dc77a2fae2704d497109eb2bce"
+    },
+    {
+      "relative_path": "audits/20260814_203454_785_cadc08a7/recall_content.md",
+      "size_bytes": 8849,
+      "sha256": "c35a0a82ae83fa0a3f7c51d395e092265e9d0557c4355a225f47f38bf337a3a1"
+    },
+    {
+      "relative_path": "audits/20260814_203523_587_274e93b9/rag_process.md",
+      "size_bytes": 6622,
+      "sha256": "e138772de6fc797761e8c603432a426fa50b70800fd4c605b71d10f9ae02fb54"
+    },
+    {
+      "relative_path": "audits/20260814_203523_587_274e93b9/recall_content.md",
+      "size_bytes": 18503,
+      "sha256": "9a148f0a16cef7929580491fd9f4aaba2423630874ad562f1346ad4bd35b817b"
+    },
+    {
+      "relative_path": "audits/20260814_203542_380_93dc6169/rag_process.md",
+      "size_bytes": 4391,
+      "sha256": "da14efd285a2b1569b34625f3f83caa550fd41b675e15e200e46431a34ee0534"
+    },
+    {
+      "relative_path": "audits/20260814_203542_380_93dc6169/recall_content.md",
+      "size_bytes": 6437,
+      "sha256": "4f8ba29248a216d5453ad8b99dad24ba29cc11dc3505efd525b9e0ee64ad3a82"
+    },
+    {
+      "relative_path": "audits/20260814_203557_982_f864be2c/rag_process.md",
+      "size_bytes": 3499,
+      "sha256": "c6e2313f164ed93b0175c06840d0d477321f42352c3c2540ab55d5ab1c2918e7"
+    },
+    {
+      "relative_path": "audits/20260814_203557_982_f864be2c/recall_content.md",
+      "size_bytes": 1885,
+      "sha256": "88402a5328aadc17dfc9c95684b962e2bbcd5958bfef6ac9b20792f461519f3f"
+    },
+    {
+      "relative_path": "audits/20260814_203613_131_923ee077/rag_process.md",
+      "size_bytes": 25356,
+      "sha256": "dbca2dfda9f3f23fd411fc3275c812e03e16477ae783d912755a02997d41ba5a"
+    },
+    {
+      "relative_path": "audits/20260814_203613_131_923ee077/recall_content.md",
+      "size_bytes": 99296,
+      "sha256": "a287c569d6f0dd1c6e5346659e2802b377d3e154924d202fe0c21f2eb47a5143"
+    },
+    {
+      "relative_path": "audits/20260814_203639_902_d45623ea/rag_process.md",
+      "size_bytes": 4391,
+      "sha256": "73a900448b90c4be96bf5b3ae8340f17250dfa410f53ba9c8d5c4303fae16d2a"
+    },
+    {
+      "relative_path": "audits/20260814_203639_902_d45623ea/recall_content.md",
+      "size_bytes": 6321,
+      "sha256": "ebd328613a8ad88e1a443a04aa62d57a785fc794a58f2bf7dbdc464d49c09fd5"
+    },
+    {
+      "relative_path": "audits/20260814_203654_321_69ccf42f/rag_process.md",
+      "size_bytes": 10192,
+      "sha256": "71d1f05e854cf8b3853d286f5bb7ca77b4066d3140553201bfa8ce934ea2978c"
+    },
+    {
+      "relative_path": "audits/20260814_203654_321_69ccf42f/recall_content.md",
+      "size_bytes": 37640,
+      "sha256": "3da83f70626221637e53c5c21202ca965b32e9ccdcdf40479ae8cae304301caf"
+    },
+    {
+      "relative_path": "audits/20260814_203715_971_32f1a273/rag_process.md",
+      "size_bytes": 6175,
+      "sha256": "22d7565b3883cc807992fcb55ef70f1dfbbf5ecb65c566ff6f5b202c1f7df2b1"
+    },
+    {
+      "relative_path": "audits/20260814_203715_971_32f1a273/recall_content.md",
+      "size_bytes": 15979,
+      "sha256": "688296ba4be7cb9d1feaf65d7ec5653231891a2edb07d5a361a8dd16458a774d"
+    },
+    {
+      "relative_path": "audits/20260814_203732_161_8559fe50/rag_process.md",
+      "size_bytes": 8411,
+      "sha256": "f8859b9c39905a319b01e595aacbf361aad0c8f1d2b3eada02f7b3190e64bf7c"
+    },
+    {
+      "relative_path": "audits/20260814_203732_161_8559fe50/recall_content.md",
+      "size_bytes": 26405,
+      "sha256": "c26894036a71239d61b72c14026dc5386794df50069c7bbe129b0ee077c010b7"
+    },
+    {
+      "relative_path": "audits/20260814_203752_767_4653ac6f/rag_process.md",
+      "size_bytes": 3496,
+      "sha256": "8a4acc5da446727b15585d88771d371189472770022d8652f75593592d60f0cb"
+    },
+    {
+      "relative_path": "audits/20260814_203752_767_4653ac6f/recall_content.md",
+      "size_bytes": 2400,
+      "sha256": "30c8189dbddab3739666adbfac1caa4c6d453840b6d5437e11bf7ee628bd30b5"
+    },
+    {
+      "relative_path": "audits/20260814_203808_048_5d6880e4/rag_process.md",
+      "size_bytes": 3499,
+      "sha256": "80f72d35973fc469f31d40ba2279d898f6e961a6de1890acd7f301852c00d792"
+    },
+    {
+      "relative_path": "audits/20260814_203808_048_5d6880e4/recall_content.md",
+      "size_bytes": 2669,
+      "sha256": "0d2b3374daaf3d519f9160e3e76a24026338b9a139a1f23e5efeffcfdceeaf85"
+    },
+    {
+      "relative_path": "audits/20260814_203824_231_c7309d43/rag_process.md",
+      "size_bytes": 3499,
+      "sha256": "753800611b2a7e93f4a599fa10cc6b8612b84f19a3f314c9924622077dce2b71"
+    },
+    {
+      "relative_path": "audits/20260814_203824_231_c7309d43/recall_content.md",
+      "size_bytes": 2491,
+      "sha256": "09b76d3e25a678a1779dc6d79e882d9e4c5e7c18e773532f2b5f3cd472847a7b"
+    },
+    {
+      "relative_path": "audits/20260814_203838_212_d9707190/rag_process.md",
+      "size_bytes": 6175,
+      "sha256": "7666548d528cd703ac21bafb402c3f471735a58a681570db6621020e1aa0ccea"
+    },
+    {
+      "relative_path": "audits/20260814_203838_212_d9707190/recall_content.md",
+      "size_bytes": 15513,
+      "sha256": "8d13e3e3045ecf10c250861ad8d0f46d573b25fb4da9687348bcd6c73939701c"
+    },
+    {
+      "relative_path": "audits/20260814_203858_630_17039a29/rag_process.md",
+      "size_bytes": 3499,
+      "sha256": "22c0d159b305c59266029d5799b79ce54b8ae3b8d0b7d2ff2556ffc0e11a6b82"
+    },
+    {
+      "relative_path": "audits/20260814_203858_630_17039a29/recall_content.md",
+      "size_bytes": 2379,
+      "sha256": "f55dbdce69a4e57e403b9517e247116ebe09d41e03da56de65726bb122896bde"
+    },
+    {
+      "relative_path": "audits/20260814_203912_953_0f90ef20/rag_process.md",
+      "size_bytes": 3945,
+      "sha256": "55255562eae525803b6aa0d70e9ef3c9869b13a5d7d14b4bba089367ed2affcc"
+    },
+    {
+      "relative_path": "audits/20260814_203912_953_0f90ef20/recall_content.md",
+      "size_bytes": 4656,
+      "sha256": "edebfa50a3ef9000b6f2f5496a07c97d52ffca45c890ba4ef5045783fdd4d067"
+    },
+    {
+      "relative_path": "audits/20260814_203927_217_873c6e9b/rag_process.md",
+      "size_bytes": 3499,
+      "sha256": "5c11409e0cc2d73f2d8a1566de0d3c5116d34788f5d0f251fd7733d9d9c6138a"
+    },
+    {
+      "relative_path": "audits/20260814_203927_217_873c6e9b/recall_content.md",
+      "size_bytes": 3286,
+      "sha256": "4027832208efea29e73cfb0a242a749b1921539c735a3a5d8ad555cbd5ed3138"
+    },
+    {
+      "relative_path": "audits/20260814_203943_475_ec1744c1/rag_process.md",
+      "size_bytes": 4383,
+      "sha256": "73d0922351b257ae513aca4397b95f73bf08adac66d97a2ae2648087d743e7e6"
+    },
+    {
+      "relative_path": "audits/20260814_203943_475_ec1744c1/recall_content.md",
+      "size_bytes": 8572,
+      "sha256": "cd7f44820d600fbed8df0e1e767edc23375b27f38017b83e92f8a5e83223b35a"
+    },
+    {
+      "relative_path": "audits/20260814_203958_485_3c41209a/rag_process.md",
+      "size_bytes": 3505,
+      "sha256": "5a2b08122e2962881d3e7671c7b468047c72852ad9a73bf63325fe3c76e68314"
+    },
+    {
+      "relative_path": "audits/20260814_203958_485_3c41209a/recall_content.md",
+      "size_bytes": 2419,
+      "sha256": "ea78e7da6d98c18b45cb675c2efb7198ba0d42b7698d795ff9e484c5f68f7c99"
+    },
+    {
+      "relative_path": "audits/20260814_204013_763_5f383992/rag_process.md",
+      "size_bytes": 5283,
+      "sha256": "b70f2d1f4d2809688c8e406092b342f48adcf33d8f05be2416673d33d0a40b67"
+    },
+    {
+      "relative_path": "audits/20260814_204013_763_5f383992/recall_content.md",
+      "size_bytes": 11101,
+      "sha256": "1161b933d8e79fb8742c4b4b5a32e9ccd7a3f7c11a5ccec1add30972b1c3f8e7"
+    },
+    {
+      "relative_path": "audits/20260814_204028_915_8397d2b1/rag_process.md",
+      "size_bytes": 3945,
+      "sha256": "9ae6c52542bba4c97b64865cd312931d7b2846d875fc651427de36e8fd9d3d1a"
+    },
+    {
+      "relative_path": "audits/20260814_204028_915_8397d2b1/recall_content.md",
+      "size_bytes": 4013,
+      "sha256": "4dbd039e9528b046f2cb597b91c678cab8cc8a11f67066b7c675a447cccf3804"
+    },
+    {
+      "relative_path": "audits/20260814_204043_722_fa0dbb8e/rag_process.md",
+      "size_bytes": 3502,
+      "sha256": "27253dd4dcc92c034ea6191188c4843902570fd0b54d733d97913cbe5528024c"
+    },
+    {
+      "relative_path": "audits/20260814_204043_722_fa0dbb8e/recall_content.md",
+      "size_bytes": 2927,
+      "sha256": "30db3293f26a3eb34bb11a55bf8b2ae6868d33243b0feb176ab597a101426f83"
+    },
+    {
+      "relative_path": "audits/20260814_204101_575_c8cbdb5c/rag_process.md",
+      "size_bytes": 3941,
+      "sha256": "770532669c1bbc5bbd26dc1ac2c47c7c2462b970825fdb0542e701defe72beb9"
+    },
+    {
+      "relative_path": "audits/20260814_204101_575_c8cbdb5c/recall_content.md",
+      "size_bytes": 4717,
+      "sha256": "88da2a2660aa0fe5238b5645360e0a6c1e987da8b76d9279b609871da2f3f80b"
+    },
+    {
+      "relative_path": "audits/20260814_204110_834_9b1064b3/rag_process.md",
+      "size_bytes": 3490,
+      "sha256": "9454fd7ebe4655abb7109164a288f79a900b480d63c5123bb931807910c9fb04"
+    },
+    {
+      "relative_path": "audits/20260814_204110_834_9b1064b3/recall_content.md",
+      "size_bytes": 2554,
+      "sha256": "52f7fcdd6256fc038faf20a07d308d475874818a79a0726a979e499529d1bb2c"
+    },
+    {
+      "relative_path": "audits/20260814_204121_393_8fa3479a/rag_process.md",
+      "size_bytes": 6166,
+      "sha256": "c9caa8d5fdc8c703b35b587c096b01a6692b2e365fe7bf4970ae605c672fb81c"
+    },
+    {
+      "relative_path": "audits/20260814_204121_393_8fa3479a/recall_content.md",
+      "size_bytes": 14829,
+      "sha256": "528470966c68a4aa455c2eccfffd1e6a22d827fc84947fde3d5a3471f1a913e0"
+    },
+    {
+      "relative_path": "audits/20260814_204134_333_b02c9229/rag_process.md",
+      "size_bytes": 4390,
+      "sha256": "82c63ce01908c6dc3966f677896d9babd05b53a0f26866d1b93814acd6b7816f"
+    },
+    {
+      "relative_path": "audits/20260814_204134_333_b02c9229/recall_content.md",
+      "size_bytes": 7319,
+      "sha256": "268761d3cfa5d1bb0d0ee1b032810c486a1b7510f996d5b87cf51402f9c9d01a"
+    },
+    {
+      "relative_path": "audits/20260814_204144_406_1cc65b9b/rag_process.md",
+      "size_bytes": 3490,
+      "sha256": "bdde133bbc264632cf52583295fbcaecc527e6488ed8239b5660944710a8ed90"
+    },
+    {
+      "relative_path": "audits/20260814_204144_406_1cc65b9b/recall_content.md",
+      "size_bytes": 2489,
+      "sha256": "31ebfb219cc0824883ac97ff2623c4c914bda677ed814503cc78a51029c9ae1d"
+    },
+    {
+      "relative_path": "audits/20260814_204159_973_beeebbe5/rag_process.md",
+      "size_bytes": 4839,
+      "sha256": "db88b1e9db411043e0649d3ff18ea7393010573708178860b67f43cb1efc26e3"
+    },
+    {
+      "relative_path": "audits/20260814_204159_973_beeebbe5/recall_content.md",
+      "size_bytes": 7721,
+      "sha256": "2eb733fc0dabbd1298abb2944328faf85a842c19b317b9abbaedf6842e98c931"
+    },
+    {
+      "relative_path": "audits/20260814_204210_468_14e0e91e/rag_process.md",
+      "size_bytes": 3498,
+      "sha256": "99af353cd570b4e632e2161e0c999a09afc962ce5f74ac981bd9ced207e90801"
+    },
+    {
+      "relative_path": "audits/20260814_204210_468_14e0e91e/recall_content.md",
+      "size_bytes": 2428,
+      "sha256": "95216a09fc906d78148d185b9edac4bcc4b1faac926a4c56b712e6c58bdde03e"
+    },
+    {
+      "relative_path": "audits/20260814_204220_876_ee6aeca0/rag_process.md",
+      "size_bytes": 3490,
+      "sha256": "7b3b0a8b8ced64dddbe9bc9e4659cf63d3eff0081e0c5a680336e3631af48509"
+    },
+    {
+      "relative_path": "audits/20260814_204220_876_ee6aeca0/recall_content.md",
+      "size_bytes": 2113,
+      "sha256": "0cd7275dae13286505a622298781ebb64187d6e21d4e3ed450a00e3e6823bddf"
+    },
+    {
+      "relative_path": "audits/20260814_204233_612_91daa040/rag_process.md",
+      "size_bytes": 3489,
+      "sha256": "ff6bea3827bfc903756c172b2fa0b5de4694a443f6fae60e807dad18353926fd"
+    },
+    {
+      "relative_path": "audits/20260814_204233_612_91daa040/recall_content.md",
+      "size_bytes": 2174,
+      "sha256": "75e3f62d76af9fe4c28b90dd2666191dba928e2e0db6ada18baed58e875204e7"
+    },
+    {
+      "relative_path": "audits/20260814_204243_441_9b9dbe33/rag_process.md",
+      "size_bytes": 3498,
+      "sha256": "b6423407cab89e36eb3772e14131efae2023cecb3e67c1a7effac0a0cd5326ba"
+    },
+    {
+      "relative_path": "audits/20260814_204243_441_9b9dbe33/recall_content.md",
+      "size_bytes": 2930,
+      "sha256": "8918b380496ba8b748a8efd190d9fda05702ab5c8455cbbc267df7c604957686"
+    },
+    {
+      "relative_path": "audits/20260814_204253_088_2d1ba9d2/rag_process.md",
+      "size_bytes": 6663,
+      "sha256": "034adeca9f2396312c3fb69745ac95f60309389e01d8347fcd32678d254a79ff"
+    },
+    {
+      "relative_path": "audits/20260814_204253_088_2d1ba9d2/recall_content.md",
+      "size_bytes": 25083,
+      "sha256": "f3409646da0c238973656aa4fc832351282f6ff37cc61535647d4fcc64a31fe1"
+    },
+    {
+      "relative_path": "audits/20260814_204312_818_021178b0/rag_process.md",
+      "size_bytes": 4431,
+      "sha256": "bb6388bcc45642fb46290a5d934764c372d29ee0c73a204966b986ea886b84f6"
+    },
+    {
+      "relative_path": "audits/20260814_204312_818_021178b0/recall_content.md",
+      "size_bytes": 8151,
+      "sha256": "a4fea65f417b57b10e10894ebb7d15ffbf994c9e641a7703d190bb6157e3c5a0"
+    },
+    {
+      "relative_path": "audits/20260814_204328_411_49153e13/rag_process.md",
+      "size_bytes": 14246,
+      "sha256": "5025089c28a84a8d43b653aa3fb67b4af077d7b42e0100fc2f532a25e398c42a"
+    },
+    {
+      "relative_path": "audits/20260814_204328_411_49153e13/recall_content.md",
+      "size_bytes": 66699,
+      "sha256": "e7424502cff37f938f6845a325080a9497e4f57263ca9b2966eb855957da9f3c"
+    },
+    {
+      "relative_path": "audits/20260814_204406_269_46211957/rag_process.md",
+      "size_bytes": 4431,
+      "sha256": "d7fd7e0199d55c6914c2a695f4e9ba0dd099401d0443bcdf45e2c11dbf84775f"
+    },
+    {
+      "relative_path": "audits/20260814_204406_269_46211957/recall_content.md",
+      "size_bytes": 7742,
+      "sha256": "d6ad61fb9361f9fd4d86f86fb4777f7d4e0204b33ecb1de21f4aecacf3cc8eda"
+    },
+    {
+      "relative_path": "audits/20260814_204423_351_a1b440cf/rag_process.md",
+      "size_bytes": 8894,
+      "sha256": "c78a310f955a9dc19c4376824459a3db9dd1dd72791b34f7c6c62b2d54e9a131"
+    },
+    {
+      "relative_path": "audits/20260814_204423_351_a1b440cf/recall_content.md",
+      "size_bytes": 39717,
+      "sha256": "2d50e94949feabaef0e4d4c99f4785af10356f7dce5cd2443123e6355169b8fc"
+    },
+    {
+      "relative_path": "audits/20260814_204446_323_55a0d781/rag_process.md",
+      "size_bytes": 5771,
+      "sha256": "38d8bbcebb4f7faf000031deaf936b84aeea96273488e8bbb1159a21c3fddf3d"
+    },
+    {
+      "relative_path": "audits/20260814_204446_323_55a0d781/recall_content.md",
+      "size_bytes": 17490,
+      "sha256": "dfb0e0052ddf4e2c7a452f9b83fd085c00ed20c85769174d11ebba37e7a1391b"
+    },
+    {
+      "relative_path": "audits/20260814_204509_472_1dfadd29/rag_process.md",
+      "size_bytes": 7109,
+      "sha256": "90ed8dd9d9e94d37beab7aeacd3bbadc6188defc93fb20b58e5adfa73a396252"
+    },
+    {
+      "relative_path": "audits/20260814_204509_472_1dfadd29/recall_content.md",
+      "size_bytes": 25972,
+      "sha256": "7c69863cb87708d841f8d8126e70fc7d42d2c1429cf82cc9520a7c55c3973c36"
+    },
+    {
+      "relative_path": "audits/20260814_204538_122_fe4c141e/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "1afe928a479e9ed6109d94ddd5396b4709db33b4bffb4360098ab521c365f519"
+    },
+    {
+      "relative_path": "audits/20260814_204538_122_fe4c141e/recall_content.md",
+      "size_bytes": 3448,
+      "sha256": "81333037e34b6c68841fd7b56cf0ef4d7e7d80210f0dd2c636a5b9458e6621b7"
+    },
+    {
+      "relative_path": "audits/20260814_204549_096_492e28c2/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "c805068e4cbcf6c8c97f2f4056e66d84f348fbcb8cc12b32597ae7a323b9522e"
+    },
+    {
+      "relative_path": "audits/20260814_204549_096_492e28c2/recall_content.md",
+      "size_bytes": 3161,
+      "sha256": "82947ce90012bcf13a5d29150c78396f23e116fa94a91ae6c80f33cc24e1c3fc"
+    },
+    {
+      "relative_path": "audits/20260814_204602_574_7640454a/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "c3cc36d761bd891cd82043040255514a5a1d132be11d771d41190ca2d10f6e4f"
+    },
+    {
+      "relative_path": "audits/20260814_204602_574_7640454a/recall_content.md",
+      "size_bytes": 3279,
+      "sha256": "74992cef7fccffa7cf65d1b675e022d24a5ff25a4060f12ef85a82770d305f42"
+    },
+    {
+      "relative_path": "audits/20260814_204619_231_b75e55e7/rag_process.md",
+      "size_bytes": 5323,
+      "sha256": "7c78774fd6b2422a9990e49a8d134d190933d4d95d0f502996ee9b97b4717739"
+    },
+    {
+      "relative_path": "audits/20260814_204619_231_b75e55e7/recall_content.md",
+      "size_bytes": 14072,
+      "sha256": "bda07d511e7b454c9ce5a7354a64e4e02b4e8b422395632229a540e8bed05074"
+    },
+    {
+      "relative_path": "audits/20260814_204631_895_085367fb/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "cd9a13d2c3ce5635119fb5975fa7f0affc052ac0c36ef7c4cff3027994b7d3b5"
+    },
+    {
+      "relative_path": "audits/20260814_204631_895_085367fb/recall_content.md",
+      "size_bytes": 2871,
+      "sha256": "8d0fdd785c905ead59f059d9fc3b6677c63cba5f5884de904afe2ede3ffe0325"
+    },
+    {
+      "relative_path": "audits/20260814_204645_578_1ee0eef7/rag_process.md",
+      "size_bytes": 3984,
+      "sha256": "abbde92c475a82baea964038dde84a1dcd0df5759c7b3c2e8db81dc81347e277"
+    },
+    {
+      "relative_path": "audits/20260814_204645_578_1ee0eef7/recall_content.md",
+      "size_bytes": 6196,
+      "sha256": "ed73ec6c9c8233c1632395014ac11a2e2d8e1056684174e00b14ae687a96a432"
+    },
+    {
+      "relative_path": "audits/20260814_204658_254_f45d6ffd/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "a4143182bec1cfd27f63b551fe7ae9f35243dbe5839953de8c58bf27555047fc"
+    },
+    {
+      "relative_path": "audits/20260814_204658_254_f45d6ffd/recall_content.md",
+      "size_bytes": 3781,
+      "sha256": "9b109a1576b32a60a3d5ff5528b90a41c11715993a557df1dc5300c28f346371"
+    },
+    {
+      "relative_path": "audits/20260814_204710_440_03bc697e/rag_process.md",
+      "size_bytes": 4430,
+      "sha256": "c2a9953969cb020bc8a99784f33639154744e02d56e36bbaabe1b23295c4eb35"
+    },
+    {
+      "relative_path": "audits/20260814_204710_440_03bc697e/recall_content.md",
+      "size_bytes": 10252,
+      "sha256": "2160e6f3726a82d21b3a5629cc597de40adf230a733406b4c6882c7b1e49f2b0"
+    },
+    {
+      "relative_path": "audits/20260814_204723_988_e99910d5/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "276f80cbdd750adebd58db115bf6f2ab946a5299e97073eaaae458ceb811a626"
+    },
+    {
+      "relative_path": "audits/20260814_204723_988_e99910d5/recall_content.md",
+      "size_bytes": 3237,
+      "sha256": "c7adb02221fbfa9c0b02debba8ce0ce68650dfeed955f7a916ad41c8161f5612"
+    },
+    {
+      "relative_path": "audits/20260814_204737_451_66f980ad/rag_process.md",
+      "size_bytes": 5324,
+      "sha256": "1c4db8890de58ae6e1ed303663397c5234357c65e955acb88e81c33a42ee5e94"
+    },
+    {
+      "relative_path": "audits/20260814_204737_451_66f980ad/recall_content.md",
+      "size_bytes": 14322,
+      "sha256": "f64e2f29ce7bfaf3bccfeca16be4eb4d61c76c38db68c3ad91b2bb4f449069cf"
+    },
+    {
+      "relative_path": "audits/20260814_204753_458_cd48baf3/rag_process.md",
+      "size_bytes": 3985,
+      "sha256": "ab4bdb0e0b31ac26a1a1228497eb5003a898a316dbaf4c49056c655ee9e831d0"
+    },
+    {
+      "relative_path": "audits/20260814_204753_458_cd48baf3/recall_content.md",
+      "size_bytes": 5272,
+      "sha256": "06ee2794103c6deff89e83615d97340e3486f3a4f804b23a4ea3a589207e090b"
+    },
+    {
+      "relative_path": "audits/20260814_204808_082_cbcac8c9/rag_process.md",
+      "size_bytes": 3538,
+      "sha256": "89b1066ffe88ff03eb7ac32cc003f06d25670e81479ab2032ee003ede6d09036"
+    },
+    {
+      "relative_path": "audits/20260814_204808_082_cbcac8c9/recall_content.md",
+      "size_bytes": 3094,
+      "sha256": "7452ff1bd168f3614aeaec14d1bae9536feb639ffcbd24aee3cc6b184cc6f6ba"
+    },
+    {
+      "relative_path": "audits/20260814_204820_858_6b33f1c4/rag_process.md",
+      "size_bytes": 5323,
+      "sha256": "bf58c65fd63b31fe72808cdb0aa24ef5a818b2e2c56116d0f5e0b680937df0e9"
+    },
+    {
+      "relative_path": "audits/20260814_204820_858_6b33f1c4/recall_content.md",
+      "size_bytes": 13013,
+      "sha256": "64c7cc9cb56fd8ee8a42b307e30486acc427598d7a694d1a63da3858283e5c6f"
+    },
+    {
+      "relative_path": "audits/20260814_204837_750_a0ec805d/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "bec691277db9405d63b5c0ea4dd6b200bb61e0989626a2b310a803f1069f3f8b"
+    },
+    {
+      "relative_path": "audits/20260814_204837_750_a0ec805d/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d112f43b7bd1467b2aaff08da00be0e5d93db89a8234f55e47c1e3c3b887852a"
+    },
+    {
+      "relative_path": "audits/20260814_204843_371_f6f09cf0/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "6fcede647d5ca5a936331b82c47fa87e5121045e96ba91f890fcdbac76459182"
+    },
+    {
+      "relative_path": "audits/20260814_204843_371_f6f09cf0/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "357756d13c5ece155d212e027ce583268cba7e081dc552183546356d6022c40c"
+    },
+    {
+      "relative_path": "audits/20260814_204850_912_d58b2aab/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "57e39eba034c3e0f0b78c02140d6f44e5b3e073104aca82eb8178d3e6847ca9f"
+    },
+    {
+      "relative_path": "audits/20260814_204850_912_d58b2aab/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "a20cacd3b89f758f693375f4e8e63f4f034ab2de2da6fa9f3869abf9bfdd47d7"
+    },
+    {
+      "relative_path": "audits/20260814_204855_163_c28ae879/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "365a332066e17ec58ed8cd44e4a9cd3e3416bfe1e23c5b5abc08a4053a939ff5"
+    },
+    {
+      "relative_path": "audits/20260814_204855_163_c28ae879/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "3747b30cec04a78bc6e822bac615d4837f95e3d85ca542b0e2964e55d2f1f0b0"
+    },
+    {
+      "relative_path": "audits/20260814_204900_275_4edcbf2d/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "9308ad93cccedd27bd5bb47f8265d6332e9401583580a3d0e6345ae513570a0b"
+    },
+    {
+      "relative_path": "audits/20260814_204900_275_4edcbf2d/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "3c57a45d4a4de18a54195597f776ef9289edb9c1ef9a391219fe620a5d88d882"
+    },
+    {
+      "relative_path": "audits/20260814_204904_219_58ca95d1/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "001982b84e33c0b2b58f1c2d5e8527a111a6a28595016b77e889262241161271"
+    },
+    {
+      "relative_path": "audits/20260814_204904_219_58ca95d1/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "e0a36726814b71690824a75d480fa903699f7402ce376db27e0663ec88e1f4c1"
+    },
+    {
+      "relative_path": "audits/20260814_204909_190_ff8c364c/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "f0f6080d8fc84c4e81bf8be2731ecf5e2bc089561ea9e9262634ee003b54dca4"
+    },
+    {
+      "relative_path": "audits/20260814_204909_190_ff8c364c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d4aa34365b5026969ff5cd5dc7e7a839a6f9a95534cf758051bc228bc45d0018"
+    },
+    {
+      "relative_path": "audits/20260814_204912_751_a9165ad6/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "f0dd9c0c768f239a550cf3ffc40b4f7630f4e9db8bd85f0b19538691d56db68c"
+    },
+    {
+      "relative_path": "audits/20260814_204912_751_a9165ad6/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "6a21d0ca0eb763acb11fef671f38c4e7c8f36bb3993bbbb2320dd0fca4306fea"
+    },
+    {
+      "relative_path": "audits/20260814_204919_988_0b9c682b/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "13d8c82daaec2b32b08f1a68c81d26a367c45739482ab82f0000737669af965c"
+    },
+    {
+      "relative_path": "audits/20260814_204919_988_0b9c682b/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "af89137a36a12b71c3ad570461b1cf48f9a96d9c33a5768846bf0b87d5fa66ae"
+    },
+    {
+      "relative_path": "audits/20260814_204923_529_212edee5/rag_process.md",
+      "size_bytes": 2268,
+      "sha256": "5bd0b729a317ee3956be583846c743cb216cbf1f232e1a4839f728091c354083"
+    },
+    {
+      "relative_path": "audits/20260814_204923_529_212edee5/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "519ce8ccd39a7290e2a6b1ef09eb57d4a843bf70d6bd1f6b609f336a6e410d5d"
+    },
+    {
+      "relative_path": "audits/20260814_204928_591_71ede314/rag_process.md",
+      "size_bytes": 38587,
+      "sha256": "a51c835344d5bd8b48a64e30e5a5473bc141f35da74f27aedc09ff04b43fddf9"
+    },
+    {
+      "relative_path": "audits/20260814_204928_591_71ede314/recall_content.md",
+      "size_bytes": 9889,
+      "sha256": "0c28884d2796d80cb6706b3d741d7c4c6d9887613a919048e40d4b50c8a40804"
+    },
+    {
+      "relative_path": "audits/20260814_204952_922_b109b74f/rag_process.md",
+      "size_bytes": 39747,
+      "sha256": "3549f014a0c5fd12f7092de607fa18a0747d439e68070ce750882df287317e88"
+    },
+    {
+      "relative_path": "audits/20260814_204952_922_b109b74f/recall_content.md",
+      "size_bytes": 8921,
+      "sha256": "9e4bb464b26ba9e36a80b508c1be432cfc6c4a7f9e507c636cfe1150e9d3c050"
+    },
+    {
+      "relative_path": "audits/20260814_205015_533_de5a9af5/rag_process.md",
+      "size_bytes": 39388,
+      "sha256": "ab29e87505de84e31a78838dbba050c3107244dad6b444b495f30a3463b3065d"
+    },
+    {
+      "relative_path": "audits/20260814_205015_533_de5a9af5/recall_content.md",
+      "size_bytes": 10818,
+      "sha256": "4014e9a0148f2d342869e732b62d572990d3a8ab8caa4645f55522986b60d543"
+    },
+    {
+      "relative_path": "audits/20260814_205036_218_1a9fba1b/rag_process.md",
+      "size_bytes": 39547,
+      "sha256": "8e2a7d33dfccbbace78e48ca4ec484fc38b436a9aec2d5fce70420086a1b3685"
+    },
+    {
+      "relative_path": "audits/20260814_205036_218_1a9fba1b/recall_content.md",
+      "size_bytes": 10483,
+      "sha256": "d6e86acdd5c0dff41e773258004812abc4fb99927bb216f61a428bbab7258a04"
+    },
+    {
+      "relative_path": "audits/20260814_205058_370_158342c8/rag_process.md",
+      "size_bytes": 38463,
+      "sha256": "bee94ec17743915a1afcd9066e07e50f95e0b1b933adee9d9f0f3bed372b470b"
+    },
+    {
+      "relative_path": "audits/20260814_205058_370_158342c8/recall_content.md",
+      "size_bytes": 8436,
+      "sha256": "04a4b4c284572a79207e6db9b290b676c3ffa29896235f7cf4354a6c6167b2c5"
+    },
+    {
+      "relative_path": "audits/20260814_205120_649_a4521931/rag_process.md",
+      "size_bytes": 39521,
+      "sha256": "363c449c9602b4e72194c547348e7558870b142f13a759c46d139a53f8f24180"
+    },
+    {
+      "relative_path": "audits/20260814_205120_649_a4521931/recall_content.md",
+      "size_bytes": 10962,
+      "sha256": "8305b9d287f36ab684206aba433a57db71757a89e01ea55805ef060cbab75af5"
+    },
+    {
+      "relative_path": "audits/20260814_205142_117_8c453d1c/rag_process.md",
+      "size_bytes": 40526,
+      "sha256": "c84a167c785fd9ead991fe0173a64386147b9f6d49f338778094c681c772f178"
+    },
+    {
+      "relative_path": "audits/20260814_205142_117_8c453d1c/recall_content.md",
+      "size_bytes": 10048,
+      "sha256": "a3eb8f13175384f58aff5bc77812bc2117ac90f1c36360d742886365b98f1aa4"
+    },
+    {
+      "relative_path": "audits/20260814_205205_035_c2ef390d/rag_process.md",
+      "size_bytes": 13147,
+      "sha256": "3c12580d5bc616a1771815c0ed6463276013565c85a71752fa2f71a981e42439"
+    },
+    {
+      "relative_path": "audits/20260814_205205_035_c2ef390d/recall_content.md",
+      "size_bytes": 8180,
+      "sha256": "9d5ef3dcffead7ec821fa3139befa90203c8a73c2be17fb0dbc37832fa945c07"
+    },
+    {
+      "relative_path": "audits/20260814_205225_711_5fe746a9/rag_process.md",
+      "size_bytes": 36354,
+      "sha256": "e8812428d1f5b878454e6eccd20de3672f972b8aecb790baaa3efb07eee5b405"
+    },
+    {
+      "relative_path": "audits/20260814_205225_711_5fe746a9/recall_content.md",
+      "size_bytes": 14693,
+      "sha256": "a1dde3ff806233d9d4e85207ff390fa4b6215a0e57eb357c835658476762e326"
+    },
+    {
+      "relative_path": "audits/20260814_205250_477_d9e2b592/rag_process.md",
+      "size_bytes": 39037,
+      "sha256": "4201f59411ead482f08244edcfdd85d32eabcdac10e4e2f9d31c869b04dc3928"
+    },
+    {
+      "relative_path": "audits/20260814_205250_477_d9e2b592/recall_content.md",
+      "size_bytes": 9716,
+      "sha256": "09997929dd34f1935c3d839d0ccdb3100233c6b116a52353cd4e125608f93890"
+    },
+    {
+      "relative_path": "audits/20260814_205314_274_bec96fa7/rag_process.md",
+      "size_bytes": 38643,
+      "sha256": "0815b67a0cd6ce5dd94c62ac51e14105a01c07c77191ffabdd39f622634d7a37"
+    },
+    {
+      "relative_path": "audits/20260814_205314_274_bec96fa7/recall_content.md",
+      "size_bytes": 9556,
+      "sha256": "c89d23550239131dc3308196d84bcc54b9838795038961eb44277aec4b271dca"
+    },
+    {
+      "relative_path": "audits/20260814_205345_634_65e57ba7/rag_process.md",
+      "size_bytes": 39190,
+      "sha256": "cf2d0a0097180a1ea838a90e9fee0397e8295038e0fd10dbab74f9857439c6fa"
+    },
+    {
+      "relative_path": "audits/20260814_205345_634_65e57ba7/recall_content.md",
+      "size_bytes": 9636,
+      "sha256": "3609934f0a8c69de1c9d3f3ee82bc416967a31f1cfd282026fe1788973d887f1"
+    },
+    {
+      "relative_path": "audits/20260814_205410_019_da398995/rag_process.md",
+      "size_bytes": 39365,
+      "sha256": "4dbcd27da0b64aff202c8fb09e23f4eb297040ca645f60abaa6fc38c47b369e7"
+    },
+    {
+      "relative_path": "audits/20260814_205410_019_da398995/recall_content.md",
+      "size_bytes": 9204,
+      "sha256": "e281e09c85da4c3145a8076be5c53780d88cb17a7738e3554b0280ec1927822a"
+    },
+    {
+      "relative_path": "audits/20260814_205439_650_28d3d323/rag_process.md",
+      "size_bytes": 39416,
+      "sha256": "4835c3621fdcd0f4b4988a89a946fefcd9f5cdd04c4d13d639b1be0e6e871206"
+    },
+    {
+      "relative_path": "audits/20260814_205439_650_28d3d323/recall_content.md",
+      "size_bytes": 9448,
+      "sha256": "f10d196be348c20afbd265eb10adbd84d20e49ad66d21afc9af5ad59ef1aad5b"
+    },
+    {
+      "relative_path": "audits/20260814_205508_140_edc9651b/rag_process.md",
+      "size_bytes": 39704,
+      "sha256": "d4ab979ffd4162f13f8dab43bb7da2c9deec39af18016880b260c1b9ea6b0e9c"
+    },
+    {
+      "relative_path": "audits/20260814_205508_140_edc9651b/recall_content.md",
+      "size_bytes": 11421,
+      "sha256": "8667fc1070e54242b0657d05f750827cd31f1950744df482f0a91ae4c39b7309"
+    },
+    {
+      "relative_path": "audits/20260814_205538_057_6975dc07/rag_process.md",
+      "size_bytes": 39212,
+      "sha256": "9bb67292f098fdb8340b70349aef4c6797138caa55c344b2b72a73b205622009"
+    },
+    {
+      "relative_path": "audits/20260814_205538_057_6975dc07/recall_content.md",
+      "size_bytes": 10052,
+      "sha256": "af6e1b5843528d1295831e9fa4686aedf84717bf0136e43866a1e7263603310c"
+    },
+    {
+      "relative_path": "audits/20260814_205610_638_b2e568f9/rag_process.md",
+      "size_bytes": 39175,
+      "sha256": "53b39b0cf55090641d80b7de1158dd65979d35c835cfe574090a84a973d253d1"
+    },
+    {
+      "relative_path": "audits/20260814_205610_638_b2e568f9/recall_content.md",
+      "size_bytes": 9246,
+      "sha256": "54dacbf038adc53f1d5570a864008766d2230073253ccbef0634a6ff0e3303c6"
+    },
+    {
+      "relative_path": "audits/20260814_205646_109_09732e36/rag_process.md",
+      "size_bytes": 39098,
+      "sha256": "5d0b91084cd76b327edb801cfcccaf6dedcaa02c0eaf8c2c80b48ad369be2286"
+    },
+    {
+      "relative_path": "audits/20260814_205646_109_09732e36/recall_content.md",
+      "size_bytes": 8790,
+      "sha256": "3d6cef0869517dab4db5d9e0018f3f478e2d2c555bf402d4b935262449262aff"
+    },
+    {
+      "relative_path": "audits/20260814_205711_700_c7636b5b/rag_process.md",
+      "size_bytes": 40053,
+      "sha256": "8b694f71cc87874f3e4666a1b10396c36fff9ec5840ae67849a81dd2576e6a87"
+    },
+    {
+      "relative_path": "audits/20260814_205711_700_c7636b5b/recall_content.md",
+      "size_bytes": 9464,
+      "sha256": "907374f5d9f34aa2692454996e6c0824e78ca3ff5ec4f57c7d9011709e5c577c"
+    },
+    {
+      "relative_path": "audits/20260814_205748_433_41fa3bd5/rag_process.md",
+      "size_bytes": 39340,
+      "sha256": "9802b7ed0fb7133f6519c7007916f96ff068047c32cd2adf1a16cb84ac35b0ca"
+    },
+    {
+      "relative_path": "audits/20260814_205748_433_41fa3bd5/recall_content.md",
+      "size_bytes": 10038,
+      "sha256": "43d9685a3675054de020c4f5070ff69f9b94d7b8798e4425082711e5460f9ad6"
+    },
+    {
+      "relative_path": "audits/20260814_205819_043_b4c5b70a/rag_process.md",
+      "size_bytes": 39359,
+      "sha256": "8d46fa678a98ffe542d0682c414a23ab08cd117491e768e1b80581f66af4949e"
+    },
+    {
+      "relative_path": "audits/20260814_205819_043_b4c5b70a/recall_content.md",
+      "size_bytes": 10785,
+      "sha256": "4373db45d83d365be433add3e6ac404a0565c6f380c4362ee2be74b3c9046d8f"
+    },
+    {
+      "relative_path": "audits/20260814_205849_443_efd813da/rag_process.md",
+      "size_bytes": 38513,
+      "sha256": "733fffb7672dafeae7087309dcaef8d40a191c7d26db87c60b16719f54a5ba5c"
+    },
+    {
+      "relative_path": "audits/20260814_205849_443_efd813da/recall_content.md",
+      "size_bytes": 9878,
+      "sha256": "2ef6164215438470a37508f69ebea667fd8e7823096349ca721a5d080c376553"
+    },
+    {
+      "relative_path": "audits/20260814_205907_863_29e2afe0/rag_process.md",
+      "size_bytes": 34876,
+      "sha256": "905a3f74f31a9eee3ff31fd3e33627176647947ee599a1dbc46d5fc79f96a5b8"
+    },
+    {
+      "relative_path": "audits/20260814_205907_863_29e2afe0/recall_content.md",
+      "size_bytes": 10305,
+      "sha256": "71aa48a83d1b0f6cac1f8707c317882bf9f7f7482928ca87580a1068f48187e2"
+    },
+    {
+      "relative_path": "audits/20260814_205939_076_1178545d/rag_process.md",
+      "size_bytes": 39547,
+      "sha256": "ce305165c491c60ed95365579179503ab2c00c2ef3ac5f4476b43616b1f13816"
+    },
+    {
+      "relative_path": "audits/20260814_205939_076_1178545d/recall_content.md",
+      "size_bytes": 10824,
+      "sha256": "3d6e90295e73a01b541ed362236eca68a7dc1328c8e6f77fbbb60e844d11c547"
+    },
+    {
+      "relative_path": "audits/20260814_210005_128_1d93584d/rag_process.md",
+      "size_bytes": 35691,
+      "sha256": "00edf9e30446229f2032f621ffd94ed623448ae708f5df8295a99f8947e7a4ee"
+    },
+    {
+      "relative_path": "audits/20260814_210005_128_1d93584d/recall_content.md",
+      "size_bytes": 9391,
+      "sha256": "e5467e452ab4443433536e6addc60038eee4a61b081251c0fe6ad5b8c08b7af2"
+    },
+    {
+      "relative_path": "audits/20260814_210036_323_ef91072d/rag_process.md",
+      "size_bytes": 39507,
+      "sha256": "0d7645965749a92acd5ac728da70aa07aab626fc8747483b36fa12813fbb5dc7"
+    },
+    {
+      "relative_path": "audits/20260814_210036_323_ef91072d/recall_content.md",
+      "size_bytes": 10266,
+      "sha256": "86cbcb681e11cd408a036bc86e3d08b3a5ff2c52a993afdd5432aba25a7c2397"
+    },
+    {
+      "relative_path": "audits/20260814_210059_332_61bad13e/rag_process.md",
+      "size_bytes": 39362,
+      "sha256": "9e6454ab54b0a16307b3807486cbc943390a8185f94976d46aa0e089c9db17af"
+    },
+    {
+      "relative_path": "audits/20260814_210059_332_61bad13e/recall_content.md",
+      "size_bytes": 9889,
+      "sha256": "0c320891fa12ef1d09a2aee093cb34de833648f727e83aac3b01b41c022e40cc"
+    },
+    {
+      "relative_path": "audits/20260814_210125_874_81ef2855/rag_process.md",
+      "size_bytes": 39626,
+      "sha256": "cab6bdcf59068474f685a3bae7b486a9c4cb79685f1965dce7b932aa69c933b8"
+    },
+    {
+      "relative_path": "audits/20260814_210125_874_81ef2855/recall_content.md",
+      "size_bytes": 11513,
+      "sha256": "a11ca6fb097d4fcc5cdb8b43026d2c99b9e527d0d6136b8f90ead82bd9cec1c9"
+    },
+    {
+      "relative_path": "audits/20260814_210154_438_6a9f4005/rag_process.md",
+      "size_bytes": 39186,
+      "sha256": "a281db15d3a9b37bbd970e759a59359ec8ce3b15383fd2dc5120a03ae67b81b3"
+    },
+    {
+      "relative_path": "audits/20260814_210154_438_6a9f4005/recall_content.md",
+      "size_bytes": 9654,
+      "sha256": "042a165b7a7f334d672a4225dc669981cbfe3e010a2fa9414710530169538be5"
+    },
+    {
+      "relative_path": "audits/20260814_210220_072_6b4e0e38/rag_process.md",
+      "size_bytes": 39798,
+      "sha256": "cb2ab6ebd63d4115bf0f01704fad8c523cd547217723d4ba16c656eb5ca1eeb8"
+    },
+    {
+      "relative_path": "audits/20260814_210220_072_6b4e0e38/recall_content.md",
+      "size_bytes": 9131,
+      "sha256": "249218fa2555e27361f432809410db3c3339e5bc7e36a69952c76cf680987ee2"
+    },
+    {
+      "relative_path": "audits/20260814_210239_614_a066d767/rag_process.md",
+      "size_bytes": 40190,
+      "sha256": "11e33c30cb3a2e7281be9858e328919da31cd8178e561c63ae8ab9c54d8ea2e8"
+    },
+    {
+      "relative_path": "audits/20260814_210239_614_a066d767/recall_content.md",
+      "size_bytes": 10904,
+      "sha256": "2b55bb87f0487e1f42c7a383422a74b783e23a624c8df0603d646906e3b46ef0"
+    },
+    {
+      "relative_path": "audits/20260814_210257_865_0ea1e7a0/rag_process.md",
+      "size_bytes": 40395,
+      "sha256": "cb05bf2cc61e6acdb0a4a0ef1b5a0f17df4aff7e46bc69541d8c9c8c4b78a56e"
+    },
+    {
+      "relative_path": "audits/20260814_210257_865_0ea1e7a0/recall_content.md",
+      "size_bytes": 11103,
+      "sha256": "81fb1fcf386cf8dcb5a4902b040c11ec91f255aadb52f42e0682b1edf6bb4682"
+    },
+    {
+      "relative_path": "audits/20260814_210319_429_62333c61/rag_process.md",
+      "size_bytes": 40346,
+      "sha256": "48f69edf3693a61a5933c139c3c3a98dde7020f330774d5897ee1504dbe95f28"
+    },
+    {
+      "relative_path": "audits/20260814_210319_429_62333c61/recall_content.md",
+      "size_bytes": 11634,
+      "sha256": "25756a8ab84eb3e62b26a22bab981afb84ef0acc11796b971ac7d94ca851af9a"
+    },
+    {
+      "relative_path": "audits/20260814_210342_251_92bd0051/rag_process.md",
+      "size_bytes": 40522,
+      "sha256": "4a3ff90f9b1daf03a509bb36fcb85449fdc77e457aa5e15ed4e3bc82608f70bc"
+    },
+    {
+      "relative_path": "audits/20260814_210342_251_92bd0051/recall_content.md",
+      "size_bytes": 9064,
+      "sha256": "cfe6116080885f6c434694d86f5e8b63d02dc83edd2811aa906adee41c35f42b"
+    },
+    {
+      "relative_path": "audits/20260814_210410_137_63343e61/rag_process.md",
+      "size_bytes": 40673,
+      "sha256": "817ef9d46c7805d803110dc70477992a80231754c56dcc47edaa16119f135c73"
+    },
+    {
+      "relative_path": "audits/20260814_210410_137_63343e61/recall_content.md",
+      "size_bytes": 10922,
+      "sha256": "7b5da00940d1c5b6e3d4cefb442ac1b040d2f52d136661393c0e0d847de994c9"
+    },
+    {
+      "relative_path": "audits/20260814_210437_954_51dc12cb/rag_process.md",
+      "size_bytes": 40398,
+      "sha256": "4f42c864198376b1c0a2ea06f60773097ec2bc023e741a4cf6d8dd418f4eba8e"
+    },
+    {
+      "relative_path": "audits/20260814_210437_954_51dc12cb/recall_content.md",
+      "size_bytes": 12479,
+      "sha256": "74a6834501da8c37d6f147b6d0493efb22d4ec5d245d8351c0d38ce5cff3ce32"
+    },
+    {
+      "relative_path": "audits/20260814_210502_839_e1ff8d21/rag_process.md",
+      "size_bytes": 40447,
+      "sha256": "2e9a98a85ddb2b495001afda67326149050dbcfb5d99e0fccb0401a6b5292fc3"
+    },
+    {
+      "relative_path": "audits/20260814_210502_839_e1ff8d21/recall_content.md",
+      "size_bytes": 10149,
+      "sha256": "fb5e6bb20d0c8db89078e0a817c5c0ae14484a54f08ea6ffe8027230d97fda17"
+    },
+    {
+      "relative_path": "audits/20260814_210537_079_8d81280c/rag_process.md",
+      "size_bytes": 40857,
+      "sha256": "f8215cd5bae79ea92ea7798d9b60e002793b5341002b5fa5663612d0920925eb"
+    },
+    {
+      "relative_path": "audits/20260814_210537_079_8d81280c/recall_content.md",
+      "size_bytes": 10706,
+      "sha256": "2dfb01583e2a81573774b172939e4a8336e695ef7177a0a3d7438179e6f0aea3"
+    },
+    {
+      "relative_path": "audits/20260814_210559_113_78c87e53/rag_process.md",
+      "size_bytes": 40040,
+      "sha256": "1126c849ced8add2dd7fab00966a214fc6c8057b575bff84a032a1fbb43e6871"
+    },
+    {
+      "relative_path": "audits/20260814_210559_113_78c87e53/recall_content.md",
+      "size_bytes": 10682,
+      "sha256": "e6a64ccc99273e89a8d9240f36356ecf9755517c730bc0888932d91813b9741c"
+    },
+    {
+      "relative_path": "audits/20260814_210618_644_8608fb84/rag_process.md",
+      "size_bytes": 40759,
+      "sha256": "39fedcff819abf69f67b971b1819d1aeda28859ed4ff0d7a5a82088f30af72f0"
+    },
+    {
+      "relative_path": "audits/20260814_210618_644_8608fb84/recall_content.md",
+      "size_bytes": 12029,
+      "sha256": "db2eae5580773167968ee20dcd6cd10f677f72bfd5094800e6f3226b85ea8f98"
+    },
+    {
+      "relative_path": "audits/20260814_210642_505_f96fd727/rag_process.md",
+      "size_bytes": 40668,
+      "sha256": "b9e431f2cb1f294917cbdf4e7950df3f46ec6a1e611f09a736432bf7c2b500b6"
+    },
+    {
+      "relative_path": "audits/20260814_210642_505_f96fd727/recall_content.md",
+      "size_bytes": 10788,
+      "sha256": "91719610aa07ce84e4eae433998c53a262c46d9b18565f1165e130f685fd5416"
+    },
+    {
+      "relative_path": "audits/20260814_210706_225_4b7ae017/rag_process.md",
+      "size_bytes": 40107,
+      "sha256": "3c59554557a0233191b679ba83af6eb266ce46df06f500260acf03ee3152c441"
+    },
+    {
+      "relative_path": "audits/20260814_210706_225_4b7ae017/recall_content.md",
+      "size_bytes": 10361,
+      "sha256": "5b9515559c633f37962ab14882cc6919720b58674296794fae70f7b3bb357691"
+    },
+    {
+      "relative_path": "audits/20260814_210726_962_5965fab4/rag_process.md",
+      "size_bytes": 40246,
+      "sha256": "65645c2ab538a0841c87340060e5237b1b9e78eb44dc8fdf18cf3f6347ad0a51"
+    },
+    {
+      "relative_path": "audits/20260814_210726_962_5965fab4/recall_content.md",
+      "size_bytes": 13085,
+      "sha256": "b2ae7df84895dc48416331189877dc23c73cef9da802c9c7453776f5c6973ff3"
+    },
+    {
+      "relative_path": "audits/20260814_210802_144_a98e3640/rag_process.md",
+      "size_bytes": 40457,
+      "sha256": "1e5d20abf8e4a782f3e51e22a14d6577b3ce554e0cf89c522095a72298e6ff8c"
+    },
+    {
+      "relative_path": "audits/20260814_210802_144_a98e3640/recall_content.md",
+      "size_bytes": 10569,
+      "sha256": "3795119c18a5eafa93dd928094a3328c9c16e560a2ffa20227898ce2b7367609"
+    },
+    {
+      "relative_path": "audits/20260814_210832_062_c3f4ec68/rag_process.md",
+      "size_bytes": 40779,
+      "sha256": "0cca218f98ca5bd0470c4fbdb6a790a4f2bc60402053541e8f708a8c2bfb64dc"
+    },
+    {
+      "relative_path": "audits/20260814_210832_062_c3f4ec68/recall_content.md",
+      "size_bytes": 10703,
+      "sha256": "6dba9d70e142a040d1f370102cc53341da2b5b5452d4c2796df7abb702757777"
+    },
+    {
+      "relative_path": "audits/20260814_210905_373_45e8a6f6/rag_process.md",
+      "size_bytes": 40174,
+      "sha256": "cbe2cd50c4805a86fb43693294b245a2a62918e0b6368d3551503daac41fcf68"
+    },
+    {
+      "relative_path": "audits/20260814_210905_373_45e8a6f6/recall_content.md",
+      "size_bytes": 11365,
+      "sha256": "86de1955e4add0548ce40fcf4a937d9b3134f6ec25570d7aa2d9eb8fb3032713"
+    },
+    {
+      "relative_path": "audits/20260814_210928_306_d0ee75fe/rag_process.md",
+      "size_bytes": 40461,
+      "sha256": "a792bba57af94cacefe6d5cc212006d96a6baa097c736400846c690d0b28f42f"
+    },
+    {
+      "relative_path": "audits/20260814_210928_306_d0ee75fe/recall_content.md",
+      "size_bytes": 10768,
+      "sha256": "2d2f00881b71aa02a277ddd9395c8b0d7f926b49f88b103172d5e2b048b3cef4"
+    },
+    {
+      "relative_path": "audits/20260814_210955_958_61d9612f/rag_process.md",
+      "size_bytes": 40142,
+      "sha256": "435c73e95a959c7eb2e2d622255639b706f179e3f2662c69516a6d36449ee44c"
+    },
+    {
+      "relative_path": "audits/20260814_210955_958_61d9612f/recall_content.md",
+      "size_bytes": 11534,
+      "sha256": "d78d60ba3f79940f8ab2b38395cac31dd2daf6a5388be007ceea7dc5f3363aa6"
+    },
+    {
+      "relative_path": "audits/20260814_211030_396_79bcf622/rag_process.md",
+      "size_bytes": 40705,
+      "sha256": "bda16bc6b7163245454eae96f9b424b4222ce7515e9c67fe36665d7e82fb3f5c"
+    },
+    {
+      "relative_path": "audits/20260814_211030_396_79bcf622/recall_content.md",
+      "size_bytes": 11522,
+      "sha256": "e9f13672663de40033507bf64fe4cde41dcee415afe60ecd8819280be0cdc4f4"
+    },
+    {
+      "relative_path": "audits/20260814_211056_667_5511542f/rag_process.md",
+      "size_bytes": 40255,
+      "sha256": "4ad9f031208df40f84dfe41327bd81ab19362b0b06f0559e74100bd088db2f2e"
+    },
+    {
+      "relative_path": "audits/20260814_211056_667_5511542f/recall_content.md",
+      "size_bytes": 11056,
+      "sha256": "40a976a0deb8f56e07b2a5556f459e2f428a402c520f91bb672d5f52065a1fda"
+    },
+    {
+      "relative_path": "audits/20260814_211130_063_f2c0c621/rag_process.md",
+      "size_bytes": 40476,
+      "sha256": "44b7001029ed704ef157f8372bfd2f149f75bd5ade64a705f3f33ee2bd7401ee"
+    },
+    {
+      "relative_path": "audits/20260814_211130_063_f2c0c621/recall_content.md",
+      "size_bytes": 12215,
+      "sha256": "3b7aff6571baba03b28ad5a17f0dcb7943c29b6f22e0b7211d33a0139af406ee"
+    },
+    {
+      "relative_path": "audits/20260814_211159_572_06628bca/rag_process.md",
+      "size_bytes": 40697,
+      "sha256": "3d2d3a4ac16a6df7bae28af1bfbd04de61ab65fd6f138f9c44adb36737ee0557"
+    },
+    {
+      "relative_path": "audits/20260814_211159_572_06628bca/recall_content.md",
+      "size_bytes": 11669,
+      "sha256": "a93b7ceda89ac26c7cb55a65e3e46a46fcffb24165b6225fc14ce9c73a0fb125"
+    },
+    {
+      "relative_path": "audits/20260814_211221_646_acf23f69/rag_process.md",
+      "size_bytes": 40457,
+      "sha256": "d799d5d60cd49c18933b44c4745bb820c6d614a9857b71ad4e3b0032b4956ff7"
+    },
+    {
+      "relative_path": "audits/20260814_211221_646_acf23f69/recall_content.md",
+      "size_bytes": 11803,
+      "sha256": "a4dc5df52759131b8c57d287c95357a415946762ee848c8fdb4de460db989ec8"
+    },
+    {
+      "relative_path": "audits/20260814_211251_992_8a3b62c6/rag_process.md",
+      "size_bytes": 40648,
+      "sha256": "9fa1568551e37922c7f50a42ff5a486f70361fb7721360f53dd014bc7561c0d3"
+    },
+    {
+      "relative_path": "audits/20260814_211251_992_8a3b62c6/recall_content.md",
+      "size_bytes": 9318,
+      "sha256": "9117419ba3c99f91b43e5832be5ff6b5998adc0f5e83d3519850d7f886fe1875"
+    },
+    {
+      "relative_path": "audits/20260814_211314_508_ee25c58a/rag_process.md",
+      "size_bytes": 40343,
+      "sha256": "efb032e61a822d5966a5b4fbb8b090c2c675e1f59dee8893398f7197f9ba006b"
+    },
+    {
+      "relative_path": "audits/20260814_211314_508_ee25c58a/recall_content.md",
+      "size_bytes": 11302,
+      "sha256": "964132480ac5cbebeadaa0ffa592bcf5a83560ad2880464d5550200a55ba9d7d"
+    },
+    {
+      "relative_path": "audits/20260814_211333_046_8e082128/rag_process.md",
+      "size_bytes": 40176,
+      "sha256": "4f4a68d871d9606b1560520233a980da21b2b0c27e67068a000e11196dcf83f8"
+    },
+    {
+      "relative_path": "audits/20260814_211333_046_8e082128/recall_content.md",
+      "size_bytes": 11060,
+      "sha256": "ba89e998de198add7a136c5d8e685268080630f2371dfd2ba98eaa81146aedfd"
+    },
+    {
+      "relative_path": "audits/20260814_211356_615_8c6f5b38/rag_process.md",
+      "size_bytes": 33780,
+      "sha256": "343da19c58261faad06a2694b9e23a49c4461be7b3cc716a16a35b92279d7820"
+    },
+    {
+      "relative_path": "audits/20260814_211356_615_8c6f5b38/recall_content.md",
+      "size_bytes": 12352,
+      "sha256": "529b077eeff5d2b48bde16a2de1b96ab7f445de849e8a1c4eaf8a0dfc77503aa"
+    },
+    {
+      "relative_path": "audits/20260814_211419_334_f6b5e967/rag_process.md",
+      "size_bytes": 40471,
+      "sha256": "c94a9420f0938f652830a3ae12e414b8a1fd6b634472aa426f18f1c7d11c134b"
+    },
+    {
+      "relative_path": "audits/20260814_211419_334_f6b5e967/recall_content.md",
+      "size_bytes": 8767,
+      "sha256": "8700fef6f751fcb44cdd23435a89945875b5cdce140ab2351367913bcba84de7"
+    },
+    {
+      "relative_path": "audits/20260814_211444_697_5179f35d/rag_process.md",
+      "size_bytes": 40585,
+      "sha256": "52639b37642d682995ec8121c105ace8e80d9f9dc795a23b20d7f744e66cc170"
+    },
+    {
+      "relative_path": "audits/20260814_211444_697_5179f35d/recall_content.md",
+      "size_bytes": 11405,
+      "sha256": "91e6b7d0679aaf1af8f9b24c415c33b7f2027542129a86d2d6d0a85452a66499"
+    },
+    {
+      "relative_path": "audits/20260814_211514_243_c9521b45/rag_process.md",
+      "size_bytes": 40549,
+      "sha256": "6486e5ef6a1e05fc5103444a0e8d2da8fa91abe238ea4e8c5280bf5a964a1844"
+    },
+    {
+      "relative_path": "audits/20260814_211514_243_c9521b45/recall_content.md",
+      "size_bytes": 11953,
+      "sha256": "9f350cd67262695c6f3a223ce8d02324637bdf6a4df776119a92eecf322c2828"
+    },
+    {
+      "relative_path": "audits/20260814_211540_677_50d2f815/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "663a78c3cf8e07e45e47aa2e63df0de745101550fc93ec94a24a73737817d520"
+    },
+    {
+      "relative_path": "audits/20260814_211540_677_50d2f815/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "ac18d6cbb5461d5e1f28187fd40334f5c6ea0de9e739b80e4092e733cb704706"
+    },
+    {
+      "relative_path": "audits/20260814_211544_986_84659d8a/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "cc69c9b32890732b6b4acbec87d7883b9e59279b6a9e36c6365f33e7214efb2c"
+    },
+    {
+      "relative_path": "audits/20260814_211544_986_84659d8a/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "9e9e0b0fa17c4ed2ab7ac18fcba0ee6933ef8230f620a2a68dfb13cdeb4b5506"
+    },
+    {
+      "relative_path": "audits/20260814_211549_901_11e527cc/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "c203152e96b7b7b841a9f240d071289e5910081e1dc9d1b95fe840fe8b4ea6d3"
+    },
+    {
+      "relative_path": "audits/20260814_211549_901_11e527cc/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "1ee888285ee8b1953339369bc725cd022e749337e43cea2e7796bd0b1b289518"
+    },
+    {
+      "relative_path": "audits/20260814_211554_926_ab3666cc/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "d5aae0d8d78bd5001826bddd580985456a99516c5650b08c695646795400674d"
+    },
+    {
+      "relative_path": "audits/20260814_211554_926_ab3666cc/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "33a301d0b488f5cbf1e407aec8076596379423d648e45def72412d12cd571488"
+    },
+    {
+      "relative_path": "audits/20260814_211559_458_0bc71d56/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "a8a87dbdee4da155bdf96b95a44dec07b80803373fc7ffc5fa8d537e054f0862"
+    },
+    {
+      "relative_path": "audits/20260814_211559_458_0bc71d56/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "7108aa633c781fdbbc4390a28a4680860935fb9d7cc30517618563fd86ce0403"
+    },
+    {
+      "relative_path": "audits/20260814_211604_132_15fd933e/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "1773a03a3528f040ae86aa19d670ad79cdc699b9b949461744bc085ab0d1dd2c"
+    },
+    {
+      "relative_path": "audits/20260814_211604_132_15fd933e/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "f77e4f9c529f38fa5d545a9dacfb2178ff5f2c9e9e79e8c38e9265f5db366b58"
+    },
+    {
+      "relative_path": "audits/20260814_211610_739_1faeaf09/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "0519266b210bc5d7a6128d2e65ff6dcc550895c37b7f4280db29ddd0e58ea0b3"
+    },
+    {
+      "relative_path": "audits/20260814_211610_739_1faeaf09/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "3b1a4b76169a40991626ff37c59bd7b1b2dc0e265d52b038bde07e8aa1ebf378"
+    },
+    {
+      "relative_path": "audits/20260814_211616_572_dae8a0b7/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "60164ddc553e28b50af702783fe617bd3116e7b1c0e7e22fa5803d0eba087c03"
+    },
+    {
+      "relative_path": "audits/20260814_211616_572_dae8a0b7/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "5a76011e23e2ac496a3fc54450ec59ee1363b93e60158f93374b22d0cd994e0e"
+    },
+    {
+      "relative_path": "audits/20260814_211621_123_77f4816f/rag_process.md",
+      "size_bytes": 1538,
+      "sha256": "8d3689c38b678c4c54d4cb0ae25c5fcfb26dd34bbe26927cda2c1a075526c43b"
+    },
+    {
+      "relative_path": "audits/20260814_211621_123_77f4816f/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "fd66ea0946e43f2e88b0479a0032516bf99aeff77f8f6e9375b11d2c08e09efb"
+    },
+    {
+      "relative_path": "audits/20260814_211626_081_3f079665/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "52b0dbec08caf063529d9b1170096f970f49ba5bd893260b56a440fdab66c066"
+    },
+    {
+      "relative_path": "audits/20260814_211626_081_3f079665/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "9a5468455d6986405edd9a7b9b119228b52e21c13dbd7621c0d486c4ba6ea3df"
+    },
+    {
+      "relative_path": "audits/20260814_211630_639_92e8b5f3/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "2615ec8fbe6a52a568d8249af99339c1f290ed9de6574516b6dc5daca345c105"
+    },
+    {
+      "relative_path": "audits/20260814_211630_639_92e8b5f3/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "24e4830e2d06c60c61c07c3a6d68c79ee887bc898a06a61dc4a0b72882920c95"
+    },
+    {
+      "relative_path": "audits/20260814_211634_896_d7bec199/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "f3e5a72694d2f025810532b75dd0cf4eda1bca414425f974146e779d3b857547"
+    },
+    {
+      "relative_path": "audits/20260814_211634_896_d7bec199/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "4fd8058d4a52963df2d48644f7c868c62df1a2e8d81487b89dd64af3278f2e1c"
+    },
+    {
+      "relative_path": "audits/20260814_211638_490_40903625/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "6cdbc8d41f8143a441b80f9a0785875887c615a7ae6af058a39747171d711b9d"
+    },
+    {
+      "relative_path": "audits/20260814_211638_490_40903625/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "2a0275089fbf3ed652182303d08c765bf16a711d4426af7f36af9f929bc613ba"
+    },
+    {
+      "relative_path": "audits/20260814_211642_339_f50a3b5a/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "b4a7357f64e8c16f1b2b9eaf2c1efab9486f6bef4f5dd2083dea3ac67fe7e118"
+    },
+    {
+      "relative_path": "audits/20260814_211642_339_f50a3b5a/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "ca3319f213a9dc5ac694f2a0c7fdc558b42f6012c9c5c2e2b29b027e8a1421be"
+    },
+    {
+      "relative_path": "audits/20260814_211648_132_c4133cda/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "2b5fea4b7f2607c5ec75543c09aad01df23f8ee0ba569fbe4a948f85ba955bc9"
+    },
+    {
+      "relative_path": "audits/20260814_211648_132_c4133cda/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "16ea04c79b3e1b46f81e00076ce579a0ab74981057ebbe78c428ecebb085a1fe"
+    },
+    {
+      "relative_path": "audits/20260814_211651_897_e93d053e/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "a782cc559f6f2c345ef891b7b6acb7d93690db5506718659fdb0b703cf9047a3"
+    },
+    {
+      "relative_path": "audits/20260814_211651_897_e93d053e/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d5b2f1f13828abdcd42718738bad3e1c2b25f07c415512c322bbd1061375a5ec"
+    },
+    {
+      "relative_path": "audits/20260814_211656_271_6c286ee0/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "cb7f2e22ce6bcacae371088a0af7fbcca94bc9024b5669c826e14cfcef850e80"
+    },
+    {
+      "relative_path": "audits/20260814_211656_271_6c286ee0/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "7b89a5fde408793cad01e1d8fbd7e90ef1f52aad687f0a81a20437f5951c7652"
+    },
+    {
+      "relative_path": "audits/20260814_211701_299_f2dd05cf/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "d357ef1167e4c824c82461e299b06dc51d616c6e2d5f0f1087c7530bb4a1e15f"
+    },
+    {
+      "relative_path": "audits/20260814_211701_299_f2dd05cf/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "9acf9c569e78eaa531023fc93b4a89fa128602b9bd40c85a4f7142837d63afc2"
+    },
+    {
+      "relative_path": "audits/20260814_211706_386_21b1d72e/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "cac4f93c4d6b665895bfc03241b7b92a069ef6cde5096e8ad074adb5879a2bad"
+    },
+    {
+      "relative_path": "audits/20260814_211706_386_21b1d72e/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "f6539f079ad0265bad17b255a200a57c469e9ca3b505b7e1f131842e074fd222"
+    },
+    {
+      "relative_path": "audits/20260814_211710_252_cbbfef9a/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "7da3750bbbda699647b57aba8539253c2e3337d1e41bce325c38af907a814bbb"
+    },
+    {
+      "relative_path": "audits/20260814_211710_252_cbbfef9a/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "862b3ef16710db8d364dd0a06fbc27140cd6d73a03312ecdba07b0d4d12a0224"
+    },
+    {
+      "relative_path": "audits/20260814_211714_578_48f028db/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "6112fd1a0ae341f509c2047a9f5ab427ec958391bfab5367264b341cde735598"
+    },
+    {
+      "relative_path": "audits/20260814_211714_578_48f028db/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "b2f7eaaa4e645dc328d962655500a820d315cf8f49d6fbf64b63d788572d7712"
+    },
+    {
+      "relative_path": "audits/20260814_211718_611_639bb6b6/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "ee025f7ebe88b525741417c0f0dc7393ebfd9623264ee154e0bb884a89f83785"
+    },
+    {
+      "relative_path": "audits/20260814_211718_611_639bb6b6/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d625c94778fb734c2426b099349936e42a9752091a3cf9af92107ca498f1b637"
+    },
+    {
+      "relative_path": "audits/20260814_211722_933_f7917684/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "987c9f019a586c265ba0c6fd7c4eca1e9e425f27d99f57689d8df510211843fe"
+    },
+    {
+      "relative_path": "audits/20260814_211722_933_f7917684/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "61639cfa81ce100288eb3b837d15233b0f769266a2121e9c832bc332f3c7d3ff"
+    },
+    {
+      "relative_path": "audits/20260814_211726_531_ecc08e5c/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "3dabfc51a11e6e1e90414a33f8b8d8d6dae5f54bda4e50cf19af3338efa9459a"
+    },
+    {
+      "relative_path": "audits/20260814_211726_531_ecc08e5c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "5debb76cccd9ccbbfb6a11c73a9c36bf94328a3ac90de97e3af71a4cc096d67d"
+    },
+    {
+      "relative_path": "audits/20260814_211730_283_13f4981a/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "b0b0116bbc146cd3cca198bc87266580153678d9b39ac9668cae6546a9da48a1"
+    },
+    {
+      "relative_path": "audits/20260814_211730_283_13f4981a/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "2e72c554503d20089c167c906b95ab66129e8efd77ac171bbd11d92b4c5b1884"
+    },
+    {
+      "relative_path": "audits/20260814_211735_240_9a0e4e0c/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "3dec779fb1053b618294d171fc7731cb5b038890db02bd3fce0a189766ffc8ae"
+    },
+    {
+      "relative_path": "audits/20260814_211735_240_9a0e4e0c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "b0bb9b83c165b0fb7c158910225f5ae86e37601b73d9c7ed7d537f72da4b9f61"
+    },
+    {
+      "relative_path": "audits/20260814_211741_211_e935c3e3/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "87192576c767601792c910d4986d49fa63e66421c651dcf22ddbb6c4292f7561"
+    },
+    {
+      "relative_path": "audits/20260814_211741_211_e935c3e3/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "f983b740d67a798aae5e464984128624ca8384587e94990515e8c99e55be7037"
+    },
+    {
+      "relative_path": "audits/20260814_211746_949_b9260c7f/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "9bc40828d9178ce219b9b58c51080aef326f2bcc878718e8450e1c9912835cf1"
+    },
+    {
+      "relative_path": "audits/20260814_211746_949_b9260c7f/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0cbf336d6ade939425d1fc72623d965cb6b12b19677c11764ff730f570b24070"
+    },
+    {
+      "relative_path": "audits/20260814_211755_077_4b582328/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "a2634451df3b3f029ec138b76bab60e98265e54c2a8c2a9d426d4c77115dc084"
+    },
+    {
+      "relative_path": "audits/20260814_211755_077_4b582328/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "30e8f4adc213d4c9f1ed6e36db9467acc52da61047f46e19e34f005d9bb63bb0"
+    },
+    {
+      "relative_path": "audits/20260814_211759_908_cdc5179e/rag_process.md",
+      "size_bytes": 1539,
+      "sha256": "97d78967117012454c91eb3ba920fb6ae879b202891d466e07c8afd425d45af9"
+    },
+    {
+      "relative_path": "audits/20260814_211759_908_cdc5179e/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "642582ccda04a06f4cdf7d37cb59b13db8bccdff1c5fda4cc152dd79077c7985"
+    },
+    {
+      "relative_path": "audits/20260814_211803_989_17ce1bef/rag_process.md",
+      "size_bytes": 1577,
+      "sha256": "15bc3f191a746390b9e5fc3e06419607f231c336fa620e5bb413fa5e5279d4e0"
+    },
+    {
+      "relative_path": "audits/20260814_211803_989_17ce1bef/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0fd00caaba74d4b8d92a3fe294227a9a8c4180fc0990def7094122c6f915425e"
+    },
+    {
+      "relative_path": "audits/20260814_211810_072_5985d12c/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "4efcba1a6e91d156bb148a6eeabb6f84b7e2b378e437c07beb1781f615e22ef4"
+    },
+    {
+      "relative_path": "audits/20260814_211810_072_5985d12c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0a7b8de8b1c7fb9133d6bcccc843a76dfe867846b225430ca869d6b48d34cdfc"
+    },
+    {
+      "relative_path": "audits/20260814_211814_452_ea9e7362/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "631e9f4a2eb40ab2112c597713b89f12a33d9f00ca6e0edd561d0823f0ffc69d"
+    },
+    {
+      "relative_path": "audits/20260814_211814_452_ea9e7362/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "c44dfce82e9c5dfdd84f6354ab6dd243fa21f09fd4fdd6c09184fdbac10a7e4d"
+    },
+    {
+      "relative_path": "audits/20260814_211818_600_24b449f4/rag_process.md",
+      "size_bytes": 1551,
+      "sha256": "a27c540bcbe9a70033e47136c7460b2775835ee52cdfd8e6c65ac2ae5d67a19e"
+    },
+    {
+      "relative_path": "audits/20260814_211818_600_24b449f4/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d064de83f645fe3c330a715633994b2569fdeb5fc3d73facd4148ac2204b14db"
+    },
+    {
+      "relative_path": "audits/20260814_211824_106_34af266d/rag_process.md",
+      "size_bytes": 1551,
+      "sha256": "d957742267e7609403f428d4f6adc81fa826afda3011e759eebbb9a63945c2e3"
+    },
+    {
+      "relative_path": "audits/20260814_211824_106_34af266d/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "636be223a537c9292b602422566ef3a56b91461b19d667c7f21b1ba31be0ede4"
+    },
+    {
+      "relative_path": "audits/20260814_211830_528_62e33b7c/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "654401f722593f9fe8e312cf25d546b77de2dfd350a1589c2f5d46a5194262c3"
+    },
+    {
+      "relative_path": "audits/20260814_211830_528_62e33b7c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "a868f2a64d0fd7079c84bde3d824fd35e7d14d18c71a814e61420eeb93dc0cd5"
+    },
+    {
+      "relative_path": "audits/20260814_211834_087_70764697/rag_process.md",
+      "size_bytes": 1578,
+      "sha256": "360e050bfa2a568c51ac3316a2f0ae4aa508ad1ac74b883f2c6190bddac3da25"
+    },
+    {
+      "relative_path": "audits/20260814_211834_087_70764697/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "756c47e322f7b2b88b33ecacdc8d8df1c2e5b0654934db23ac1fb36c7513fe2a"
+    },
+    {
+      "relative_path": "audits/20260814_211839_782_31ac5b78/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "33ad45da6bb9c41bad368d15412fe03107954b9702989b5e733cfa718d17adc7"
+    },
+    {
+      "relative_path": "audits/20260814_211839_782_31ac5b78/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "ec3a372ea8bc92a49ab7505c20e493684bc43782cba2a4ef061434fc8340ba95"
+    },
+    {
+      "relative_path": "audits/20260814_211843_599_b79ad236/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "834a29c2f9f8c4f7543d6b343bf1c810ef2e8f7baa5d7d1df29d03168d28045a"
+    },
+    {
+      "relative_path": "audits/20260814_211843_599_b79ad236/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "51d581818157c9d277ac2657c0b249bc7d3527e06460e25bd718b4dbf80f0f9f"
+    },
+    {
+      "relative_path": "audits/20260814_211848_275_016f62e1/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "545249aabbfa1b2d5a3abdf0c65a12c43b8c111c120f918f745fce95809bbf1c"
+    },
+    {
+      "relative_path": "audits/20260814_211848_275_016f62e1/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "4bc63e03f3f792ed2b93d833d216608ef47328eb7bf58bb50378f0c283b2757a"
+    },
+    {
+      "relative_path": "audits/20260814_211852_316_49eda69f/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "bb79841eafb28faeb3d5717f02605b87cad94131717a65af343031a8c1f01f86"
+    },
+    {
+      "relative_path": "audits/20260814_211852_316_49eda69f/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "ab5a707fbb076d5bfb044ee2652ddc657e39728771e9d5d73162823624e97fe4"
+    },
+    {
+      "relative_path": "audits/20260814_211857_575_62f6012c/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "b97d550b96239227226fa09005d6ca5e33ef4cdafb655060ec90ad5dd8c72d6c"
+    },
+    {
+      "relative_path": "audits/20260814_211857_575_62f6012c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "5b3dbe85b6fdde13b441c3e7fbb00be440801e50d30f67351033ba8a17b56554"
+    },
+    {
+      "relative_path": "audits/20260814_211902_895_b48fcfc4/rag_process.md",
+      "size_bytes": 1578,
+      "sha256": "08f8a6fcacd3f6a6f0c1c4d1b53de3b047c6fa3ec23de4c65cfa6d275f134fde"
+    },
+    {
+      "relative_path": "audits/20260814_211902_895_b48fcfc4/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "097f1fd0595602879a1b927d001b58e13e1bf850629586ce275fc7640e67527a"
+    },
+    {
+      "relative_path": "audits/20260814_211909_117_8449a15e/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "36f378ea9b07795c6eaf8847e8beb09defe0bfcb30d1f8230fb65d439acffe1f"
+    },
+    {
+      "relative_path": "audits/20260814_211909_117_8449a15e/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "b91669965c6b5551c03c7339f984e60e9ba42d10d005eef831c393d8fb1f300d"
+    },
+    {
+      "relative_path": "audits/20260814_211914_101_79f3b685/rag_process.md",
+      "size_bytes": 1578,
+      "sha256": "91d6c853703c86f35c9810ff70bce087dce7a48c9cf5e71b908749529bc527df"
+    },
+    {
+      "relative_path": "audits/20260814_211914_101_79f3b685/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "c05249362741b87d2093cec4c21ca0914dfdb4b3a8600d696174b08266436d7a"
+    },
+    {
+      "relative_path": "audits/20260814_211920_441_661c5c50/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "89d8cd74dbab9e0e444a882c40f40c8237f7833af203794b2f2d4f2ce59d7863"
+    },
+    {
+      "relative_path": "audits/20260814_211920_441_661c5c50/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d1fe655e2f5672586b149748a4345300122a86ecf36c11d9dd76e3d43db57793"
+    },
+    {
+      "relative_path": "audits/20260814_211925_555_89954fdb/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "067d37bf46879d247659c0b1d382b23c47efdb573d03edd40a8743f430ec1763"
+    },
+    {
+      "relative_path": "audits/20260814_211925_555_89954fdb/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "279bf58e491ba4ecfdd466506073f169c83a5b7573c69c76ee9dc3bde26fd394"
+    },
+    {
+      "relative_path": "audits/20260814_211931_176_af0e5d17/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "4435b259ddfd7b235ac47313ea1bbd2b398042ab273173afb7e24b3948b621e9"
+    },
+    {
+      "relative_path": "audits/20260814_211931_176_af0e5d17/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "44f13dbf3006dfc14d53bbf18dd217221eb7ce6ffc6e158bb5e1ce3f4ca75881"
+    },
+    {
+      "relative_path": "audits/20260814_211937_100_7e67e711/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "e913d956418328f870b140fa4c68f62ec87b32c877ac8efd91893959722304c3"
+    },
+    {
+      "relative_path": "audits/20260814_211937_100_7e67e711/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "276553129cbb6f6957f8b027884644e844e602aae878888c0ddb364b1d4d4322"
+    },
+    {
+      "relative_path": "audits/20260814_211944_262_9af98273/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "89ddd2ee2177ef9136e27ae7e657c491d418c81a74fefaedc0e2779762d125c8"
+    },
+    {
+      "relative_path": "audits/20260814_211944_262_9af98273/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0db82304b15001ce4f89fe998f505d2cbb1429818adfeb5766c5fdf0824eb5d5"
+    },
+    {
+      "relative_path": "audits/20260814_211949_114_e3fd92bb/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "753b92af1c1dfc1209f0cb58f60aab6748a50d60c71bddd5cad1ddd1b4f05ea9"
+    },
+    {
+      "relative_path": "audits/20260814_211949_114_e3fd92bb/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "16d23cffe8ce9f52bb0389f703ec43c04198bbc177b88bd7efde87e9bf35ffeb"
+    },
+    {
+      "relative_path": "audits/20260814_211952_935_b13ecfee/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "ae73effad00ee67d2321bab91fcd7cce97fc92132b25049b882185fe9dba7cfd"
+    },
+    {
+      "relative_path": "audits/20260814_211952_935_b13ecfee/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "b22c52f95597e1bfe64e06b3a0c0e8ddac0769a459ed7acf7a8fd0af90997bbb"
+    },
+    {
+      "relative_path": "audits/20260814_211957_034_425f47c1/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "2d9f45d19a0e5f9b14c49594d82512001e7904b8b308fd9b67aece3585280171"
+    },
+    {
+      "relative_path": "audits/20260814_211957_034_425f47c1/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "d205b1475d2feba8e49b577afd31d6b948b3d81c86fc8c81a5536cd61fac4306"
+    },
+    {
+      "relative_path": "audits/20260814_212000_890_566b71ee/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "2c1105145d91a6d8d51b38b8e4cfcad5b3a13167b66c8937f7756997597709a0"
+    },
+    {
+      "relative_path": "audits/20260814_212000_890_566b71ee/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "2d2f918cf2a7f3cacd6df3b007de6e17729459f596ff80577d66b2979bec48bd"
+    },
+    {
+      "relative_path": "audits/20260814_212004_884_2388a669/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "d9ac8da858dd013e76cd9e76b755908400d894a6c1e1f450eb052c6f098c402a"
+    },
+    {
+      "relative_path": "audits/20260814_212004_884_2388a669/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "e93b08513e9b28e09322486d837899e53e73c9adf8f9dea3afd49508590030ab"
+    },
+    {
+      "relative_path": "audits/20260814_212009_130_7146517c/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "fcb8793a99b797010b685be303b876e31169d060239f03320f6ff04ad5f4b93c"
+    },
+    {
+      "relative_path": "audits/20260814_212009_130_7146517c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "a63f265ed1ee8c93f7b007140f5b625f663a491845ca2233c2163008cf5847ec"
+    },
+    {
+      "relative_path": "audits/20260814_212013_109_fdcf0029/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "762b1ec2ca38a9029ad7fa2a31e1ce760603a90c337ac4e7fa4b3e07365d4f52"
+    },
+    {
+      "relative_path": "audits/20260814_212013_109_fdcf0029/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "94bd4daaf319e6e0b63ee7233d931f908e269d6db3f0536fbdf06ed6f0e94f4d"
+    },
+    {
+      "relative_path": "audits/20260814_212016_877_529605f5/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "f3f5cc4ac53b0542b27005e50e6ca2323325075d229a56b8e530842e60e05e81"
+    },
+    {
+      "relative_path": "audits/20260814_212016_877_529605f5/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "c568299446da2975b59064c8e6b21aaf145832678c26a7b8bcb2ee97db9bda2d"
+    },
+    {
+      "relative_path": "audits/20260814_212020_731_8e6c1161/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "0284fd8328f7dd628af635fc636c26efc63004d357a06b133a853a014b5d9e00"
+    },
+    {
+      "relative_path": "audits/20260814_212020_731_8e6c1161/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "87fc0615f86ab8fa905ccd94ae90cbfbd73956c0e278f8d894a0f39e436386b3"
+    },
+    {
+      "relative_path": "audits/20260814_212024_266_8fc894af/rag_process.md",
+      "size_bytes": 1552,
+      "sha256": "1a4ca4600cb8f35de27c2191f188ac91b0a05c3eb1fcee1f267eb5a0a3f3932a"
+    },
+    {
+      "relative_path": "audits/20260814_212024_266_8fc894af/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "56b84fbf4df6059ce69fd0d853e8319c4b8bdf0a1892693c2c6b9ef3a70c26bc"
+    },
+    {
+      "relative_path": "audits/20260814_212029_405_225b49ff/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "7b819d6f6dbaf8f5bb62cae2f72aea1d485017c4131890af1d224f59a1dada8b"
+    },
+    {
+      "relative_path": "audits/20260814_212029_405_225b49ff/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "329826700cbe0e16f0b0b3edb4a0f6aef4ebdec07f3bf7f774ed66405a9bad99"
+    },
+    {
+      "relative_path": "audits/20260814_212033_198_4dbdb5df/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "996d08cf0213a465969161d89f0cbcfd01fab64fd7914702a7ab2599bca49594"
+    },
+    {
+      "relative_path": "audits/20260814_212033_198_4dbdb5df/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "cb77236d3c31918a677d0dfb13b1763348a9a88c6027e2ebfd1b70bf54f42025"
+    },
+    {
+      "relative_path": "audits/20260814_212037_362_065b7c92/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "b9b5cd56fd83e69a02a2f5b8b9f5026057e90d83eb467984498da3483b62b34e"
+    },
+    {
+      "relative_path": "audits/20260814_212037_362_065b7c92/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0b84bc0c5a5f0313d5c34dbaa16740c881f94cd0d8896266e9a9915c20fa7cdf"
+    },
+    {
+      "relative_path": "audits/20260814_212041_051_85387083/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "e5fbab5a932adee0ca3078820a4665c958c3b2ad2675280913be3ed7708a745c"
+    },
+    {
+      "relative_path": "audits/20260814_212041_051_85387083/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "03a8421ec3c551f959e30d0d4dd2d63b0ef2015065ad05e7cd03b2782fd87d08"
+    },
+    {
+      "relative_path": "audits/20260814_212044_696_e9376cb2/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "9fadd9d8cc3900c8b95c71d7cec22c18aa3c7e823b296ecc601fc2e342a52252"
+    },
+    {
+      "relative_path": "audits/20260814_212044_696_e9376cb2/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "1ff462716f7516a510660d71a8753364683ec76dc9836fcca660621418ab8083"
+    },
+    {
+      "relative_path": "audits/20260814_212049_266_bd7ba28a/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "5e84936c53329ac7088504e8324621940a7112b82e637ce2065a9e362ebcac06"
+    },
+    {
+      "relative_path": "audits/20260814_212049_266_bd7ba28a/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "1bc163ca8df2f93f76883acd553e4294291cdff6725d79794a38c5e2ec2eeae6"
+    },
+    {
+      "relative_path": "audits/20260814_212052_900_d987b070/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "b7a98a068cdd4faa319011e607158f092df0e89aaa1fad803e06c0320f331546"
+    },
+    {
+      "relative_path": "audits/20260814_212052_900_d987b070/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "8dd631e6cf9839fe42b435610fdd9a927d930307d41cc9e4c82c56ff4cc330ad"
+    },
+    {
+      "relative_path": "audits/20260814_212056_390_bf7d308d/rag_process.md",
+      "size_bytes": 2225,
+      "sha256": "e53af2d14afe5d2845055b6829d02e14e69425d18ab3ef4c87b3ed3e37bb2aca"
+    },
+    {
+      "relative_path": "audits/20260814_212056_390_bf7d308d/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "825e43bf9e57e29dbcb694c11a6f28f79301cecd96e0d85ce3dd28170576d0c1"
+    },
+    {
+      "relative_path": "audits/20260814_212100_450_d11e8004/rag_process.md",
+      "size_bytes": 2230,
+      "sha256": "825762f80cfeb16c13d3b39474c25427cd241872addc4727289fdd4f67a9bab9"
+    },
+    {
+      "relative_path": "audits/20260814_212100_450_d11e8004/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "cfcbb8886104699e236122ae0cd6cca396f4f2a693f0a30816c7491dd9a9abf4"
+    },
+    {
+      "relative_path": "audits/20260814_212104_609_e6e383bf/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "f6df5d18378bff3f2d9c4985ae712a1e25021dbffef037d4351727a87761dff3"
+    },
+    {
+      "relative_path": "audits/20260814_212104_609_e6e383bf/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "fb72c7ee71e6ce0c48a5b9fd46bf32744b1f3177351f3274d85f64f0734b95bd"
+    },
+    {
+      "relative_path": "audits/20260814_212108_921_bf8ba77d/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "a19f7437bc74c811c961548d0a170fb8959bbaedfa1a3195ed5855947bd9682c"
+    },
+    {
+      "relative_path": "audits/20260814_212108_921_bf8ba77d/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "604b65110cfb24c2cff524be763e7f7c47bbf92532674f415808e831582b2849"
+    },
+    {
+      "relative_path": "audits/20260814_212112_545_8f307714/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "9c2d18c2afcc8686b5b1a846e1d6cc279a0a086317cbf6741617c59112704e06"
+    },
+    {
+      "relative_path": "audits/20260814_212112_545_8f307714/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "a52321f65c8c613ada12741145c6069d745f33cbf57956d1c34162b0c489cd97"
+    },
+    {
+      "relative_path": "audits/20260814_212116_204_ce2a85d1/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "7aef3da1ea696dad7090bda8deaa8ce7548c67dc515c43bb8554e7e63879f64e"
+    },
+    {
+      "relative_path": "audits/20260814_212116_204_ce2a85d1/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "34284ba17867430fcb5169e2c7bd2db333417aa4066f436f2a060580c47b24c4"
+    },
+    {
+      "relative_path": "audits/20260814_212121_116_06232151/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "80310ed9d424b99dde5e602828d353066a20d7aff3663c90d903e22511ebf2a8"
+    },
+    {
+      "relative_path": "audits/20260814_212121_116_06232151/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "21b458b9c118490d7353593d481c4278e61881cb108e2fe0448b9619db26fab4"
+    },
+    {
+      "relative_path": "audits/20260814_212125_315_5d3b5be4/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "8fdf2398ccb512dfb92375f31952bf16f31eea0a5231b18a24b26a6c5566d832"
+    },
+    {
+      "relative_path": "audits/20260814_212125_315_5d3b5be4/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "403f94a1166093e08c18c91dc02ce14d46e720f0d516bdc715b2c7eeaf25efe9"
+    },
+    {
+      "relative_path": "audits/20260814_212129_046_e58b087c/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "352852905f5934d95b33743ac1e1dbc86702d95ca9a3312ba80bea749a9d8774"
+    },
+    {
+      "relative_path": "audits/20260814_212129_046_e58b087c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "50f5dad914e5fc416fe26ad96e8d7c911f60b6d73faa665d089ba55d66ce78e9"
+    },
+    {
+      "relative_path": "audits/20260814_212133_005_b78604f9/rag_process.md",
+      "size_bytes": 2226,
+      "sha256": "4160552f39d6bf92cd8d4a85ce076f16581ca7ad29ec5ea1be03a68e0c6da408"
+    },
+    {
+      "relative_path": "audits/20260814_212133_005_b78604f9/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "777b2106931230c4d57b9c38c7115119db5d70bc3501cf6d4a76267679488698"
+    },
+    {
+      "relative_path": "audits/20260814_212137_605_94ca5c39/rag_process.md",
+      "size_bytes": 2225,
+      "sha256": "d9de5edabb963b270cd18e9efb353a404cf222bcbf55deda0eb359ac2a05b4cd"
+    },
+    {
+      "relative_path": "audits/20260814_212137_605_94ca5c39/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "cf23c3d7cf9f185f9ba24515809466cab3df765e815677d8e64476229ee3c407"
+    },
+    {
+      "relative_path": "audits/20260814_212142_808_6d987af7/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "578c462b59309d7bcd4dec99e08409eebe52bdc900aa75a15f6be5b538bb956e"
+    },
+    {
+      "relative_path": "audits/20260814_212142_808_6d987af7/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "54617d2d433bdc77f3fa6c249e49a47b4bd98c08fe705092d446ec246f39c3cb"
+    },
+    {
+      "relative_path": "audits/20260814_212148_315_a78129ce/rag_process.md",
+      "size_bytes": 2236,
+      "sha256": "3e2208b12caf6c832457c691e34387bba5ca27cd4083907b0683949dec0229ad"
+    },
+    {
+      "relative_path": "audits/20260814_212148_315_a78129ce/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "febeca7a5d11604327bae103c2fd9729c2fd328a45e037307859e36261761c12"
+    },
+    {
+      "relative_path": "audits/20260814_212151_965_3f42fa43/rag_process.md",
+      "size_bytes": 2225,
+      "sha256": "9e6397af5cad08d26b1541da101ae55583fd89e64599ffd58601c9051ac760cb"
+    },
+    {
+      "relative_path": "audits/20260814_212151_965_3f42fa43/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "9b23438abb05004affd7f78704ed8f99c3a2ae7209058d8f00787cedfc808db7"
+    },
+    {
+      "relative_path": "audits/20260814_212155_686_2379f039/rag_process.md",
+      "size_bytes": 2236,
+      "sha256": "cd9ecbd60b827938120e6122560896c55ffe9da55f7cdafc555b66e0653046f3"
+    },
+    {
+      "relative_path": "audits/20260814_212155_686_2379f039/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "18bd450cd18e929b579b1c8c5b6801ffee0205bf07e29f7aa2ec6c49096db8de"
+    },
+    {
+      "relative_path": "audits/20260814_212200_816_328016b9/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "0cef66294e63a9b570c736ff978200929350b788c07f26c2acb02cf280783642"
+    },
+    {
+      "relative_path": "audits/20260814_212200_816_328016b9/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "8b7c73d9bb8a6d73b947c3005b1b6029192bd00ef3ad9034bd8e1ee9e95da66b"
+    },
+    {
+      "relative_path": "audits/20260814_212204_911_d2935c0c/rag_process.md",
+      "size_bytes": 2225,
+      "sha256": "cb3c46e3affb3870cc07850f3019aa4f84a1f6f4dfc3f2503497e78522b8b74b"
+    },
+    {
+      "relative_path": "audits/20260814_212204_911_d2935c0c/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "0608c93b07b774b3e82242cf0745e38aab9e653b61d55a93c1d7aa39879b1be0"
+    },
+    {
+      "relative_path": "audits/20260814_212208_671_14d47ceb/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "6bbfac24cdeead14ed0f4fb5e154d2778b20ec0847d74d8dc48b08f4f5eeff8b"
+    },
+    {
+      "relative_path": "audits/20260814_212208_671_14d47ceb/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "98779e6169e429d5f224c68d52865534ff1bc6a524d9a780b94c415c7389111d"
+    },
+    {
+      "relative_path": "audits/20260814_212212_488_284fb501/rag_process.md",
+      "size_bytes": 2236,
+      "sha256": "05ab1c3539c0d2cd91bd55ebcbda2dd934d3a883645e0362bcfe27661c2827a7"
+    },
+    {
+      "relative_path": "audits/20260814_212212_488_284fb501/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "924e1b5719ae9b58dcdfcc98002548d0a6064b571c16bfa55332bb5422cb65a6"
+    },
+    {
+      "relative_path": "audits/20260814_212221_576_6cfabfba/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "220ee1ff452118300331d2cd7967ebb5bff50b1ded5abc395648c8c2ff463b4e"
+    },
+    {
+      "relative_path": "audits/20260814_212221_576_6cfabfba/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "c7fabaf4ed13e44df4ec715cb044cccfe0aebdd7378444bc3038fffe2973de5b"
+    },
+    {
+      "relative_path": "audits/20260814_212225_193_613eb9f7/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "10ce2042a4433f061d9f7ac46bb284540ee5afbace15af1c769bc599b47872de"
+    },
+    {
+      "relative_path": "audits/20260814_212225_193_613eb9f7/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "67b2d4b3545a1fc7ddf95b6c51a7159d18a2087dfba75eb642ab584c949f9948"
+    },
+    {
+      "relative_path": "audits/20260814_212228_962_0a4856fc/rag_process.md",
+      "size_bytes": 2233,
+      "sha256": "320e010a19aece2b211fb14ec5f282661ca7ca599e9335b1d787feed9a16c2d8"
+    },
+    {
+      "relative_path": "audits/20260814_212228_962_0a4856fc/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "22da0162b408d99a6a3baee85bdf02f72c5d6f334985efb4bf69ed038af96a30"
+    },
+    {
+      "relative_path": "audits/20260814_212232_894_f46cabcd/rag_process.md",
+      "size_bytes": 2236,
+      "sha256": "c780aed38959f0811eb28bff3a4be34cffd83008e637ec0c465789d228589a6b"
+    },
+    {
+      "relative_path": "audits/20260814_212232_894_f46cabcd/recall_content.md",
+      "size_bytes": 57,
+      "sha256": "b10638877a2767b92b2c8a5e1fd2a872e0e2cd3b3af248315bce6d7bd787d15b"
+    },
+    {
+      "relative_path": "failure-summary.json",
+      "size_bytes": 317,
+      "sha256": "33bb5813f03b1b8b67f932c0621ecff6aec4e195eaaa844c2ff949582fc546c9"
+    },
+    {
+      "relative_path": "frozen_questions.json",
+      "size_bytes": 389226,
+      "sha256": "8c40adfdb3293e7501a5de60e256d8f640b4e72dc32d87f73ea0a148fb374452"
+    },
+    {
+      "relative_path": "new-results.jsonl",
+      "size_bytes": 2734123,
+      "sha256": "af1ab044978e6209bd0fdbbdef79c0f265d6b89b586e58cdd5746faa3eab4a5d"
+    },
+    {
+      "relative_path": "preflight.stderr.txt",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative_path": "preflight.stdout.json",
+      "size_bytes": 1177,
+      "sha256": "c0c78db328d6335c98a43ec18c1b3952b2eb513c54dede1375d0a4b62e472719"
+    },
+    {
+      "relative_path": "runner.stderr.txt",
+      "size_bytes": 2695,
+      "sha256": "ccdbc0d7b02c3a9a2b4cc59d757db41a8ac4bb35b6a701a791390ebe778af32c"
+    },
+    {
+      "relative_path": "runner.stdout.jsonl",
+      "size_bytes": 393651,
+      "sha256": "284e2782110e61e371207873c7626d419960ac07b0ba356691c4fc7d6bc35957"
+    }
+  ]
+}

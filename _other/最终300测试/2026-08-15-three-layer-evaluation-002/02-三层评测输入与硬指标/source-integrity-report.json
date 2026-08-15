@@ -1,0 +1,4513 @@
+{
+  "status": "SOURCE_READY",
+  "source_run_id": "2026-08-15-intent-planner-300-005",
+  "parser_version": "three-layer-evaluation-v1",
+  "generated_at": "2026-08-15T08:51:16.089576+00:00",
+  "required_file_missing": [],
+  "result_line_count": 300,
+  "unique_case_count": 300,
+  "frozen_question_count": 300,
+  "answer_count": 300,
+  "cases": [
+    {
+      "case_id": "S01-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200501_632_f765e362"
+    },
+    {
+      "case_id": "S01-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200523_058_33dcc260"
+    },
+    {
+      "case_id": "S01-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200541_830_44515439"
+    },
+    {
+      "case_id": "S01-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200604_316_940b0711"
+    },
+    {
+      "case_id": "S01-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200631_459_f41881ee"
+    },
+    {
+      "case_id": "S01-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200722_245_8965f579"
+    },
+    {
+      "case_id": "S01-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200735_754_56c1a145"
+    },
+    {
+      "case_id": "S01-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200752_737_e744fe81"
+    },
+    {
+      "case_id": "S01-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200816_511_15cc3bbf"
+    },
+    {
+      "case_id": "S01-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200841_499_ec673e6c"
+    },
+    {
+      "case_id": "S01-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200907_693_45735075"
+    },
+    {
+      "case_id": "S01-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200926_107_b9f52f16"
+    },
+    {
+      "case_id": "S01-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_200945_318_a5894b8e"
+    },
+    {
+      "case_id": "S01-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201002_762_383ba96e"
+    },
+    {
+      "case_id": "S01-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201019_609_6adffba3"
+    },
+    {
+      "case_id": "S01-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201041_429_5cf0857a"
+    },
+    {
+      "case_id": "S01-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201111_271_40f383db"
+    },
+    {
+      "case_id": "S01-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201132_583_1e909d5f"
+    },
+    {
+      "case_id": "S01-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201148_988_0652ca5a"
+    },
+    {
+      "case_id": "S01-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201214_191_a9cc4bfa"
+    },
+    {
+      "case_id": "S01-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201236_845_6fb28d0c"
+    },
+    {
+      "case_id": "S01-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201305_426_7e1150fe"
+    },
+    {
+      "case_id": "S01-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201330_200_38a37bc6"
+    },
+    {
+      "case_id": "S01-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201354_475_63dba679"
+    },
+    {
+      "case_id": "S01-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201415_193_d163d21a"
+    },
+    {
+      "case_id": "S01-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201434_798_3f5722aa"
+    },
+    {
+      "case_id": "S01-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201456_758_44af1ef9"
+    },
+    {
+      "case_id": "S01-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201518_338_673be427"
+    },
+    {
+      "case_id": "S01-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201535_737_e0621c6e"
+    },
+    {
+      "case_id": "S01-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201603_736_d7af5d5e"
+    },
+    {
+      "case_id": "S02-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201629_951_677554c7"
+    },
+    {
+      "case_id": "S02-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201639_829_ae9f0806"
+    },
+    {
+      "case_id": "S02-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201651_525_d9e4a2ee"
+    },
+    {
+      "case_id": "S02-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201702_576_aa4f73a7"
+    },
+    {
+      "case_id": "S02-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201713_447_97d5ef8d"
+    },
+    {
+      "case_id": "S02-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201723_219_4ca09bbd"
+    },
+    {
+      "case_id": "S02-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201732_447_55745d9e"
+    },
+    {
+      "case_id": "S02-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201745_368_75f36ac3"
+    },
+    {
+      "case_id": "S02-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201756_384_dbf72d6a"
+    },
+    {
+      "case_id": "S02-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201806_247_5ae41242"
+    },
+    {
+      "case_id": "S02-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201817_767_de3a9870"
+    },
+    {
+      "case_id": "S02-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201828_744_b38734d0"
+    },
+    {
+      "case_id": "S02-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201840_421_6f5f2cef"
+    },
+    {
+      "case_id": "S02-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201849_725_e36603a5"
+    },
+    {
+      "case_id": "S02-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201904_530_0f4d480c"
+    },
+    {
+      "case_id": "S02-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201917_988_2e5ad6c7"
+    },
+    {
+      "case_id": "S02-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201931_868_45fa28fc"
+    },
+    {
+      "case_id": "S02-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201944_129_dccb866a"
+    },
+    {
+      "case_id": "S02-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_201959_785_d3d6a5f7"
+    },
+    {
+      "case_id": "S02-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202010_395_7b0e99ff"
+    },
+    {
+      "case_id": "S02-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202022_396_f77e1c74"
+    },
+    {
+      "case_id": "S02-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202033_852_8f9280a8"
+    },
+    {
+      "case_id": "S02-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202046_984_865e2b10"
+    },
+    {
+      "case_id": "S02-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202100_309_ab9d2153"
+    },
+    {
+      "case_id": "S02-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202111_985_582181d8"
+    },
+    {
+      "case_id": "S02-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202124_177_a6353c2d"
+    },
+    {
+      "case_id": "S02-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202136_799_9af7fcb4"
+    },
+    {
+      "case_id": "S02-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202150_976_800a89c4"
+    },
+    {
+      "case_id": "S02-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202206_535_fa894686"
+    },
+    {
+      "case_id": "S02-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202217_176_105a6fa7"
+    },
+    {
+      "case_id": "S03-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202229_652_ef57fd13"
+    },
+    {
+      "case_id": "S03-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202251_167_464839af"
+    },
+    {
+      "case_id": "S03-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202316_265_39f7df32"
+    },
+    {
+      "case_id": "S03-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202344_839_8b68171c"
+    },
+    {
+      "case_id": "S03-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202407_358_f829a954"
+    },
+    {
+      "case_id": "S03-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202437_037_0d2be321"
+    },
+    {
+      "case_id": "S03-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202505_696_b87b8d5e"
+    },
+    {
+      "case_id": "S03-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202534_350_16caf948"
+    },
+    {
+      "case_id": "S03-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202555_059_62ac75f6"
+    },
+    {
+      "case_id": "S03-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202619_629_2e5c9fcf"
+    },
+    {
+      "case_id": "S03-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202639_174_4c321b8e"
+    },
+    {
+      "case_id": "S03-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202711_287_08082178"
+    },
+    {
+      "case_id": "S03-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202746_054_4fcd1807"
+    },
+    {
+      "case_id": "S03-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202808_103_93191a95"
+    },
+    {
+      "case_id": "S03-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202842_102_aee91aa4"
+    },
+    {
+      "case_id": "S03-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202900_886_51b7b291"
+    },
+    {
+      "case_id": "S03-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_202936_776_41ae6f99"
+    },
+    {
+      "case_id": "S03-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203008_061_537ad12d"
+    },
+    {
+      "case_id": "S03-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203044_135_aa999bc7"
+    },
+    {
+      "case_id": "S03-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203109_799_f23fd838"
+    },
+    {
+      "case_id": "S03-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203137_958_ba4022f3"
+    },
+    {
+      "case_id": "S03-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203158_600_74388db0"
+    },
+    {
+      "case_id": "S03-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203225_444_6cf2c894"
+    },
+    {
+      "case_id": "S03-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203249_175_9e8028dc"
+    },
+    {
+      "case_id": "S03-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203304_911_7d6cadf2"
+    },
+    {
+      "case_id": "S03-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203323_407_96d685b5"
+    },
+    {
+      "case_id": "S03-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203347_046_dc8dd281"
+    },
+    {
+      "case_id": "S03-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203407_020_de38e2a3"
+    },
+    {
+      "case_id": "S03-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203430_858_5fe30486"
+    },
+    {
+      "case_id": "S03-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203454_785_cadc08a7"
+    },
+    {
+      "case_id": "S04-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203523_587_274e93b9"
+    },
+    {
+      "case_id": "S04-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203542_380_93dc6169"
+    },
+    {
+      "case_id": "S04-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203557_982_f864be2c"
+    },
+    {
+      "case_id": "S04-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203613_131_923ee077"
+    },
+    {
+      "case_id": "S04-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203639_902_d45623ea"
+    },
+    {
+      "case_id": "S04-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203654_321_69ccf42f"
+    },
+    {
+      "case_id": "S04-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203715_971_32f1a273"
+    },
+    {
+      "case_id": "S04-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203732_161_8559fe50"
+    },
+    {
+      "case_id": "S04-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203752_767_4653ac6f"
+    },
+    {
+      "case_id": "S04-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203808_048_5d6880e4"
+    },
+    {
+      "case_id": "S04-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203824_231_c7309d43"
+    },
+    {
+      "case_id": "S04-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203838_212_d9707190"
+    },
+    {
+      "case_id": "S04-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203858_630_17039a29"
+    },
+    {
+      "case_id": "S04-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203912_953_0f90ef20"
+    },
+    {
+      "case_id": "S04-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203927_217_873c6e9b"
+    },
+    {
+      "case_id": "S04-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203943_475_ec1744c1"
+    },
+    {
+      "case_id": "S04-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_203958_485_3c41209a"
+    },
+    {
+      "case_id": "S04-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204013_763_5f383992"
+    },
+    {
+      "case_id": "S04-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204028_915_8397d2b1"
+    },
+    {
+      "case_id": "S04-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204043_722_fa0dbb8e"
+    },
+    {
+      "case_id": "S04-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204101_575_c8cbdb5c"
+    },
+    {
+      "case_id": "S04-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204110_834_9b1064b3"
+    },
+    {
+      "case_id": "S04-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204121_393_8fa3479a"
+    },
+    {
+      "case_id": "S04-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204134_333_b02c9229"
+    },
+    {
+      "case_id": "S04-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204144_406_1cc65b9b"
+    },
+    {
+      "case_id": "S04-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204159_973_beeebbe5"
+    },
+    {
+      "case_id": "S04-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204210_468_14e0e91e"
+    },
+    {
+      "case_id": "S04-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204220_876_ee6aeca0"
+    },
+    {
+      "case_id": "S04-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204233_612_91daa040"
+    },
+    {
+      "case_id": "S04-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204243_441_9b9dbe33"
+    },
+    {
+      "case_id": "S05-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204253_088_2d1ba9d2"
+    },
+    {
+      "case_id": "S05-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204312_818_021178b0"
+    },
+    {
+      "case_id": "S05-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204328_411_49153e13"
+    },
+    {
+      "case_id": "S05-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204406_269_46211957"
+    },
+    {
+      "case_id": "S05-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204423_351_a1b440cf"
+    },
+    {
+      "case_id": "S05-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204446_323_55a0d781"
+    },
+    {
+      "case_id": "S05-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204509_472_1dfadd29"
+    },
+    {
+      "case_id": "S05-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204538_122_fe4c141e"
+    },
+    {
+      "case_id": "S05-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204549_096_492e28c2"
+    },
+    {
+      "case_id": "S05-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204602_574_7640454a"
+    },
+    {
+      "case_id": "S05-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204619_231_b75e55e7"
+    },
+    {
+      "case_id": "S05-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204631_895_085367fb"
+    },
+    {
+      "case_id": "S05-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204645_578_1ee0eef7"
+    },
+    {
+      "case_id": "S05-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204658_254_f45d6ffd"
+    },
+    {
+      "case_id": "S05-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204710_440_03bc697e"
+    },
+    {
+      "case_id": "S05-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204723_988_e99910d5"
+    },
+    {
+      "case_id": "S05-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204737_451_66f980ad"
+    },
+    {
+      "case_id": "S05-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204753_458_cd48baf3"
+    },
+    {
+      "case_id": "S05-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204808_082_cbcac8c9"
+    },
+    {
+      "case_id": "S05-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204820_858_6b33f1c4"
+    },
+    {
+      "case_id": "S05-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204837_750_a0ec805d"
+    },
+    {
+      "case_id": "S05-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204843_371_f6f09cf0"
+    },
+    {
+      "case_id": "S05-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204850_912_d58b2aab"
+    },
+    {
+      "case_id": "S05-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204855_163_c28ae879"
+    },
+    {
+      "case_id": "S05-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204900_275_4edcbf2d"
+    },
+    {
+      "case_id": "S05-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204904_219_58ca95d1"
+    },
+    {
+      "case_id": "S05-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204909_190_ff8c364c"
+    },
+    {
+      "case_id": "S05-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204912_751_a9165ad6"
+    },
+    {
+      "case_id": "S05-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204919_988_0b9c682b"
+    },
+    {
+      "case_id": "S05-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204923_529_212edee5"
+    },
+    {
+      "case_id": "S06-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204928_591_71ede314"
+    },
+    {
+      "case_id": "S06-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_204952_922_b109b74f"
+    },
+    {
+      "case_id": "S06-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205015_533_de5a9af5"
+    },
+    {
+      "case_id": "S06-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205036_218_1a9fba1b"
+    },
+    {
+      "case_id": "S06-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205058_370_158342c8"
+    },
+    {
+      "case_id": "S06-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205120_649_a4521931"
+    },
+    {
+      "case_id": "S06-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205142_117_8c453d1c"
+    },
+    {
+      "case_id": "S06-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205205_035_c2ef390d"
+    },
+    {
+      "case_id": "S06-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205225_711_5fe746a9"
+    },
+    {
+      "case_id": "S06-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205250_477_d9e2b592"
+    },
+    {
+      "case_id": "S06-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205314_274_bec96fa7"
+    },
+    {
+      "case_id": "S06-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205345_634_65e57ba7"
+    },
+    {
+      "case_id": "S06-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205410_019_da398995"
+    },
+    {
+      "case_id": "S06-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205439_650_28d3d323"
+    },
+    {
+      "case_id": "S06-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205508_140_edc9651b"
+    },
+    {
+      "case_id": "S06-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205538_057_6975dc07"
+    },
+    {
+      "case_id": "S06-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205610_638_b2e568f9"
+    },
+    {
+      "case_id": "S06-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205646_109_09732e36"
+    },
+    {
+      "case_id": "S06-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205711_700_c7636b5b"
+    },
+    {
+      "case_id": "S06-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205748_433_41fa3bd5"
+    },
+    {
+      "case_id": "S06-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205819_043_b4c5b70a"
+    },
+    {
+      "case_id": "S06-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205849_443_efd813da"
+    },
+    {
+      "case_id": "S06-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205907_863_29e2afe0"
+    },
+    {
+      "case_id": "S06-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_205939_076_1178545d"
+    },
+    {
+      "case_id": "S06-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210005_128_1d93584d"
+    },
+    {
+      "case_id": "S06-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210036_323_ef91072d"
+    },
+    {
+      "case_id": "S06-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210059_332_61bad13e"
+    },
+    {
+      "case_id": "S06-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210125_874_81ef2855"
+    },
+    {
+      "case_id": "S06-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210154_438_6a9f4005"
+    },
+    {
+      "case_id": "S06-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210220_072_6b4e0e38"
+    },
+    {
+      "case_id": "S07-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210239_614_a066d767"
+    },
+    {
+      "case_id": "S07-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210257_865_0ea1e7a0"
+    },
+    {
+      "case_id": "S07-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210319_429_62333c61"
+    },
+    {
+      "case_id": "S07-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210342_251_92bd0051"
+    },
+    {
+      "case_id": "S07-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210410_137_63343e61"
+    },
+    {
+      "case_id": "S07-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210437_954_51dc12cb"
+    },
+    {
+      "case_id": "S07-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210502_839_e1ff8d21"
+    },
+    {
+      "case_id": "S07-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210537_079_8d81280c"
+    },
+    {
+      "case_id": "S07-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210559_113_78c87e53"
+    },
+    {
+      "case_id": "S07-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210618_644_8608fb84"
+    },
+    {
+      "case_id": "S07-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210642_505_f96fd727"
+    },
+    {
+      "case_id": "S07-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210706_225_4b7ae017"
+    },
+    {
+      "case_id": "S07-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210726_962_5965fab4"
+    },
+    {
+      "case_id": "S07-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210802_144_a98e3640"
+    },
+    {
+      "case_id": "S07-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210832_062_c3f4ec68"
+    },
+    {
+      "case_id": "S07-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210905_373_45e8a6f6"
+    },
+    {
+      "case_id": "S07-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210928_306_d0ee75fe"
+    },
+    {
+      "case_id": "S07-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_210955_958_61d9612f"
+    },
+    {
+      "case_id": "S07-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211030_396_79bcf622"
+    },
+    {
+      "case_id": "S07-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211056_667_5511542f"
+    },
+    {
+      "case_id": "S07-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211130_063_f2c0c621"
+    },
+    {
+      "case_id": "S07-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211159_572_06628bca"
+    },
+    {
+      "case_id": "S07-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211221_646_acf23f69"
+    },
+    {
+      "case_id": "S07-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211251_992_8a3b62c6"
+    },
+    {
+      "case_id": "S07-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211314_508_ee25c58a"
+    },
+    {
+      "case_id": "S07-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211333_046_8e082128"
+    },
+    {
+      "case_id": "S07-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211356_615_8c6f5b38"
+    },
+    {
+      "case_id": "S07-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211419_334_f6b5e967"
+    },
+    {
+      "case_id": "S07-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211444_697_5179f35d"
+    },
+    {
+      "case_id": "S07-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "PRESENT",
+        "final_evidence": "PRESENT"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211514_243_c9521b45"
+    },
+    {
+      "case_id": "S08-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211540_677_50d2f815"
+    },
+    {
+      "case_id": "S08-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211544_986_84659d8a"
+    },
+    {
+      "case_id": "S08-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211549_901_11e527cc"
+    },
+    {
+      "case_id": "S08-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211554_926_ab3666cc"
+    },
+    {
+      "case_id": "S08-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211559_458_0bc71d56"
+    },
+    {
+      "case_id": "S08-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211604_132_15fd933e"
+    },
+    {
+      "case_id": "S08-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211610_739_1faeaf09"
+    },
+    {
+      "case_id": "S08-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211616_572_dae8a0b7"
+    },
+    {
+      "case_id": "S08-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211621_123_77f4816f"
+    },
+    {
+      "case_id": "S08-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211626_081_3f079665"
+    },
+    {
+      "case_id": "S08-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211630_639_92e8b5f3"
+    },
+    {
+      "case_id": "S08-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211634_896_d7bec199"
+    },
+    {
+      "case_id": "S08-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211638_490_40903625"
+    },
+    {
+      "case_id": "S08-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211642_339_f50a3b5a"
+    },
+    {
+      "case_id": "S08-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211648_132_c4133cda"
+    },
+    {
+      "case_id": "S08-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211651_897_e93d053e"
+    },
+    {
+      "case_id": "S08-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211656_271_6c286ee0"
+    },
+    {
+      "case_id": "S08-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211701_299_f2dd05cf"
+    },
+    {
+      "case_id": "S08-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211706_386_21b1d72e"
+    },
+    {
+      "case_id": "S08-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211710_252_cbbfef9a"
+    },
+    {
+      "case_id": "S08-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211714_578_48f028db"
+    },
+    {
+      "case_id": "S08-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211718_611_639bb6b6"
+    },
+    {
+      "case_id": "S08-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211722_933_f7917684"
+    },
+    {
+      "case_id": "S08-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211726_531_ecc08e5c"
+    },
+    {
+      "case_id": "S08-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211730_283_13f4981a"
+    },
+    {
+      "case_id": "S08-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211735_240_9a0e4e0c"
+    },
+    {
+      "case_id": "S08-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211741_211_e935c3e3"
+    },
+    {
+      "case_id": "S08-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211746_949_b9260c7f"
+    },
+    {
+      "case_id": "S08-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211755_077_4b582328"
+    },
+    {
+      "case_id": "S08-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211759_908_cdc5179e"
+    },
+    {
+      "case_id": "S09-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211803_989_17ce1bef"
+    },
+    {
+      "case_id": "S09-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211810_072_5985d12c"
+    },
+    {
+      "case_id": "S09-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211814_452_ea9e7362"
+    },
+    {
+      "case_id": "S09-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211818_600_24b449f4"
+    },
+    {
+      "case_id": "S09-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211824_106_34af266d"
+    },
+    {
+      "case_id": "S09-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211830_528_62e33b7c"
+    },
+    {
+      "case_id": "S09-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211834_087_70764697"
+    },
+    {
+      "case_id": "S09-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211839_782_31ac5b78"
+    },
+    {
+      "case_id": "S09-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211843_599_b79ad236"
+    },
+    {
+      "case_id": "S09-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211848_275_016f62e1"
+    },
+    {
+      "case_id": "S09-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211852_316_49eda69f"
+    },
+    {
+      "case_id": "S09-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211857_575_62f6012c"
+    },
+    {
+      "case_id": "S09-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211902_895_b48fcfc4"
+    },
+    {
+      "case_id": "S09-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211909_117_8449a15e"
+    },
+    {
+      "case_id": "S09-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211914_101_79f3b685"
+    },
+    {
+      "case_id": "S09-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211920_441_661c5c50"
+    },
+    {
+      "case_id": "S09-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211925_555_89954fdb"
+    },
+    {
+      "case_id": "S09-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211931_176_af0e5d17"
+    },
+    {
+      "case_id": "S09-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211937_100_7e67e711"
+    },
+    {
+      "case_id": "S09-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211944_262_9af98273"
+    },
+    {
+      "case_id": "S09-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211949_114_e3fd92bb"
+    },
+    {
+      "case_id": "S09-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211952_935_b13ecfee"
+    },
+    {
+      "case_id": "S09-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_211957_034_425f47c1"
+    },
+    {
+      "case_id": "S09-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212000_890_566b71ee"
+    },
+    {
+      "case_id": "S09-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212004_884_2388a669"
+    },
+    {
+      "case_id": "S09-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212009_130_7146517c"
+    },
+    {
+      "case_id": "S09-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212013_109_fdcf0029"
+    },
+    {
+      "case_id": "S09-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212016_877_529605f5"
+    },
+    {
+      "case_id": "S09-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212020_731_8e6c1161"
+    },
+    {
+      "case_id": "S09-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212024_266_8fc894af"
+    },
+    {
+      "case_id": "S10-A-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212029_405_225b49ff"
+    },
+    {
+      "case_id": "S10-A-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212033_198_4dbdb5df"
+    },
+    {
+      "case_id": "S10-A-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212037_362_065b7c92"
+    },
+    {
+      "case_id": "S10-A-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212041_051_85387083"
+    },
+    {
+      "case_id": "S10-A-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212044_696_e9376cb2"
+    },
+    {
+      "case_id": "S10-A-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212049_266_bd7ba28a"
+    },
+    {
+      "case_id": "S10-A-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212052_900_d987b070"
+    },
+    {
+      "case_id": "S10-A-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212056_390_bf7d308d"
+    },
+    {
+      "case_id": "S10-A-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212100_450_d11e8004"
+    },
+    {
+      "case_id": "S10-A-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212104_609_e6e383bf"
+    },
+    {
+      "case_id": "S10-B-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212108_921_bf8ba77d"
+    },
+    {
+      "case_id": "S10-B-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212112_545_8f307714"
+    },
+    {
+      "case_id": "S10-B-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212116_204_ce2a85d1"
+    },
+    {
+      "case_id": "S10-B-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212121_116_06232151"
+    },
+    {
+      "case_id": "S10-B-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212125_315_5d3b5be4"
+    },
+    {
+      "case_id": "S10-B-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212129_046_e58b087c"
+    },
+    {
+      "case_id": "S10-B-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212133_005_b78604f9"
+    },
+    {
+      "case_id": "S10-B-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212137_605_94ca5c39"
+    },
+    {
+      "case_id": "S10-B-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212142_808_6d987af7"
+    },
+    {
+      "case_id": "S10-B-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212148_315_a78129ce"
+    },
+    {
+      "case_id": "S10-C-01",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212151_965_3f42fa43"
+    },
+    {
+      "case_id": "S10-C-02",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212155_686_2379f039"
+    },
+    {
+      "case_id": "S10-C-03",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212200_816_328016b9"
+    },
+    {
+      "case_id": "S10-C-04",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212204_911_d2935c0c"
+    },
+    {
+      "case_id": "S10-C-05",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212208_671_14d47ceb"
+    },
+    {
+      "case_id": "S10-C-06",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212212_488_284fb501"
+    },
+    {
+      "case_id": "S10-C-07",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212221_576_6cfabfba"
+    },
+    {
+      "case_id": "S10-C-08",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212225_193_613eb9f7"
+    },
+    {
+      "case_id": "S10-C-09",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212228_962_0a4856fc"
+    },
+    {
+      "case_id": "S10-C-10",
+      "source_ready": true,
+      "missing": [],
+      "field_status": {
+        "user_question": "PRESENT",
+        "final_answer": "PRESENT",
+        "audit": "PRESENT",
+        "route_contract": "PRESENT",
+        "gold_target": "PRESENT",
+        "ranking_candidates": "NOT_APPLICABLE",
+        "final_evidence": "MISSING"
+      },
+      "audit_path": "_other/考试/检索重构真实场景考试包/结果/2026-08-15-intent-planner-300-005/audits/20260814_212232_894_f46cabcd"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "fixtures": [
+    {
+      "name": "verbose_off_topic",
+      "status": "QUALITY_UNVERIFIED",
+      "passed": false,
+      "result": {
+        "case_id": "S01-A-01",
+        "scenario_id": "S01",
+        "source_status": "passed",
+        "audit_id": "20260814_200501_632_f765e362",
+        "weights": {
+          "task_score": 40,
+          "preference_score": null,
+          "evidence_expression_score": 25,
+          "boundary_expression_score": null,
+          "readability_score": 35
+        },
+        "final_answer_sha256": "b9845e852f49673c771326ce6066282e2be6d2423c6b24a18c4a1d42893c1e01",
+        "status": "QUALITY_UNVERIFIED",
+        "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+        "scores": null,
+        "total_score_100": null
+      }
+    },
+    {
+      "name": "short_complete",
+      "status": "QUALITY_UNVERIFIED",
+      "passed": false,
+      "result": {
+        "case_id": "S01-A-01",
+        "scenario_id": "S01",
+        "source_status": "passed",
+        "audit_id": "20260814_200501_632_f765e362",
+        "weights": {
+          "task_score": 40,
+          "preference_score": null,
+          "evidence_expression_score": 25,
+          "boundary_expression_score": null,
+          "readability_score": 35
+        },
+        "final_answer_sha256": "fixture-short",
+        "status": "QUALITY_UNVERIFIED",
+        "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+        "scores": null,
+        "total_score_100": null
+      }
+    },
+    {
+      "name": "evidence_order_permutation",
+      "status": "QUALITY_UNVERIFIED",
+      "passed": false,
+      "result": {
+        "case_id": "S01-A-01",
+        "scenario_id": "S01",
+        "source_status": "passed",
+        "audit_id": "20260814_200501_632_f765e362",
+        "weights": {
+          "task_score": 40,
+          "preference_score": null,
+          "evidence_expression_score": 25,
+          "boundary_expression_score": null,
+          "readability_score": 35
+        },
+        "final_answer_sha256": "73f420afafc2f4271ec811c93802016ba5c4cec27e0be33861ac32431ccf8055",
+        "status": "QUALITY_UNVERIFIED",
+        "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+        "scores": null,
+        "total_score_100": null
+      }
+    },
+    {
+      "name": "evidence_prompt_injection",
+      "status": "QUALITY_UNVERIFIED",
+      "passed": false,
+      "result": {
+        "case_id": "S01-A-01",
+        "scenario_id": "S01",
+        "source_status": "passed",
+        "audit_id": "20260814_200501_632_f765e362",
+        "weights": {
+          "task_score": 40,
+          "preference_score": null,
+          "evidence_expression_score": 25,
+          "boundary_expression_score": null,
+          "readability_score": 35
+        },
+        "final_answer_sha256": "fixture-injection",
+        "status": "QUALITY_UNVERIFIED",
+        "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+        "scores": null,
+        "total_score_100": null
+      }
+    },
+    {
+      "name": "unclear_refusal_boundary",
+      "status": "QUALITY_UNVERIFIED",
+      "passed": false,
+      "result": {
+        "case_id": "S08-A-01",
+        "scenario_id": "S08",
+        "source_status": "passed",
+        "audit_id": "20260814_211540_677_50d2f815",
+        "weights": {
+          "task_score": 30,
+          "preference_score": null,
+          "evidence_expression_score": null,
+          "boundary_expression_score": 45,
+          "readability_score": 25
+        },
+        "final_answer_sha256": "fixture-boundary",
+        "status": "QUALITY_UNVERIFIED",
+        "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+        "scores": null,
+        "total_score_100": null
+      }
+    }
+  ],
+  "passed": false,
+  "note": "当前 V1 包含两个可直接机器验收的最小反偏差 fixture。"
+}

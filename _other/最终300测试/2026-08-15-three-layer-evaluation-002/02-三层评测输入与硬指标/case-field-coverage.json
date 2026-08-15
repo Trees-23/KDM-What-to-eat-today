@@ -1,0 +1,12 @@
+{
+  "case_count": 300,
+  "fields": {
+    "user_question": 300,
+    "final_answer": 300,
+    "audit": 300,
+    "route_contract": 300,
+    "gold_target": 300,
+    "ranking_candidates": 60,
+    "final_evidence": 200
+  }
+}

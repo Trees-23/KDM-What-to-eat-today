@@ -1,0 +1,1635 @@
+{
+  "judge_profile": {
+    "model": "gpt-5.5",
+    "reviewers": "independent A/B calls",
+    "risk": "SINGLE_MODEL_REVIEW_RISK"
+  },
+  "summary": {
+    "VALID": 0,
+    "AUTO_DISAGREEMENT": 0,
+    "QUALITY_UNVERIFIED": 90,
+    "NOT_APPLICABLE": 0
+  },
+  "cases": [
+    {
+      "case_id": "S01-A-02",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_200523_058_33dcc260",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "2754a94bb0aa141934ca59c1dbc46c20ec8e065d5a0664ddbca2d0ab22103398",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-A-04",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_200604_316_940b0711",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "6fd392e11b8fdf8e6ef98ba871cdf18303ae67aef60ff1326a66c2aab14d14d9",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-A-05",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_200631_459_f41881ee",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "444bf31bc9827d289b23e5c635d7097e5fcea98224a6b3829949f319f49a523a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-B-05",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201019_609_6adffba3",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "ae67dd14156bea2f672b78d709c39cad97fd9046822a02072c8e2d24f0f2b563",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-B-06",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201041_429_5cf0857a",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "0f9f1a032f416c04fded119697142fa53b8591dff06da222e250b85543de557f",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-B-07",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201111_271_40f383db",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "b94c02b1ee8ba397023ca53cc1f0332d29e18304916e972609d36f175957b194",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-C-03",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201330_200_38a37bc6",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "02ed8d334ea16d025b4a6aa8526431e8bc534b9a43d048b03c4458ba6888d4e3",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-C-07",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201456_758_44af1ef9",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "16f551e48887b1e93f8bd7124e8ad3340d241442c422b3c77c41a58e8b3495bd",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S01-C-10",
+      "scenario_id": "S01",
+      "source_status": "passed",
+      "audit_id": "20260814_201603_736_d7af5d5e",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "1875114ef413115125a1abf457b3419ca41f42e07b85cf5f6be3c05bc2a4de95",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-A-03",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_201651_525_d9e4a2ee",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "cce82693d44615c9b30b074834e00fce9cc0910e831ae8043bb818f920f95572",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-A-04",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_201702_576_aa4f73a7",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "59506d679487df0bea17be1d48d69390a57af2913cdeae88047c267c3e02b850",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-A-05",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_201713_447_97d5ef8d",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "c3635a11cbcde45f4e9dcd12ddd96bf711fa48a843c1a4baf3e9181672fe946a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-B-03",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_201840_421_6f5f2cef",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "8a591fe09b09dade2bf9b2b10468241c0cb7633c7612b75a5e71f190e93ef7e9",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-B-05",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_201904_530_0f4d480c",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "0cb587bd8cc9cacc778dba05049e9ef6dd9ac14239b1e9515b8d37351b9ba217",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-B-10",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_202010_395_7b0e99ff",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "25cd9902ca0968ff8316bf40d33d32bc7f3861a1fcc68958b0ba2f686e23739a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-C-04",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_202100_309_ab9d2153",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "20fd51f5dd5c4fbb58f7a4b98c13e8c437925c531c3632bb4612c0db574b5caa",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-C-05",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_202111_985_582181d8",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "e5feb5bf41cae9a13b4e3757c6ae54532b0fdd21202227b2e369b5dbf2d85bdd",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S02-C-09",
+      "scenario_id": "S02",
+      "source_status": "passed",
+      "audit_id": "20260814_202206_535_fa894686",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "0bf9b32d39c4b4aa754a6e879dbe1c358ed15324bae3c1870b45fc0da6994962",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-A-03",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202316_265_39f7df32",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "ed237d9f90284ca660c5aad8eccff603dd4b8db59ef5f486b52cb318b9b4d17c",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-A-04",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202344_839_8b68171c",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "48aac4be5478a952f93b81caba4e48a64be5f4f6bd4f4c12ca327b2339b116c4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-A-05",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202407_358_f829a954",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "4b64cdd91e4877060664848cd38665cbfe67baff93275f3120aeb61ec00a3739",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-B-02",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202711_287_08082178",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "0a37611442880353caba6ec590c889dee1759f51b2c1495814ece0d88cf00cbc",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-B-05",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202842_102_aee91aa4",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "c7a1e71a2b7e90e279c3bf7fa8dd6d6280de38c4c1984d517b02bbf87b4b1d81",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-B-06",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_202900_886_51b7b291",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "79bfdc09580a98bf2097812b2218806d08b09cdef8ef2ceef187e42e4a265ae5",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-C-01",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_203137_958_ba4022f3",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "59c33b073ce26811c28b1b665c4e1ded28ec3ee96ddf9ec9740eecb7f54a3476",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-C-04",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_203249_175_9e8028dc",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "5b7269cc75433562752311537e2f445e5923c8ba702bb29fbc612226e235bab5",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S03-C-07",
+      "scenario_id": "S03",
+      "source_status": "passed",
+      "audit_id": "20260814_203347_046_dc8dd281",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "ef1aa17f95d7c4e919b1acaa29d3e31513bfc1945bee1dc5d03ce01876c672c0",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-A-01",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_203523_587_274e93b9",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "27090ee0d7c55383824b7c67a52e0132352e72ab787c183f31fa09a054afb81d",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-A-04",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_203613_131_923ee077",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "4ff68a930f979b4b9b2b290ff05b0afc142dfd018452260c32d2dbaa68804b2c",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-A-07",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_203715_971_32f1a273",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "2920d7ff258a11cb5a9519f61595694e9e019114c51ab5bfc4bdfa4c88ebd877",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-B-01",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_203824_231_c7309d43",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "2ae9ed1653680b75256ba650816abf16973ed21c94a87e510303f896ac5eb081",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-B-06",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_203943_475_ec1744c1",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "8914cc8a41b96fa7677ecab270dd0f01b8b77d16fa4c4744950e96e3705ac24a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-B-09",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_204028_915_8397d2b1",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "67ca013c99cef9cfe0491104a864776417e1e4c44706722f674c34a48b4a6a05",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-C-01",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_204101_575_c8cbdb5c",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "367cfe270594f8ff389080765b7cf9390c6e09baf7c349f008e527ed23fd0a50",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-C-09",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_204233_612_91daa040",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "9ff2da897806c1998c57117967dd06d7cc2bf9dedc5e22d4697742e4990f4f9a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S04-C-10",
+      "scenario_id": "S04",
+      "source_status": "passed",
+      "audit_id": "20260814_204243_441_9b9dbe33",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "a74a29804a0b8e12d8132773768d0ab61e63f34bc632240c73563710a66fb7a4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-A-03",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204328_411_49153e13",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "f53806face4402ad2c119c171a9ccc0b4c6ed3ab1fb3684172d046ee2df1a6a9",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-A-04",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204406_269_46211957",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "852b040a94b3d962107f2d322edc00e3089a7bf8f3888ea29441979f598cd6c3",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-A-08",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204538_122_fe4c141e",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "002e35c618fa210692521ad2bde513c471869c62beaed17f0d5da64eb8ac1ca5",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-B-01",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204619_231_b75e55e7",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "54f0f0f379557d11aa755466436b3337241e54b04a8c00cfad9db3e6ef7f8441",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-B-04",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204658_254_f45d6ffd",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "8881f4f8a8c966f1b2d9568dd36de64f1a92bf7028fa1b15032d304094dec4ab",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-B-05",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204710_440_03bc697e",
+      "weights": {
+        "task_score": 40,
+        "preference_score": null,
+        "evidence_expression_score": 25,
+        "boundary_expression_score": null,
+        "readability_score": 35
+      },
+      "final_answer_sha256": "6f486b6f83b1e8b7c16b1831c491ad63a153a488cccf65a17209774865393d17",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-C-02",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204843_371_f6f09cf0",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "c3b0923f247f9c808f3b6b4330a9723e10a11ac06345631638143444d2d126a4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-C-03",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204850_912_d58b2aab",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "c3b0923f247f9c808f3b6b4330a9723e10a11ac06345631638143444d2d126a4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S05-C-09",
+      "scenario_id": "S05",
+      "source_status": "passed",
+      "audit_id": "20260814_204919_988_0b9c682b",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "c3b0923f247f9c808f3b6b4330a9723e10a11ac06345631638143444d2d126a4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-A-01",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_204928_591_71ede314",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "c56c6f3d0af1c47841fd2df83bc8c919c0d4691e547992c4515179d952adaa38",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-A-07",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205142_117_8c453d1c",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "088f17c0a740f361812f5f7378d6a729885ecf31b1cc288720d88e4743554b15",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-A-10",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205250_477_d9e2b592",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "3b915bee4c972a1cb57af7b3a2d3498b6663eb08d061def9fca680abd88567ef",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-B-04",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205439_650_28d3d323",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "3802b468d1a13ff1fdb7ebfe6dabc22fc40610a0e6441df9639dd02462a57638",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-B-05",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205508_140_edc9651b",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "1cb07d2921c6c660e6395715923110787e690e3966c45983481fceeef5d0865a",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-B-08",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205646_109_09732e36",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "b0adfcddf56084aa8414a157e8062cacb10f8c7b74bab9ae0f1cc1bc3778655e",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-C-01",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_205819_043_b4c5b70a",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "58c9eba98a29a2f29f28cc992bdfcbe86af6ac671a76d1b14f3b93c8a67b8bdf",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-C-05",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_210005_128_1d93584d",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "c85634efdcb750c72a5ee4acfa4c04357adae875486c5bea0c2792638f5bac69",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S06-C-08",
+      "scenario_id": "S06",
+      "source_status": "passed",
+      "audit_id": "20260814_210125_874_81ef2855",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "a111355cc644f23087ef410cf971600297fe8f2829e176abdd30bd9cd08a6cd4",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-A-01",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_210239_614_a066d767",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "dbf425a0db7a9ecdc0b11de09697714a2b6b2b105376cfbd6b7bd461348b3713",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-A-02",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_210257_865_0ea1e7a0",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "18d1853c409d2d5f59c8ca4482d5f439bdaa6814cc6b13b081f4c71dccf0e8ad",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-A-09",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_210559_113_78c87e53",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "c0fdd73e160ba5f352f73de6b0c75581c3c9d8e22ac16f8d89b3053205def5e7",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-B-01",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_210642_505_f96fd727",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "a24650d0c2dd79d607c8c6796716afc11243546926bd68d3f51d3a69acc19eb2",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-B-08",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_210955_958_61d9612f",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "62d5f9be9f173ab51e59daa7718f47f61d7ac42e20fe340e0d719f1a56e03475",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-B-09",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_211030_396_79bcf622",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "c8fb8785eb20cb6fef12bad5c35b3d03d99c661bbd49fcf979e5ce244444d25b",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-C-04",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_211251_992_8a3b62c6",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "a77bcea50ea2402ab80a521875ca3cd7cb1310f91e63317118c04526c78a83b6",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-C-07",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_211356_615_8c6f5b38",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "c0e5a9bda137da23629241a29495bdeaa1ad3796fcf2dfa23c176388ed1f90d0",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S07-C-08",
+      "scenario_id": "S07",
+      "source_status": "passed",
+      "audit_id": "20260814_211419_334_f6b5e967",
+      "weights": {
+        "task_score": 25,
+        "preference_score": 35,
+        "evidence_expression_score": 20,
+        "boundary_expression_score": null,
+        "readability_score": 20
+      },
+      "final_answer_sha256": "82e924f703ad78d2fa62ca0c46a50b0d550ea16cb25884e5f53b238527a4ba93",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-A-02",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211544_986_84659d8a",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-A-06",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211604_132_15fd933e",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-A-09",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211621_123_77f4816f",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-B-01",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211630_639_92e8b5f3",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-B-02",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211634_896_d7bec199",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-B-03",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211638_490_40903625",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-C-04",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211726_531_ecc08e5c",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-C-05",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211730_283_13f4981a",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S08-C-08",
+      "scenario_id": "S08",
+      "source_status": "passed",
+      "audit_id": "20260814_211746_949_b9260c7f",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-A-04",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211818_600_24b449f4",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-A-06",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211830_528_62e33b7c",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-A-10",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211848_275_016f62e1",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-B-01",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211852_316_49eda69f",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-B-02",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211857_575_62f6012c",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-B-07",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211925_555_89954fdb",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-C-02",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_211952_935_b13ecfee",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-C-09",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_212020_731_8e6c1161",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S09-C-10",
+      "scenario_id": "S09",
+      "source_status": "passed",
+      "audit_id": "20260814_212024_266_8fc894af",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "b588e98a7f0859350a1e637efaf30bc6d9bd7366aa56057937c810edeeff83df",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-A-06",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212049_266_bd7ba28a",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-A-09",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212100_450_d11e8004",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-A-10",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212104_609_e6e383bf",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-B-02",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212112_545_8f307714",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-B-03",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212116_204_ce2a85d1",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-B-07",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212133_005_b78604f9",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-C-02",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212155_686_2379f039",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-C-03",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212200_816_328016b9",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    },
+    {
+      "case_id": "S10-C-04",
+      "scenario_id": "S10",
+      "source_status": "passed",
+      "audit_id": "20260814_212204_911_d2935c0c",
+      "weights": {
+        "task_score": 30,
+        "preference_score": null,
+        "evidence_expression_score": null,
+        "boundary_expression_score": 45,
+        "readability_score": 25
+      },
+      "final_answer_sha256": "4b31830b1e0a69c37ec8b815e2eef1311b96a7c18bf5aa6b1e526b2795324edb",
+      "status": "QUALITY_UNVERIFIED",
+      "reason": "FINAL_ANSWER_OR_AI_JUDGE_UNAVAILABLE",
+      "scores": null,
+      "total_score_100": null
+    }
+  ]
+}

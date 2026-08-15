@@ -1,0 +1,1510 @@
+{
+  "policy_version": "rag-gold-policy-v1",
+  "cases": {
+    "S01-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S01-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S02-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S03-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S04-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "未发现可追溯的具体冻结 gold_items",
+      "ranking_stage": "retrieval"
+    },
+    "S05-C-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S05-C-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S06-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S06-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-A-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-B-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-01": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-02": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-03": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-04": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-05": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-06": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-07": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "RANK_MISSING",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-08": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-09": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S07-C-10": {
+      "status": "RAG_UNVERIFIED",
+      "reason": "AI_JUDGE_CREDENTIALS_UNAVAILABLE",
+      "ranking_stage": "rerank"
+    },
+    "S08-A-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-A-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-B-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S08-C-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-A-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-B-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S09-C-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-A-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-B-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-01": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-02": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-03": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-04": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-05": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-06": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-07": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-08": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-09": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    },
+    "S10-C-10": {
+      "status": "N/A",
+      "reason": "安全/拒答题或已验证空范围",
+      "ranking_stage": null
+    }
+  },
+  "summary": {
+    "COMPUTABLE": 0,
+    "N/A": 100,
+    "RAG_UNVERIFIED": 200
+  }
+}

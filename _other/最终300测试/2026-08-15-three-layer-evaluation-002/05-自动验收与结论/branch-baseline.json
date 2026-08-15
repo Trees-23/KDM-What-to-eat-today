@@ -1,0 +1,12 @@
+{
+  "branch": "codex/final-300-evaluation-run",
+  "fixed_baseline_sha": "525ff3496658d8536aba10fae63b55b8a578b386",
+  "origin_main_sha_at_start": "525ff3496658d8536aba10fae63b55b8a578b386",
+  "head_at_start": "f9f99d1ecfa37032f1848cc86d03034320a8ad6f",
+  "created_at": "2026-08-15T08:51:17.361030+00:00",
+  "pr_url": null,
+  "checks": {
+    "fixed_baseline_is_ancestor": true,
+    "head_equal_origin_main_at_start": false
+  }
+}

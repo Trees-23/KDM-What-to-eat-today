@@ -1,0 +1,11 @@
+{
+  "status": "AI_SERVICE_UNAVAILABLE",
+  "reason": "完整评审输入的并发请求持续超过六分钟未返回；单次健康检查可用，但批量 AI 服务不可用。",
+  "completed_without_ai": [
+    "P0",
+    "P1",
+    "硬指标引用",
+    "RAG 状态覆盖",
+    "P6 来源复制与哈希"
+  ]
+}
