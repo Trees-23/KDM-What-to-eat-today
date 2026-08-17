@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ===============================================
-echo       今天吃什么 - Docker 部署
+echo       RecipeRAG - Docker 部署
 echo ===============================================
 echo.
 

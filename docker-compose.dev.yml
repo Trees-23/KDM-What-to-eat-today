@@ -1,11 +1,11 @@
 # 开发环境 Docker Compose 配置
-version: '3.8'
+name: recipe-rag-dev
 
 services:
   # Neo4j 图数据库
   neo4j:
     image: neo4j:5.13-community
-    container_name: what-to-eat-neo4j-dev
+    container_name: recipe-rag-neo4j-dev
     ports:
       - "7474:7474"  # HTTP
       - "7687:7687"  # Bolt
@@ -23,12 +23,12 @@ services:
       - neo4j_dev_plugins:/plugins
       - ./data/cypher:/import
     networks:
-      - what-to-eat-dev-network
+      - recipe-rag-dev-network
     restart: unless-stopped
 
   # Milvus 向量数据库 - Standalone
   milvus-etcd:
-    container_name: what-to-eat-milvus-etcd-dev
+    container_name: recipe-rag-milvus-etcd-dev
     image: quay.io/coreos/etcd:v3.5.5
     environment:
       - ETCD_AUTO_COMPACTION_MODE=revision
@@ -39,11 +39,11 @@ services:
       - etcd_dev_data:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     networks:
-      - what-to-eat-dev-network
+      - recipe-rag-dev-network
     restart: unless-stopped
 
   milvus-minio:
-    container_name: what-to-eat-milvus-minio-dev
+    container_name: recipe-rag-milvus-minio-dev
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     environment:
       MINIO_ACCESS_KEY: minioadmin
@@ -55,11 +55,11 @@ services:
       - minio_dev_data:/minio_data
     command: minio server /minio_data --console-address ":9001"
     networks:
-      - what-to-eat-dev-network
+      - recipe-rag-dev-network
     restart: unless-stopped
 
   milvus-standalone:
-    container_name: what-to-eat-milvus-standalone-dev
+    container_name: recipe-rag-milvus-standalone-dev
     image: milvusdb/milvus:v2.3.3
     command: ["milvus", "run", "standalone"]
     environment:
@@ -74,7 +74,7 @@ services:
       - "milvus-etcd"
       - "milvus-minio"
     networks:
-      - what-to-eat-dev-network
+      - recipe-rag-dev-network
     restart: unless-stopped
 
   # Python 后端服务 (开发模式)
@@ -82,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: what-to-eat-backend-dev
+    container_name: recipe-rag-backend-dev
     ports:
       - "8000:8000"
     environment:
@@ -101,7 +101,7 @@ services:
       - neo4j
       - milvus-standalone
     networks:
-      - what-to-eat-dev-network
+      - recipe-rag-dev-network
     restart: unless-stopped
     command: ["python", "main.py"]
 
@@ -122,5 +122,5 @@ volumes:
     driver: local
 
 networks:
-  what-to-eat-dev-network:
+  recipe-rag-dev-network:
     driver: bridge

@@ -1,5 +1,7 @@
-# 今天吃什么 - AI美食推荐助手
+# RecipeRAG - 智能菜谱检索与问答
 # Docker Compose 配置文件
+
+name: recipe-rag
 
 services:
   # Neo4j 图数据库

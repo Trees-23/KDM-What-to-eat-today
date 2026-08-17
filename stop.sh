@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 今天吃什么 - 统一停止脚本
+# RecipeRAG - 统一停止脚本
 
 # 颜色定义
 RED='\033[0;31m'
@@ -20,7 +20,7 @@ print_message() {
 print_header() {
     echo
     print_message $CYAN "==============================================="
-    print_message $WHITE "      今天吃什么 - 服务停止"
+    print_message $WHITE "      RecipeRAG - 服务停止"
     print_message $CYAN "==============================================="
     echo
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 今天吃什么 - 统一启动脚本
+# RecipeRAG - 统一启动脚本
 # 支持 Linux/macOS/Windows(WSL)
 
 set -e
@@ -25,7 +25,7 @@ print_message() {
 print_header() {
     echo
     print_message $CYAN "==============================================="
-    print_message $WHITE "      今天吃什么 - AI美食推荐助手"
+    print_message $WHITE "      RecipeRAG - 智能菜谱检索与问答"
     print_message $CYAN "==============================================="
     echo
 }

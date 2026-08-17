@@ -127,7 +127,7 @@ const ChatPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <ChefHat className="w-6 h-6 text-blue-500" />
-                    <h1 className="text-lg font-semibold gradient-text">今天吃什么</h1>
+                    <h1 className="text-lg font-semibold gradient-text">RecipeRAG</h1>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button

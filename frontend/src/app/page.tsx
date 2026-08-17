@@ -143,7 +143,7 @@ const HomePage: React.FC = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <ChefHat className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold gradient-text">今天吃什么</h1>
+              <h1 className="text-xl font-bold gradient-text">RecipeRAG</h1>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -192,7 +192,7 @@ const HomePage: React.FC = () => {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-6xl font-bold gradient-text mb-6"
             >
-              今天吃什么？
+              RecipeRAG
             </motion.h1>
             
             <motion.p
@@ -201,7 +201,7 @@ const HomePage: React.FC = () => {
               transition={{ delay: 0.4 }}
               className="text-xl text-gray-600 mb-8"
             >
-              AI美食助手为您推荐个性化菜谱，提供详细烹饪指导
+              智能菜谱检索与烹饪问答
             </motion.p>
             
             <motion.div
@@ -321,7 +321,7 @@ const HomePage: React.FC = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <ChefHat className="w-5 h-5 text-blue-500" />
-              <span className="text-lg font-semibold gradient-text">今天吃什么</span>
+              <span className="text-lg font-semibold gradient-text">RecipeRAG</span>
             </div>
             <p className="text-gray-600 text-sm">
               基于图RAG技术的智能烹饪助手 · 让美食更简单
