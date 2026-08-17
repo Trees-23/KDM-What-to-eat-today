@@ -332,3 +332,6 @@ run/
 /data/dishes/**/*.jpeg
 /data/dishes/**/*.png
 /data/dishes/**/*.webp
+
+# 仅供本机保留的历史资料与测试档案，不随项目发布。
+/_other/
