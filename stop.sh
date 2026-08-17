@@ -46,22 +46,18 @@ case $choice in
         
         if [[ $confirm =~ ^[Yy]$ ]]; then
             print_message $BLUE "🗑️  正在清理所有数据..."
-            docker-compose down -v
+            docker compose down -v
             print_message $GREEN "✅ 数据清理完成"
         else
             print_message $YELLOW "ℹ️  已取消数据清理，仅停止服务"
-            docker-compose down
+            docker compose down
         fi
         ;;
     *)
         print_message $YELLOW "ℹ️  保留数据，仅停止服务"
-        docker-compose down
+        docker compose down
         ;;
 esac
-
-# 清理未使用的Docker资源
-print_message $BLUE "🧹 清理未使用的Docker资源..."
-docker system prune -f
 
 echo
 print_message $GREEN "✅ 服务已停止"

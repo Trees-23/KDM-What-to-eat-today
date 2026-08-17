@@ -171,9 +171,6 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# Docker
-.dockerignore
-
 # Docker 数据卷（开发环境）
 docker-data/
 volumes/

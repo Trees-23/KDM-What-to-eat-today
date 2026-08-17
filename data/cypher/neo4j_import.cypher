@@ -149,6 +149,7 @@ RETURN 'Creating other node types';
 LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
 WITH row
 WHERE NOT (row.labels IN ['Recipe', 'Ingredient', 'CookingStep'])
+  AND row.nodeId >= '200000000'  // 层次结构节点已在前一阶段创建
   AND row.nodeId IS NOT NULL
   AND row.name IS NOT NULL
 WITH row, row.labels as nodeType

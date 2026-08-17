@@ -1097,6 +1097,7 @@ class AdvancedGraphRAGSystem:
                 raise ArtifactMismatchError("RETRIEVAL_MILVUS_COLLECTION 与活动 artifact manifest 不一致")
             schema = MilvusV2Schema(
                 dimension=self.config.milvus_dimension,
+                embedding_model=self.config.embedding_model,
             )
             manifest.validate_runtime(
                 pds_build_id=self.parent_document_store.active_build_id,
