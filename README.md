@@ -83,10 +83,18 @@ docker compose down
 - `MINIO_ACCESS_KEY` 与 `MINIO_SECRET_KEY`
 - `OPENAI_API_KEY`
 
+`NEO4J_PASSWORD`、`MINIO_ACCESS_KEY` 和 `MINIO_SECRET_KEY` 都是本机服务账号，不需要到第三方平台申请。Linux/macOS 可以各执行一次下面的命令，把输出填入对应项：
+
+~~~bash
+openssl rand -hex 24
+~~~
+
+`OPENAI_API_KEY`、`OPENAI_BASE_URL` 和 `LLM_MODEL` 则填写你自己的 OpenAI 兼容 API 提供方配置。
+
 可选项：
 
 - `OPENAI_BASE_URL`：OpenAI 兼容服务地址。
-- `EMBEDDING_MODEL`：默认 `BAAI/bge-small-zh-v1.5`；首次启动由 Hugging Face 下载并缓存在 Docker 卷中。
+- `EMBEDDING_MODEL`：默认 `BAAI/bge-small-zh-v1.5`；填写 Hugging Face 模型名，首次启动会下载并缓存在 Docker 卷中。不要填写宿主机上的 `/app/...` 本地路径。
 - `HTTP_PROXY`、`HTTPS_PROXY`、`ALL_PROXY`：下载模型或调用模型服务需要代理时使用。
 
 `.env` 包含密码和 API Key，已被 Git 忽略，不能提交。

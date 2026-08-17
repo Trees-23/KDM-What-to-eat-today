@@ -49,8 +49,8 @@ services:
   milvus-minio:
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     environment:
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?请在 .env 设置 MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?请在 .env 设置 MINIO_SECRET_KEY}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?请在 .env 设置 MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?请在 .env 设置 MINIO_SECRET_KEY}
     ports:
       - "9001:9001"
       - "9000:9000"
@@ -71,8 +71,9 @@ services:
     environment:
       ETCD_ENDPOINTS: milvus-etcd:2379
       MINIO_ADDRESS: milvus-minio:9000
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:?请在 .env 设置 MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?请在 .env 设置 MINIO_SECRET_KEY}
+      # Milvus config keys are minio.accessKeyID and minio.secretAccessKey.
+      MINIO_ACCESSKEYID: ${MINIO_ACCESS_KEY:?请在 .env 设置 MINIO_ACCESS_KEY}
+      MINIO_SECRETACCESSKEY: ${MINIO_SECRET_KEY:?请在 .env 设置 MINIO_SECRET_KEY}
     volumes:
       - milvus_data:/var/lib/milvus
     ports:
@@ -113,6 +114,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        ALL_PROXY: ${ALL_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,neo4j,milvus-standalone}
     environment:
       - PYTHONPATH=/app
       - NEO4J_URI=bolt://neo4j:7687
@@ -161,6 +167,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        ALL_PROXY: ${ALL_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,neo4j,milvus-standalone}
     environment:
       - PYTHONPATH=/app
       - DOCKER_ENV=true
@@ -224,6 +235,11 @@ services:
         context: ./frontend
         dockerfile: Dockerfile
         target: runner
+        args:
+          HTTP_PROXY: ${HTTP_PROXY:-}
+          HTTPS_PROXY: ${HTTPS_PROXY:-}
+          ALL_PROXY: ${ALL_PROXY:-}
+          NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,neo4j,milvus-standalone}
       environment:
         - NODE_ENV=production
         - NEXT_PUBLIC_API_URL=http://localhost:8000
