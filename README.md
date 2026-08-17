@@ -1,6 +1,6 @@
-# 今天吃什么
+# RecipeRAG
 
-一个基于 Neo4j、Milvus 和大模型的中文菜谱推荐应用。项目的 Docker 启动链会从 Git 中追踪的菜谱 CSV 自动构建图数据库、Parent Document Store（PDS）和 Milvus V2 向量库；不依赖开发者电脑中的数据库、模型或 `run/` 目录。
+面向中文菜谱检索与烹饪问答的 GraphRAG 应用，基于 Neo4j、Milvus 和大模型。项目的 Docker 启动链会从 Git 中追踪的菜谱 CSV 自动构建图数据库、Parent Document Store（PDS）和 Milvus V2 向量库；不依赖开发者电脑中的数据库、模型或 `run/` 目录。
 
 ![界面](./view.png)
 
@@ -9,8 +9,8 @@
 需要 Docker Desktop（或 Docker Engine，含 `docker compose` 插件）、联网下载镜像和嵌入模型，以及一个 OpenAI 兼容 API 的密钥。无需安装 Node.js 或 Python。
 
 ```bash
-git clone https://github.com/Trees-23/KDM-What-to-eat-today.git
-cd KDM-What-to-eat-today
+git clone https://github.com/Trees-23/KDM-What-to-eat-today.git RecipeRAG
+cd RecipeRAG
 cp .env.example .env
 # 编辑 .env，替换所有 CHANGE_ME 值
 chmod +x start.sh stop.sh

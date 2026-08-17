@@ -434,7 +434,7 @@ export const useAppStore = create<AppStore>()(
         }))
     }),
     {
-      name: 'what-to-eat-today-store',
+      name: 'recipe-rag-store',
       storage: createJSONStorage(() => localStorage),
       version: 1,
       partialize: (state) => ({

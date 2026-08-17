@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '今天吃什么 - AI美食推荐助手',
-  description: '基于图RAG技术的智能烹饪助手，为您推荐个性化美食和详细烹饪指导',
-  keywords: '美食推荐,烹饪助手,AI助手,菜谱,食材',
-  authors: [{ name: '今天吃什么团队' }],
+  title: 'RecipeRAG - 智能菜谱检索与问答',
+  description: '基于 GraphRAG 的中文菜谱检索与烹饪问答系统',
+  keywords: 'RecipeRAG,GraphRAG,菜谱检索,烹饪问答,食材',
+  authors: [{ name: 'RecipeRAG' }],
 }
 
 export const viewport: Viewport = {
