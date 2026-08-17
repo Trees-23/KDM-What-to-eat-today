@@ -78,7 +78,7 @@ check_docker() {
         exit 1
     fi
     
-    if ! check_command docker-compose; then
+    if ! docker compose version &> /dev/null; then
         print_error "Docker Compose未安装"
         exit 1
     fi
@@ -103,25 +103,22 @@ check_environment() {
         fi
     fi
 
-    # 检查API密钥
-    if ! grep -q "OPENAI_API_KEY=sk-" .env 2>/dev/null; then
-        print_warning "⚠️  API密钥未配置或格式不正确"
-        print_info "请编辑.env文件，设置您的API密钥："
-        print_info "  OPENAI_API_KEY=your_api_key_here"
-        print_info "  OPENAI_BASE_URL=your_api_base_url"
-        print_info "  LLM_MODEL=your_model_name"
-        echo
-        print_info "支持的API供应商请参考: LLM_CONFIG.md"
-        echo
-        read -p "是否继续启动？(y/N): " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            print_info "请配置API密钥后重新运行"
+    if grep -qE '=CHANGE_ME|=your_.*_here' .env 2>/dev/null; then
+        print_error ".env 仍包含示例值，请先替换 NEO4J_PASSWORD、MinIO 凭据和 OPENAI_API_KEY"
+        exit 1
+    fi
+    local required_key
+    for required_key in NEO4J_PASSWORD MINIO_ACCESS_KEY MINIO_SECRET_KEY OPENAI_API_KEY; do
+        if ! grep -qE "^${required_key}=.+" .env 2>/dev/null; then
+            print_error ".env 缺少 ${required_key}"
             exit 1
         fi
-    else
-        print_success "环境配置检查通过"
+    done
+    if grep -qE '^(EMBEDDING_MODEL|RERANK_MODEL)=/' .env 2>/dev/null; then
+        print_error ".env 使用了开发机模型路径。部署配置必须使用可下载的模型名，例如 BAAI/bge-small-zh-v1.5"
+        exit 1
     fi
+    print_success "环境配置检查通过"
 }
 
 # 前端依赖将在Docker容器中自动安装
@@ -132,10 +129,7 @@ check_frontend() {
 # 创建必要目录
 create_directories() {
     print_step "创建必要目录..."
-    mkdir -p data/cypher
-    mkdir -p nginx
-    mkdir -p logs
-    print_success "目录创建完成"
+    print_success "Docker 将创建并管理运行数据卷"
 }
 
 # 启动服务
@@ -144,15 +138,16 @@ start_services() {
     
     # 拉取镜像
     print_info "拉取Docker镜像..."
-    docker-compose pull
+    docker compose pull
     
     # 构建自定义镜像
     print_info "构建应用镜像..."
-    docker-compose build
+    docker compose build
     
     # 启动服务
     print_info "启动服务容器..."
-    docker-compose up -d
+    # bootstrap 服务每次都执行；内部摘要和 build ID 负责避免无变化时重复构建。
+    docker compose up -d --force-recreate
     
     print_success "服务启动命令执行完成"
 }
@@ -161,7 +156,8 @@ start_services() {
 wait_for_services() {
     print_step "等待服务启动..."
 
-    local max_retries=60
+    # 首次下载嵌入模型和生成向量可能超过两分钟。
+    local max_retries=450
     local retry_count=0
 
     # 等待后端服务
@@ -180,7 +176,7 @@ wait_for_services() {
 
     if [ $retry_count -eq $max_retries ]; then
         print_error "后端服务启动超时"
-        print_info "查看日志: docker-compose logs backend"
+        print_info "查看日志: docker compose logs retrieval-bootstrap backend"
         print_info "常见问题："
         print_info "  - 检查端口8000是否被占用"
         print_info "  - 检查Docker内存是否充足"
@@ -205,7 +201,7 @@ wait_for_services() {
 
     if [ $retry_count -eq $max_retries ]; then
         print_error "Nginx代理服务启动超时"
-        print_info "查看日志: docker-compose logs nginx"
+        print_info "查看日志: docker compose logs nginx"
         print_info "尝试直接访问前端: http://localhost:3000"
         # 不退出，因为可以直接访问前端
     fi
@@ -227,23 +223,21 @@ show_services() {
     echo "   ⚛️  前端应用:     http://localhost:3000"
     echo "   🐍 后端API:      http://localhost:8000"
     echo "   📊 Neo4j浏览器:  http://localhost:7474"
-    echo "      用户名: neo4j, 密码: all-in-rag"
+    echo "      用户名: neo4j，密码见 .env"
     echo "   🗄️  Milvus控制台: http://localhost:9001"
-    echo "      用户名: minioadmin, 密码: minioadmin"
+    echo "      凭据见 .env"
     echo
     
     print_message $YELLOW "📝 管理命令："
-    echo "   查看服务状态: docker-compose ps"
-    echo "   查看日志:     docker-compose logs -f [service_name]"
-    echo "   重启服务:     docker-compose restart [service_name]"
-    echo "   停止服务:     docker-compose down"
-    echo "   完全清理:     docker-compose down -v"
+    echo "   查看服务状态: docker compose ps"
+    echo "   查看日志:     docker compose logs -f [service_name]"
+    echo "   停止服务:     docker compose down"
+    echo "   清空项目数据: ./stop.sh 后选择 2"
     echo
     
     print_message $PURPLE "💡 开发提示："
-    echo "   - 代码修改后需要重新构建: docker-compose build [service_name]"
-    echo "   - 查看实时日志: docker-compose logs -f"
-    echo "   - 进入容器调试: docker-compose exec [service_name] bash"
+    echo "   - 首次启动会下载模型并构建图、PDS、Milvus，耗时取决于网络和 CPU"
+    echo "   - 菜谱 CSV 变更后再次执行 ./start.sh，会重建本项目图和检索工件"
     echo
 }
 
@@ -275,7 +269,7 @@ main() {
 }
 
 # 信号处理
-trap 'echo; print_info "正在停止服务..."; docker-compose down; exit 0' INT TERM
+trap 'echo; print_info "正在停止服务..."; docker compose down; exit 0' INT TERM
 
 # 执行主函数
 main "$@"

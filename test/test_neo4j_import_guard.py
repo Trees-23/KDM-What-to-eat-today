@@ -85,3 +85,9 @@ def test_recipe_import_uses_source_path_to_exclude_hierarchy_nodes():
     recipe_block = cypher.split("// 创建食材节点", 1)[0]
     assert "row.filePath IS NOT NULL" in recipe_block
     assert "trim(row.filePath) <> ''" in recipe_block
+
+
+def test_other_node_import_does_not_recreate_hierarchy_nodes():
+    cypher = (Path(__file__).resolve().parents[1] / "data" / "cypher" / "neo4j_import.cypher").read_text(encoding="utf-8")
+    other_nodes_block = cypher.split("// 创建其他类型节点", 1)[1].split("// 创建需要关系", 1)[0]
+    assert "row.nodeId >= '200000000'" in other_nodes_block

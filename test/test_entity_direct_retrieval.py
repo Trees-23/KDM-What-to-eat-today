@@ -583,12 +583,13 @@ def test_restricted_vector_initialization_uses_active_manifest_collection(tmp_pa
     store = _build_store(tmp_path)
     build_id = store.active_build_id
     collection = f"cooking_knowledge_v2_{build_id[:12]}"
+    embedding_model = "example/custom-embedding-model"
     manifest = RetrievalArtifactManifest(
         pds_build_id=build_id,
         pds_manifest_sha256=pds_manifest_sha256(store, build_id),
         milvus_database="default",
         milvus_collection=collection,
-        milvus_schema_hash=MilvusV2Schema().schema_hash,
+        milvus_schema_hash=MilvusV2Schema(embedding_model=embedding_model).schema_hash,
         milvus_build_id=build_id,
         created_at=datetime.now(timezone.utc).isoformat(),
         rollback_database="default",
@@ -601,6 +602,7 @@ def test_restricted_vector_initialization_uses_active_manifest_collection(tmp_pa
         retrieval_milvus_collection="",
         retrieval_milvus_database="default",
         milvus_dimension=512,
+        embedding_model=embedding_model,
         milvus_host="milvus",
         milvus_port=19530,
     )

@@ -1,6 +1,12 @@
 # 多阶段构建 - 构建阶段
 FROM node:18-alpine AS builder
 
+# Compose 将宿主代理作为 build args 传入，供 npm 下载依赖使用。
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG ALL_PROXY
+ARG NO_PROXY
+
 # 设置工作目录
 WORKDIR /app
 
