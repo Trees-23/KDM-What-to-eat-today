@@ -9,7 +9,7 @@
 需要 Docker Desktop（或 Docker Engine，含 `docker compose` 插件）、联网下载镜像和嵌入模型，以及一个 OpenAI 兼容 API 的密钥。无需安装 Node.js 或 Python。
 
 ```bash
-git clone https://github.com/Trees-23/KDM-What-to-eat-today.git RecipeRAG
+git clone https://github.com/Trees-23/RecipeRAG.git RecipeRAG
 cd RecipeRAG
 cp .env.example .env
 # 编辑 .env，替换所有 CHANGE_ME 值
